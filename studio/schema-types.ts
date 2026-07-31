@@ -22,6 +22,7 @@ import homeHero from "./schemas/blocks/home-hero";
 import loanFeatureCards from "./schemas/blocks/loan-feature-cards";
 import videoFeature from "./schemas/blocks/video-feature";
 import phxEmbedSocialReviews from "./schemas/blocks/phx-embed-social-reviews";
+import latestArticles from "./schemas/blocks/latest-articles";
 
 export const schemaTypes = [
   // documents
@@ -47,4 +48,5 @@ export const schemaTypes = [
   loanFeatureCards,
   videoFeature,
   phxEmbedSocialReviews,
+  latestArticles,
 ];

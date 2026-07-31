@@ -5,6 +5,7 @@ import HomeHero from "@/components/blocks/home-hero";
 import LoanFeatureCards from "@/components/blocks/loan-feature-cards";
 import VideoFeature from "@/components/blocks/video-feature";
 import PhxEmbedSocialReviews from "@/components/blocks/phx-embed-social-reviews";
+import LatestArticles from "@/components/blocks/latest-articles";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -18,6 +19,7 @@ const componentMap: Partial<{
   loanFeatureCards: LoanFeatureCards,
   videoFeature: VideoFeature,
   phxEmbedSocialReviews: PhxEmbedSocialReviews,
+  latestArticles: LatestArticles,
 };
 
 export default function Blocks({

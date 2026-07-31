@@ -132,7 +132,8 @@ async function main() {
     queriedHome.blocks[0]?._type !== "homeHero" ||
     queriedHome.blocks[1]?._type !== "loanFeatureCards" ||
     queriedHome.blocks[2]?._type !== "videoFeature" ||
-    queriedHome.blocks[3]?._type !== "phxEmbedSocialReviews"
+    queriedHome.blocks[3]?._type !== "phxEmbedSocialReviews" ||
+    queriedHome.blocks[4]?._type !== "latestArticles"
   ) {
     throw new Error("The transitional page query did not return the supported homepage blocks first");
   }
@@ -151,7 +152,11 @@ async function main() {
   ) {
     throw new Error("The transitional page query did not project Social Reviews");
   }
-  for (const block of queriedHome.blocks.slice(4)) {
+  const latestArticles = queriedHome.blocks[4];
+  if (!Array.isArray(latestArticles.articles) || latestArticles.articles.length === 0) {
+    throw new Error("The transitional page query did not project Latest Articles");
+  }
+  for (const block of queriedHome.blocks.slice(5)) {
     if (!isDeepStrictEqual(Object.keys(block).sort(), ["_key", "_type"])) {
       throw new Error(`Unsupported block ${block._type} returned more than its identity`);
     }

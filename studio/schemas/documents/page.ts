@@ -44,6 +44,7 @@ export default defineType({
         { type: "loanFeatureCards" },
         { type: "videoFeature" },
         { type: "phxEmbedSocialReviews" },
+        { type: "latestArticles" },
       ],
       options: {
         insertMenu: {
@@ -60,6 +61,7 @@ export default defineType({
                 "loanFeatureCards",
                 "videoFeature",
                 "phxEmbedSocialReviews",
+                "latestArticles",
               ],
             },
           ],
