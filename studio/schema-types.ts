@@ -30,6 +30,7 @@ import pageHeader from "./schemas/blocks/page-header";
 import storyFeature from "./schemas/blocks/story-feature";
 import bigVideoFeature from "./schemas/blocks/big-video-feature";
 import editorialChapter from "./schemas/blocks/editorial-chapter";
+import youtubeChannelFeature from "./schemas/blocks/youtube-channel-feature";
 
 export const schemaTypes = [
   // documents
@@ -63,4 +64,5 @@ export const schemaTypes = [
   storyFeature,
   bigVideoFeature,
   editorialChapter,
+  youtubeChannelFeature,
 ];

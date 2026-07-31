@@ -12,6 +12,7 @@ import PageHeader from "@/components/blocks/page-header";
 import StoryFeature from "@/components/blocks/story-feature";
 import BigVideoFeature from "@/components/blocks/big-video-feature";
 import EditorialChapter from "@/components/blocks/editorial-chapter";
+import YoutubeChannelFeature from "@/components/blocks/youtube-channel-feature";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -36,6 +37,7 @@ const componentMap: Partial<{
   storyFeature: StoryFeature,
   bigVideoFeature: BigVideoFeature,
   editorialChapter: EditorialChapter,
+  youtubeChannelFeature: YoutubeChannelFeature,
 };
 
 export default function Blocks({

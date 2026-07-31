@@ -51,6 +51,7 @@ export default defineType({
         { type: "storyFeature" },
         { type: "bigVideoFeature" },
         { type: "editorialChapter" },
+        { type: "youtubeChannelFeature" },
       ],
       options: {
         insertMenu: {
@@ -73,6 +74,7 @@ export default defineType({
                 "storyFeature",
                 "bigVideoFeature",
                 "editorialChapter",
+                "youtubeChannelFeature",
               ],
             },
           ],
