@@ -13,11 +13,19 @@ import {
   type RefObject,
 } from "react";
 
+export type BigVideoDataAttributes = {
+  description?: string;
+  eyebrow?: string;
+  thumbnailImage?: string;
+  title?: string;
+  youtubeUrl?: string;
+};
+
 type BigVideoFeatureProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "bigVideoFeature" }
 > & {
-  dataAttribute?: (path: string) => string | undefined;
+  dataAttributes?: BigVideoDataAttributes;
 };
 
 type BigVideoLightboxProps = {
@@ -123,7 +131,7 @@ function BigVideoLightbox({
 }
 
 export default function BigVideoFeature({
-  dataAttribute,
+  dataAttributes,
   description,
   eyebrow,
   thumbnailImage,
@@ -181,7 +189,7 @@ export default function BigVideoFeature({
         {displayEyebrow ? (
           <p
             className="text-xs font-semibold uppercase tracking-[0.26em] text-[#feb77d]/90"
-            data-sanity={dataAttribute?.("eyebrow")}
+            data-sanity={dataAttributes?.eyebrow}
           >
             {eyebrow}
           </p>
@@ -189,7 +197,7 @@ export default function BigVideoFeature({
         {displayTitle ? (
           <h2
             className="mt-3.5 max-w-[47.5rem] text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.015em] text-white md:text-[2.875rem]"
-            data-sanity={dataAttribute?.("title")}
+            data-sanity={dataAttributes?.title}
             id={headingId}
           >
             {title}
@@ -198,7 +206,7 @@ export default function BigVideoFeature({
         {displayDescription ? (
           <p
             className="mb-[1.875rem] mt-5 max-w-[38.75rem] text-pretty text-[1.0625rem] leading-[1.7] text-white/70"
-            data-sanity={dataAttribute?.("description")}
+            data-sanity={dataAttributes?.description}
           >
             {description}
           </p>
@@ -209,7 +217,7 @@ export default function BigVideoFeature({
         <button
           aria-label={displayTitle ? `Play: ${displayTitle}` : "Play video"}
           className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-[18px] bg-[#0c1329] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#feb77d] focus-visible:ring-offset-4 focus-visible:ring-offset-[#131c3b] disabled:cursor-not-allowed"
-          data-sanity={dataAttribute?.("youtubeUrl")}
+          data-sanity={dataAttributes?.youtubeUrl}
           disabled={!embedUrl}
           onClick={() => setIsOpen(Boolean(embedUrl))}
           ref={triggerRef}
@@ -219,7 +227,7 @@ export default function BigVideoFeature({
             <Image
               alt={thumbnailImage.alt || displayTitle || "Featured video"}
               className="object-cover"
-              data-sanity={dataAttribute?.("thumbnailImage")}
+              data-sanity={dataAttributes?.thumbnailImage}
               fill
               sizes="(min-width: 1024px) 920px, 100vw"
               src={urlFor(thumbnailImage).width(1280).height(720).url()}

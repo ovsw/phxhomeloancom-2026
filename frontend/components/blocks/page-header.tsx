@@ -5,9 +5,12 @@ import Link from "next/link";
 type PageHeaderProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "pageHeader" }
->;
+> & {
+  dataAttribute?: (path: string) => string | undefined;
+};
 
 export default function PageHeader({
+  dataAttribute,
   description,
   eyebrow,
   statistics,
@@ -61,17 +64,26 @@ export default function PageHeader({
             <span aria-hidden="true" className="opacity-50">
               /
             </span>
-            <span className="text-xs font-semibold uppercase leading-none tracking-[0.24em] text-[#feb77d]">
+            <span
+              className="text-xs font-semibold uppercase leading-none tracking-[0.24em] text-[#feb77d]"
+              data-sanity={dataAttribute?.("eyebrow")}
+            >
               {eyebrow}
             </span>
           </nav>
         ) : null}
 
-        <h1 className="max-w-[51.25rem] text-balance text-[2.5rem] font-semibold leading-[1.08] tracking-normal text-white md:text-[3.75rem]">
+        <h1
+          className="max-w-[51.25rem] text-balance text-[2.5rem] font-semibold leading-[1.08] tracking-normal text-white md:text-[3.75rem]"
+          data-sanity={dataAttribute?.("title")}
+        >
           {title}
         </h1>
         {stegaClean(description)?.trim() ? (
-          <p className="mt-5 max-w-[38.75rem] text-pretty text-lg leading-[1.65] text-white/70">
+          <p
+            className="mt-5 max-w-[38.75rem] text-pretty text-lg leading-[1.65] text-white/70"
+            data-sanity={dataAttribute?.("description")}
+          >
             {description}
           </p>
         ) : null}
@@ -80,10 +92,20 @@ export default function PageHeader({
           <div className="mt-11 flex flex-wrap gap-x-[clamp(2rem,5vw,4.5rem)] gap-y-8 border-t border-white/15 pt-8">
             {visibleStatistics.map((statistic) => (
               <div className="flex max-w-56 flex-col gap-1" key={statistic._key}>
-                <p className="text-[1.875rem] font-semibold leading-tight text-white">
+                <p
+                  className="text-[1.875rem] font-semibold leading-tight text-white"
+                  data-sanity={dataAttribute?.(
+                    `statistics[_key=="${statistic._key}"].value`,
+                  )}
+                >
                   {statistic.value}
                 </p>
-                <p className="text-[0.84375rem] leading-relaxed text-white/60">
+                <p
+                  className="text-[0.84375rem] leading-relaxed text-white/60"
+                  data-sanity={dataAttribute?.(
+                    `statistics[_key=="${statistic._key}"].description`,
+                  )}
+                >
                   {statistic.description}
                 </p>
               </div>

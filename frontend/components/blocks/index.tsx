@@ -10,7 +10,9 @@ import FaqAccordion from "@/components/blocks/faq-accordion";
 import AwardCta from "@/components/blocks/award-cta";
 import PageHeader from "@/components/blocks/page-header";
 import StoryFeature from "@/components/blocks/story-feature";
-import BigVideoFeature from "@/components/blocks/big-video-feature";
+import BigVideoFeature, {
+  type BigVideoDataAttributes,
+} from "@/components/blocks/big-video-feature";
 import EditorialChapter from "@/components/blocks/editorial-chapter";
 import YoutubeChannelFeature from "@/components/blocks/youtube-channel-feature";
 import PersonCta from "@/components/blocks/person-cta";
@@ -20,7 +22,16 @@ type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 
 type BlockEditingProps = {
   dataAttribute?: (path: string) => string | undefined;
+  dataAttributes?: BigVideoDataAttributes;
 };
+
+const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
+  "pageHeader",
+  "storyFeature",
+  "editorialChapter",
+  "youtubeChannelFeature",
+  "personCta",
+]);
 
 const componentMap: Partial<{
   [K in Block["_type"]]: React.ComponentType<
@@ -82,10 +93,26 @@ export default function Blocks({
                 type: "page",
               }).toString()
           : undefined;
+        const editingProps: BlockEditingProps =
+          block._type === "bigVideoFeature"
+            ? {
+                dataAttributes: dataAttribute
+                  ? {
+                      description: dataAttribute("description"),
+                      eyebrow: dataAttribute("eyebrow"),
+                      thumbnailImage: dataAttribute("thumbnailImage"),
+                      title: dataAttribute("title"),
+                      youtubeUrl: dataAttribute("youtubeUrl"),
+                    }
+                  : undefined,
+              }
+            : serverFieldEditingBlockTypes.has(block._type)
+              ? { dataAttribute }
+              : {};
 
         return (
           <div data-sanity={dataSanity} key={block._key}>
-            <Component {...block} dataAttribute={dataAttribute} />
+            <Component {...block} {...editingProps} />
           </div>
         );
       })}
