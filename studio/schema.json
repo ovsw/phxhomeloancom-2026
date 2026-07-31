@@ -116,6 +116,43 @@
     }
   },
   {
+    "name": "phxEmbedSocialReviews",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "phxEmbedSocialReviews"
+          }
+        },
+        "iframeTitle": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "iframeSrc": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "resizerScriptSrc": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "videoFeature",
     "type": "type",
     "value": {
@@ -2710,6 +2747,21 @@
                 "rest": {
                   "type": "inline",
                   "name": "videoFeature"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "phxEmbedSocialReviews"
                 }
               }
             ]
