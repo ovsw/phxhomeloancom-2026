@@ -7,6 +7,7 @@ import { phxEmbedSocialReviewsQuery } from "./phx-embed-social-reviews";
 import { latestArticlesQuery } from "./latest-articles";
 import { faqAccordionQuery } from "./faq-accordion";
 import { awardCtaQuery } from "./award-cta";
+import { pageHeaderQuery } from "./page-header";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -21,7 +22,8 @@ export const PAGE_QUERY = groq`
       ${phxEmbedSocialReviewsQuery},
       ${latestArticlesQuery},
       ${faqAccordionQuery},
-      ${awardCtaQuery}
+      ${awardCtaQuery},
+      ${pageHeaderQuery}
     },
     ${metaQuery},
   }

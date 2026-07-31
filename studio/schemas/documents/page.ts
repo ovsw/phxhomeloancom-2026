@@ -47,6 +47,7 @@ export default defineType({
         { type: "latestArticles" },
         { type: "faqAccordion" },
         { type: "awardCta" },
+        { type: "pageHeader" },
       ],
       options: {
         insertMenu: {
@@ -54,7 +55,7 @@ export default defineType({
             {
               name: "hero",
               title: "Hero",
-              of: ["homeHero"],
+              of: ["homeHero", "pageHeader"],
             },
             {
               name: "content",
