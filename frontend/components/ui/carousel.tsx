@@ -95,6 +95,7 @@ function Carousel({
 
   React.useEffect(() => {
     if (!api) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Read the initial state from the external carousel API.
     onSelect(api);
     api.on("reInit", onSelect);
     api.on("select", onSelect);
@@ -245,6 +246,7 @@ function CarouselDots({
   React.useEffect(() => {
     if (!api) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Read the initial slide count from the external carousel API.
     setSlideCount(api.scrollSnapList().length);
 
     api.on("select", () => {
@@ -306,6 +308,7 @@ function CarouselCounter({
   React.useEffect(() => {
     if (!api) return;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Read the initial slide count from the external carousel API.
     setSlideCount(api.scrollSnapList().length);
 
     api.on("select", () => {

@@ -9,6 +9,10 @@ import SplitInfoList from "./split-info-list";
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type SplitRow = Extract<Block, { _type: "split-row" }>;
 type SplitColumn = NonNullable<NonNullable<SplitRow["splitColumns"]>[number]>;
+type SplitColumnRendererProps = SplitColumn & {
+  color?: SplitRow["colorVariant"];
+  noGap?: boolean;
+};
 
 const componentMap: {
   [K in SplitColumn["_type"]]: React.ComponentType<
@@ -37,7 +41,9 @@ export default function SplitRow({
           )}
         >
           {splitColumns?.map((column) => {
-            const Component = componentMap[column._type];
+            const Component = componentMap[
+              column._type
+            ] as React.ComponentType<SplitColumnRendererProps>;
             if (!Component) {
               // Fallback for development/debugging of new component types
               console.warn(
@@ -47,9 +53,9 @@ export default function SplitRow({
             }
             return (
               <Component
-                {...(column as any)}
+                {...column}
                 color={colorVariant}
-                noGap={noGap}
+                noGap={noGap ?? undefined}
                 key={column._key}
               />
             );

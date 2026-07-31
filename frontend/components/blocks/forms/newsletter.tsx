@@ -74,12 +74,14 @@ export default function FormNewsletter({
         } else {
           toast.error(result.error);
         }
-      } catch (error: any) {
-        toast.error(error.message);
-        throw new Error(error.message);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "Unable to subscribe";
+        toast.error(message);
+        throw error instanceof Error ? error : new Error(message);
       }
     },
-    [form],
+    [form, successMessage],
   );
 
   async function onSubmit(values: z.infer<typeof formSchema>) {

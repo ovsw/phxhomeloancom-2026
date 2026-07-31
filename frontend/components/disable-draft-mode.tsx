@@ -12,6 +12,7 @@ export function DisableDraftMode() {
   const [isInIframe, setIsInIframe] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Defer iframe detection until the browser is available.
     setIsInIframe(window.self !== window.top);
   }, []);
 

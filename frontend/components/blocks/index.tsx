@@ -59,7 +59,9 @@ export default function Blocks({
           );
         }
 
-        const Component = componentMap[block._type];
+        const Component = componentMap[
+          block._type
+        ] as React.ComponentType<MappedBlock>;
         if (!Component) {
           // Fallback for development/debugging of new component types
           console.warn(
@@ -67,7 +69,7 @@ export default function Blocks({
           );
           return <div data-type={block._type} key={block._key} />;
         }
-        return <Component {...(block as any)} key={block._key} />;
+        return <Component {...block} key={block._key} />;
       })}
     </>
   );

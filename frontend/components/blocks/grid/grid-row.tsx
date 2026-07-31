@@ -8,6 +8,9 @@ import GridPost from "./grid-post";
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type GridRow = Extract<Block, { _type: "grid-row" }>;
 type GridColumn = NonNullable<NonNullable<GridRow["columns"]>[number]>;
+type GridColumnRendererProps = GridColumn & {
+  color?: GridRow["colorVariant"];
+};
 
 const componentMap: {
   [K in GridColumn["_type"]]: React.ComponentType<
@@ -30,7 +33,9 @@ export default function GridRow({
       {columns && columns?.length > 0 && (
         <div className={cn(`grid grid-cols-1 gap-6`, `lg:${gridColumns}`)}>
           {columns.map((column) => {
-            const Component = componentMap[column._type];
+            const Component = componentMap[
+              column._type
+            ] as React.ComponentType<GridColumnRendererProps>;
             if (!Component) {
               // Fallback for development/debugging of new component types
               console.warn(
@@ -40,7 +45,7 @@ export default function GridRow({
             }
             return (
               <Component
-                {...(column as any)}
+                {...column}
                 color={colorVariant}
                 key={column._key}
               />

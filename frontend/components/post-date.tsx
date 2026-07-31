@@ -8,6 +8,7 @@ export default function PostDate({ date }: { date: string }) {
   useEffect(() => {
     if (date) {
       const formattedDate = formatDate(date);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Format on the client to avoid timezone-dependent hydration differences.
       setPostDate(formattedDate);
     }
   }, [date]);

@@ -14,10 +14,10 @@ export const POST = async (request: Request) => {
     });
 
     return Response.json({ success: true });
-  } catch (error: any) {
+  } catch {
     return Response.json(
       { error: "Error subscribing to updates" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 };

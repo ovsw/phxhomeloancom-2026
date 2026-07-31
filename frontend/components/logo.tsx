@@ -16,6 +16,7 @@ export default function Logo({
 
   // Only render theme-dependent content after hydration
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Theme selection must wait until after hydration.
     setMounted(true);
   }, []);
 

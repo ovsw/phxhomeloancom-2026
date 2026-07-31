@@ -7,9 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "email": "email dev",
-    "typegen": "rm -f schema.json && sanity schema extract; test -f schema.json && sanity typegen generate",
+    "typegen": "pnpm --dir ../studio typegen",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -58,7 +58,7 @@
     "@types/node": "^26.1.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.6.0",
+    "eslint": "^9.39.2",
     "eslint-config-next": "16.2.10",
     "postcss": "^8.5.16",
     "react-email": "^6.6.7",
