@@ -8,6 +8,7 @@ import { latestArticlesQuery } from "./latest-articles";
 import { faqAccordionQuery } from "./faq-accordion";
 import { awardCtaQuery } from "./award-cta";
 import { pageHeaderQuery } from "./page-header";
+import { storyFeatureQuery } from "./story-feature";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -23,7 +24,8 @@ export const PAGE_QUERY = groq`
       ${latestArticlesQuery},
       ${faqAccordionQuery},
       ${awardCtaQuery},
-      ${pageHeaderQuery}
+      ${pageHeaderQuery},
+      ${storyFeatureQuery}
     },
     ${metaQuery},
   }

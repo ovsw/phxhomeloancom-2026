@@ -27,6 +27,7 @@ import latestArticles from "./schemas/blocks/latest-articles";
 import faqAccordion from "./schemas/blocks/faq-accordion";
 import awardCta from "./schemas/blocks/award-cta";
 import pageHeader from "./schemas/blocks/page-header";
+import storyFeature from "./schemas/blocks/story-feature";
 
 export const schemaTypes = [
   // documents
@@ -57,4 +58,5 @@ export const schemaTypes = [
   faqAccordion,
   awardCta,
   pageHeader,
+  storyFeature,
 ];

@@ -9,13 +9,18 @@ import LatestArticles from "@/components/blocks/latest-articles";
 import FaqAccordion from "@/components/blocks/faq-accordion";
 import AwardCta from "@/components/blocks/award-cta";
 import PageHeader from "@/components/blocks/page-header";
+import StoryFeature from "@/components/blocks/story-feature";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 
+type BlockEditingProps = {
+  dataAttribute?: (path: string) => string | undefined;
+};
+
 const componentMap: Partial<{
   [K in Block["_type"]]: React.ComponentType<
-    Extract<Block, { _type: K }>
+    Extract<Block, { _type: K }> & BlockEditingProps
   >;
 }> = {
   homeHero: HomeHero,
@@ -26,6 +31,7 @@ const componentMap: Partial<{
   faqAccordion: FaqAccordion,
   awardCta: AwardCta,
   pageHeader: PageHeader,
+  storyFeature: StoryFeature,
 };
 
 export default function Blocks({
@@ -42,24 +48,36 @@ export default function Blocks({
     <>
       {blocks?.map((block) => {
         const Component = componentMap[block._type] as
-          | React.ComponentType<Block>
+          | React.ComponentType<Block & BlockEditingProps>
           | undefined;
         if (!Component) return null;
 
+        const blockPath = `blocks[_key=="${block._key}"]`;
         const dataSanity = stega
           ? createDataAttribute({
               baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
               dataset,
               id: documentId,
-              path: `blocks[_key=="${block._key}"]`,
+              path: blockPath,
               projectId,
               type: "page",
             }).toString()
           : undefined;
+        const dataAttribute = stega
+          ? (path: string) =>
+              createDataAttribute({
+                baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+                dataset,
+                id: documentId,
+                path: `${blockPath}.${path}`,
+                projectId,
+                type: "page",
+              }).toString()
+          : undefined;
 
         return (
           <div data-sanity={dataSanity} key={block._key}>
-            <Component {...block} />
+            <Component {...block} dataAttribute={dataAttribute} />
           </div>
         );
       })}

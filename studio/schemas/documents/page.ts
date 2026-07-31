@@ -48,6 +48,7 @@ export default defineType({
         { type: "faqAccordion" },
         { type: "awardCta" },
         { type: "pageHeader" },
+        { type: "storyFeature" },
       ],
       options: {
         insertMenu: {
@@ -67,6 +68,7 @@ export default defineType({
                 "latestArticles",
                 "faqAccordion",
                 "awardCta",
+                "storyFeature",
               ],
             },
           ],
