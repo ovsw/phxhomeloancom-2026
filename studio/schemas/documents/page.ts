@@ -45,6 +45,7 @@ export default defineType({
         { type: "videoFeature" },
         { type: "phxEmbedSocialReviews" },
         { type: "latestArticles" },
+        { type: "faqAccordion" },
       ],
       options: {
         insertMenu: {
@@ -62,6 +63,7 @@ export default defineType({
                 "videoFeature",
                 "phxEmbedSocialReviews",
                 "latestArticles",
+                "faqAccordion",
               ],
             },
           ],

@@ -5,6 +5,7 @@ import { loanFeatureCardsQuery } from "./loan-feature-cards";
 import { videoFeatureQuery } from "./video-feature";
 import { phxEmbedSocialReviewsQuery } from "./phx-embed-social-reviews";
 import { latestArticlesQuery } from "./latest-articles";
+import { faqAccordionQuery } from "./faq-accordion";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -17,7 +18,8 @@ export const PAGE_QUERY = groq`
       ${loanFeatureCardsQuery},
       ${videoFeatureQuery},
       ${phxEmbedSocialReviewsQuery},
-      ${latestArticlesQuery}
+      ${latestArticlesQuery},
+      ${faqAccordionQuery}
     },
     ${metaQuery},
   }

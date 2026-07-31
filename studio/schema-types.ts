@@ -23,6 +23,7 @@ import loanFeatureCards from "./schemas/blocks/loan-feature-cards";
 import videoFeature from "./schemas/blocks/video-feature";
 import phxEmbedSocialReviews from "./schemas/blocks/phx-embed-social-reviews";
 import latestArticles from "./schemas/blocks/latest-articles";
+import faqAccordion from "./schemas/blocks/faq-accordion";
 
 export const schemaTypes = [
   // documents
@@ -49,4 +50,5 @@ export const schemaTypes = [
   videoFeature,
   phxEmbedSocialReviews,
   latestArticles,
+  faqAccordion,
 ];
