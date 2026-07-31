@@ -52,6 +52,7 @@ export default defineType({
         { type: "bigVideoFeature" },
         { type: "editorialChapter" },
         { type: "youtubeChannelFeature" },
+        { type: "personCta" },
       ],
       options: {
         insertMenu: {
@@ -75,6 +76,7 @@ export default defineType({
                 "bigVideoFeature",
                 "editorialChapter",
                 "youtubeChannelFeature",
+                "personCta",
               ],
             },
           ],
