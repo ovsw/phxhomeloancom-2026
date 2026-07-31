@@ -31,10 +31,63 @@ export type SanityImageAssetReference = {
 
 export type MetaImage = {
   asset?: SanityImageAssetReference;
-  media?: unknown; // Unable to locate the referenced type "image.media" in schema
+  media?: unknown; // Unable to locate the referenced type "media" in schema
   hotspot?: SanityImageHotspot;
   crop?: SanityImageCrop;
   _type: "image";
+};
+
+export type HomeHero = {
+  _type: "homeHero";
+  marketPositioning?: string;
+  servicePromise?: string;
+  richText?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  buttons?: Array<
+    {
+      _key: string;
+    } & Button
+  >;
+  portraitImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  backgroundImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  mobileBackgroundImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
 };
 
 export type Hero1 = {
@@ -57,23 +110,21 @@ export type Hero1 = {
   >;
 };
 
-export type SectionPadding = {
-  _type: "section-padding";
-  top?: boolean;
-  bottom?: boolean;
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 };
 
-export type ButtonVariant =
-  "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
-
-export type ColorVariant =
-  | "background"
-  | "primary"
-  | "secondary"
-  | "card"
-  | "accent"
-  | "destructive"
-  | "muted";
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
 
 export type PageReference = {
   _ref: string;
@@ -87,16 +138,6 @@ export type PostReference = {
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "post";
-};
-
-export type Link = {
-  _type: "link";
-  isExternal?: boolean;
-  internalLink?: PageReference | PostReference;
-  title?: string;
-  href?: string;
-  target?: boolean;
-  buttonVariant?: ButtonVariant;
 };
 
 export type BlockContent = Array<
@@ -140,6 +181,50 @@ export type BlockContent = Array<
     } & Code)
 >;
 
+export type Button = {
+  _type: "button";
+  variant?: "default" | "secondary" | "outline" | "link";
+  text?: string;
+  url?: CustomUrl;
+};
+
+export type CustomUrl = {
+  _type: "customUrl";
+  type?: "internal" | "external";
+  openInNewTab?: boolean;
+  external?: string;
+  internal?: PageReference;
+  href?: string;
+};
+
+export type SectionPadding = {
+  _type: "section-padding";
+  top?: boolean;
+  bottom?: boolean;
+};
+
+export type ButtonVariant =
+  "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+
+export type ColorVariant =
+  | "background"
+  | "primary"
+  | "secondary"
+  | "card"
+  | "accent"
+  | "destructive"
+  | "muted";
+
+export type Link = {
+  _type: "link";
+  isExternal?: boolean;
+  internalLink?: PageReference | PostReference;
+  title?: string;
+  href?: string;
+  target?: boolean;
+  buttonVariant?: ButtonVariant;
+};
+
 export type Settings = {
   _id: string;
   _type: "settings";
@@ -166,22 +251,6 @@ export type Settings = {
   };
   siteName?: string;
   copyright?: BlockContent;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
 };
 
 export type Navigation = {
@@ -235,23 +304,6 @@ export type Category = {
   _updatedAt: string;
   _rev: string;
   title?: string;
-  orderRank?: string;
-};
-
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug?: Slug;
-  blocks?: Array<
-    {
-      _key: string;
-    } & Hero1
-  >;
-  meta?: Meta;
   orderRank?: string;
 };
 
@@ -319,6 +371,23 @@ export type Slug = {
   _type: "slug";
   current?: string;
   source?: string;
+};
+
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  blocks?: Array<
+    {
+      _key: string;
+    } & HomeHero
+  >;
+  meta?: Meta;
+  orderRank?: string;
 };
 
 export type MediaTag = {
@@ -439,27 +508,30 @@ export type AllSanitySchemaTypes =
   | Meta
   | SanityImageAssetReference
   | MetaImage
+  | HomeHero
   | Hero1
+  | SanityImageCrop
+  | SanityImageHotspot
+  | PageReference
+  | PostReference
+  | BlockContent
+  | Button
+  | CustomUrl
   | SectionPadding
   | ButtonVariant
   | ColorVariant
-  | PageReference
-  | PostReference
   | Link
-  | BlockContent
   | Settings
-  | SanityImageCrop
-  | SanityImageHotspot
   | Navigation
   | Testimonial
   | Faq
   | Category
-  | Page
   | AuthorReference
   | CategoryReference
   | Post
   | Author
   | Slug
+  | Page
   | MediaTag
   | Code
   | SanityImagePaletteSwatch
@@ -486,73 +558,42 @@ export type NAVIGATION_QUERY_RESULT = Array<{
 
 // Source: ../frontend/sanity/queries/page.ts
 // Variable: PAGE_QUERY
-// Query: *[_type == "page" && slug.current == $slug][0]{    blocks[]{        _type == "hero-1" => {    _type,    _key,    tagLine,    title,    body[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    links[]{          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    },  },    },      meta{    title,    description,    noindex,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    }  },  }
+// Query: *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{    _id,    _type,    blocks[]{      _key,      _type,        _type == "homeHero" => {    marketPositioning,    servicePromise,    richText[]{        ...,  markDefs[]{    ...,    _type == "link" => {          _key,    ...,    "href": select(      isExternal => href,      defined(href) && !defined(internalLink) => href,      @.internalLink->slug.current == "index" => "/",      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,      "/" + @.internalLink->slug.current    )    }  },  _type == "image" => {      ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }  }    },    buttons[]{      _key,      _type,      text,      variant,      "openInNewTab": url.openInNewTab,      "href": select(        url.type == "internal" => url.internal->slug.current,        url.type == "external" => url.external,        url.href      )    },    portraitImage {        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    backgroundImage {        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    },    mobileBackgroundImage {        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    }  }    },      meta{    title,    description,    noindex,    image{        ...,  asset->{    _id,    url,    mimeType,    metadata {      lqip,      dimensions {        width,        height      }    }  }    }  },  }
 export type PAGE_QUERY_RESULT = {
+  _id: string;
+  _type: "page";
   blocks: Array<{
-    _type: "hero-1";
     _key: string;
-    tagLine: string | null;
-    title: string | null;
-    body: Array<
-      | {
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: "span";
-            _key: string;
-          }>;
-          style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
-          listItem?: "bullet" | "number";
-          markDefs: Array<{
-            isExternal?: boolean;
-            internalLink?: PageReference | PostReference;
-            href: string | "/" | null;
-            target?: boolean;
-            _type: "link";
-            _key: string;
-          }> | null;
-          level?: number;
-          _type: "block";
-          _key: string;
-        }
-      | {
-          _key: string;
-          _type: "code";
-          language?: string;
-          filename?: string;
-          code?: string;
-          highlightedLines?: Array<number>;
-          markDefs: null;
-        }
-      | {
-          asset: {
-            _id: string;
-            url: string | null;
-            mimeType: string | null;
-            metadata: {
-              lqip: string | null;
-              dimensions: {
-                width: number | null;
-                height: number | null;
-              } | null;
-            } | null;
-          } | null;
-          media?: unknown;
-          hotspot?: SanityImageHotspot;
-          crop?: SanityImageCrop;
-          alt?: string;
-          _type: "image";
-          _key: string;
-          markDefs: null;
-        }
-      | {
-          videoId?: string;
-          _type: "youtube";
-          _key: string;
-          markDefs: null;
-        }
-    > | null;
-    image: {
+    _type: "homeHero";
+    marketPositioning: string | null;
+    servicePromise: string | null;
+    richText: Array<{
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs: Array<{
+        href: string | null;
+        _type: "link";
+        _key: string;
+      }> | null;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+    buttons: Array<{
+      _key: string;
+      _type: "button";
+      text: string | null;
+      variant: "default" | "link" | "outline" | "secondary" | null;
+      openInNewTab: boolean | null;
+      href: string | null;
+    }> | null;
+    portraitImage: {
       asset: {
         _id: string;
         url: string | null;
@@ -571,16 +612,44 @@ export type PAGE_QUERY_RESULT = {
       alt?: string;
       _type: "image";
     } | null;
-    links: Array<{
-      _key: string;
-      _type: "link";
-      isExternal?: boolean;
-      internalLink?: PageReference | PostReference;
-      title?: string;
-      href: string | "/" | null;
-      target?: boolean;
-      buttonVariant?: ButtonVariant;
-    }> | null;
+    backgroundImage: {
+      asset: {
+        _id: string;
+        url: string | null;
+        mimeType: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    mobileBackgroundImage: {
+      asset: {
+        _id: string;
+        url: string | null;
+        mimeType: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
   }> | null;
   meta: {
     title: string | null;
@@ -599,7 +668,7 @@ export type PAGE_QUERY_RESULT = {
           } | null;
         } | null;
       } | null;
-      media?: unknown; // Unable to locate the referenced type "image.media" in schema
+      media?: unknown; // Unable to locate the referenced type "media" in schema
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -739,7 +808,7 @@ export type POST_QUERY_RESULT = {
           } | null;
         } | null;
       } | null;
-      media?: unknown; // Unable to locate the referenced type "image.media" in schema
+      media?: unknown; // Unable to locate the referenced type "media" in schema
       hotspot?: SanityImageHotspot;
       crop?: SanityImageCrop;
       _type: "image";
@@ -836,7 +905,7 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "navigation"]{\n    _type,\n    _key,\n    links\n  }\n': NAVIGATION_QUERY_RESULT;
-    '\n  *[_type == "page" && slug.current == $slug][0]{\n    blocks[]{\n      \n  _type == "hero-1" => {\n    _type,\n    _key,\n    tagLine,\n    title,\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    links[]{\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    },\n  }\n,\n    },\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n  }\n': PAGE_QUERY_RESULT;
+    '\n  *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{\n    _id,\n    _type,\n    blocks[]{\n      _key,\n      _type,\n      \n  _type == "homeHero" => {\n    marketPositioning,\n    servicePromise,\n    richText[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => url.internal->slug.current,\n        url.type == "external" => url.external,\n        url.href\n      )\n    },\n    portraitImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    backgroundImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    mobileBackgroundImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n\n    },\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n  }\n': PAGE_QUERY_RESULT;
     '*[_type == "page" && defined(slug)]{slug}': PAGES_SLUGS_QUERY_RESULT;
     '*[_type == "post" && slug.current == $slug][0]{\n    title,\n    slug,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    body[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      @.internalLink->slug.current == "index" => "/",\n      @.internalLink->_type == "post" => "/blog/" + @.internalLink->slug.current,\n      "/" + @.internalLink->slug.current\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    author->{\n      name,\n      image {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    _createdAt,\n    _updatedAt,\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n}': POST_QUERY_RESULT;
     '*[_type == "post" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    excerpt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n}': POSTS_QUERY_RESULT;

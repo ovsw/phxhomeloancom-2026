@@ -14,8 +14,11 @@ import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
+import customUrl from "./schemas/blocks/shared/custom-url";
+import button from "./schemas/blocks/shared/button";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
+import homeHero from "./schemas/blocks/home-hero";
 
 export const schemaTypes = [
   // documents
@@ -33,6 +36,9 @@ export const schemaTypes = [
   colorVariant,
   buttonVariant,
   sectionPadding,
+  customUrl,
+  button,
   // blocks
   hero1,
+  homeHero,
 ];

@@ -40,7 +40,7 @@ export default defineType({
       type: "array",
       group: "content",
       of: [
-        { type: "hero-1" },
+        { type: "homeHero" },
       ],
       options: {
         insertMenu: {
@@ -48,7 +48,7 @@ export default defineType({
             {
               name: "hero",
               title: "Hero",
-              of: ["hero-1"],
+              of: ["homeHero"],
             },
           ],
           views: [

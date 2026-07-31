@@ -3,12 +3,29 @@ import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import PortableTextRenderer from "@/components/portable-text-renderer";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import type { PortableTextProps } from "@portabletext/react";
 
-type Hero1Props = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
-  { _type: "hero-1" }
->;
+type Hero1Props = {
+  tagLine?: string;
+  title?: string;
+  body?: PortableTextProps["value"];
+  image?: {
+    alt?: string;
+    asset?: {
+      _id?: string;
+      metadata?: {
+        dimensions?: { width?: number; height?: number };
+        lqip?: string;
+      };
+    };
+  };
+  links?: Array<{
+    title?: string;
+    href?: string;
+    target?: boolean;
+    buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  }>;
+};
 
 export default function Hero1({
   tagLine,

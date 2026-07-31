@@ -64,6 +64,7 @@ async function CachedIndexPage({ perspective, stega }: DynamicFetchOptions) {
   return (
     <Blocks
       blocks={page?.blocks ?? []}
+      documentId={page._id}
       perspective={perspective}
       stega={stega}
     />

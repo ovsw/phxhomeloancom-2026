@@ -1,11 +1,15 @@
 import { groq } from "next-sanity";
 import { metaQuery } from "./shared/meta";
-import { hero1Query } from "./hero/hero-1";
+import { homeHeroQuery } from "./home-hero";
 
 export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current == $slug][0]{
+  *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
+    _id,
+    _type,
     blocks[]{
-      ${hero1Query},
+      _key,
+      _type,
+      ${homeHeroQuery}
     },
     ${metaQuery},
   }
