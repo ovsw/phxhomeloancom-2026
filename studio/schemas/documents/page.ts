@@ -50,6 +50,7 @@ export default defineType({
         { type: "pageHeader" },
         { type: "storyFeature" },
         { type: "bigVideoFeature" },
+        { type: "editorialChapter" },
       ],
       options: {
         insertMenu: {
@@ -71,6 +72,7 @@ export default defineType({
                 "awardCta",
                 "storyFeature",
                 "bigVideoFeature",
+                "editorialChapter",
               ],
             },
           ],

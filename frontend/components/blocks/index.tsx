@@ -11,6 +11,7 @@ import AwardCta from "@/components/blocks/award-cta";
 import PageHeader from "@/components/blocks/page-header";
 import StoryFeature from "@/components/blocks/story-feature";
 import BigVideoFeature from "@/components/blocks/big-video-feature";
+import EditorialChapter from "@/components/blocks/editorial-chapter";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -34,6 +35,7 @@ const componentMap: Partial<{
   pageHeader: PageHeader,
   storyFeature: StoryFeature,
   bigVideoFeature: BigVideoFeature,
+  editorialChapter: EditorialChapter,
 };
 
 export default function Blocks({

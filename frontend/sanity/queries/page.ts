@@ -10,6 +10,7 @@ import { awardCtaQuery } from "./award-cta";
 import { pageHeaderQuery } from "./page-header";
 import { storyFeatureQuery } from "./story-feature";
 import { bigVideoFeatureQuery } from "./big-video-feature";
+import { editorialChapterQuery } from "./editorial-chapter";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -27,7 +28,8 @@ export const PAGE_QUERY = groq`
       ${awardCtaQuery},
       ${pageHeaderQuery},
       ${storyFeatureQuery},
-      ${bigVideoFeatureQuery}
+      ${bigVideoFeatureQuery},
+      ${editorialChapterQuery}
     },
     ${metaQuery},
   }

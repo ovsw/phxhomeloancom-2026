@@ -29,6 +29,7 @@ import awardCta from "./schemas/blocks/award-cta";
 import pageHeader from "./schemas/blocks/page-header";
 import storyFeature from "./schemas/blocks/story-feature";
 import bigVideoFeature from "./schemas/blocks/big-video-feature";
+import editorialChapter from "./schemas/blocks/editorial-chapter";
 
 export const schemaTypes = [
   // documents
@@ -61,4 +62,5 @@ export const schemaTypes = [
   pageHeader,
   storyFeature,
   bigVideoFeature,
+  editorialChapter,
 ];
