@@ -16,6 +16,7 @@ import { personCtaQuery } from "./person-cta";
 import { locationMapQuery } from "./location-map";
 import { personContactCtaQuery } from "./person-contact-cta";
 import { contactFormQuery } from "./contact-form";
+import { teamMembersQuery } from "./team-members";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -39,7 +40,8 @@ export const PAGE_QUERY = groq`
       ${personCtaQuery},
       ${locationMapQuery},
       ${personContactCtaQuery},
-      ${contactFormQuery}
+      ${contactFormQuery},
+      ${teamMembersQuery}
     },
     ${metaQuery},
   }

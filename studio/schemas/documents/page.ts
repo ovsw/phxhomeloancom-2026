@@ -56,6 +56,7 @@ export default defineType({
         { type: "locationMap" },
         { type: "personContactCta" },
         { type: "contactForm" },
+        { type: "teamMembers" },
       ],
       options: {
         insertMenu: {
@@ -83,6 +84,7 @@ export default defineType({
                 "locationMap",
                 "personContactCta",
                 "contactForm",
+                "teamMembers",
               ],
             },
           ],

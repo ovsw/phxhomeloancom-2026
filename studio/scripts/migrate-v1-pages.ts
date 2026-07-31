@@ -7,6 +7,7 @@ const DATASET = "development";
 const HOME_PAGE_DRAFT_ID = "drafts.home";
 const LOAN_ORIGINATOR_SLUG = "phoenix-loan-originator";
 const CONTACT_SLUG = "contact";
+const OUR_TEAM_SLUG = "our-team";
 
 type Block = { _key: string; _type: string; [key: string]: unknown };
 type ProjectedBlock = Record<string, unknown> & { _key: string; _type: string };
@@ -79,6 +80,16 @@ async function main() {
     throw new Error("No /contact page with pageBuilder was found");
   }
   const contactDraftId = draftId(contactSource._id);
+  const ourTeamSource = pageSources.find(
+    (source) => source.slug?.current?.replace(/^\//, "") === OUR_TEAM_SLUG,
+  );
+  if (!ourTeamSource) {
+    throw new Error("No /our-team page with pageBuilder was found");
+  }
+  if (baseId(ourTeamSource._id) !== "kRTGqiPtwZ1pXIol9E5iGF") {
+    throw new Error(`Unexpected /our-team source ${ourTeamSource._id}`);
+  }
+  const ourTeamDraftId = draftId(ourTeamSource._id);
 
   const homeVersions = await client.fetch<SourceDocument[]>(
     `*[_type == "homePage" && defined(pageBuilder)]`,
@@ -367,6 +378,143 @@ async function main() {
     throw new Error("The transitional page query did not project Location Map");
   }
 
+  const queriedOurTeam = await draftClient.fetch<{
+    _id: string;
+    blocks: ProjectedBlock[];
+  } | null>(PAGE_QUERY, { slug: OUR_TEAM_SLUG });
+  const expectedOurTeamBlocks = [
+    { _key: "phx-team-page-header", _type: "pageHeader" },
+    { _key: "phx-team-members", _type: "teamMembers" },
+  ];
+  if (
+    !queriedOurTeam ||
+    !isDeepStrictEqual(
+      queriedOurTeam.blocks.map(({ _key, _type }: ProjectedBlock) => ({
+        _key,
+        _type,
+      })),
+      expectedOurTeamBlocks,
+    )
+  ) {
+    throw new Error("The transitional page query returned an unexpected our-team order");
+  }
+
+  const teamPageHeader = queriedOurTeam.blocks[0];
+  if (
+    !isDeepStrictEqual(
+      {
+        description: teamPageHeader.description,
+        eyebrow: teamPageHeader.eyebrow,
+        statistics: teamPageHeader.statistics ?? null,
+        title: teamPageHeader.title,
+      },
+      {
+        description:
+          "A tight-knit group of specialists — origination, certification, and processing — who stay with you from the first conversation all the way to closing day.",
+        eyebrow: "Our Team",
+        statistics: null,
+        title: "The people behind every approval.",
+      },
+    )
+  ) {
+    throw new Error("The transitional page query did not project the team Page Header");
+  }
+
+  const teamMembers = queriedOurTeam.blocks[1];
+  if (
+    teamMembers.eyebrow !== "Meet the Team" ||
+    teamMembers.title !== "The Highly Motivated Vercellino Team" ||
+    !Array.isArray(teamMembers.richText) ||
+    (teamMembers.richText[0] as { children?: Array<{ text?: string }> } | undefined)
+      ?.children?.[0]?.text !==
+      "Three specialists, one shared standard: make your home loan experience second to none. Here's who you'll be working with." ||
+    !Array.isArray(teamMembers.members) ||
+    !isDeepStrictEqual(
+      teamMembers.members.map(
+        (member: {
+          _key?: string;
+          _type?: string;
+          _ref?: string;
+          document?: {
+            _id?: string;
+            _type?: string;
+            bio?: unknown[];
+            email?: string;
+            image?: { asset?: { _id?: string } };
+            name?: string;
+            nmlsId?: string | null;
+            phone?: string;
+            role?: string;
+            sortOrder?: number;
+          };
+        }) => ({
+          _key: member._key,
+          _type: member._type,
+          _ref: member._ref,
+          bioBlocks: member.document?.bio?.length,
+          documentId: member.document?._id,
+          documentType: member.document?._type,
+          email: member.document?.email,
+          imageId: member.document?.image?.asset?._id,
+          name: member.document?.name,
+          nmlsId: member.document?.nmlsId ?? null,
+          phone: member.document?.phone,
+          role: member.document?.role,
+          sortOrder: member.document?.sortOrder,
+        }),
+      ),
+      [
+        {
+          _key: "legacy-person-54a1360b-c70a-45d6-be93-11e29cbd7b07",
+          _type: "reference",
+          _ref: "kRTGqiPtwZ1pXIol9E5hNx",
+          bioBlocks: 1,
+          documentId: "kRTGqiPtwZ1pXIol9E5hNx",
+          documentType: "teamMember",
+          email: "jimmy.vercellino@goluminate.com",
+          imageId: "image-599b4fbb51446a203e50e6bc23a81fe4e0ab18b8-4024x6048-jpg",
+          name: "Jimmy Vercellino",
+          nmlsId: "184169",
+          phone: "602-908-5849",
+          role: "Producing Branch Manager",
+          sortOrder: 1,
+        },
+        {
+          _key: "legacy-person-e7b8a61f-8583-4c55-a6af-e86bfafac21b",
+          _type: "reference",
+          _ref: "wyBoXRpm5psD7comxC0xU7",
+          bioBlocks: 1,
+          documentId: "wyBoXRpm5psD7comxC0xU7",
+          documentType: "teamMember",
+          email: "Brian.Coakley@goluminate.com",
+          imageId: "image-e783e7f1e352989da5421c5380aa2086bb66ce64-1122x1402-png",
+          name: "Brian Coakley",
+          nmlsId: "1018745",
+          phone: "602-908-5849",
+          role: "Loan Originator · Prequalification",
+          sortOrder: 2,
+        },
+        {
+          _key: "legacy-person-261d9ba9-7a8b-4053-8d65-d8783dfa5978",
+          _type: "reference",
+          _ref: "4t9n08s0qRtngWyh9gAwrt",
+          bioBlocks: 1,
+          documentId: "4t9n08s0qRtngWyh9gAwrt",
+          documentType: "teamMember",
+          email: "jack.roche@goluminate.com",
+          imageId: "image-9e4bc27d67d0d7c560881f3bab6af1531d5ccc09-2848x4287-jpg",
+          name: "Jack Roche",
+          nmlsId: null,
+          phone: "602-354-9523",
+          role: "Premier Processor",
+          sortOrder: 3,
+        },
+      ],
+    )
+  ) {
+    throw new Error("The transitional page query did not project Team Members");
+  }
+
   console.log(JSON.stringify({
     dataset: DATASET,
     mode: verifyOnly ? "verify-only" : "migrate-and-verify",
@@ -396,6 +544,23 @@ async function main() {
         type: string;
       }>
     ).map(({ _key, _type, type }) => ({ _key, _type, type })),
+    ourTeamSource: ourTeamSource._id,
+    ourTeamTarget: ourTeamDraftId,
+    queriedOurTeam: queriedOurTeam._id,
+    queriedOurTeamBlocks: queriedOurTeam.blocks.map(
+      ({ _key, _type }: ProjectedBlock) => ({ _key, _type }),
+    ),
+    queriedOurTeamMembers: (teamMembers.members as Array<{
+      _key: string;
+      _type: string;
+      _ref: string;
+      document?: { _id?: string };
+    }>).map(({ _key, _type, _ref, document }) => ({
+      _key,
+      _type,
+      _ref,
+      documentId: document?._id,
+    })),
     verified: true,
   }, null, 2));
 }

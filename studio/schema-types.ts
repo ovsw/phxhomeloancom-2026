@@ -8,6 +8,7 @@ import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
 import navigation from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
+import teamMember from "./schemas/documents/team-member";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -35,6 +36,7 @@ import personCta from "./schemas/blocks/person-cta";
 import locationMap from "./schemas/blocks/location-map";
 import personContactCta from "./schemas/blocks/person-contact-cta";
 import contactForm from "./schemas/blocks/contact-form";
+import teamMembers from "./schemas/blocks/team-members";
 
 export const schemaTypes = [
   // documents
@@ -47,6 +49,7 @@ export const schemaTypes = [
   testimonial,
   navigation,
   settings,
+  teamMember,
   // shared objects
   blockContent,
   link,
@@ -73,4 +76,5 @@ export const schemaTypes = [
   locationMap,
   personContactCta,
   contactForm,
+  teamMembers,
 ];

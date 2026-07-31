@@ -19,6 +19,7 @@ import PersonCta from "@/components/blocks/person-cta";
 import LocationMap from "@/components/blocks/location-map";
 import PersonContactCta from "@/components/blocks/person-contact-cta";
 import ContactForm from "@/components/blocks/contact-form";
+import TeamMembers from "@/components/blocks/team-members";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -26,6 +27,10 @@ type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 type BlockEditingProps = {
   dataAttribute?: (path: string) => string | undefined;
   dataAttributes?: BigVideoDataAttributes;
+  memberDataAttribute?: (
+    documentId: string,
+    path: string,
+  ) => string | undefined;
 };
 
 const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
@@ -37,6 +42,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "locationMap",
   "personContactCta",
   "contactForm",
+  "teamMembers",
 ]);
 
 const componentMap: Partial<{
@@ -60,6 +66,7 @@ const componentMap: Partial<{
   locationMap: LocationMap,
   personContactCta: PersonContactCta,
   contactForm: ContactForm,
+  teamMembers: TeamMembers,
 };
 
 export default function Blocks({
@@ -115,7 +122,24 @@ export default function Blocks({
                     }
                   : undefined,
               }
-            : serverFieldEditingBlockTypes.has(block._type)
+            : block._type === "teamMembers"
+              ? {
+                  dataAttribute,
+                  memberDataAttribute: stega
+                    ? (memberId: string, path: string) =>
+                        createDataAttribute({
+                          baseUrl:
+                            process.env.NEXT_PUBLIC_STUDIO_URL ||
+                            "http://localhost:3333",
+                          dataset,
+                          id: memberId,
+                          path,
+                          projectId,
+                          type: "teamMember",
+                        }).toString()
+                    : undefined,
+                }
+              : serverFieldEditingBlockTypes.has(block._type)
               ? { dataAttribute }
               : {};
 
