@@ -28,6 +28,7 @@ import faqAccordion from "./schemas/blocks/faq-accordion";
 import awardCta from "./schemas/blocks/award-cta";
 import pageHeader from "./schemas/blocks/page-header";
 import storyFeature from "./schemas/blocks/story-feature";
+import bigVideoFeature from "./schemas/blocks/big-video-feature";
 
 export const schemaTypes = [
   // documents
@@ -59,4 +60,5 @@ export const schemaTypes = [
   awardCta,
   pageHeader,
   storyFeature,
+  bigVideoFeature,
 ];

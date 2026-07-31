@@ -49,6 +49,7 @@ export default defineType({
         { type: "awardCta" },
         { type: "pageHeader" },
         { type: "storyFeature" },
+        { type: "bigVideoFeature" },
       ],
       options: {
         insertMenu: {
@@ -69,6 +70,7 @@ export default defineType({
                 "faqAccordion",
                 "awardCta",
                 "storyFeature",
+                "bigVideoFeature",
               ],
             },
           ],
