@@ -42,6 +42,7 @@ export default defineType({
       of: [
         { type: "homeHero" },
         { type: "loanFeatureCards" },
+        { type: "videoFeature" },
       ],
       options: {
         insertMenu: {
@@ -54,7 +55,7 @@ export default defineType({
             {
               name: "content",
               title: "Content",
-              of: ["loanFeatureCards"],
+              of: ["loanFeatureCards", "videoFeature"],
             },
           ],
           views: [
