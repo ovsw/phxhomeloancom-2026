@@ -11,3 +11,7 @@ Use the canonical labels `needs-triage`, `needs-info`, `ready-for-agent`, `ready
 ### Domain docs
 
 This repository uses a single-context domain-doc layout. See `docs/agents/domain.md`.
+
+### Page Builder work
+
+Before adding or changing a Page Builder section, read `docs/agents/page-builder.md`.
