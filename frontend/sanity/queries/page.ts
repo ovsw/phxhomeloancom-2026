@@ -1,6 +1,7 @@
 import { groq } from "next-sanity";
 import { metaQuery } from "./shared/meta";
 import { homeHeroQuery } from "./home-hero";
+import { loanFeatureCardsQuery } from "./loan-feature-cards";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -9,7 +10,8 @@ export const PAGE_QUERY = groq`
     blocks[]{
       _key,
       _type,
-      ${homeHeroQuery}
+      ${homeHeroQuery},
+      ${loanFeatureCardsQuery}
     },
     ${metaQuery},
   }

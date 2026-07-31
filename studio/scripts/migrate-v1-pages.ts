@@ -47,6 +47,7 @@ function cloneAsDraft(source: SourceDocument) {
 }
 
 async function main() {
+  const verifyOnly = process.argv.includes("--verify-only");
   const client = getCliClient({
     apiVersion: API_VERSION,
     dataset: DATASET,
@@ -67,35 +68,37 @@ async function main() {
   const homeSource = preferredSources(homeVersions)[0];
   if (!homeSource) throw new Error("No homePage with pageBuilder was found");
 
-  for (const source of pageSources) {
-    const targetId = draftId(source._id);
-    await client.createIfNotExists({
-      ...cloneAsDraft(source),
-      blocks: source.pageBuilder ?? [],
-    });
-    await client
-      .patch(targetId)
-      .set({ blocks: source.pageBuilder ?? [] })
-      .commit({ visibility: "sync" });
-  }
+  if (!verifyOnly) {
+    for (const source of pageSources) {
+      const targetId = draftId(source._id);
+      await client.createIfNotExists({
+        ...cloneAsDraft(source),
+        blocks: source.pageBuilder ?? [],
+      });
+      await client
+        .patch(targetId)
+        .set({ blocks: source.pageBuilder ?? [] })
+        .commit({ visibility: "sync" });
+    }
 
-  await client.createIfNotExists({
-    _id: HOME_PAGE_DRAFT_ID,
-    _type: "page",
-    title: homeSource.title ?? "Home",
-    slug: { _type: "slug", current: "index" },
-    blocks: homeSource.pageBuilder ?? [],
-    meta: { description: homeSource.description },
-  });
-  await client
-    .patch(HOME_PAGE_DRAFT_ID)
-    .set({
+    await client.createIfNotExists({
+      _id: HOME_PAGE_DRAFT_ID,
+      _type: "page",
       title: homeSource.title ?? "Home",
       slug: { _type: "slug", current: "index" },
       blocks: homeSource.pageBuilder ?? [],
-      "meta.description": homeSource.description,
-    })
-    .commit({ visibility: "sync" });
+      meta: { description: homeSource.description },
+    });
+    await client
+      .patch(HOME_PAGE_DRAFT_ID)
+      .set({
+        title: homeSource.title ?? "Home",
+        slug: { _type: "slug", current: "index" },
+        blocks: homeSource.pageBuilder ?? [],
+        "meta.description": homeSource.description,
+      })
+      .commit({ visibility: "sync" });
+  }
 
   const migrated: SourceDocument[] = await client.fetch(
     `*[_id in $ids]{_id, pageBuilder, "blocks": blocks}`,
@@ -124,10 +127,18 @@ async function main() {
     _id: string;
     blocks: Array<Record<string, unknown> & { _key: string; _type: string }>;
   } | null>(PAGE_QUERY, { slug: "index" });
-  if (!queriedHome || queriedHome.blocks[0]?._type !== "homeHero") {
-    throw new Error("The transitional page query did not return Home Hero first");
+  if (
+    !queriedHome ||
+    queriedHome.blocks[0]?._type !== "homeHero" ||
+    queriedHome.blocks[1]?._type !== "loanFeatureCards"
+  ) {
+    throw new Error("The transitional page query did not return the supported homepage blocks first");
   }
-  for (const block of queriedHome.blocks.slice(1)) {
+  const loanFeatureCards = queriedHome.blocks[1];
+  if (!Array.isArray(loanFeatureCards.cards) || loanFeatureCards.cards.length === 0) {
+    throw new Error("The transitional page query did not project Loan Feature Cards");
+  }
+  for (const block of queriedHome.blocks.slice(2)) {
     if (!isDeepStrictEqual(Object.keys(block).sort(), ["_key", "_type"])) {
       throw new Error(`Unsupported block ${block._type} returned more than its identity`);
     }
@@ -135,6 +146,7 @@ async function main() {
 
   console.log(JSON.stringify({
     dataset: DATASET,
+    mode: verifyOnly ? "verify-only" : "migrate-and-verify",
     homeSource: homeSource._id,
     homeTarget: HOME_PAGE_DRAFT_ID,
     pageDrafts: pageSources.length,

@@ -2,6 +2,7 @@ import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { type LivePerspective } from "next-sanity/live";
 import { createDataAttribute } from "next-sanity";
 import HomeHero from "@/components/blocks/home-hero";
+import LoanFeatureCards from "@/components/blocks/loan-feature-cards";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -12,6 +13,7 @@ const componentMap: Partial<{
   >;
 }> = {
   homeHero: HomeHero,
+  loanFeatureCards: LoanFeatureCards,
 };
 
 export default function Blocks({

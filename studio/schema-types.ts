@@ -19,6 +19,7 @@ import button from "./schemas/blocks/shared/button";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import homeHero from "./schemas/blocks/home-hero";
+import loanFeatureCards from "./schemas/blocks/loan-feature-cards";
 
 export const schemaTypes = [
   // documents
@@ -41,4 +42,5 @@ export const schemaTypes = [
   // blocks
   hero1,
   homeHero,
+  loanFeatureCards,
 ];
