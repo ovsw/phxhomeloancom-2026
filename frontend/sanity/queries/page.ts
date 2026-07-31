@@ -13,6 +13,7 @@ import { bigVideoFeatureQuery } from "./big-video-feature";
 import { editorialChapterQuery } from "./editorial-chapter";
 import { youtubeChannelFeatureQuery } from "./youtube-channel-feature";
 import { personCtaQuery } from "./person-cta";
+import { locationMapQuery } from "./location-map";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -33,7 +34,8 @@ export const PAGE_QUERY = groq`
       ${bigVideoFeatureQuery},
       ${editorialChapterQuery},
       ${youtubeChannelFeatureQuery},
-      ${personCtaQuery}
+      ${personCtaQuery},
+      ${locationMapQuery}
     },
     ${metaQuery},
   }

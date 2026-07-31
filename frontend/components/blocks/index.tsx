@@ -16,6 +16,7 @@ import BigVideoFeature, {
 import EditorialChapter from "@/components/blocks/editorial-chapter";
 import YoutubeChannelFeature from "@/components/blocks/youtube-channel-feature";
 import PersonCta from "@/components/blocks/person-cta";
+import LocationMap from "@/components/blocks/location-map";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -31,6 +32,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "editorialChapter",
   "youtubeChannelFeature",
   "personCta",
+  "locationMap",
 ]);
 
 const componentMap: Partial<{
@@ -51,6 +53,7 @@ const componentMap: Partial<{
   editorialChapter: EditorialChapter,
   youtubeChannelFeature: YoutubeChannelFeature,
   personCta: PersonCta,
+  locationMap: LocationMap,
 };
 
 export default function Blocks({

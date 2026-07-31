@@ -1,0 +1,237 @@
+import { cn } from "@/lib/utils";
+import { urlFor } from "@/sanity/lib/image";
+import type { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { stegaClean } from "next-sanity";
+import Image from "next/image";
+
+type LocationMapBlock = Extract<
+  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
+  { _type: "locationMap" }
+>;
+
+type LocationMapProps = LocationMapBlock & {
+  dataAttribute?: (path: string) => string | undefined;
+};
+
+type LocationMapAddress = LocationMapProps["address"];
+
+function getHttpUrl(value?: string | null) {
+  const cleaned = stegaClean(value)?.trim();
+  if (!cleaned) return undefined;
+
+  try {
+    const url = new URL(cleaned);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function getGoogleMapsEmbedUrl(value?: string | null) {
+  const cleaned = stegaClean(value)?.trim();
+  if (!cleaned) return undefined;
+
+  try {
+    const url = new URL(cleaned);
+    const isGoogleHost =
+      url.hostname === "google.com" || url.hostname.endsWith(".google.com");
+    const isEmbed =
+      url.pathname.startsWith("/maps/embed") ||
+      (url.pathname.startsWith("/maps") && url.searchParams.get("output") === "embed");
+
+    return url.protocol === "https:" && isGoogleHost && isEmbed ? url.toString() : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function Address({
+  address,
+  dataAttribute,
+}: Readonly<{
+  address?: LocationMapAddress;
+  dataAttribute?: LocationMapProps["dataAttribute"];
+}>) {
+  const street = stegaClean(address?.street)?.trim();
+  const city = stegaClean(address?.city)?.trim();
+  const region = stegaClean(address?.region)?.trim();
+  const postalCode = stegaClean(address?.postalCode)?.trim();
+  const country = stegaClean(address?.country)?.trim();
+
+  return (
+    <address className="grid text-sm leading-[1.55] text-slate-600 not-italic">
+      {street ? (
+        <span data-sanity={dataAttribute?.("address.street")}>{address?.street}</span>
+      ) : null}
+      {city || region || postalCode ? (
+        <span>
+          {city ? <span data-sanity={dataAttribute?.("address.city")}>{address?.city}</span> : null}
+          {city && region ? ", " : null}
+          {region ? (
+            <span data-sanity={dataAttribute?.("address.region")}>{address?.region}</span>
+          ) : null}{" "}
+          {postalCode ? (
+            <span data-sanity={dataAttribute?.("address.postalCode")}>
+              {address?.postalCode}
+            </span>
+          ) : null}
+        </span>
+      ) : null}
+      {country ? (
+        <span data-sanity={dataAttribute?.("address.country")}>{address?.country}</span>
+      ) : null}
+    </address>
+  );
+}
+
+export default function LocationMap({
+  _key,
+  address,
+  businessName,
+  credentialLine,
+  dataAttribute,
+  directionsLabel,
+  directionsUrl,
+  eyebrow,
+  image,
+  imageEyebrow,
+  imageTitle,
+  mapEmbedUrl,
+  mapTitle,
+  title,
+  useCreamBackground,
+}: LocationMapProps) {
+  const displayEyebrow = stegaClean(eyebrow)?.trim();
+  const displayTitle = stegaClean(title)?.trim();
+  const displayDirectionsLabel = stegaClean(directionsLabel)?.trim();
+  const displayImageEyebrow = stegaClean(imageEyebrow)?.trim();
+  const displayImageTitle = stegaClean(imageTitle)?.trim();
+  const displayBusinessName = stegaClean(businessName)?.trim();
+  const displayCredentialLine = stegaClean(credentialLine)?.trim();
+  const cleanDirectionsUrl = getHttpUrl(directionsUrl);
+  const cleanMapEmbedUrl = getGoogleMapsEmbedUrl(mapEmbedUrl);
+  const cleanMapTitle = stegaClean(mapTitle)?.trim();
+  const headingId = `location-map-${stegaClean(_key)}`;
+  const creamSurface = Boolean(stegaClean(useCreamBackground));
+
+  return (
+    <section
+      aria-labelledby={displayTitle ? headingId : undefined}
+      className={cn(
+        "border-t border-slate-200 px-4 py-20 md:px-6 md:py-24 lg:px-10 lg:py-[6.875rem]",
+        creamSurface ? "bg-[#f7f4ed]" : "bg-white",
+      )}
+      data-sanity={dataAttribute?.("useCreamBackground")}
+    >
+      <div className="mx-auto w-full max-w-7xl">
+        <header className="mb-11 grid items-end gap-6 md:grid-cols-[minmax(0,35rem)_auto] md:justify-between md:gap-12">
+          <div>
+            {displayEyebrow ? (
+              <p
+                className="mb-3.5 text-[0.8125rem] font-semibold uppercase tracking-[0.22em] text-cyan-800"
+                data-sanity={dataAttribute?.("eyebrow")}
+              >
+                {eyebrow}
+              </p>
+            ) : null}
+            {displayTitle ? (
+              <h2
+                className="text-balance text-[2rem] font-semibold leading-[1.15] tracking-[-0.01em] text-slate-950 md:text-[2.625rem]"
+                data-sanity={dataAttribute?.("title")}
+                id={headingId}
+              >
+                {title}
+              </h2>
+            ) : null}
+          </div>
+
+          {cleanDirectionsUrl && displayDirectionsLabel ? (
+            <a
+              className="w-fit whitespace-nowrap text-[0.9375rem] font-semibold text-cyan-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-cyan-700 focus-visible:outline-offset-4"
+              data-sanity={dataAttribute?.("directionsUrl")}
+              href={cleanDirectionsUrl}
+            >
+              <span data-sanity={dataAttribute?.("directionsLabel")}>{directionsLabel}</span>
+              <span aria-hidden="true"> →</span>
+            </a>
+          ) : null}
+        </header>
+
+        <div className="grid items-stretch gap-6 min-[641px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-[0_24px_56px_rgba(19,28,59,0.12)] md:min-h-[30rem]">
+            {image?.asset?._id ? (
+              <Image
+                alt={stegaClean(image.alt) || ""}
+                blurDataURL={image.asset.metadata?.lqip || undefined}
+                className="object-cover"
+                data-sanity={dataAttribute?.("image")}
+                fill
+                placeholder={image.asset.metadata?.lqip ? "blur" : undefined}
+                sizes="(min-width: 1024px) 42vw, (min-width: 641px) 33vw, 100vw"
+                src={urlFor(image).width(1536).height(1024).url()}
+              />
+            ) : null}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[linear-gradient(180deg,rgba(19,28,59,0)_45%,rgba(19,28,59,0.78)_100%)]"
+            />
+            <figcaption className="absolute right-6 bottom-6 left-6">
+              {displayImageEyebrow ? (
+                <p
+                  className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f2c4a9]"
+                  data-sanity={dataAttribute?.("imageEyebrow")}
+                >
+                  {imageEyebrow}
+                </p>
+              ) : null}
+              {displayImageTitle ? (
+                <p
+                  className="text-xl font-semibold leading-[1.3] text-white"
+                  data-sanity={dataAttribute?.("imageTitle")}
+                >
+                  {imageTitle}
+                </p>
+              ) : null}
+            </figcaption>
+          </figure>
+
+          <div
+            className="relative min-h-[30rem] overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-[0_24px_56px_rgba(19,28,59,0.12)]"
+            data-sanity={dataAttribute?.("mapEmbedUrl")}
+          >
+            {cleanMapEmbedUrl && cleanMapTitle ? (
+              <iframe
+                allowFullScreen
+                className="absolute inset-0 size-full border-0"
+                data-sanity={dataAttribute?.("mapTitle")}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src={cleanMapEmbedUrl}
+                title={cleanMapTitle}
+              />
+            ) : null}
+            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-xl border border-slate-200 bg-white/95 px-6 py-5 shadow-[0_14px_36px_rgba(19,28,59,0.18)] backdrop-blur-sm md:top-6 md:right-auto md:left-6">
+              {displayBusinessName ? (
+                <p
+                  className="text-[0.9375rem] font-semibold text-slate-950"
+                  data-sanity={dataAttribute?.("businessName")}
+                >
+                  {businessName}
+                </p>
+              ) : null}
+              {displayCredentialLine ? (
+                <p
+                  className="mt-0.5 mb-2 text-[0.78125rem] text-slate-400"
+                  data-sanity={dataAttribute?.("credentialLine")}
+                >
+                  {credentialLine}
+                </p>
+              ) : null}
+              <Address address={address} dataAttribute={dataAttribute} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

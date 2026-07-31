@@ -53,6 +53,7 @@ export default defineType({
         { type: "editorialChapter" },
         { type: "youtubeChannelFeature" },
         { type: "personCta" },
+        { type: "locationMap" },
       ],
       options: {
         insertMenu: {
@@ -77,6 +78,7 @@ export default defineType({
                 "editorialChapter",
                 "youtubeChannelFeature",
                 "personCta",
+                "locationMap",
               ],
             },
           ],

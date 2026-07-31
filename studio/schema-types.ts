@@ -32,6 +32,7 @@ import bigVideoFeature from "./schemas/blocks/big-video-feature";
 import editorialChapter from "./schemas/blocks/editorial-chapter";
 import youtubeChannelFeature from "./schemas/blocks/youtube-channel-feature";
 import personCta from "./schemas/blocks/person-cta";
+import locationMap from "./schemas/blocks/location-map";
 
 export const schemaTypes = [
   // documents
@@ -67,4 +68,5 @@ export const schemaTypes = [
   editorialChapter,
   youtubeChannelFeature,
   personCta,
+  locationMap,
 ];
