@@ -1,0 +1,16 @@
+{
+  "name": "phxhomeloancom-2026",
+  "version": "2.0.0",
+  "description": "Schema UI: Next.js + Sanity Starter Template",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r run dev",
+    "dev:frontend": "pnpm run dev --workspace=frontend",
+    "dev:studio": "pnpm run dev --workspace=studio",
+    "typegen": "cd studio && pnpm typegen",
+    "typecheck": "cd frontend && pnpm typecheck",
+    "export": "cd studio && sanity dataset export production sample-data.tar.gz"
+  },
+  "packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8",
+  "homepage": "https://www.schemaui.com/"
+}
