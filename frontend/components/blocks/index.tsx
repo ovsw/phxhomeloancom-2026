@@ -17,6 +17,8 @@ import EditorialChapter from "@/components/blocks/editorial-chapter";
 import YoutubeChannelFeature from "@/components/blocks/youtube-channel-feature";
 import PersonCta from "@/components/blocks/person-cta";
 import LocationMap from "@/components/blocks/location-map";
+import PersonContactCta from "@/components/blocks/person-contact-cta";
+import ContactForm from "@/components/blocks/contact-form";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -33,6 +35,8 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "youtubeChannelFeature",
   "personCta",
   "locationMap",
+  "personContactCta",
+  "contactForm",
 ]);
 
 const componentMap: Partial<{
@@ -54,6 +58,8 @@ const componentMap: Partial<{
   youtubeChannelFeature: YoutubeChannelFeature,
   personCta: PersonCta,
   locationMap: LocationMap,
+  personContactCta: PersonContactCta,
+  contactForm: ContactForm,
 };
 
 export default function Blocks({

@@ -14,6 +14,8 @@ import { editorialChapterQuery } from "./editorial-chapter";
 import { youtubeChannelFeatureQuery } from "./youtube-channel-feature";
 import { personCtaQuery } from "./person-cta";
 import { locationMapQuery } from "./location-map";
+import { personContactCtaQuery } from "./person-contact-cta";
+import { contactFormQuery } from "./contact-form";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -35,7 +37,9 @@ export const PAGE_QUERY = groq`
       ${editorialChapterQuery},
       ${youtubeChannelFeatureQuery},
       ${personCtaQuery},
-      ${locationMapQuery}
+      ${locationMapQuery},
+      ${personContactCtaQuery},
+      ${contactFormQuery}
     },
     ${metaQuery},
   }

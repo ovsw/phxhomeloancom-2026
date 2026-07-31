@@ -33,6 +33,8 @@ import editorialChapter from "./schemas/blocks/editorial-chapter";
 import youtubeChannelFeature from "./schemas/blocks/youtube-channel-feature";
 import personCta from "./schemas/blocks/person-cta";
 import locationMap from "./schemas/blocks/location-map";
+import personContactCta from "./schemas/blocks/person-contact-cta";
+import contactForm from "./schemas/blocks/contact-form";
 
 export const schemaTypes = [
   // documents
@@ -69,4 +71,6 @@ export const schemaTypes = [
   youtubeChannelFeature,
   personCta,
   locationMap,
+  personContactCta,
+  contactForm,
 ];

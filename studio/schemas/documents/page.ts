@@ -54,6 +54,8 @@ export default defineType({
         { type: "youtubeChannelFeature" },
         { type: "personCta" },
         { type: "locationMap" },
+        { type: "personContactCta" },
+        { type: "contactForm" },
       ],
       options: {
         insertMenu: {
@@ -79,6 +81,8 @@ export default defineType({
                 "youtubeChannelFeature",
                 "personCta",
                 "locationMap",
+                "personContactCta",
+                "contactForm",
               ],
             },
           ],
