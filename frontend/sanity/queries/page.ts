@@ -6,6 +6,7 @@ import { videoFeatureQuery } from "./video-feature";
 import { phxEmbedSocialReviewsQuery } from "./phx-embed-social-reviews";
 import { latestArticlesQuery } from "./latest-articles";
 import { faqAccordionQuery } from "./faq-accordion";
+import { awardCtaQuery } from "./award-cta";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
@@ -19,7 +20,8 @@ export const PAGE_QUERY = groq`
       ${videoFeatureQuery},
       ${phxEmbedSocialReviewsQuery},
       ${latestArticlesQuery},
-      ${faqAccordionQuery}
+      ${faqAccordionQuery},
+      ${awardCtaQuery}
     },
     ${metaQuery},
   }

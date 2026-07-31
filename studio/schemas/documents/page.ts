@@ -46,6 +46,7 @@ export default defineType({
         { type: "phxEmbedSocialReviews" },
         { type: "latestArticles" },
         { type: "faqAccordion" },
+        { type: "awardCta" },
       ],
       options: {
         insertMenu: {
@@ -64,6 +65,7 @@ export default defineType({
                 "phxEmbedSocialReviews",
                 "latestArticles",
                 "faqAccordion",
+                "awardCta",
               ],
             },
           ],

@@ -7,6 +7,7 @@ import VideoFeature from "@/components/blocks/video-feature";
 import PhxEmbedSocialReviews from "@/components/blocks/phx-embed-social-reviews";
 import LatestArticles from "@/components/blocks/latest-articles";
 import FaqAccordion from "@/components/blocks/faq-accordion";
+import AwardCta from "@/components/blocks/award-cta";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -22,6 +23,7 @@ const componentMap: Partial<{
   phxEmbedSocialReviews: PhxEmbedSocialReviews,
   latestArticles: LatestArticles,
   faqAccordion: FaqAccordion,
+  awardCta: AwardCta,
 };
 
 export default function Blocks({

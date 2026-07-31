@@ -24,6 +24,7 @@ import videoFeature from "./schemas/blocks/video-feature";
 import phxEmbedSocialReviews from "./schemas/blocks/phx-embed-social-reviews";
 import latestArticles from "./schemas/blocks/latest-articles";
 import faqAccordion from "./schemas/blocks/faq-accordion";
+import awardCta from "./schemas/blocks/award-cta";
 
 export const schemaTypes = [
   // documents
@@ -51,4 +52,5 @@ export const schemaTypes = [
   phxEmbedSocialReviews,
   latestArticles,
   faqAccordion,
+  awardCta,
 ];

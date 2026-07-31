@@ -134,7 +134,8 @@ async function main() {
     queriedHome.blocks[2]?._type !== "videoFeature" ||
     queriedHome.blocks[3]?._type !== "phxEmbedSocialReviews" ||
     queriedHome.blocks[4]?._type !== "latestArticles" ||
-    queriedHome.blocks[5]?._type !== "faqAccordion"
+    queriedHome.blocks[5]?._type !== "faqAccordion" ||
+    queriedHome.blocks[6]?._type !== "awardCta"
   ) {
     throw new Error("The transitional page query did not return the supported homepage blocks first");
   }
@@ -161,7 +162,11 @@ async function main() {
   if (!Array.isArray(faqAccordion.faqs) || faqAccordion.faqs.length === 0) {
     throw new Error("The transitional page query did not project FAQ Accordion");
   }
-  for (const block of queriedHome.blocks.slice(6)) {
+  const awardCta = queriedHome.blocks[6];
+  if (!Array.isArray(awardCta.buttons) || awardCta.buttons.length === 0) {
+    throw new Error("The transitional page query did not project Award CTA");
+  }
+  for (const block of queriedHome.blocks.slice(7)) {
     if (!isDeepStrictEqual(Object.keys(block).sort(), ["_key", "_type"])) {
       throw new Error(`Unsupported block ${block._type} returned more than its identity`);
     }
