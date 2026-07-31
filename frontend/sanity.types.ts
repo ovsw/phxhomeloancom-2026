@@ -432,6 +432,27 @@ export type Category = {
   orderRank?: string;
 };
 
+export type Blog = {
+  _id: string;
+  _type: "blog";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  publishedAt?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  seoHideFromLists?: boolean;
+  seoNoIndex?: boolean;
+};
+
 export type AuthorReference = {
   _ref: string;
   _type: "reference";
@@ -677,6 +698,7 @@ export type AllSanitySchemaTypes =
   | Testimonial
   | Faq
   | Category
+  | Blog
   | AuthorReference
   | CategoryReference
   | Post

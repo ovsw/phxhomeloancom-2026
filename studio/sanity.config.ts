@@ -19,6 +19,7 @@ const singletonActions = new Set([
 
 // Define the singleton document types
 const singletonTypes = new Set(["settings", "navigation"]);
+const nonCreatableTypes = new Set([...singletonTypes, "blog"]);
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "your-project-id";
 const dataset = process.env.SANITY_STUDIO_DATASET || "production";
@@ -34,9 +35,9 @@ export default defineConfig({
   // Add and edit the content schema in the './sanity/schema' folder
   schema: {
     types: schemaTypes,
-    // Filter out singleton types from the global "New document" menu options
+    // Filter singletons and read-only compatibility types from global creation.
     templates: (templates) =>
-      templates.filter(({ schemaType }) => !singletonTypes.has(schemaType)),
+      templates.filter(({ schemaType }) => !nonCreatableTypes.has(schemaType)),
   },
   document: {
     // For singleton types, filter out actions that are not explicitly included
