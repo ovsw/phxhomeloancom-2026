@@ -4,6 +4,7 @@ import { imageQuery } from "./shared/image";
 // @sanity-typegen-ignore
 export const personContactCtaQuery = groq`
   _type == "personContactCta" => {
+    useCreamBackground,
     eyebrow,
     title,
     credentialLine,

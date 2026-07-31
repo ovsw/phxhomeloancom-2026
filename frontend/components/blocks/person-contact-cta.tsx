@@ -40,6 +40,7 @@ export default function PersonContactCta({
   eyebrow,
   personImage,
   title,
+  useCreamBackground,
 }: PersonContactCtaProps) {
   const displayCredential = stegaClean(credentialLine)?.trim();
   const displayEyebrow = stegaClean(eyebrow)?.trim();
@@ -51,7 +52,11 @@ export default function PersonContactCta({
   return (
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
-      className="border-t border-slate-200 bg-white pb-14 pt-8 min-[641px]:px-10 min-[641px]:py-24"
+      className={cn(
+        "border-t border-slate-200 pb-14 pt-8 min-[641px]:px-10 min-[641px]:py-24",
+        stegaClean(useCreamBackground) ? "bg-[#f7f4ed]" : "bg-white",
+      )}
+      data-sanity={dataAttribute?.("useCreamBackground")}
     >
       <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-[24px] border border-slate-200 bg-[#f7f4ed] shadow-[0_24px_64px_rgba(19,28,59,0.08)] max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
         <div className="relative isolate flex items-end justify-center overflow-hidden bg-transparent min-[641px]:bg-[#ede8de] min-[641px]:pt-10 min-[1101px]:min-h-[35.5rem] min-[1101px]:pt-12">

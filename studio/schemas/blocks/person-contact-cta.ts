@@ -77,6 +77,13 @@ export default defineType({
   description: "Direct contact pathways presented beside a person's portrait",
   fields: [
     defineField({
+      name: "useCreamBackground",
+      title: "Use Cream Background",
+      type: "boolean",
+      description: "Turn on to use a cream background for this section. Leave off for white.",
+      initialValue: false,
+    }),
+    defineField({
       name: "eyebrow",
       type: "string",
       description: "The short uppercase label shown above the main heading",

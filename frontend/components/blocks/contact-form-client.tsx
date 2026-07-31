@@ -8,7 +8,7 @@ import type {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { stegaClean } from "next-sanity";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 type ContactFormClientProps = ContactFormBlock & {
   dataAttributes?: ContactFormDataAttributes;
@@ -32,6 +32,13 @@ function inputCopy(
   };
 }
 
+export function updateUnavailableMessageVisibility(
+  form: Pick<HTMLFormElement, "reportValidity"> | null,
+  setVisible: (visible: boolean) => void,
+) {
+  setVisible(Boolean(form?.reportValidity()));
+}
+
 export default function ContactFormClient({
   dataAttributes,
   description,
@@ -53,7 +60,9 @@ export default function ContactFormClient({
   const idPrefix = `contact-${generatedId}`;
   const titleId = `${idPrefix}-title`;
   const formTitleId = `${idPrefix}-form-title`;
+  const availabilityId = `${idPrefix}-availability`;
   const statusId = `${idPrefix}-status`;
+  const formRef = useRef<HTMLFormElement>(null);
   const [showUnavailableMessage, setShowUnavailableMessage] = useState(false);
   const displayTitle = stegaClean(title)?.trim();
   const displayEyebrow = stegaClean(eyebrow)?.trim();
@@ -157,13 +166,14 @@ export default function ContactFormClient({
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_20px_48px_rgba(19,28,59,0.07)] md:p-12">
+          {/* Keep controls unnamed and non-submitting until server-side delivery exists. */}
           <form
-            aria-describedby={statusId}
+            aria-describedby={availabilityId}
             aria-labelledby={formTitleId}
             className="grid gap-[22px]"
+            ref={formRef}
             onSubmit={(event) => {
               event.preventDefault();
-              setShowUnavailableMessage(true);
             }}
           >
             <h2
@@ -187,7 +197,6 @@ export default function ContactFormClient({
                   className={inputClassName}
                   data-sanity={dataAttributes?.nameField?.placeholder}
                   id={`${idPrefix}-name`}
-                  name="name"
                   placeholder={nameCopy.placeholder}
                   required
                   type="text"
@@ -205,7 +214,6 @@ export default function ContactFormClient({
                   className={inputClassName}
                   data-sanity={dataAttributes?.emailField?.placeholder}
                   id={`${idPrefix}-email`}
-                  name="email"
                   placeholder={emailCopy.placeholder}
                   required
                   type="email"
@@ -225,7 +233,6 @@ export default function ContactFormClient({
                 className={inputClassName}
                 data-sanity={dataAttributes?.phoneField?.placeholder}
                 id={`${idPrefix}-phone`}
-                name="phone"
                 placeholder={phoneCopy.placeholder}
                 type="tel"
               />
@@ -242,7 +249,6 @@ export default function ContactFormClient({
                 className={`${inputClassName} min-h-[120px] resize-y leading-relaxed`}
                 data-sanity={dataAttributes?.messageField?.placeholder}
                 id={`${idPrefix}-message`}
-                name="message"
                 placeholder={messageCopy.placeholder}
                 rows={5}
               />
@@ -252,7 +258,15 @@ export default function ContactFormClient({
               <Button
                 className="h-12 rounded-[9px] bg-cyan-700 px-8 text-[15.5px] text-white hover:bg-cyan-600"
                 data-sanity={dataAttributes?.submitLabel}
-                type="submit"
+                aria-controls={statusId}
+                aria-describedby={availabilityId}
+                onClick={() => {
+                  updateUnavailableMessageVisibility(
+                    formRef.current,
+                    setShowUnavailableMessage,
+                  );
+                }}
+                type="button"
               >
                 {displaySubmitLabel}
               </Button>
@@ -266,6 +280,17 @@ export default function ContactFormClient({
               ) : null}
             </div>
 
+            <p className="sr-only" id={availabilityId}>
+              {displayUnavailableMessage}
+            </p>
+            <noscript>
+              <p
+                className="text-sm text-cyan-800"
+                data-sanity={dataAttributes?.unavailableMessage}
+              >
+                {displayUnavailableMessage}
+              </p>
+            </noscript>
             <p
               aria-atomic="true"
               aria-live="polite"

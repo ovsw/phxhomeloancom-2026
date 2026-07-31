@@ -6,6 +6,7 @@ const API_VERSION = "2026-03-23";
 const DATASET = "development";
 const HOME_PAGE_DRAFT_ID = "drafts.home";
 const LOAN_ORIGINATOR_SLUG = "phoenix-loan-originator";
+const CONTACT_SLUG = "contact";
 
 type Block = { _key: string; _type: string; [key: string]: unknown };
 type ProjectedBlock = Record<string, unknown> & { _key: string; _type: string };
@@ -71,6 +72,13 @@ async function main() {
     throw new Error("No /phoenix-loan-originator page with pageBuilder was found");
   }
   const loanOriginatorDraftId = draftId(loanOriginatorSource._id);
+  const contactSource = pageSources.find(
+    (source) => source.slug?.current?.replace(/^\//, "") === CONTACT_SLUG,
+  );
+  if (!contactSource) {
+    throw new Error("No /contact page with pageBuilder was found");
+  }
+  const contactDraftId = draftId(contactSource._id);
 
   const homeVersions = await client.fetch<SourceDocument[]>(
     `*[_type == "homePage" && defined(pageBuilder)]`,
@@ -258,6 +266,107 @@ async function main() {
     throw new Error("The transitional page query did not project Person CTA");
   }
 
+  const queriedContact = await draftClient.fetch<{
+    _id: string;
+    blocks: ProjectedBlock[];
+  } | null>(PAGE_QUERY, { slug: CONTACT_SLUG });
+  const expectedContactTypes = ["contactForm", "personContactCta", "locationMap"];
+  if (
+    !queriedContact ||
+    !isDeepStrictEqual(
+      queriedContact.blocks.map((block: ProjectedBlock) => block._type),
+      expectedContactTypes,
+    )
+  ) {
+    throw new Error("The transitional page query returned an unexpected contact-page order");
+  }
+
+  const contactForm = queriedContact.blocks[0];
+  if (
+    !Array.isArray(contactForm.officeHours) ||
+    contactForm.officeHours.length !== 3 ||
+    !isDeepStrictEqual(
+      contactForm.officeHours.map((row: { _key?: string; _type?: string }) => ({
+        _key: row._key,
+        _type: row._type,
+      })),
+      [
+        { _key: "monday-friday", _type: "officeHoursRow" },
+        { _key: "saturday", _type: "officeHoursRow" },
+        { _key: "sunday", _type: "officeHoursRow" },
+      ],
+    ) ||
+    !(contactForm.nameField as { label?: string } | null)?.label ||
+    !(contactForm.emailField as { label?: string } | null)?.label ||
+    !(contactForm.phoneField as { label?: string } | null)?.label ||
+    !(contactForm.messageField as { label?: string } | null)?.label ||
+    typeof contactForm.unavailableMessage !== "string"
+  ) {
+    throw new Error("The transitional page query did not project Contact Form");
+  }
+
+  const personContactCta = queriedContact.blocks[1];
+  if (
+    !Array.isArray(personContactCta.contactMethods) ||
+    !isDeepStrictEqual(
+      personContactCta.contactMethods.map(
+        (method: {
+          _key?: string;
+          _type?: string;
+          href?: string;
+          label?: string;
+          type?: string;
+        }) => ({
+          _key: method._key,
+          _type: method._type,
+          href: method.href,
+          label: method.label,
+          type: method.type,
+        }),
+      ),
+      [
+        {
+          _key: "phone",
+          _type: "personContactMethod",
+          href: "tel:4808008387",
+          label: "480-800-8387",
+          type: "phone",
+        },
+        {
+          _key: "email",
+          _type: "personContactMethod",
+          href: "mailto:jimmy.vercellino@goluminate.com",
+          label: "jimmy.vercellino@goluminate.com",
+          type: "email",
+        },
+        {
+          _key: "address",
+          _type: "personContactMethod",
+          href: "https://maps.app.goo.gl/1g17C8YKuTvx4WvV8",
+          label: "3602 E Campbell Ave Ste 1,\nPhoenix, AZ 85018, USA",
+          type: "address",
+        },
+      ],
+    ) ||
+    personContactCta.eyebrow !== "OR" ||
+    personContactCta.title !== "Reach Jimmy directly" ||
+    personContactCta.credentialLine !==
+      "Phoenix Mortgage Lender Jimmy V · NMLS# 184169" ||
+    !(personContactCta.personImage as { asset?: { _id?: string } } | null)?.asset?._id
+  ) {
+    throw new Error("The transitional page query did not project Person Contact CTA");
+  }
+
+  const locationMap = queriedContact.blocks[2];
+  if (
+    !(locationMap.image as { asset?: { _id?: string } } | null)?.asset?._id ||
+    !(locationMap.address as { street?: string } | null)?.street ||
+    typeof locationMap.mapEmbedUrl !== "string" ||
+    typeof locationMap.directionsUrl !== "string"
+  ) {
+    throw new Error("The transitional page query did not project Location Map");
+  }
+
   console.log(JSON.stringify({
     dataset: DATASET,
     mode: verifyOnly ? "verify-only" : "migrate-and-verify",
@@ -274,6 +383,19 @@ async function main() {
     queriedLoanOriginatorBlocks: queriedLoanOriginator.blocks.map(
       ({ _key, _type }: ProjectedBlock) => ({ _key, _type }),
     ),
+    contactSource: contactSource._id,
+    contactTarget: contactDraftId,
+    queriedContact: queriedContact._id,
+    queriedContactBlocks: queriedContact.blocks.map(
+      ({ _key, _type }: ProjectedBlock) => ({ _key, _type }),
+    ),
+    queriedPersonContactMethods: (
+      personContactCta.contactMethods as Array<{
+        _key: string;
+        _type: string;
+        type: string;
+      }>
+    ).map(({ _key, _type, type }) => ({ _key, _type, type })),
     verified: true,
   }, null, 2));
 }
