@@ -1,8 +1,7 @@
 import { groq } from "next-sanity";
 import { imageQuery } from "./shared/image";
+import { urlInternalHref } from "./shared/internal-href";
 
-// The imported post documents remain authoritative while their legacy fields
-// are reconciled with the V2 schema.
 // @sanity-typegen-ignore
 export const latestArticlesQuery = groq`
   _type == "latestArticles" => {
@@ -17,7 +16,7 @@ export const latestArticlesQuery = groq`
       variant,
       "openInNewTab": url.openInNewTab,
       "href": select(
-        url.type == "internal" => url.internal->slug.current,
+        url.type == "internal" => ${urlInternalHref},
         url.type == "external" => url.external,
         url.href
       )
@@ -38,10 +37,10 @@ export const latestArticlesQuery = groq`
       _type,
       _id,
       title,
-      "description": coalesce(seoDescription, pt::text(excerpt), meta.description),
+      "description": coalesce(meta.description, pt::text(excerpt)),
       "slug": slug.current,
       "publishedAt": coalesce(publishedAt, _createdAt),
-      "image": coalesce(image, mainImage){
+      image{
         ${imageQuery}
       },
       categories[]->{

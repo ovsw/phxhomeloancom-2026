@@ -1,6 +1,7 @@
 import { groq } from "next-sanity";
 import { bodyQuery } from "./shared/body";
 import { imageQuery } from "./shared/image";
+import { urlInternalHref } from "./shared/internal-href";
 
 // @sanity-typegen-ignore
 export const videoFeatureQuery = groq`
@@ -18,7 +19,7 @@ export const videoFeatureQuery = groq`
       variant,
       "openInNewTab": url.openInNewTab,
       "href": select(
-        url.type == "internal" => url.internal->slug.current,
+        url.type == "internal" => ${urlInternalHref},
         url.type == "external" => url.external,
         url.href
       )

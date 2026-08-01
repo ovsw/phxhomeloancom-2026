@@ -1,19 +1,39 @@
 import Blocks from "@/components/blocks";
-import { fetchSanityPageBySlug, PAGES_SLUGS_QUERY } from "@/sanity/lib/fetch";
-import { notFound } from "next/navigation";
-import { generatePageMetadata } from "@/sanity/lib/metadata";
+import PostHero from "@/components/blocks/post-hero";
+import RichTextContent from "@/components/rich-text-content";
+import Breadcrumbs from "@/components/ui/breadcrumbs";
+import {
+  fetchSanityPageBySlug,
+  fetchSanityPostBySlug,
+  PAGES_SLUGS_QUERY,
+  POSTS_SLUGS_QUERY,
+} from "@/sanity/lib/fetch";
 import {
   getDynamicFetchOptions,
   sanityFetchMetadata,
   sanityFetchStaticParams,
   type DynamicFetchOptions,
 } from "@/sanity/lib/live";
-import { PAGE_QUERY_RESULT, PAGES_SLUGS_QUERY_RESULT } from "@/sanity.types";
-import { PAGE_QUERY } from "@/sanity/queries/page";
-import { draftMode } from "next/headers";
-import { Suspense } from "react";
-import { createDataAttribute, stegaClean } from "next-sanity";
+import { generatePageMetadata } from "@/sanity/lib/metadata";
 import { dataset, projectId } from "@/sanity/lib/env";
+import { PAGE_QUERY } from "@/sanity/queries/page";
+import { POST_QUERY } from "@/sanity/queries/post";
+import type {
+  PAGE_QUERY_RESULT,
+  PAGES_SLUGS_QUERY_RESULT,
+  POST_QUERY_RESULT,
+  POSTS_SLUGS_QUERY_RESULT,
+} from "@/sanity.types";
+import type { PortableTextProps } from "@portabletext/react";
+import { draftMode } from "next/headers";
+import { notFound } from "next/navigation";
+import { createDataAttribute, stegaClean } from "next-sanity";
+import { Suspense } from "react";
+
+type BreadcrumbLink = {
+  label: string;
+  href: string;
+};
 
 function PageFallback() {
   return (
@@ -23,18 +43,35 @@ function PageFallback() {
   );
 }
 
+function resolveRootContent(
+  page: PAGE_QUERY_RESULT,
+  post: POST_QUERY_RESULT,
+  slug: string,
+) {
+  if (page && post) {
+    throw new Error(`Root route collision for /${slug}/`);
+  }
+  return page || post || null;
+}
+
 export async function generateStaticParams() {
-  const { data: pages } = (await sanityFetchStaticParams({
-    query: PAGES_SLUGS_QUERY,
-  })) as { data: PAGES_SLUGS_QUERY_RESULT };
+  const [{ data: pages }, { data: posts }] = await Promise.all([
+    sanityFetchStaticParams({ query: PAGES_SLUGS_QUERY }) as Promise<{
+      data: PAGES_SLUGS_QUERY_RESULT;
+    }>,
+    sanityFetchStaticParams({ query: POSTS_SLUGS_QUERY }) as Promise<{
+      data: POSTS_SLUGS_QUERY_RESULT;
+    }>,
+  ]);
 
-  return pages.flatMap((page) => {
-    const slug = page.slug?.current;
-    // Home is served by (main)/page.tsx at /. /index redirects there in next.config.
-    if (!slug || slug === "index") {
-      return [];
-    }
+  const slugs = [
+    ...pages.map((page) => page.slug?.current),
+    ...posts.map((post) => post.slug?.current),
+  ];
 
+  return slugs.flatMap((value) => {
+    const slug = value?.replace(/^\/+|\/+$/g, "");
+    if (!slug || slug === "index") return [];
     return [{ slug: slug.split("/").filter(Boolean) }];
   });
 }
@@ -47,20 +84,25 @@ export async function generateMetadata(props: {
     getDynamicFetchOptions(),
   ]);
   const slugPath = slug.join("/");
-  const { data: page } = (await sanityFetchMetadata({
-    query: PAGE_QUERY,
-    params: { slug: slugPath },
-    perspective,
-  })) as { data: PAGE_QUERY_RESULT };
+  const [{ data: page }, { data: post }] = await Promise.all([
+    sanityFetchMetadata({
+      query: PAGE_QUERY,
+      params: { slug: slugPath },
+      perspective,
+    }) as Promise<{ data: PAGE_QUERY_RESULT }>,
+    sanityFetchMetadata({
+      query: POST_QUERY,
+      params: { slug: slugPath },
+      perspective,
+    }) as Promise<{ data: POST_QUERY_RESULT }>,
+  ]);
+  const content = resolveRootContent(page, post, slugPath);
+  if (!content) notFound();
 
-  if (!page) {
-    notFound();
-  }
-
-  return generatePageMetadata({ page, slug: slugPath });
+  return generatePageMetadata({ page: content, slug: slugPath });
 }
 
-export default async function Page(props: {
+export default async function RootContentPage(props: {
   params: Promise<{ slug: string[] }>;
 }) {
   const { isEnabled: isDraftMode } = await draftMode();
@@ -68,18 +110,22 @@ export default async function Page(props: {
   if (isDraftMode) {
     return (
       <Suspense fallback={<PageFallback />}>
-        <DynamicPage params={props.params} />
+        <DynamicRootContent params={props.params} />
       </Suspense>
     );
   }
 
   const { slug } = await props.params;
   return (
-    <CachedPage slug={slug.join("/")} perspective="published" stega={false} />
+    <CachedRootContent
+      slug={slug.join("/")}
+      perspective="published"
+      stega={false}
+    />
   );
 }
 
-async function DynamicPage({
+async function DynamicRootContent({
   params,
 }: {
   params: Promise<{ slug: string[] }>;
@@ -90,21 +136,42 @@ async function DynamicPage({
   ]);
 
   return (
-    <CachedPage slug={slug.join("/")} perspective={perspective} stega={stega} />
+    <CachedRootContent
+      slug={slug.join("/")}
+      perspective={perspective}
+      stega={stega}
+    />
   );
 }
 
-async function CachedPage({
+async function CachedRootContent({
   slug,
   perspective,
   stega,
 }: { slug: string } & DynamicFetchOptions) {
-  const page = await fetchSanityPageBySlug({ slug, perspective, stega });
+  const [page, post] = await Promise.all([
+    fetchSanityPageBySlug({ slug, perspective, stega }),
+    fetchSanityPostBySlug({ slug, perspective, stega }),
+  ]);
+  const content = resolveRootContent(page, post, slug);
+  if (!content) notFound();
 
-  if (!page) {
-    notFound();
-  }
+  return content._type === "post" ? (
+    <PostContent post={content} stega={stega} />
+  ) : (
+    <PageContent page={content} perspective={perspective} stega={stega} />
+  );
+}
 
+function PageContent({
+  page,
+  perspective,
+  stega,
+}: {
+  page: NonNullable<PAGE_QUERY_RESULT>;
+  perspective: DynamicFetchOptions["perspective"];
+  stega: boolean;
+}) {
   const blocks = page.blocks ?? [];
   const isRichTextOnlyPage =
     blocks.length > 0 && blocks.every((block) => block._type === "richTextBlock");
@@ -151,5 +218,46 @@ async function CachedPage({
         stega={stega}
       />
     </>
+  );
+}
+
+function PostContent({
+  post,
+  stega,
+}: {
+  post: NonNullable<POST_QUERY_RESULT>;
+  stega: boolean;
+}) {
+  const links: BreadcrumbLink[] = [
+    { label: "Home", href: "/" },
+    { label: "Blog", href: "/blog/" },
+    { label: post.title as string, href: "#" },
+  ];
+  const bodyDataAttribute = stega
+    ? createDataAttribute({
+        baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+        dataset,
+        id: post._id,
+        path: "body",
+        projectId,
+        type: "post",
+      }).toString()
+    : undefined;
+
+  return (
+    <section>
+      <div className="container py-16 xl:py-20">
+        <article className="mx-auto max-w-3xl">
+          <Breadcrumbs links={links} />
+          <PostHero {...post} />
+          {post.body?.length ? (
+            <RichTextContent
+              dataSanity={bodyDataAttribute}
+              value={post.body as PortableTextProps["value"]}
+            />
+          ) : null}
+        </article>
+      </div>
+    </section>
   );
 }

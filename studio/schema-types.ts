@@ -17,6 +17,7 @@ import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import customUrl from "./schemas/blocks/shared/custom-url";
 import button from "./schemas/blocks/shared/button";
+import richTextContent from "./schemas/blocks/shared/rich-text-content";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import homeHero from "./schemas/blocks/home-hero";
@@ -57,6 +58,7 @@ export const schemaTypes = [
   sectionPadding,
   customUrl,
   button,
+  richTextContent,
   // blocks
   hero1,
   homeHero,

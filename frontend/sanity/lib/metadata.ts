@@ -1,5 +1,6 @@
 import { urlFor } from "@/sanity/lib/image";
 import { PAGE_QUERY_RESULT, POST_QUERY_RESULT } from "@/sanity.types";
+import { contentPath } from "@/lib/routes";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export function generatePageMetadata({
@@ -31,8 +32,7 @@ export function generatePageMetadata({
         ? "noindex"
         : "index, follow",
     alternates: {
-      canonical:
-        process.env.NEXT_PUBLIC_SITE_URL + `/${slug === "index" ? "" : slug}`,
+      canonical: process.env.NEXT_PUBLIC_SITE_URL + contentPath(slug),
     },
   };
 }

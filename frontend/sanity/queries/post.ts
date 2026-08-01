@@ -1,16 +1,20 @@
 import { groq } from "next-sanity";
 import { imageQuery } from "./shared/image";
-import { bodyQuery } from "./shared/body";
 import { metaQuery } from "./shared/meta";
+import { richTextContentQuery } from "./shared/rich-text-content";
 
 export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
+    // richTextContent V2
+    _id,
+    _type,
     title,
     slug,
+    publishedAt,
     image{
       ${imageQuery}
     },
     body[]{
-      ${bodyQuery}
+      ${richTextContentQuery}
     },
     author->{
       name,
@@ -39,7 +43,8 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
 export const POSTS_QUERY = groq`*[_type == "post" && defined(slug)] | order(_createdAt desc){
     title,
     slug,
-    excerpt,
+    publishedAt,
+    "excerpt": pt::text(excerpt),
     image{
       ${imageQuery}
     },

@@ -1,6 +1,7 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 import { FileText } from "lucide-react";
 import meta from "../blocks/shared/meta";
+import { uniqueRootSlug } from "../validation/unique-root-slug";
 
 export default defineType({
   name: "post",
@@ -38,13 +39,30 @@ export default defineType({
         source: "title",
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().custom(uniqueRootSlug),
     }),
     defineField({
       name: "excerpt",
       title: "Excerpt",
-      type: "text",
+      type: "array",
       group: "content",
+      description:
+        "A short Portable Text summary used on article listings and in metadata.",
+      of: [
+        defineArrayMember({
+          type: "block",
+          styles: [{ title: "Normal", value: "normal" }],
+          lists: [],
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+              { title: "Code", value: "code" },
+            ],
+            annotations: [],
+          },
+        }),
+      ],
     }),
     defineField({
       name: "author",
@@ -52,6 +70,12 @@ export default defineType({
       type: "reference",
       group: "settings",
       to: { type: "author" },
+    }),
+    defineField({
+      name: "publishedAt",
+      title: "Published At",
+      type: "datetime",
+      group: "settings",
     }),
     defineField({
       name: "image",
@@ -62,11 +86,16 @@ export default defineType({
         hotspot: true,
       },
       fields: [
-        {
+        defineField({
           name: "alt",
           type: "string",
           title: "Alternative Text",
-        },
+        }),
+        defineField({
+          name: "caption",
+          type: "string",
+          title: "Caption",
+        }),
       ],
     }),
     defineField({
@@ -79,7 +108,7 @@ export default defineType({
     defineField({
       name: "body",
       title: "Body",
-      type: "block-content",
+      type: "richTextContent",
       group: "content",
     }),
     meta,

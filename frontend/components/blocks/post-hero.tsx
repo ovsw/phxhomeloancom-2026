@@ -3,6 +3,7 @@ import PostDate from "@/components/post-date";
 import { Mail } from "lucide-react";
 import { urlFor } from "@/sanity/lib/image";
 import { POST_QUERY_RESULT } from "@/sanity.types";
+import { contentPath } from "@/lib/routes";
 
 type PostHeroProps = NonNullable<POST_QUERY_RESULT>;
 
@@ -13,6 +14,8 @@ export default function PostHero({
   slug,
   _createdAt,
 }: PostHeroProps) {
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${contentPath(slug?.current)}`;
+
   return (
     <>
       {title && <h1 className="mb-4 md:mb-6 text-3xl lg:text-5xl">{title}</h1>}
@@ -60,7 +63,7 @@ export default function PostHero({
           <div className="flex gap-2">
             <a
               className="hover:opacity-70"
-              href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share on Facebook"
@@ -81,7 +84,7 @@ export default function PostHero({
             </a>
             <a
               className="hover:opacity-70"
-              href={`mailto:?subject=${title}&body=${title}%0A%0A${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slug?.current}`}
+              href={`mailto:?subject=${encodeURIComponent(title || "")}&body=${encodeURIComponent(`${title || ""}\n\n${postUrl}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Share via email"

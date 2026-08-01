@@ -7,10 +7,10 @@ const VIEWABLE_TYPES = ["page", "post"] as const;
 const urlQuery = `
   'url': select(
     slug.current == "index" => $baseUrl + "/",
-    _type == "post-index" => $baseUrl + "/blog",
-    _type == "post" => $baseUrl + "/blog/" + slug.current,
-    _type == "contact" => $baseUrl + "/contact",
-    $baseUrl + "/" + slug.current
+    _type == "post-index" => $baseUrl + "/blog/",
+    _type == "contact" => $baseUrl + "/contact/",
+    string::startsWith(slug.current, "/") => $baseUrl + slug.current + "/",
+    $baseUrl + "/" + slug.current + "/"
   )
 `;
 

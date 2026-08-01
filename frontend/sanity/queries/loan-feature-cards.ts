@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { internalReferenceHref } from "./shared/internal-href";
 
 // @sanity-typegen-ignore
 export const loanFeatureCardsQuery = groq`
@@ -15,7 +16,7 @@ export const loanFeatureCardsQuery = groq`
       link{
         openInNewTab,
         "href": select(
-          type == "internal" => internal->slug.current,
+          type == "internal" => ${internalReferenceHref},
           type == "external" => external,
           href
         )

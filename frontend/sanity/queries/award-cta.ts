@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { urlInternalHref } from "./shared/internal-href";
 
 // @sanity-typegen-ignore
 export const awardCtaQuery = groq`
@@ -13,7 +14,7 @@ export const awardCtaQuery = groq`
       variant,
       "openInNewTab": url.openInNewTab,
       "href": select(
-        url.type == "internal" => url.internal->slug.current,
+        url.type == "internal" => ${urlInternalHref},
         url.type == "external" => url.external,
         url.href
       )

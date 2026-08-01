@@ -4,10 +4,11 @@ import { sanity } from "next-sanity/live/cache-life";
 const nextConfig = {
   cacheComponents: true,
   cacheLife: { default: sanity },
+  trailingSlash: true,
   async redirects() {
     return [
       {
-        source: '/index',
+        source: '/index/',
         destination: '/',
         permanent: true,
       },

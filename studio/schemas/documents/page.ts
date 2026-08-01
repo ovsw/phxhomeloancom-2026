@@ -1,6 +1,7 @@
 import { defineField, defineType } from "sanity";
 import { Files } from "lucide-react";
 import meta from "../blocks/shared/meta";
+import { uniqueRootSlug } from "../validation/unique-root-slug";
 
 export default defineType({
   name: "page",
@@ -77,7 +78,7 @@ export default defineType({
         source: "title",
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().custom(uniqueRootSlug),
     }),
     defineField({
       name: "blocks",

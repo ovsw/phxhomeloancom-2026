@@ -7,6 +7,12 @@ const SANITY_STUDIO_PREVIEW_URL =
 // Specify document types that should have preview panes
 const previewSchemaTypes = ["page", "post", "contact"];
 
+function contentPath(value?: string) {
+  const slug = value?.replace(/^\/+|\/+$/g, "");
+  if (!slug || slug === "index") return "/";
+  return `/${slug}/`;
+}
+
 export const defaultDocumentNode: DefaultDocumentNodeResolver = (
   S,
   { schemaType },
@@ -25,17 +31,11 @@ export const defaultDocumentNode: DefaultDocumentNodeResolver = (
               let path = "/";
 
               if (doc._type === "page") {
-                const slug = doc.slug?.current;
-                if (slug === "index") {
-                  path = "/";
-                } else {
-                  path = slug ? `/${slug}` : "/";
-                }
+                path = contentPath(doc.slug?.current);
               } else if (doc._type === "post") {
-                const slug = doc.slug?.current;
-                path = slug ? `/blog/${slug}` : "/blog";
+                path = contentPath(doc.slug?.current);
               } else if (doc._type === "contact") {
-                path = "/contact";
+                path = "/contact/";
               }
 
               return path;

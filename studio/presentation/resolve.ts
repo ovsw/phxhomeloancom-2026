@@ -4,6 +4,12 @@ import {
   PresentationPluginOptions,
 } from "sanity/presentation";
 
+function contentPath(value?: string | null) {
+  const slug = value?.replace(/^\/+|\/+$/g, "");
+  if (!slug || slug === "index") return "/";
+  return `/${slug}/`;
+}
+
 export const resolve: PresentationPluginOptions["resolve"] = {
   locations: {
     // Add more locations for other post types
@@ -16,9 +22,9 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         locations: [
           {
             title: doc?.title || "Untitled",
-            href: `/blog/${doc?.slug}`,
+            href: contentPath(doc?.slug),
           },
-          { title: "Blog", href: `/blog` },
+          { title: "Blog", href: "/blog/" },
         ],
       }),
     }),
@@ -29,12 +35,8 @@ export const resolve: PresentationPluginOptions["resolve"] = {
       filter: `_type == 'page' && slug.current == 'index'`,
     },
     {
-      route: "/:slug",
-      filter: `_type == 'page' && slug.current == $slug`,
-    },
-    {
-      route: "/blog/:slug",
-      filter: `_type == 'post' && slug.current == $slug`,
+      route: "/:slug/",
+      filter: `_type in ['page', 'post'] && slug.current in [$slug, "/" + $slug]`,
     },
   ]),
 };

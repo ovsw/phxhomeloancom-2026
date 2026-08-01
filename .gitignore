@@ -17,6 +17,9 @@
 # production
 /build
 
+# local dataset backups
+/backups/
+
 # misc
 .DS_Store
 *.pem
