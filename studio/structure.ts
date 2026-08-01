@@ -13,13 +13,15 @@ export const structure = (S: any, context: any) =>
   S.list()
     .title("Content")
     .items([
-      orderableDocumentListDeskItem({
-        type: "page",
-        title: "Pages",
-        icon: Files,
-        S,
-        context,
-      }),
+      S.listItem()
+        .title("Pages")
+        .icon(Files)
+        .schemaType("page")
+        .child(
+          S.documentTypeList("page")
+            .title("Pages")
+            .defaultOrdering([{ field: "title", direction: "asc" }])
+        ),
       S.listItem()
         .title("Posts")
         .schemaType("post")
