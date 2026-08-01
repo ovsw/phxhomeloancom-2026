@@ -1,9 +1,8 @@
 import { groq } from "next-sanity";
 import { imageQuery } from "./shared/image";
 
-// During the V1-to-V2 transition, registered `post` documents drive routing and
-// TypeGen while their matching legacy `blog-<post id>` documents supply fields
-// that were not copied into V2 posts (published date, description, and image).
+// The imported post documents remain authoritative while their legacy fields
+// are reconciled with the V2 schema.
 // @sanity-typegen-ignore
 export const latestArticlesQuery = groq`
   _type == "latestArticles" => {
@@ -30,35 +29,19 @@ export const latestArticlesQuery = groq`
       _type == "post" &&
       defined(slug.current) &&
       meta.noindex != true &&
-      *[_type == "blog" && _id == "blog-" + ^._id][0].seoHideFromLists != true &&
-      *[_type == "blog" && _id == "blog-" + ^._id][0].seoNoIndex != true
+      seoHideFromLists != true &&
+      seoNoIndex != true
     ] | order(
-      coalesce(
-        *[_type == "blog" && _id == "blog-" + ^._id][0].publishedAt,
-        _createdAt
-      ) desc,
+      coalesce(publishedAt, _createdAt) desc,
       _updatedAt desc
     )[0...6]{
       _type,
       _id,
-      "title": coalesce(
-        *[_type == "blog" && _id == "blog-" + ^._id][0].title,
-        title
-      ),
-      "description": coalesce(
-        *[_type == "blog" && _id == "blog-" + ^._id][0].description,
-        excerpt,
-        meta.description
-      ),
+      title,
+      "description": coalesce(seoDescription, pt::text(excerpt), meta.description),
       "slug": slug.current,
-      "publishedAt": coalesce(
-        *[_type == "blog" && _id == "blog-" + ^._id][0].publishedAt,
-        _createdAt
-      ),
-      "image": coalesce(
-        image,
-        *[_type == "blog" && _id == "blog-" + ^._id][0].image
-      ){
+      "publishedAt": coalesce(publishedAt, _createdAt),
+      "image": coalesce(image, mainImage){
         ${imageQuery}
       },
       categories[]->{

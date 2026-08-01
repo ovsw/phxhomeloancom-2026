@@ -1,7 +1,6 @@
 // documents
 import page from "./schemas/documents/page";
 import post from "./schemas/documents/post";
-import legacyBlog from "./schemas/documents/legacy-blog";
 import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
@@ -43,7 +42,6 @@ export const schemaTypes = [
   // documents
   page,
   post,
-  legacyBlog,
   author,
   category,
   faq,
