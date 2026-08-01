@@ -5,8 +5,9 @@ import { presentationTool } from "sanity/presentation";
 import { media } from "sanity-plugin-media";
 import { schemaTypes } from "./schema-types";
 import { resolve } from "./presentation/resolve";
+import { openInPresentationAction } from "./presentation/open-in-presentation";
+import { isPresentationDocumentType } from "./presentation/routes";
 import { structure } from "./structure";
-import { defaultDocumentNode } from "./defaultDocumentNode";
 import { codeInput } from "@sanity/code-input";
 
 // Define the actions that should be available for singleton documents
@@ -46,9 +47,13 @@ export default defineConfig({
       singletonTypes.has(context.schemaType)
         ? input.filter(({ action }) => action && singletonActions.has(action))
         : input,
+    unstable_fieldActions: (input, context) =>
+      isPresentationDocumentType(context.documentType)
+        ? [openInPresentationAction, ...input]
+        : input,
   },
   plugins: [
-    structureTool({ structure, defaultDocumentNode }),
+    structureTool({ structure }),
     presentationTool({
       previewUrl: {
         origin: SANITY_STUDIO_PREVIEW_URL,

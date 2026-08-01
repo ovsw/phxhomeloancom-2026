@@ -8,7 +8,6 @@ const urlQuery = `
   'url': select(
     slug.current == "index" => $baseUrl + "/",
     _type == "post-index" => $baseUrl + "/blog/",
-    _type == "contact" => $baseUrl + "/contact/",
     string::startsWith(slug.current, "/") => $baseUrl + slug.current + "/",
     $baseUrl + "/" + slug.current + "/"
   )
@@ -19,7 +18,7 @@ const SITEMAP_QUERY = groq`
   *[
     _type in $viewableTypes
     && meta.noindex != true
-    && (defined(slug) || _type in ["contact", "post-index"])
+    && (defined(slug) || _type == "post-index")
   ] {
     ${urlQuery},
     "lastModified": _updatedAt,

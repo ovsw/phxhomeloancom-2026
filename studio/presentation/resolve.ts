@@ -3,16 +3,26 @@ import {
   defineDocuments,
   PresentationPluginOptions,
 } from "sanity/presentation";
+import { resolveContentPath } from "./routes";
 
-function contentPath(value?: string | null) {
-  const slug = value?.replace(/^\/+|\/+$/g, "");
-  if (!slug || slug === "index") return "/";
-  return `/${slug}/`;
-}
+export { resolveContentPath } from "./routes";
 
 export const resolve: PresentationPluginOptions["resolve"] = {
   locations: {
-    // Add more locations for other post types
+    page: defineLocations({
+      select: {
+        title: "title",
+        slug: "slug.current",
+      },
+      resolve: (doc) => ({
+        locations: [
+          {
+            title: doc?.title || "Untitled",
+            href: resolveContentPath(doc?.slug),
+          },
+        ],
+      }),
+    }),
     post: defineLocations({
       select: {
         title: "title",
@@ -22,7 +32,7 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         locations: [
           {
             title: doc?.title || "Untitled",
-            href: contentPath(doc?.slug),
+            href: resolveContentPath(doc?.slug),
           },
           { title: "Blog", href: "/blog/" },
         ],
