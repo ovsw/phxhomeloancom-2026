@@ -20,6 +20,7 @@ import LocationMap from "@/components/blocks/location-map";
 import PersonContactCta from "@/components/blocks/person-contact-cta";
 import ContactForm from "@/components/blocks/contact-form";
 import TeamMembers from "@/components/blocks/team-members";
+import RichTextBlock from "@/components/blocks/rich-text-block";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -43,6 +44,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "personContactCta",
   "contactForm",
   "teamMembers",
+  "richTextBlock",
 ]);
 
 const componentMap: Partial<{
@@ -67,6 +69,7 @@ const componentMap: Partial<{
   personContactCta: PersonContactCta,
   contactForm: ContactForm,
   teamMembers: TeamMembers,
+  richTextBlock: RichTextBlock,
 };
 
 export default function Blocks({

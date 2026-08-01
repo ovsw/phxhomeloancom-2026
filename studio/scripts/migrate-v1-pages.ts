@@ -53,6 +53,7 @@ function cloneAsDraft(source: SourceDocument) {
 
 async function main() {
   const verifyOnly = process.argv.includes("--verify-only");
+  const richTextOnly = process.argv.includes("--rich-text-only");
   const client = getCliClient({
     apiVersion: API_VERSION,
     dataset: DATASET,
@@ -97,7 +98,7 @@ async function main() {
   const homeSource = preferredSources(homeVersions)[0];
   if (!homeSource) throw new Error("No homePage with pageBuilder was found");
 
-  if (!verifyOnly) {
+  if (!(verifyOnly || richTextOnly)) {
     for (const source of pageSources) {
       const targetId = draftId(source._id);
       await client.createIfNotExists({
@@ -129,15 +130,24 @@ async function main() {
       .commit({ visibility: "sync" });
   }
 
+  const richTextSources = pageSources.filter((source) =>
+    source.pageBuilder?.some((block) => block._type === "richTextBlock"),
+  );
+  const sourcesToVerify = richTextOnly ? richTextSources : pageSources;
   const migrated: SourceDocument[] = await client.fetch(
     `*[_id in $ids]{_id, pageBuilder, "blocks": blocks}`,
-    { ids: [...pageSources.map((source) => draftId(source._id)), HOME_PAGE_DRAFT_ID] },
+    {
+      ids: [
+        ...sourcesToVerify.map((source) => draftId(source._id)),
+        ...(richTextOnly ? [] : [HOME_PAGE_DRAFT_ID]),
+      ],
+    },
   );
   const byId = new Map<string, SourceDocument>(
     migrated.map((document: SourceDocument) => [document._id, document]),
   );
 
-  for (const source of pageSources) {
+  for (const source of sourcesToVerify) {
     const target = byId.get(draftId(source._id));
     if (!target || !isDeepStrictEqual(target.blocks, source.pageBuilder ?? [])) {
       throw new Error(`Block copy verification failed for ${draftId(source._id)}`);
@@ -145,6 +155,205 @@ async function main() {
     if (!isDeepStrictEqual(target.pageBuilder, source.pageBuilder)) {
       throw new Error(`pageBuilder changed for ${draftId(source._id)}`);
     }
+  }
+
+  if (richTextOnly) {
+    const draftClient = client.withConfig({ perspective: "drafts" });
+    const richTextBlockCount = richTextSources.reduce(
+      (count, source) =>
+        count +
+        (source.pageBuilder?.filter(
+          (block) => block._type === "richTextBlock",
+        ).length ?? 0),
+      0,
+    );
+    if (richTextSources.length !== 18 || richTextBlockCount !== 18) {
+      throw new Error(
+        `Unexpected Rich Text corpus: ${richTextSources.length} pages and ${richTextBlockCount} blocks`,
+      );
+    }
+
+    let nestedMembers = 0;
+    const memberTypeCounts: Record<string, number> = {};
+    const markTypeCounts: Record<string, number> = {};
+
+    for (const source of richTextSources) {
+      const slug = source.slug?.current?.replace(/^\//, "");
+      if (!slug) throw new Error(`Rich Text source ${source._id} has no slug`);
+
+      const queriedPage = await draftClient.fetch<{
+        _id: string;
+        description?: string;
+        title?: string;
+        blocks: ProjectedBlock[];
+      } | null>(PAGE_QUERY, { slug });
+      if (!queriedPage) throw new Error(`Rich Text page ${slug} was not returned`);
+
+      if (
+        queriedPage.title !== source.title ||
+        queriedPage.description !== source.description
+      ) {
+        throw new Error(`Rich Text page header projection mismatch for ${slug}`);
+      }
+
+      const sourceBlocks = source.pageBuilder ?? [];
+      if (
+        sourceBlocks.length !== 1 ||
+        sourceBlocks[0]?._type !== "richTextBlock" ||
+        queriedPage.blocks.length !== 1
+      ) {
+        throw new Error(`Rich Text page ${slug} is no longer rich-text-only`);
+      }
+      const sourceIndex = sourceBlocks.findIndex(
+        (block) => block._type === "richTextBlock",
+      );
+      const sourceBlock = sourceBlocks[sourceIndex];
+      const projectedBlock = queriedPage.blocks[sourceIndex];
+      const sourceRichText = sourceBlock?.richText;
+      const projectedRichText = projectedBlock?.richText;
+
+      if (
+        !sourceBlock ||
+        !projectedBlock ||
+        projectedBlock._key !== sourceBlock._key ||
+        projectedBlock._type !== sourceBlock._type ||
+        !Array.isArray(sourceRichText) ||
+        !Array.isArray(projectedRichText) ||
+        !isDeepStrictEqual(
+          projectedRichText.map((member) => ({
+            _key: (member as { _key?: string })._key,
+            _type: (member as { _type?: string })._type,
+          })),
+          sourceRichText.map((member) => ({
+            _key: (member as { _key?: string })._key,
+            _type: (member as { _type?: string })._type,
+          })),
+        )
+      ) {
+        throw new Error(`Rich Text projection identity mismatch for ${slug}`);
+      }
+
+      const textFrom = (members: unknown[]) =>
+        members
+          .flatMap((member) =>
+            Array.isArray((member as { children?: unknown[] }).children)
+              ? (member as { children: Array<{ text?: string }> }).children.map(
+                  (child) => child.text ?? "",
+                )
+              : [],
+          )
+          .join("");
+      if (textFrom(projectedRichText) !== textFrom(sourceRichText)) {
+        throw new Error(`Rich Text authored copy changed for ${slug}`);
+      }
+
+      for (let index = 0; index < sourceRichText.length; index += 1) {
+        const sourceMember = sourceRichText[index] as Record<string, unknown>;
+        const projectedMember = projectedRichText[index] as Record<string, unknown>;
+        const sourceMemberType = String(sourceMember._type);
+        memberTypeCounts[sourceMemberType] =
+          (memberTypeCounts[sourceMemberType] ?? 0) + 1;
+
+        if (sourceMember._type === "image") {
+          const sourceAssetId = (
+            sourceMember.asset as { _ref?: string } | undefined
+          )?._ref;
+          const projectedAssetId = (
+            projectedMember.resolvedAsset as { _id?: string } | undefined
+          )?._id;
+          if (!sourceAssetId || projectedAssetId !== sourceAssetId) {
+            throw new Error(`Rich Text image projection mismatch for ${slug}`);
+          }
+        }
+
+        if (sourceMember._type === "table") {
+          if (!isDeepStrictEqual(projectedMember.rows, sourceMember.rows)) {
+            throw new Error(`Rich Text table projection mismatch for ${slug}`);
+          }
+        }
+
+        if (sourceMember._type === "youtube" || sourceMember._type === "iframeEmbed") {
+          for (const field of ["url", "src", "title", "height"]) {
+            if (projectedMember[field] !== sourceMember[field]) {
+              throw new Error(`Rich Text embed projection mismatch for ${slug}`);
+            }
+          }
+        }
+
+        if (sourceMember._type === "block") {
+          const sourceMarkDefs = (sourceMember.markDefs ?? []) as Array<
+            Record<string, unknown>
+          >;
+          const projectedMarkDefs = (projectedMember.markDefs ?? []) as Array<
+            Record<string, unknown>
+          >;
+          for (const mark of sourceMarkDefs) {
+            const markType = String(mark._type);
+            markTypeCounts[markType] = (markTypeCounts[markType] ?? 0) + 1;
+          }
+          if (
+            !isDeepStrictEqual(
+              projectedMarkDefs.map(({ _key, _type, customLink, variant }) => ({
+                _key,
+                _type,
+                customLink,
+                variant,
+              })),
+              sourceMarkDefs.map(({ _key, _type, customLink, variant }) => ({
+                _key,
+                _type,
+                customLink,
+                variant,
+              })),
+            ) ||
+            projectedMarkDefs.some(
+              (mark) =>
+                ["customLink", "buttonLink"].includes(String(mark._type)) &&
+                typeof mark.href !== "string",
+            )
+          ) {
+            throw new Error(`Rich Text link projection mismatch for ${slug}`);
+          }
+        }
+      }
+
+      nestedMembers += sourceRichText.length;
+    }
+
+    if (
+      nestedMembers !== 440 ||
+      !isDeepStrictEqual(memberTypeCounts, {
+        block: 418,
+        image: 11,
+        table: 5,
+        youtube: 4,
+        iframeEmbed: 2,
+      }) ||
+      !isDeepStrictEqual(markTypeCounts, {
+        customLink: 47,
+        buttonLink: 3,
+      })
+    ) {
+      throw new Error("The Rich Text corpus no longer matches the audited inventory");
+    }
+
+    console.log(
+      JSON.stringify(
+        {
+          dataset: DATASET,
+          mode: "rich-text-verify-only",
+          draftPages: richTextSources.length,
+          richTextBlocks: richTextBlockCount,
+          nestedMembers,
+          memberTypeCounts,
+          markTypeCounts,
+          verified: true,
+        },
+        null,
+        2,
+      ),
+    );
+    return;
   }
 
   const migratedHome = byId.get(HOME_PAGE_DRAFT_ID);

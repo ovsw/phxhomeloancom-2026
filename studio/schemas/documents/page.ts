@@ -62,6 +62,13 @@ export default defineType({
   fields: [
     defineField({ name: "title", type: "string", group: "content" }),
     defineField({
+      name: "description",
+      title: "Description",
+      type: "text",
+      rows: 3,
+      group: "content",
+    }),
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
@@ -94,6 +101,7 @@ export default defineType({
         { type: "personContactCta" },
         { type: "contactForm" },
         { type: "teamMembers" },
+        { type: "richTextBlock" },
       ],
       options: {
         insertMenu: {
@@ -122,6 +130,7 @@ export default defineType({
                 "personContactCta",
                 "contactForm",
                 "teamMembers",
+                "richTextBlock",
               ],
             },
           ],

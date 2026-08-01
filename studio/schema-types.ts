@@ -37,6 +37,7 @@ import locationMap from "./schemas/blocks/location-map";
 import personContactCta from "./schemas/blocks/person-contact-cta";
 import contactForm from "./schemas/blocks/contact-form";
 import teamMembers from "./schemas/blocks/team-members";
+import richTextBlock from "./schemas/blocks/rich-text-block";
 
 export const schemaTypes = [
   // documents
@@ -77,4 +78,5 @@ export const schemaTypes = [
   personContactCta,
   contactForm,
   teamMembers,
+  richTextBlock,
 ];

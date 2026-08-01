@@ -12,6 +12,8 @@ import { PAGE_QUERY_RESULT, PAGES_SLUGS_QUERY_RESULT } from "@/sanity.types";
 import { PAGE_QUERY } from "@/sanity/queries/page";
 import { draftMode } from "next/headers";
 import { Suspense } from "react";
+import { createDataAttribute, stegaClean } from "next-sanity";
+import { dataset, projectId } from "@/sanity/lib/env";
 
 function PageFallback() {
   return (
@@ -103,12 +105,51 @@ async function CachedPage({
     notFound();
   }
 
+  const blocks = page.blocks ?? [];
+  const isRichTextOnlyPage =
+    blocks.length > 0 && blocks.every((block) => block._type === "richTextBlock");
+  const rootDataAttribute = stega
+    ? (path: "description" | "title") =>
+        createDataAttribute({
+          baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+          dataset,
+          id: page._id,
+          path,
+          projectId,
+          type: "page",
+        }).toString()
+    : undefined;
+
   return (
-    <Blocks
-      blocks={page?.blocks ?? []}
-      documentId={page._id}
-      perspective={perspective}
-      stega={stega}
-    />
+    <>
+      {isRichTextOnlyPage && stegaClean(page.title)?.trim() ? (
+        <header className="border-b border-slate-200 bg-white py-14 md:py-20">
+          <div className="container">
+            <div className="max-w-4xl">
+              <h1
+                className="text-balance text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-slate-950"
+                data-sanity={rootDataAttribute?.("title")}
+              >
+                {page.title}
+              </h1>
+              {stegaClean(page.description)?.trim() ? (
+                <p
+                  className="mt-5 max-w-3xl text-pretty text-lg leading-8 text-slate-600 md:text-xl"
+                  data-sanity={rootDataAttribute?.("description")}
+                >
+                  {page.description}
+                </p>
+              ) : null}
+            </div>
+          </div>
+        </header>
+      ) : null}
+      <Blocks
+        blocks={blocks}
+        documentId={page._id}
+        perspective={perspective}
+        stega={stega}
+      />
+    </>
   );
 }

@@ -17,11 +17,14 @@ import { locationMapQuery } from "./location-map";
 import { personContactCtaQuery } from "./person-contact-cta";
 import { contactFormQuery } from "./contact-form";
 import { teamMembersQuery } from "./team-members";
+import { richTextBlockQuery } from "./rich-text-block";
 
 export const PAGE_QUERY = groq`
   *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
     _id,
     _type,
+    title,
+    description,
     blocks[]{
       _key,
       _type,
@@ -41,7 +44,8 @@ export const PAGE_QUERY = groq`
       ${locationMapQuery},
       ${personContactCtaQuery},
       ${contactFormQuery},
-      ${teamMembersQuery}
+      ${teamMembersQuery},
+      ${richTextBlockQuery}
     },
     ${metaQuery},
   }
