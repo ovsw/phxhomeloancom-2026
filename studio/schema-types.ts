@@ -5,7 +5,9 @@ import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
-import navigation from "./schemas/documents/navigation";
+import navigation, {
+  navigationSchemaTypes,
+} from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
 import teamMember from "./schemas/documents/team-member";
 import blogIndex from "./schemas/documents/blog-index";
@@ -50,6 +52,7 @@ export const schemaTypes = [
   faq,
   testimonial,
   navigation,
+  ...navigationSchemaTypes,
   settings,
   teamMember,
   blogIndex,

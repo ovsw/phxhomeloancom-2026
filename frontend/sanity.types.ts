@@ -807,6 +807,137 @@ export type Link = {
   buttonVariant?: ButtonVariant;
 };
 
+export type TeamMember = {
+  _id: string;
+  _type: "teamMember";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  role?: string;
+  nmlsId?: string;
+  email?: string;
+  phone?: string;
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  bio?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  sortOrder?: number;
+};
+
+export type Settings = {
+  _id: string;
+  _type: "settings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  logo?: {
+    dark?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    light?: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    width?: number;
+    height?: number;
+  };
+  siteName?: string;
+  copyright?: BlockContent;
+};
+
+export type NavigationAction = {
+  _type: "navigationAction";
+  label?: string;
+  destination?: NavigationDestination;
+};
+
+export type NavigationGroup = {
+  _type: "navigationGroup";
+  label?: string;
+  links?: Array<
+    {
+      _key: string;
+    } & NavigationChildLink
+  >;
+};
+
+export type NavigationLink = {
+  _type: "navigationLink";
+  label?: string;
+  destination?: NavigationDestination;
+};
+
+export type NavigationChildLink = {
+  _type: "navigationChildLink";
+  label?: string;
+  description?: string;
+  icon?:
+    | "award"
+    | "building-2"
+    | "chevron-right"
+    | "home"
+    | "key"
+    | "list-collapse"
+    | "refresh-cw"
+    | "shield-check"
+    | "shield-plus"
+    | "users-2";
+  destination?: NavigationDestination;
+};
+
+export type CategoryReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "category";
+};
+
+export type BlogIndexReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "blogIndex";
+};
+
+export type NavigationDestination = {
+  _type: "navigationDestination";
+  kind?: "internal" | "external";
+  internal?:
+    PageReference | PostReference | CategoryReference | BlogIndexReference;
+  external?: string;
+  openInNewTab?: boolean;
+};
+
 export type BlogIndex = {
   _id: string;
   _type: "blogIndex";
@@ -877,84 +1008,24 @@ export type BlogIndex = {
   meta?: Meta;
 };
 
-export type TeamMember = {
-  _id: string;
-  _type: "teamMember";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name?: string;
-  role?: string;
-  nmlsId?: string;
-  email?: string;
-  phone?: string;
-  image?: {
-    asset?: SanityImageAssetReference;
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  bio?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
-  sortOrder?: number;
-};
-
-export type Settings = {
-  _id: string;
-  _type: "settings";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  logo?: {
-    dark?: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-    light?: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    };
-    width?: number;
-    height?: number;
-  };
-  siteName?: string;
-  copyright?: BlockContent;
-};
-
 export type Navigation = {
   _id: string;
   _type: "navigation";
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  links?: Array<
+  items?: Array<
+    | ({
+        _key: string;
+      } & NavigationLink)
+    | ({
+        _key: string;
+      } & NavigationGroup)
+  >;
+  actions?: Array<
     {
       _key: string;
-    } & Link
+    } & NavigationAction
   >;
 };
 
@@ -1004,13 +1075,6 @@ export type AuthorReference = {
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "author";
-};
-
-export type CategoryReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "category";
 };
 
 export type Post = {
@@ -1312,15 +1376,21 @@ export type AllSanitySchemaTypes =
   | ButtonVariant
   | ColorVariant
   | Link
-  | BlogIndex
   | TeamMember
   | Settings
+  | NavigationAction
+  | NavigationGroup
+  | NavigationLink
+  | NavigationChildLink
+  | CategoryReference
+  | BlogIndexReference
+  | NavigationDestination
+  | BlogIndex
   | Navigation
   | Testimonial
   | Faq
   | Category
   | AuthorReference
-  | CategoryReference
   | Post
   | Author
   | Slug
@@ -3572,16 +3642,55 @@ export type ELIGIBLE_BLOG_POSTS_COUNT_QUERY_RESULT = number;
 
 // Source: ../frontend/sanity/queries/navigation.ts
 // Variable: NAVIGATION_QUERY
-// Query: *[_type == "navigation"]{    _type,    _key,    links  }
-export type NAVIGATION_QUERY_RESULT = Array<{
-  _type: "navigation";
-  _key: null;
-  links: Array<
-    {
-      _key: string;
-    } & Link
+// Query: *[_type == "navigation" && _id == "navigation"][0]{    _id,    items[]{      _key,      _type == "navigationLink" => {        "kind": "link",        label,        destination{  openInNewTab,  "href": select(    kind == "internal" => select(      internal->_id == "blogIndex" => "/blog/",      select(  internal->slug.current == "index" => "/",  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",  defined(internal->slug.current) => "/" + internal->slug.current + "/")    ),    kind == "external" => external  )}      },      _type == "navigationGroup" => {        "kind": "group",        label,        links[]{          _key,          label,          description,          icon,          destination{  openInNewTab,  "href": select(    kind == "internal" => select(      internal->_id == "blogIndex" => "/blog/",      select(  internal->slug.current == "index" => "/",  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",  defined(internal->slug.current) => "/" + internal->slug.current + "/")    ),    kind == "external" => external  )}        }      }    },    actions[]{      _key,      label,      destination{  openInNewTab,  "href": select(    kind == "internal" => select(      internal->_id == "blogIndex" => "/blog/",      select(  internal->slug.current == "index" => "/",  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",  defined(internal->slug.current) => "/" + internal->slug.current + "/")    ),    kind == "external" => external  )}    }  }
+export type NAVIGATION_QUERY_RESULT = {
+  _id: "navigation";
+  items: Array<
+    | {
+        _key: string;
+        kind: "link";
+        label: string | null;
+        destination: {
+          openInNewTab: boolean | null;
+          href: string | null | "/" | "/blog/";
+        } | null;
+      }
+    | {
+        _key: string;
+        kind: "group";
+        label: string | null;
+        links: Array<{
+          _key: string;
+          label: string | null;
+          description: string | null;
+          icon:
+            | "award"
+            | "building-2"
+            | "chevron-right"
+            | "home"
+            | "key"
+            | "list-collapse"
+            | "refresh-cw"
+            | "shield-check"
+            | "shield-plus"
+            | "users-2"
+            | null;
+          destination: {
+            openInNewTab: boolean | null;
+            href: string | null | "/" | "/blog/";
+          } | null;
+        }> | null;
+      }
   > | null;
-}>;
+  actions: Array<{
+    _key: string;
+    label: string | null;
+    destination: {
+      openInNewTab: boolean | null;
+      href: string | null | "/" | "/blog/";
+    } | null;
+  }> | null;
+} | null;
 
 // Source: ../frontend/sanity/queries/page.ts
 // Variable: PAGE_QUERY
@@ -4837,7 +4946,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "post" && defined(slug.current) && defined(publishedAt) && _id != $latestPostId]\n    | order(publishedAt desc, _createdAt desc, _id asc)[$start...$end]{\n      \n  _id,\n  title,\n  slug,\n  publishedAt,\n  "excerpt": pt::text(excerpt),\n  image {\n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n},\n  categories[]->{_id, title}\n\n    }\n': REGULAR_POSTS_QUERY_RESULT;
     '\n  count(*[_type == "post" && defined(slug.current) && defined(publishedAt) && _id != $latestPostId])\n': REGULAR_POSTS_COUNT_QUERY_RESULT;
     '\n  count(*[_type == "post" && defined(slug.current) && defined(publishedAt)])\n': ELIGIBLE_BLOG_POSTS_COUNT_QUERY_RESULT;
-    '\n  *[_type == "navigation"]{\n    _type,\n    _key,\n    links\n  }\n': NAVIGATION_QUERY_RESULT;
+    '\n  *[_type == "navigation" && _id == "navigation"][0]{\n    _id,\n    items[]{\n      _key,\n      _type == "navigationLink" => {\n        "kind": "link",\n        label,\n        destination{\n  openInNewTab,\n  "href": select(\n    kind == "internal" => select(\n      internal->_id == "blogIndex" => "/blog/",\n      select(\n  internal->slug.current == "index" => "/",\n  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",\n  defined(internal->slug.current) => "/" + internal->slug.current + "/"\n)\n    ),\n    kind == "external" => external\n  )\n}\n      },\n      _type == "navigationGroup" => {\n        "kind": "group",\n        label,\n        links[]{\n          _key,\n          label,\n          description,\n          icon,\n          destination{\n  openInNewTab,\n  "href": select(\n    kind == "internal" => select(\n      internal->_id == "blogIndex" => "/blog/",\n      select(\n  internal->slug.current == "index" => "/",\n  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",\n  defined(internal->slug.current) => "/" + internal->slug.current + "/"\n)\n    ),\n    kind == "external" => external\n  )\n}\n        }\n      }\n    },\n    actions[]{\n      _key,\n      label,\n      destination{\n  openInNewTab,\n  "href": select(\n    kind == "internal" => select(\n      internal->_id == "blogIndex" => "/blog/",\n      select(\n  internal->slug.current == "index" => "/",\n  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",\n  defined(internal->slug.current) => "/" + internal->slug.current + "/"\n)\n    ),\n    kind == "external" => external\n  )\n}\n    }\n  }\n': NAVIGATION_QUERY_RESULT;
     '\n  *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{\n    _id,\n    _type,\n    title,\n    description,\n    \n  blocks[]{\n    _key,\n    _type,\n    \n  _type == "homeHero" => {\n    marketPositioning,\n    servicePromise,\n    richText[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    },\n    portraitImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    backgroundImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    mobileBackgroundImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n    \n  _type == "loanFeatureCards" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    "cards": array::compact(cards[]{\n      _key,\n      _type,\n      title,\n      icon,\n      bullets,\n      link{\n        openInNewTab,\n        "href": select(\n          type == "internal" => select(\n  internal->slug.current == "index" => "/",\n  string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",\n  defined(internal->slug.current) => "/" + internal->slug.current + "/"\n),\n          type == "external" => external,\n          href\n        )\n      }\n    })\n  }\n,\n    \n  _type == "videoFeature" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    richText[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    },\n    youtubeUrl,\n    thumbnailImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n    \n  _type == "phxEmbedSocialReviews" => {\n    iframeTitle,\n    iframeSrc,\n    resizerScriptSrc\n  }\n,\n    \n  _type == "latestArticles" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    description,\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    },\n    fallbackImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    "articles": *[\n      _type == "post" &&\n      defined(slug.current) &&\n      meta.noindex != true &&\n      seoHideFromLists != true &&\n      seoNoIndex != true\n    ] | order(\n      coalesce(publishedAt, _createdAt) desc,\n      _updatedAt desc\n    )[0...6]{\n      _type,\n      _id,\n      title,\n      "description": coalesce(meta.description, pt::text(excerpt)),\n      "slug": slug.current,\n      "publishedAt": coalesce(publishedAt, _createdAt),\n      image{\n        \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n      },\n      categories[]->{\n        _id,\n        title\n      }\n    }\n  }\n,\n    \n  _type == "faqAccordion" => {\n    eyebrow,\n    title,\n    subtitle,\n    "faqs": array::compact(faqs[]{\n      _key,\n      "_id": @->._id,\n      "_type": @->._type,\n      "title": @->.title,\n      "answer": coalesce(@->.richText, @->.body)[]{\n        \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n      }\n    }),\n    link{\n      title,\n      description,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    }\n  }\n,\n    \n  _type == "awardCta" => {\n    highlight,\n    title,\n    description,\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    }\n  }\n,\n    \n  _type == "pageHeader" => {\n    eyebrow,\n    title,\n    description,\n    statistics[]{\n      _key,\n      _type,\n      value,\n      description\n    }\n  }\n,\n    \n  _type == "storyFeature" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    image {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    imageCaption,\n    richText[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "customLink" => {\n          "_type": "link",\n          "href": select(\n            customLink.type == "internal" => select(\n  customLink.internal->slug.current == "index" => "/",\n  string::startsWith(customLink.internal->slug.current, "/") => customLink.internal->slug.current + "/",\n  defined(customLink.internal->slug.current) => "/" + customLink.internal->slug.current + "/"\n),\n            customLink.type == "external" => customLink.external,\n            customLink.href\n          ),\n          "openInNewTab": customLink.openInNewTab\n        }\n      }\n    },\n    keyDetails {\n      title,\n      items[]\n    },\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    }\n  }\n,\n    \n  _type == "bigVideoFeature" => {\n    eyebrow,\n    title,\n    description,\n    youtubeUrl,\n    thumbnailImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n    \n  _type == "editorialChapter" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    richText[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    supportingContent[]{\n      _key,\n      _type,\n      _type == "quoteCallout" => {\n        quote,\n        context\n      },\n      _type == "proofPoints" => {\n        items[]{\n          _key,\n          _type,\n          title,\n          description\n        }\n      },\n      _type == "impactStatement" => {\n        statement,\n        label,\n        description\n      }\n    }\n  }\n,\n    \n  _type == "youtubeChannelFeature" => {\n    eyebrow,\n    title,\n    richText[]{\n      ...\n    },\n    facts[]{\n      _key,\n      _type,\n      label,\n      value\n    },\n    channelImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    mobileChannelImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    youtubeButton {\n      label,\n      url\n    }\n  }\n,\n    \n  _type == "personCta" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    richText[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    keyDetails {\n      _type,\n      title,\n      items[]\n    },\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    },\n    personImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n    \n  _type == "locationMap" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    businessName,\n    credentialLine,\n    address {\n      street,\n      city,\n      region,\n      postalCode,\n      country\n    },\n    directionsLabel,\n    directionsUrl,\n    mapEmbedUrl,\n    mapTitle,\n    image {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    imageEyebrow,\n    imageTitle\n  }\n,\n    \n  _type == "personContactCta" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    credentialLine,\n    contactMethods[]{\n      _key,\n      _type,\n      type,\n      label,\n      href\n    },\n    personImage {\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n    \n  _type == "contactForm" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    description,\n    officeHoursTitle,\n    officeHours[]{\n      _key,\n      _type,\n      days,\n      hours\n    },\n    formTitle,\n    nameField {\n      label,\n      placeholder\n    },\n    emailField {\n      label,\n      placeholder\n    },\n    phoneField {\n      label,\n      placeholder\n    },\n    messageField {\n      label,\n      placeholder\n    },\n    submitLabel,\n    privacyNote,\n    unavailableMessage\n  }\n,\n    \n  _type == "teamMembers" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    richText[]{\n      \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n    },\n    members[]{\n      _key,\n      _type,\n      "_ref": _ref,\n      "document": @->{\n        _id,\n        _type,\n        name,\n        role,\n        nmlsId,\n        email,\n        phone,\n        sortOrder,\n        image {\n          \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n        },\n        bio[]{\n          \n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n\n        }\n      }\n    }\n  }\n,\n    \n  _type == "richTextBlock" => {\n    eyebrow,\n    title,\n    richText[]{\n      \n  ...,\n  _type == "block" => {\n    ...,\n    children[]{...},\n    markDefs[]{\n      ...,\n      _type in ["customLink", "buttonLink"] => {\n        "href": select(\n          customLink.type == "internal" => select(\n  customLink.internal->slug.current == "index" => "/",\n  string::startsWith(customLink.internal->slug.current, "/") => customLink.internal->slug.current + "/",\n  defined(customLink.internal->slug.current) => "/" + customLink.internal->slug.current + "/"\n),\n          customLink.type == "external" => customLink.external,\n          customLink.href\n        ),\n        "openInNewTab": customLink.openInNewTab\n      }\n    }\n  },\n  _type == "image" => {\n    ...,\n    "resolvedAsset": asset->{\n      _id,\n      url,\n      mimeType,\n      metadata {\n        lqip,\n        dimensions {\n          width,\n          height\n        }\n      }\n    }\n  },\n  _type == "table" => {\n    ...,\n    rows[]{\n      ...,\n      cells[]\n    }\n  }\n\n    }\n  }\n,\n    \n  _type == "advisorCta" => {\n    useCreamBackground,\n    eyebrow,\n    title,\n    richText[]{\n  ...,\n  markDefs[]{\n    ...,\n    _type == "link" => {\n      \n    _key,\n    ...,\n    "href": select(\n      isExternal => href,\n      defined(href) && !defined(internalLink) => href,\n      select(\n  @.internalLink->slug.current == "index" => "/",\n  string::startsWith(@.internalLink->slug.current, "/") => @.internalLink->slug.current + "/",\n  defined(@.internalLink->slug.current) => "/" + @.internalLink->slug.current + "/"\n)\n    )\n\n    }\n  },\n  _type == "image" => {\n    \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n  }\n},\n    buttons[]{\n      _key,\n      _type,\n      text,\n      variant,\n      "openInNewTab": url.openInNewTab,\n      "href": select(\n        url.type == "internal" => select(\n  url.internal->slug.current == "index" => "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n        url.type == "external" => url.external,\n        url.href\n      )\n    },\n    portraitImage {\n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n}\n  }\n\n  }\n,\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n  }\n': PAGE_QUERY_RESULT;
     '*[_type == "page" && defined(slug)]{slug}': PAGES_SLUGS_QUERY_RESULT;
     '*[_type == "post" && slug.current == $slug][0]{\n    // richTextContent V2\n    _id,\n    _type,\n    title,\n    slug,\n    publishedAt,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    body[]{\n      \n  ...,\n  _type == "block" => {\n    ...,\n    children[]{...},\n    markDefs[]{\n      ...,\n      _type in ["customLink", "buttonLink"] => {\n        "href": select(\n          customLink.type == "internal" => select(\n  customLink.internal->slug.current == "index" => "/",\n  string::startsWith(customLink.internal->slug.current, "/") => customLink.internal->slug.current + "/",\n  defined(customLink.internal->slug.current) => "/" + customLink.internal->slug.current + "/"\n),\n          customLink.type == "external" => customLink.external,\n          customLink.href\n        ),\n        "openInNewTab": customLink.openInNewTab\n      }\n    }\n  },\n  _type == "image" => {\n    ...,\n    "resolvedAsset": asset->{\n      _id,\n      url,\n      mimeType,\n      metadata {\n        lqip,\n        dimensions {\n          width,\n          height\n        }\n      }\n    }\n  },\n  _type == "table" => {\n    ...,\n    rows[]{\n      ...,\n      cells[]\n    }\n  }\n\n    },\n    author->{\n      name,\n      image {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    _createdAt,\n    _updatedAt,\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n}': POST_QUERY_RESULT;

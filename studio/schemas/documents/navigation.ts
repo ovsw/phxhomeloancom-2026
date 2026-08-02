@@ -1,22 +1,203 @@
-import { defineField, defineType } from "sanity";
-import { Menu } from "lucide-react";
+import { LinkIcon, Menu, PanelsTopLeft, Sparkles } from "lucide-react";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
-export default defineType({
+const destination = defineType({
+  name: "navigationDestination",
+  title: "Destination",
+  type: "object",
+  fields: [
+    defineField({
+      name: "kind",
+      title: "Destination type",
+      type: "string",
+      initialValue: "internal",
+      options: {
+        layout: "radio",
+        list: [
+          { title: "Internal", value: "internal" },
+          { title: "External", value: "external" },
+        ],
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "internal",
+      title: "Internal destination",
+      type: "reference",
+      to: [
+        { type: "page" },
+        { type: "post" },
+        { type: "category" },
+        { type: "blogIndex" },
+      ],
+      hidden: ({ parent }) => parent?.kind !== "internal",
+      validation: (rule) =>
+        rule.custom((value, context) =>
+          (context.parent as { kind?: string } | undefined)?.kind === "internal" && !value
+            ? "Select an internal destination"
+            : true,
+        ),
+    }),
+    defineField({
+      name: "external",
+      title: "External URL or root-relative path",
+      type: "string",
+      hidden: ({ parent }) => parent?.kind !== "external",
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          if ((context.parent as { kind?: string } | undefined)?.kind !== "external") {
+            return true;
+          }
+          if (!value) return "Enter a destination";
+          return /^(https?:\/\/|mailto:|tel:|\/)/.test(value)
+            ? true
+            : "Use an absolute URL, mailto:, tel:, or a root-relative path";
+        }),
+    }),
+    defineField({
+      name: "openInNewTab",
+      title: "Open in a new tab",
+      type: "boolean",
+      initialValue: false,
+    }),
+  ],
+  validation: (rule) => rule.required(),
+});
+
+const childLink = defineType({
+  name: "navigationChildLink",
+  title: "Rich navigation link",
+  type: "object",
+  icon: LinkIcon,
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "description",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "icon",
+      type: "string",
+      options: {
+        list: [
+          "award",
+          "building-2",
+          "chevron-right",
+          "home",
+          "key",
+          "list-collapse",
+          "refresh-cw",
+          "shield-check",
+          "shield-plus",
+          "users-2",
+        ],
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({ name: "destination", type: "navigationDestination" }),
+  ],
+  preview: {
+    select: { title: "label", subtitle: "description" },
+  },
+});
+
+const directLink = defineType({
+  name: "navigationLink",
+  title: "Direct link",
+  type: "object",
+  icon: LinkIcon,
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({ name: "destination", type: "navigationDestination" }),
+  ],
+  preview: { select: { title: "label" } },
+});
+
+const group = defineType({
+  name: "navigationGroup",
+  title: "Link group",
+  type: "object",
+  icon: PanelsTopLeft,
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "links",
+      type: "array",
+      of: [defineArrayMember({ type: "navigationChildLink" })],
+      validation: (rule) => rule.required().min(1).unique(),
+    }),
+  ],
+  preview: {
+    select: { title: "label", links: "links" },
+    prepare: ({ title, links = [] }) => ({
+      title,
+      subtitle: `${links.length} link${links.length === 1 ? "" : "s"}`,
+    }),
+  },
+});
+
+const action = defineType({
+  name: "navigationAction",
+  title: "Navigation action",
+  type: "object",
+  icon: Sparkles,
+  fields: [
+    defineField({
+      name: "label",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({ name: "destination", type: "navigationDestination" }),
+  ],
+  preview: { select: { title: "label" } },
+});
+
+const navigation = defineType({
   name: "navigation",
-  title: "Navigation",
+  title: "Site Navigation",
   type: "document",
   icon: Menu,
   fields: [
     defineField({
-      name: "links",
-      title: "Links",
+      name: "items",
+      title: "Primary navigation",
       type: "array",
-      of: [{ type: "link" }],
+      of: [
+        defineArrayMember({ type: "navigationLink" }),
+        defineArrayMember({ type: "navigationGroup" }),
+      ],
+      validation: (rule) => rule.required().min(1).unique(),
+    }),
+    defineField({
+      name: "actions",
+      title: "Calls to action",
+      type: "array",
+      of: [defineArrayMember({ type: "navigationAction" })],
+      validation: (rule) => rule.unique(),
     }),
   ],
-  preview: {
-    prepare() {
-      return { title: "Navigation" };
-    },
-  },
+  preview: { prepare: () => ({ title: "Site Navigation" }) },
 });
+
+export const navigationSchemaTypes = [
+  destination,
+  childLink,
+  directLink,
+  group,
+  action,
+];
+
+export default navigation;
