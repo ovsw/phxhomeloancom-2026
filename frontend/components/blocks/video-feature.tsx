@@ -90,16 +90,16 @@ export default function VideoFeature({
       aria-labelledby={cleanTitle ? headingId : undefined}
       className={cn(
         "py-20 md:py-24 lg:py-28",
-        useCreamBackground ? "bg-[#f7f4ed]" : "bg-white",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       id="video-feature"
     >
-      <div className="container grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-[72px]">
+      <div className="mx-auto grid w-full max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-[72px] lg:px-8">
         <div className="flex flex-col gap-3.5">
           <div className="overflow-hidden rounded-[14px] bg-[#0c1329] shadow-[0_28px_64px_rgba(19,28,59,0.22)]">
             <button
               aria-label={playLabel}
-              className="group relative block aspect-video w-full overflow-hidden rounded-[10px] bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-700 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+              className="group relative block aspect-video w-full overflow-hidden rounded-[10px] bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               disabled={!embedUrl}
               onClick={() => {
                 if (embedUrl) setIsLightboxOpen(true);
@@ -110,7 +110,7 @@ export default function VideoFeature({
               {thumbnailImage?.asset?._id ? (
                 <Image
                   alt={thumbnailImage.alt || videoLabel}
-                  className="object-cover"
+                  className="rounded-none object-cover"
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   src={urlFor(thumbnailImage).width(1280).height(720).url()}
@@ -136,27 +136,27 @@ export default function VideoFeature({
               </span>
             </button>
           </div>
-          <p className="pl-6 text-sm font-semibold uppercase tracking-[0.04em] text-slate-600">
+          <p className="pl-6 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
             ▶ {cleanTitle ? title : "Video"} · 2 min
           </p>
         </div>
 
         <div className="flex max-w-2xl flex-col gap-5">
           {cleanEyebrow ? (
-            <p className="text-xs font-semibold uppercase leading-none tracking-[0.22em] text-cyan-800">
+            <p className="text-xs font-semibold uppercase leading-none tracking-[0.22em] text-primary">
               {eyebrow}
             </p>
           ) : null}
           {cleanTitle ? (
             <h2
-              className="text-balance text-3xl font-semibold leading-tight tracking-normal text-slate-950 md:text-[42px]"
+              className="text-balance font-display text-3xl font-semibold leading-tight tracking-normal text-foreground md:text-[42px]"
               id={headingId}
             >
               {title}
             </h2>
           ) : null}
           {richText?.length ? (
-            <div className="text-pretty text-base leading-7 text-slate-600 [&_p]:my-0">
+            <div className="text-pretty text-base leading-7 text-muted-foreground [&_p]:my-0">
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
@@ -176,7 +176,7 @@ export default function VideoFeature({
                     className={cn(
                       "h-12 rounded-[9px] px-7 text-[15px]",
                       secondary &&
-                        "border-slate-300 bg-transparent text-slate-950 shadow-none hover:border-slate-950 hover:bg-transparent hover:text-slate-950",
+                        "border-[var(--phx-border-strong)] bg-transparent text-foreground shadow-none hover:border-foreground hover:bg-transparent hover:text-foreground",
                     )}
                     key={button._key}
                     size="lg"

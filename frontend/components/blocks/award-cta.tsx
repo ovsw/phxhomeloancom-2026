@@ -12,7 +12,10 @@ type AwardCtaProps = Extract<
 
 type Particle = {
   id: number;
-  dotStyle: CSSProperties;
+  dotStyle: CSSProperties & {
+    "--particle-delay": string;
+    "--particle-duration": string;
+  };
   outerStyle: CSSProperties;
 };
 
@@ -52,8 +55,8 @@ function createParticles(): Particle[] {
         top: `${y.toFixed(3)}%`,
       },
       dotStyle: {
-        animationDelay: `${delay.toFixed(2)}s`,
-        animationDuration: `${duration.toFixed(2)}s`,
+        "--particle-delay": `${delay.toFixed(2)}s`,
+        "--particle-duration": `${duration.toFixed(2)}s`,
         boxShadow: `0 0 ${glow.toFixed(1)}px ${(glow * 0.35).toFixed(1)}px rgba(255,255,255,.55)`,
         height: `${size.toFixed(2)}px`,
         width: `${size.toFixed(2)}px`,
@@ -79,7 +82,7 @@ function ParticleField() {
           style={particle.outerStyle}
         >
           <span
-            className="block animate-pulse rounded-full bg-white motion-reduce:animate-none"
+            className="particle-dot block rounded-full bg-white"
             style={particle.dotStyle}
           />
         </span>
@@ -134,7 +137,7 @@ export default function AwardCta({
 }: AwardCtaProps) {
   return (
     <section
-      className="relative isolate overflow-hidden bg-[#080d1e] py-20 text-white md:py-28 lg:py-[7.5rem]"
+      className="relative isolate overflow-hidden bg-[var(--phx-navy-800)] py-20 text-white md:py-28 lg:py-[7.5rem]"
       id="award-cta"
     >
       <div
@@ -143,12 +146,12 @@ export default function AwardCta({
       />
       <ParticleField />
 
-      <div className="container relative z-10 flex flex-col items-center justify-center gap-10 text-center lg:flex-row lg:gap-20 lg:text-left xl:gap-[5.25rem]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[70rem] flex-col items-center justify-center gap-10 px-4 text-center md:px-6 lg:flex-row lg:gap-20 lg:px-0 lg:text-left xl:gap-[5.25rem]">
         <div className="flex shrink-0 justify-center">
           <div className="relative aspect-[900/1256] h-[17rem] md:h-[22rem] lg:h-[28.75rem]">
             <Image
               alt="Top 1% award trophy"
-              className="object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.5)]"
+              className="rounded-none object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.5)]"
               fill
               sizes="(min-width: 1024px) 420px, 70vw"
               src={TROPHY_SRC}
@@ -175,7 +178,7 @@ export default function AwardCta({
                 return (
                   <Button
                     asChild
-                    className="h-14 w-full rounded-[9px] bg-cyan-700 px-8 text-base font-semibold text-white shadow-[0_14px_40px_-12px_rgba(31,110,140,0.72)] transition-[background-color,box-shadow,transform] hover:-translate-y-0.5 hover:bg-cyan-600 hover:text-white hover:shadow-[0_20px_50px_-12px_rgba(31,110,140,0.86)] focus-visible:ring-cyan-500/40 sm:w-auto"
+                    className="h-14 w-full rounded-[9px] bg-primary px-8 text-base font-semibold text-primary-foreground shadow-[0_14px_40px_-12px_rgba(31,110,140,0.72)] transition-[background-color,box-shadow,transform] hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_20px_50px_-12px_rgba(31,110,140,0.86)] focus-visible:ring-primary/40 sm:w-auto"
                     key={button._key || `${href}-${index}`}
                     size="lg"
                   >

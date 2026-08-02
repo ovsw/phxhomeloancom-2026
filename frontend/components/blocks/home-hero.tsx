@@ -24,7 +24,7 @@ function BackgroundImage({
       {desktop?.asset?._id ? (
         <Image
           aria-hidden="true"
-          className={mobile?.asset?._id ? "hidden object-cover sm:block" : "object-cover"}
+          className={mobile?.asset?._id ? "hidden rounded-none object-cover object-[center_62%] sm:block" : "rounded-none object-cover object-[center_62%]"}
           fill
           priority
           sizes="100vw"
@@ -35,7 +35,7 @@ function BackgroundImage({
       {mobile?.asset?._id ? (
         <Image
           aria-hidden="true"
-          className={desktop?.asset?._id ? "object-cover sm:hidden" : "object-cover"}
+          className={desktop?.asset?._id ? "rounded-none object-cover sm:hidden" : "rounded-none object-cover"}
           fill
           priority
           sizes="100vw"
@@ -58,7 +58,7 @@ export default function HomeHero({
 }: HomeHeroProps) {
   return (
     <section
-      className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-[#080d1e] text-white md:min-h-[min(860px,92svh)]"
+      className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-[var(--phx-navy-900)] text-white md:min-h-[min(860px,92svh)]"
       id="home-hero"
     >
       <div className="absolute inset-0 -z-20">
@@ -71,7 +71,7 @@ export default function HomeHero({
       {portraitImage?.asset?._id ? (
         <div className="pointer-events-none absolute bottom-0 right-[max(calc((100vw-80rem)/2),1.5rem)] z-10 hidden h-[82%] w-[min(48vw,44rem)] lg:block">
           <Image
-            className="object-contain object-bottom drop-shadow-[0_30px_60px_rgba(4,8,20,.55)]"
+            className="rounded-none object-contain object-left-bottom drop-shadow-[0_30px_60px_rgba(4,8,20,.55)]"
             fill
             priority
             sizes="(min-width: 1024px) 48vw, 0px"
@@ -80,16 +80,16 @@ export default function HomeHero({
           />
         </div>
       ) : null}
-      <div className="container relative z-20 flex min-h-[calc(100svh-4.5rem)] items-center py-20 md:min-h-[min(860px,92svh)] md:py-24">
+      <div className="relative z-20 mx-auto flex min-h-[calc(100svh-4.5rem)] w-full max-w-7xl items-center px-4 py-20 sm:px-6 md:min-h-[min(860px,92svh)] md:px-8 md:py-24 lg:px-10">
         <div className="flex w-full max-w-[37.5rem] flex-col gap-6">
           {marketPositioning ? <p className="sr-only">{marketPositioning}</p> : null}
           {servicePromise ? (
-            <h1 className="text-balance text-[clamp(2.75rem,4.6vw,4.125rem)] font-semibold leading-[1.08] tracking-normal text-white">
+            <h1 className="text-balance font-display text-[clamp(2.75rem,4.6vw,4.125rem)] font-semibold leading-[1.08] tracking-normal text-white">
               {servicePromise}
             </h1>
           ) : null}
           {richText ? (
-            <div className="max-w-[34rem] text-base leading-8 text-white/80 sm:text-lg">
+            <div className="max-w-[34rem] text-base leading-8 text-white/80 sm:text-lg [&_a]:!text-white [&_p]:!my-0">
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
@@ -105,15 +105,17 @@ export default function HomeHero({
                     asChild
                     className={secondary
                       ? "h-12 w-full rounded-[9px] border-white/35 bg-transparent px-6 text-base font-semibold text-white shadow-none hover:border-white/50 hover:bg-white/10 hover:text-white sm:w-auto md:h-[3.25rem] md:px-7"
-                      : "h-12 w-full rounded-[9px] bg-cyan-700 px-6 text-base font-semibold text-white shadow-[0_12px_28px_rgba(31,110,140,.28)] hover:bg-cyan-600 sm:w-auto md:h-[3.25rem] md:px-7"}
+                      : "h-12 w-full rounded-[9px] bg-primary px-6 text-base font-semibold text-primary-foreground shadow-[0_12px_28px_rgba(31,110,140,.28)] hover:bg-accent-hover sm:w-auto md:h-[3.25rem] md:px-7"}
                     key={button._key || `${button.href}-${index}`}
                     size="lg"
                     variant={secondary ? "outline" : "default"}
                   >
                     <Link
+                      aria-label={`Navigate to ${label}`}
                       href={button.href}
                       rel={button.openInNewTab ? "noopener noreferrer" : undefined}
-                      target={button.openInNewTab ? "_blank" : undefined}
+                      target={button.openInNewTab ? "_blank" : "_self"}
+                      title={`Click to visit ${label}`}
                     >
                       {label}
                     </Link>
