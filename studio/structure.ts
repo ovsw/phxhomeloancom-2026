@@ -8,6 +8,7 @@ import {
   Menu,
   Settings,
   Newspaper,
+  PanelBottom,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -77,6 +78,15 @@ export const structure = (S: any, context: any) =>
             .id("navigation")
             .schemaType("navigation")
             .documentId("navigation")
+        ),
+      S.listItem()
+        .title("Site Footer")
+        .icon(PanelBottom)
+        .child(
+          S.editor()
+            .id("footer")
+            .schemaType("footer")
+            .documentId("footer")
         ),
       S.listItem()
         .title("Settings")
