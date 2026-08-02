@@ -76,6 +76,7 @@ export default defineType({
       title: "Published At",
       type: "datetime",
       group: "settings",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "image",

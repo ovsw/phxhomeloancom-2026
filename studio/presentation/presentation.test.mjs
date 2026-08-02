@@ -23,6 +23,10 @@ test("resolves a normal post slug to a canonical path", () => {
   assert.equal(getPresentationPath("post", "mortgage-process"), "/mortgage-process/");
 });
 
+test("resolves the Blog Index singleton without an authored slug", () => {
+  assert.equal(getPresentationPath("blogIndex"), "/blog/");
+});
+
 test("missing and empty slugs disable Presentation navigation", () => {
   assert.equal(getPresentationPath("page", undefined), null);
   assert.equal(getPresentationPath("page", ""), null);
@@ -42,5 +46,6 @@ test("an existing draft is authoritative when resolving its slug", () => {
 test("unsupported document types do not expose the action", () => {
   assert.equal(isPresentationDocumentType("page"), true);
   assert.equal(isPresentationDocumentType("post"), true);
+  assert.equal(isPresentationDocumentType("blogIndex"), true);
   assert.equal(isPresentationDocumentType("author"), false);
 });

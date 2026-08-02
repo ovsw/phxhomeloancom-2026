@@ -38,8 +38,18 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         ],
       }),
     }),
+    blogIndex: defineLocations({
+      select: { title: "title" },
+      resolve: (doc) => ({
+        locations: [{ title: doc?.title || "Blog Index", href: "/blog/" }],
+      }),
+    }),
   },
   mainDocuments: defineDocuments([
+    {
+      route: "/blog/",
+      filter: `_id == "blogIndex"`,
+    },
     {
       route: "/",
       filter: `_type == 'page' && slug.current == 'index'`,

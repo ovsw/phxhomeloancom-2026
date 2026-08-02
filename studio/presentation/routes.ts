@@ -1,4 +1,4 @@
-const PRESENTATION_DOCUMENT_TYPES = new Set(["page", "post"]);
+const PRESENTATION_DOCUMENT_TYPES = new Set(["page", "post", "blogIndex"]);
 
 function readSlug(document: unknown) {
   if (!document || typeof document !== "object" || !("slug" in document)) {
@@ -27,6 +27,7 @@ export function getPresentationPath(
   documentType: string,
   slug?: string | null,
 ) {
+  if (documentType === "blogIndex") return "/blog/";
   if (!isPresentationDocumentType(documentType) || !slug?.trim()) return null;
   return resolveContentPath(slug);
 }

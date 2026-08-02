@@ -9,18 +9,13 @@ import { openInPresentationAction } from "./presentation/open-in-presentation";
 import { isPresentationDocumentType } from "./presentation/routes";
 import { structure } from "./structure";
 import { codeInput } from "@sanity/code-input";
+import {
+  singletonDocumentActions,
+  singletonDocumentTypes,
+} from "./singletons";
 
 // Define the actions that should be available for singleton documents
-const singletonActions = new Set([
-  "publish",
-  "discardChanges",
-  "restore",
-  "unpublish",
-]);
-
-// Define the singleton document types
-const singletonTypes = new Set(["settings", "navigation"]);
-const nonCreatableTypes = singletonTypes;
+const nonCreatableTypes = singletonDocumentTypes;
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "your-project-id";
 const dataset = process.env.SANITY_STUDIO_DATASET || "production";
@@ -44,8 +39,10 @@ export default defineConfig({
     // For singleton types, filter out actions that are not explicitly included
     // in the `singletonActions` list defined above
     actions: (input, context) =>
-      singletonTypes.has(context.schemaType)
-        ? input.filter(({ action }) => action && singletonActions.has(action))
+      singletonDocumentTypes.has(context.schemaType)
+        ? input.filter(({ action }) =>
+            action && singletonDocumentActions.has(action),
+          )
         : input,
     unstable_fieldActions: (input, context) =>
       isPresentationDocumentType(context.documentType)

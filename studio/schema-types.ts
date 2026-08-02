@@ -8,6 +8,7 @@ import testimonial from "./schemas/documents/testimonial";
 import navigation from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
 import teamMember from "./schemas/documents/team-member";
+import blogIndex from "./schemas/documents/blog-index";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -38,6 +39,7 @@ import personContactCta from "./schemas/blocks/person-contact-cta";
 import contactForm from "./schemas/blocks/contact-form";
 import teamMembers from "./schemas/blocks/team-members";
 import richTextBlock from "./schemas/blocks/rich-text-block";
+import advisorCta from "./schemas/blocks/advisor-cta";
 
 export const schemaTypes = [
   // documents
@@ -50,6 +52,7 @@ export const schemaTypes = [
   navigation,
   settings,
   teamMember,
+  blogIndex,
   // shared objects
   blockContent,
   link,
@@ -79,4 +82,5 @@ export const schemaTypes = [
   contactForm,
   teamMembers,
   richTextBlock,
+  advisorCta,
 ];

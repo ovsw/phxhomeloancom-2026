@@ -2,12 +2,12 @@ import { MetadataRoute } from "next";
 import { groq } from "next-sanity";
 import { getDynamicFetchOptions, sanityFetchMetadata } from "@/sanity/lib/live";
 
-const VIEWABLE_TYPES = ["page", "post"] as const;
+const VIEWABLE_TYPES = ["page", "post", "blogIndex"] as const;
 
 const urlQuery = `
   'url': select(
     slug.current == "index" => $baseUrl + "/",
-    _type == "post-index" => $baseUrl + "/blog/",
+    _id == "blogIndex" => $baseUrl + "/blog/",
     string::startsWith(slug.current, "/") => $baseUrl + slug.current + "/",
     $baseUrl + "/" + slug.current + "/"
   )
@@ -18,13 +18,14 @@ const SITEMAP_QUERY = groq`
   *[
     _type in $viewableTypes
     && meta.noindex != true
-    && (defined(slug) || _type == "post-index")
+    && (defined(slug) || _id == "blogIndex")
   ] {
     ${urlQuery},
     "lastModified": _updatedAt,
-    "changeFrequency": select(_type == "page" => "daily", "weekly"),
+    "changeFrequency": select(_type in ["page", "blogIndex"] => "daily", "weekly"),
     "priority": select(
       _type == "page" && slug.current == "index" => 1,
+      _id == "blogIndex" => 0.7,
       _type == "page" => 0.5,
       0.7
     )
