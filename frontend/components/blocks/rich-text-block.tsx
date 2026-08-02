@@ -30,7 +30,7 @@ export default function RichTextBlock({
   return (
     <section
       aria-labelledby={headingId}
-      className="border-t border-slate-200 bg-white py-16 md:py-24"
+      className="bg-white py-16 md:py-24"
     >
       <div className="container">
         {displayEyebrow || displayTitle ? (

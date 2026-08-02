@@ -38,7 +38,7 @@ function ProfileMeta({
     <div className="flex flex-wrap items-center gap-2.5">
       {role ? (
         <span
-          className="rounded-full bg-cyan-800 px-3 py-1.5 text-[0.71875rem] font-semibold uppercase leading-none tracking-[0.1em] text-white"
+          className="rounded-full bg-primary px-3 py-1.5 text-[0.71875rem] font-semibold uppercase leading-none tracking-[0.1em] text-primary-foreground"
           data-sanity={memberDataAttribute?.(member._id, "role")}
         >
           {member.role}
@@ -46,7 +46,7 @@ function ProfileMeta({
       ) : null}
       {nmlsId ? (
         <span
-          className="text-[0.78125rem] font-medium tracking-[0.02em] text-slate-600"
+          className="text-[0.78125rem] font-medium tracking-[0.02em] text-muted-foreground"
           data-sanity={memberDataAttribute?.(member._id, "nmlsId")}
         >
           NMLS #{member.nmlsId}
@@ -76,7 +76,7 @@ function ProfileContact({
     <div className="mt-1.5 flex flex-wrap items-center gap-3.5">
       {email ? (
         <a
-          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-slate-300 px-[1.125rem] py-[0.6875rem] text-[0.90625rem] font-semibold text-slate-950 no-underline transition-colors hover:border-slate-950 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700"
+          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] text-[0.90625rem] font-semibold text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           data-sanity={memberDataAttribute?.(member._id, "email")}
           href={`mailto:${email}`}
         >
@@ -86,7 +86,7 @@ function ProfileContact({
       ) : null}
       {phone && phoneHref ? (
         <a
-          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] text-[0.90625rem] font-semibold text-cyan-800 no-underline transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700"
+          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] text-[0.90625rem] font-semibold text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           data-sanity={memberDataAttribute?.(member._id, "phone")}
           href={`tel:${phoneHref}`}
         >
@@ -130,7 +130,7 @@ function TeamMemberProfile({
       {hasImage && member.image ? (
         <div
           className={cn(
-            "aspect-[4/5] w-full max-w-[26.25rem] overflow-hidden rounded-2xl bg-slate-950 shadow-[0_30px_66px_rgba(19,28,59,0.24)]",
+            "aspect-[4/5] w-full max-w-[26.25rem] overflow-hidden rounded-2xl bg-[var(--phx-navy-900)] shadow-[0_30px_66px_rgba(19,28,59,0.24)]",
             reverse && "md:order-2 md:justify-self-end",
           )}
         >
@@ -155,7 +155,7 @@ function TeamMemberProfile({
         />
         {hasName ? (
           <h3
-            className="text-balance text-[clamp(1.875rem,3vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-slate-950"
+            className="text-balance text-[clamp(1.875rem,3vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
             data-sanity={memberDataAttribute?.(member._id, "name")}
           >
             {member.name}
@@ -163,7 +163,7 @@ function TeamMemberProfile({
         ) : null}
         {hasBio ? (
           <div
-            className="max-w-[35rem] text-pretty text-[1.03125rem] leading-[1.72] text-slate-600 [&_p]:!my-0 [&_p]:!leading-[1.72]"
+            className="max-w-[35rem] text-pretty text-[1.03125rem] leading-[1.72] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.72]"
             data-sanity={memberDataAttribute?.(member._id, "bio")}
           >
             <PortableTextRenderer value={member.bio ?? []} />
@@ -208,8 +208,8 @@ export default function TeamMembers({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "border-t border-slate-200 px-4 py-[6.875rem] md:px-6 md:py-[7.375rem] lg:px-10",
-        stegaClean(useCreamBackground) ? "bg-[#f7f4ed]" : "bg-white",
+        "px-4 py-[6.875rem] md:px-6 md:py-[7.375rem] lg:px-10",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
       id="team"
@@ -218,7 +218,7 @@ export default function TeamMembers({
         <header className="mx-auto grid max-w-[47.5rem] justify-items-center gap-3.5 text-center">
           {displayEyebrow ? (
             <p
-              className="text-[0.8125rem] font-semibold uppercase leading-none tracking-[0.22em] text-cyan-800"
+              className="text-[0.8125rem] font-semibold uppercase leading-none tracking-[0.22em] text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {eyebrow}
@@ -226,7 +226,7 @@ export default function TeamMembers({
           ) : null}
           {displayTitle ? (
             <h2
-              className="text-balance text-[clamp(2.125rem,3.4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-slate-950"
+              className="text-balance text-[clamp(2.125rem,3.4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
               data-sanity={dataAttribute?.("title")}
               id={titleId}
             >
@@ -235,7 +235,7 @@ export default function TeamMembers({
           ) : null}
           {richText?.length ? (
             <div
-              className="text-pretty text-[1.0625rem] leading-[1.7] text-slate-600 [&_p]:!my-0 [&_p]:!leading-[1.7]"
+              className="text-pretty text-[1.0625rem] leading-[1.7] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.7]"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableTextRenderer value={richText} />

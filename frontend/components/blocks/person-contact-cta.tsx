@@ -53,17 +53,17 @@ export default function PersonContactCta({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "border-t border-slate-200 pb-14 pt-8 min-[641px]:px-10 min-[641px]:py-24",
-        stegaClean(useCreamBackground) ? "bg-[#f7f4ed]" : "bg-white",
+        "pb-14 pt-8 min-[641px]:px-10 min-[641px]:py-24",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
-      <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-[24px] border border-slate-200 bg-[#f7f4ed] shadow-[0_24px_64px_rgba(19,28,59,0.08)] max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
-        <div className="relative isolate flex items-end justify-center overflow-hidden bg-transparent min-[641px]:bg-[#ede8de] min-[641px]:pt-10 min-[1101px]:min-h-[35.5rem] min-[1101px]:pt-12">
+      <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_24px_64px_rgba(19,28,59,0.08)] max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
+        <div className="relative isolate flex items-end justify-center overflow-hidden bg-transparent min-[641px]:bg-muted min-[641px]:pt-10 min-[1101px]:min-h-[35.5rem] min-[1101px]:pt-12">
           <div className="relative flex h-[clamp(20rem,88vw,25rem)] w-full items-end justify-center min-[641px]:h-[clamp(24.375rem,52vw,31.25rem)] min-[1101px]:h-[32.5rem]">
             <div
               aria-hidden="true"
-              className="absolute left-1/2 top-[28%] z-0 aspect-square w-full max-w-[36.25rem] -translate-x-1/2 rounded-full bg-[#f7f4ed] min-[641px]:max-w-[41.25rem] min-[641px]:bg-white min-[1101px]:top-[38%] min-[1101px]:max-w-[42.5rem]"
+              className="absolute left-1/2 top-[28%] z-0 aspect-square w-full max-w-[36.25rem] -translate-x-1/2 rounded-full bg-background min-[641px]:max-w-[41.25rem] min-[1101px]:top-[38%] min-[1101px]:max-w-[42.5rem]"
             />
             {personImage?.asset?._id ? (
               <Image
@@ -91,7 +91,7 @@ export default function PersonContactCta({
             <div className="grid gap-3">
               {displayEyebrow ? (
                 <p
-                  className="text-xs font-semibold uppercase tracking-[0.26em] text-cyan-800"
+                  className="text-xs font-semibold uppercase tracking-[0.26em] text-primary"
                   data-sanity={dataAttribute?.("eyebrow")}
                 >
                   {eyebrow}
@@ -99,7 +99,7 @@ export default function PersonContactCta({
               ) : null}
               {displayTitle ? (
                 <h2
-                  className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-slate-950"
+                  className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-card-foreground"
                   data-sanity={dataAttribute?.("title")}
                   id={titleId}
                 >
@@ -109,7 +109,7 @@ export default function PersonContactCta({
             </div>
 
             {contactMethods?.length ? (
-              <ul className="grid w-full list-none gap-[1.125rem] border-t border-slate-200 p-0 pt-[1.375rem]">
+              <ul className="grid w-full list-none gap-[1.125rem] border-t border-border p-0 pt-[1.375rem]">
                 {contactMethods.map((method, index) => {
                   const methodType = stegaClean(method.type);
                   if (!isContactMethodType(methodType)) return null;
@@ -129,7 +129,7 @@ export default function PersonContactCta({
                     <li data-sanity={dataAttribute?.(path)} key={method._key}>
                       <a
                         className={cn(
-                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-slate-950 no-underline transition-opacity hover:opacity-80 focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-cyan-700/30",
+                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/30",
                           methodType === "address"
                             ? "items-start"
                             : "items-center",
@@ -140,7 +140,7 @@ export default function PersonContactCta({
                         target={opensNewTab ? "_blank" : undefined}
                       >
                         <span
-                          className="grid size-10 place-items-center rounded-full bg-cyan-800 text-white"
+                          className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground"
                           data-sanity={dataAttribute?.(`${path}.type`)}
                         >
                           <Icon aria-hidden="true" className="size-[1.125rem]" />
@@ -172,7 +172,7 @@ export default function PersonContactCta({
 
             {displayCredential ? (
               <p
-                className="mt-1.5 text-pretty text-[0.8125rem] leading-normal tracking-[0.01em] text-slate-500"
+                className="mt-1.5 text-pretty text-[0.8125rem] leading-normal tracking-[0.01em] text-muted-foreground"
                 data-sanity={dataAttribute?.("credentialLine")}
               >
                 {credentialLine}

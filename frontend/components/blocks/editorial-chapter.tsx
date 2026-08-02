@@ -30,16 +30,16 @@ function QuoteCallout({
   if (!hasText(module.quote)) return null;
 
   return (
-    <blockquote className="relative mt-3 border-l-[3px] border-cyan-700 py-1 pl-6 md:pl-8">
+    <blockquote className="relative mt-3 border-l-[3px] border-primary py-1 pl-6 md:pl-8">
       <p
-        className="text-balance text-2xl font-semibold leading-[1.35] text-slate-950 md:text-[1.75rem]"
+        className="text-balance text-2xl font-semibold leading-[1.35] text-foreground md:text-[1.75rem]"
         data-sanity={dataAttribute?.(`${path}.quote`)}
       >
         “{module.quote}”
       </p>
       {hasText(module.context) ? (
         <footer
-          className="mt-3 text-sm leading-relaxed text-slate-600"
+          className="mt-3 text-sm leading-relaxed text-muted-foreground"
           data-sanity={dataAttribute?.(`${path}.context`)}
         >
           {module.context}
@@ -68,21 +68,21 @@ function ProofPoints({
   return (
     <ul
       className={cn(
-        "grid list-none border-slate-200 p-0 lg:col-span-2",
+        "grid list-none border-border p-0 lg:col-span-2",
         visibleItems.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3",
       )}
     >
       {visibleItems.map((item, index) => (
         <li
           className={cn(
-            "border-b border-slate-200 py-7 last:border-b-0 lg:border-b-0 lg:py-1",
+            "border-b border-border py-7 last:border-b-0 lg:border-b-0 lg:py-1",
             index > 0 && "lg:border-l lg:pl-8",
             index < visibleItems.length - 1 && "lg:pr-8",
           )}
           key={item._key}
         >
           <h3
-            className="text-2xl font-semibold leading-tight text-slate-950"
+            className="text-2xl font-semibold leading-tight text-foreground"
             data-sanity={dataAttribute?.(
               `${path}.items[_key=="${item._key}"].title`,
             )}
@@ -90,7 +90,7 @@ function ProofPoints({
             {item.title}
           </h3>
           <p
-            className="mt-3 text-[15.5px] leading-[1.7] text-slate-600"
+            className="mt-3 text-[15.5px] leading-[1.7] text-muted-foreground"
             data-sanity={dataAttribute?.(
               `${path}.items[_key=="${item._key}"].description`,
             )}
@@ -121,7 +121,7 @@ function ImpactStatement({
   }
 
   return (
-    <aside className="grid min-w-0 gap-7 rounded-lg bg-[#080d1e] px-7 py-9 text-white md:px-10 md:py-10 lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
+    <aside className="grid min-w-0 gap-7 rounded-lg bg-[var(--phx-navy-900)] px-7 py-9 text-white md:px-10 md:py-10 lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
       <div className="min-w-0">
         <p
           className="break-words text-[clamp(2.75rem,5vw,4rem)] font-semibold leading-none tracking-[-0.02em]"
@@ -130,7 +130,7 @@ function ImpactStatement({
           {module.statement}
         </p>
         <p
-          className="mt-2 text-[0.78rem] font-semibold uppercase leading-snug tracking-[0.14em] text-[#feb77d]"
+          className="mt-2 text-[0.78rem] font-semibold uppercase leading-snug tracking-[0.14em] text-label-on-dark"
           data-sanity={dataAttribute?.(`${path}.label`)}
         >
           {module.label}
@@ -187,8 +187,8 @@ export default function EditorialChapter({
     <section
       aria-labelledby={hasTitle ? headingId : undefined}
       className={cn(
-        "border-t border-slate-200 py-20 md:py-24",
-        useCreamBackground ? "bg-[#f7f4ed]" : "bg-white",
+        "py-20 md:py-24",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
       <div className="container">
@@ -196,7 +196,7 @@ export default function EditorialChapter({
           <header>
             {hasText(eyebrow) ? (
               <p
-                className="mb-[18px] text-xs font-semibold uppercase tracking-[0.26em] text-cyan-800"
+                className="mb-[18px] text-xs font-semibold uppercase tracking-[0.26em] text-primary"
                 data-sanity={dataAttribute?.("eyebrow")}
               >
                 {eyebrow}
@@ -204,7 +204,7 @@ export default function EditorialChapter({
             ) : null}
             {hasTitle ? (
               <h2
-                className="text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.01em] text-slate-950 md:text-[42px]"
+                className="text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.01em] text-foreground md:text-[42px]"
                 data-sanity={dataAttribute?.("title")}
                 id={headingId}
               >
@@ -216,7 +216,7 @@ export default function EditorialChapter({
           <div className="grid min-w-0 gap-9">
             {richText?.length ? (
               <div
-                className="grid gap-4 text-pretty text-[17px] leading-[1.75] text-slate-600 [&_p]:!mb-0"
+                className="grid gap-4 text-pretty text-[17px] leading-[1.75] text-muted-foreground [&_p]:!mb-0"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableTextRenderer value={richText} />

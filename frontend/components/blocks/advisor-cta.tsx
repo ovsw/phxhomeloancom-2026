@@ -33,7 +33,7 @@ export default function AdvisorCta({
     <section
       aria-labelledby={titleId}
       className={cn(
-        "border-t border-slate-200 px-4 py-20 md:px-10 md:py-24",
+        "px-4 py-20 md:px-10 md:py-24",
         creamSurface ? "bg-[#f7f4ed]" : "bg-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}

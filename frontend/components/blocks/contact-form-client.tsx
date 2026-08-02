@@ -15,7 +15,7 @@ type ContactFormClientProps = ContactFormBlock & {
 };
 
 const inputClassName =
-  "min-h-12 w-full rounded-[9px] border-[1.5px] border-slate-300 bg-[#fbf9f4] px-4 py-3.5 text-[15px] text-slate-950 outline-none transition-[border-color,box-shadow] placeholder:text-slate-400 focus-visible:border-cyan-700 focus-visible:ring-4 focus-visible:ring-cyan-700/15";
+  "min-h-12 w-full rounded-[9px] border-[1.5px] border-input bg-background px-4 py-3.5 text-[15px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20";
 
 function inputCopy(
   field: ContactFormInputCopy | null,
@@ -101,8 +101,8 @@ export default function ContactFormClient({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "border-b border-slate-200 py-20 md:py-[5.5rem] lg:pb-[6.875rem]",
-        stegaClean(useCreamBackground) ? "bg-[#f7f4ed]" : "bg-white",
+        "py-20 md:py-[5.5rem] lg:pb-[6.875rem]",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
       <div className="container grid gap-12 min-[901px]:grid-cols-[0.9fr_1.25fr] min-[901px]:items-start min-[901px]:gap-[clamp(2rem,5vw,5rem)]">
@@ -110,7 +110,7 @@ export default function ContactFormClient({
           <div className="grid gap-4">
             {displayEyebrow ? (
               <p
-                className="text-[13px] font-semibold uppercase tracking-[0.22em] text-cyan-800"
+                className="text-[13px] font-semibold uppercase tracking-[0.22em] text-primary"
                 data-sanity={dataAttributes?.eyebrow}
               >
                 {eyebrow}
@@ -118,7 +118,7 @@ export default function ContactFormClient({
             ) : null}
             {displayTitle ? (
               <h1
-                className="max-w-2xl text-balance text-[clamp(2.5rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-slate-950"
+                className="max-w-2xl text-balance text-[clamp(2.5rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-foreground"
                 data-sanity={dataAttributes?.title}
                 id={titleId}
               >
@@ -127,7 +127,7 @@ export default function ContactFormClient({
             ) : null}
             {displayDescription ? (
               <p
-                className="max-w-xl text-pretty text-lg leading-[1.65] text-slate-600"
+                className="max-w-xl text-pretty text-lg leading-[1.65] text-muted-foreground"
                 data-sanity={dataAttributes?.description}
               >
                 {description}
@@ -138,22 +138,22 @@ export default function ContactFormClient({
           {displayOfficeHoursTitle && visibleOfficeHours.length ? (
             <div>
               <h2
-                className="mb-4 text-lg font-semibold text-slate-950"
+                className="mb-4 text-lg font-semibold text-foreground"
                 data-sanity={dataAttributes?.officeHoursTitle}
               >
                 {officeHoursTitle}
               </h2>
-              <dl className="border-t border-slate-200 text-[14.5px] text-slate-600">
+              <dl className="border-t border-border text-[14.5px] text-foreground/75">
                 {visibleOfficeHours.map(({ index, row }) => (
                   <div
-                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-slate-200 py-[13px]"
+                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border py-[13px]"
                     key={row._key}
                   >
                     <dt data-sanity={dataAttributes?.officeHours?.[index]?.days}>
                       {row.days}
                     </dt>
                     <dd
-                      className="text-right font-semibold text-slate-950"
+                      className="text-right font-semibold text-foreground"
                       data-sanity={dataAttributes?.officeHours?.[index]?.hours}
                     >
                       {row.hours}
@@ -165,7 +165,7 @@ export default function ContactFormClient({
           ) : null}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_20px_48px_rgba(19,28,59,0.07)] md:p-12">
+        <div className="rounded-2xl border border-border bg-card p-7 shadow-[0_20px_48px_rgba(19,28,59,0.07)] md:p-12">
           {/* Keep controls unnamed and non-submitting until server-side delivery exists. */}
           <form
             aria-describedby={availabilityId}
@@ -177,7 +177,7 @@ export default function ContactFormClient({
             }}
           >
             <h2
-              className="text-[26px] font-semibold text-slate-950"
+              className="text-[26px] font-semibold text-card-foreground"
               data-sanity={dataAttributes?.formTitle}
               id={formTitleId}
             >
@@ -187,7 +187,7 @@ export default function ContactFormClient({
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="grid gap-2" htmlFor={`${idPrefix}-name`}>
                 <span
-                  className="text-[13px] font-semibold tracking-[0.02em] text-slate-950"
+                  className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
                   data-sanity={dataAttributes?.nameField?.label}
                 >
                   {nameCopy.label}
@@ -204,7 +204,7 @@ export default function ContactFormClient({
               </label>
               <label className="grid gap-2" htmlFor={`${idPrefix}-email`}>
                 <span
-                  className="text-[13px] font-semibold tracking-[0.02em] text-slate-950"
+                  className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
                   data-sanity={dataAttributes?.emailField?.label}
                 >
                   {emailCopy.label}
@@ -223,7 +223,7 @@ export default function ContactFormClient({
 
             <label className="grid gap-2" htmlFor={`${idPrefix}-phone`}>
               <span
-                className="text-[13px] font-semibold tracking-[0.02em] text-slate-950"
+                className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
                 data-sanity={dataAttributes?.phoneField?.label}
               >
                 {phoneCopy.label}
@@ -240,7 +240,7 @@ export default function ContactFormClient({
 
             <label className="grid gap-2" htmlFor={`${idPrefix}-message`}>
               <span
-                className="text-[13px] font-semibold tracking-[0.02em] text-slate-950"
+                className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
                 data-sanity={dataAttributes?.messageField?.label}
               >
                 {messageCopy.label}
@@ -256,7 +256,7 @@ export default function ContactFormClient({
 
             <div className="flex flex-wrap items-center gap-[18px]">
               <Button
-                className="h-12 rounded-[9px] bg-cyan-700 px-8 text-[15.5px] text-white hover:bg-cyan-600"
+                className="h-12 rounded-[9px] px-8 text-[15.5px]"
                 data-sanity={dataAttributes?.submitLabel}
                 aria-controls={statusId}
                 aria-describedby={availabilityId}
@@ -272,7 +272,7 @@ export default function ContactFormClient({
               </Button>
               {stegaClean(privacyNote)?.trim() ? (
                 <p
-                  className="text-[13px] text-slate-500"
+                  className="text-[13px] text-muted-foreground"
                   data-sanity={dataAttributes?.privacyNote}
                 >
                   {privacyNote}
@@ -285,7 +285,7 @@ export default function ContactFormClient({
             </p>
             <noscript>
               <p
-                className="text-sm text-cyan-800"
+                className="text-sm text-primary"
                 data-sanity={dataAttributes?.unavailableMessage}
               >
                 {displayUnavailableMessage}
@@ -294,7 +294,7 @@ export default function ContactFormClient({
             <p
               aria-atomic="true"
               aria-live="polite"
-              className={showUnavailableMessage ? "text-sm text-cyan-800" : "sr-only"}
+              className={showUnavailableMessage ? "text-sm text-primary" : "sr-only"}
               data-sanity={dataAttributes?.unavailableMessage}
               id={statusId}
               role="status"
