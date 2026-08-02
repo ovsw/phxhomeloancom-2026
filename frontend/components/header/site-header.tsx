@@ -30,7 +30,10 @@ export function Header({ model }: { model: HeaderModel }) {
         </div>
         <div className="flex items-center gap-1 lg:hidden">
           <ModeToggle />
-          <MobileNav brand={brand} navigation={navigation} />
+          <MobileNav
+            brand={<HeaderBrand brand={brandModel} variant="mobile" />}
+            navigation={navigation}
+          />
         </div>
       </div>
     </SiteHeaderShell>

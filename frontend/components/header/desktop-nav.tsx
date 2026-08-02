@@ -77,13 +77,13 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
       </button>
       {open ? (
         <div
-          className="absolute left-1/2 top-full z-[70] w-80 -translate-x-1/2 pt-2"
+          className="absolute left-1/2 top-full z-[70] w-72 -translate-x-1/2 pt-0.5"
           id={panelId}
         >
-          <div className="grid gap-1 rounded-xl border border-border/80 bg-popover p-2 text-popover-foreground shadow-xl">
+          <div className="grid gap-1 rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-[0_18px_44px_rgba(19,28,59,0.16)] dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
             {item.links.map((child) => (
               <HeaderLink
-                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-[11px] transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                 key={child.key}
                 link={child.link}
               >

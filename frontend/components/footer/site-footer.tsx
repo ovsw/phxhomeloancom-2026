@@ -23,7 +23,7 @@ export function SiteFooter({ model }: { model: FooterModel }) {
     <footer className="bg-[#0c1329] pt-16 text-white md:pt-[5.5rem]" data-footer-state="ready">
       <section
         aria-labelledby="site-footer-heading"
-        className="mx-auto w-full max-w-[75rem] px-4 md:px-10"
+        className="mx-auto w-full max-w-7xl px-4 md:px-10"
       >
         <h2 className="sr-only" id="site-footer-heading">
           Site footer

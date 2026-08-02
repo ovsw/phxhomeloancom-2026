@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import {
   Accordion,
@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -42,13 +43,21 @@ export default function MobileNav({
           <Menu aria-hidden="true" className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full gap-0 border-l border-border/80 bg-background px-0 sm:max-w-sm">
-        <SheetHeader className="flex-row items-center justify-between border-b border-border/80 px-6 py-4 pr-14">
-          <div className="flex h-10 max-w-40 items-center [&_img]:max-h-10">{brand}</div>
+      <SheetContent
+        className="!w-full gap-0 border-l border-border/80 bg-background px-0 sm:max-w-sm"
+        showCloseButton={false}
+        style={{ width: "100%" }}
+      >
+        <SheetHeader className="flex-row items-center justify-between border-b border-border/80 px-6 py-6">
+          <div className="flex max-w-40 items-center">{brand}</div>
           <SheetTitle className="sr-only">Main navigation</SheetTitle>
           <SheetDescription className="sr-only">
             Browse primary destinations and mortgage resources.
           </SheetDescription>
+          <SheetClose className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+            <X aria-hidden="true" className="size-5" />
+            <span className="sr-only">Close</span>
+          </SheetClose>
         </SheetHeader>
         <nav aria-label="Main navigation" className="grid flex-1 content-start gap-1 overflow-y-auto px-3 py-4">
           <Accordion collapsible type="single">

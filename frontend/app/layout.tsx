@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
+import { Archivo, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -27,10 +27,18 @@ export const metadata: Metadata = {
   robots: !isProduction ? "noindex, nofollow" : "index, follow",
 };
 
-const fontSans = FontSans({
+const fontDisplay = Source_Serif_4({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-sans",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-phx-display",
+  display: "swap",
+});
+
+const fontBody = Archivo({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-phx-body",
+  display: "swap",
 });
 
 export default function RootLayout({
@@ -39,12 +47,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      className={cn(fontDisplay.variable, fontBody.variable)}
+      lang="en"
+      suppressHydrationWarning
+    >
       <link rel="icon" href="/favicon.ico" />
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased overscroll-none",
-          fontSans.variable,
         )}
       >
         <ThemeProvider
