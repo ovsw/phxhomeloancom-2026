@@ -1,10 +1,20 @@
 import { YouTubeEmbed } from "@next/third-parties/google";
-import { PortableText, type PortableTextProps } from "@portabletext/react";
+import {
+  PortableText,
+  type PortableTextBlockComponent,
+  type PortableTextProps,
+} from "@portabletext/react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { stegaClean } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
+
+type GetHeadingId = (block: { _key?: string }) => string | undefined;
+type RichTextBlockComponents = Extract<
+  NonNullable<PortableTextProps["components"]>["block"],
+  Record<string, unknown>
+>;
 
 function getYouTubeVideoId(value: unknown) {
   if (typeof value !== "string") return null;
@@ -46,18 +56,47 @@ function getButtonVariant(value: unknown) {
     : "default";
 }
 
-export const richTextContentComponents: PortableTextProps["components"] = {
-  block: {
-    normal: ({ children }) => <p className="mb-4">{children}</p>,
-    h2: ({ children }) => <h2 className="mb-4 mt-12 first:mt-0">{children}</h2>,
-    h3: ({ children }) => <h3 className="mb-4 mt-10 first:mt-0">{children}</h3>,
-    h4: ({ children }) => <h4 className="mb-4 mt-8 first:mt-0">{children}</h4>,
-    h5: ({ children }) => <h5 className="mb-4 mt-8 first:mt-0">{children}</h5>,
-    h6: ({ children }) => (
-      <h6 className="mb-4 mt-8 text-base font-semibold first:mt-0">{children}</h6>
+type HeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
+
+function createHeadingComponent(
+  Tag: HeadingTag,
+  className: string,
+  getHeadingId?: GetHeadingId,
+): PortableTextBlockComponent {
+  return function RichTextHeading({ children, value }) {
+    return (
+      <Tag
+        className={cn(className, getHeadingId && "scroll-mt-28")}
+        id={getHeadingId?.(value)}
+      >
+        {children}
+      </Tag>
+    );
+  };
+}
+
+function createRichTextHeadingComponents(getHeadingId?: GetHeadingId) {
+  return {
+    h2: createHeadingComponent("h2", "mb-4 mt-12 first:mt-0", getHeadingId),
+    h3: createHeadingComponent("h3", "mb-4 mt-10 first:mt-0", getHeadingId),
+    h4: createHeadingComponent("h4", "mb-4 mt-8 first:mt-0", getHeadingId),
+    h5: createHeadingComponent("h5", "mb-4 mt-8 first:mt-0", getHeadingId),
+    h6: createHeadingComponent(
+      "h6",
+      "mb-4 mt-8 text-base font-semibold first:mt-0",
+      getHeadingId,
     ),
-    inline: ({ children }) => <span>{children}</span>,
-  },
+  };
+}
+
+const richTextBlockComponents = {
+  normal: ({ children }) => <p className="mb-4">{children}</p>,
+  ...createRichTextHeadingComponents(),
+  inline: ({ children }) => <span>{children}</span>,
+} satisfies RichTextBlockComponents;
+
+export const richTextContentComponents: PortableTextProps["components"] = {
+  block: richTextBlockComponents,
   list: {
     bullet: ({ children }) => (
       <ul className="mb-4 list-outside list-disc space-y-2 pl-6">{children}</ul>
@@ -215,13 +254,27 @@ export const richTextContentComponents: PortableTextProps["components"] = {
   },
 };
 
+function createPostRichTextComponents(
+  getHeadingId: GetHeadingId,
+): PortableTextProps["components"] {
+  return {
+    ...richTextContentComponents,
+    block: {
+      ...richTextBlockComponents,
+      ...createRichTextHeadingComponents(getHeadingId),
+    },
+  };
+}
+
 export default function RichTextContent({
   className,
   dataSanity,
+  getHeadingId,
   value,
 }: Readonly<{
   className?: string;
   dataSanity?: string;
+  getHeadingId?: GetHeadingId;
   value: PortableTextProps["value"];
 }>) {
   return (
@@ -232,7 +285,14 @@ export default function RichTextContent({
       )}
       data-sanity={dataSanity}
     >
-      <PortableText components={richTextContentComponents} value={value} />
+      <PortableText
+        components={
+          getHeadingId
+            ? createPostRichTextComponents(getHeadingId)
+            : richTextContentComponents
+        }
+        value={value}
+      />
     </div>
   );
 }
