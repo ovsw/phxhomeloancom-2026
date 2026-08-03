@@ -25,6 +25,7 @@ const destination = defineType({
       title: "Internal destination",
       type: "reference",
       to: [
+        { type: "homePage" },
         { type: "page" },
         { type: "post" },
         { type: "category" },

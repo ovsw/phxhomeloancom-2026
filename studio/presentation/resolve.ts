@@ -44,6 +44,12 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         locations: [{ title: doc?.title || "Blog Index", href: "/blog/" }],
       }),
     }),
+    homePage: defineLocations({
+      select: { title: "title" },
+      resolve: (doc) => ({
+        locations: [{ title: doc?.title || "Home Page", href: "/" }],
+      }),
+    }),
   },
   mainDocuments: defineDocuments([
     {
@@ -52,7 +58,7 @@ export const resolve: PresentationPluginOptions["resolve"] = {
     },
     {
       route: "/",
-      filter: `_type == 'page' && slug.current == 'index'`,
+      filter: `_id == 'homePage' && _type == 'homePage'`,
     },
     {
       route: "/:slug/",

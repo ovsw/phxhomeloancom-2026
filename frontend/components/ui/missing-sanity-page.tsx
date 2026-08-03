@@ -2,10 +2,10 @@ import { Badge } from "@/components/ui/badge";
 
 export default function MissingSanityPage({
   document,
-  slug,
+  documentId,
 }: {
   document: string;
-  slug: string;
+  documentId: string;
 }) {
   return (
     <div className="min-h-screen flex items-center justify-center">
@@ -15,9 +15,9 @@ export default function MissingSanityPage({
           <Badge variant="outline" className="text-lg">
             {document}
           </Badge>{" "}
-          document with slug{" "}
+          document with ID{" "}
           <Badge variant="outline" className="text-lg">
-            {slug}
+            {documentId}
           </Badge>{" "}
           in Sanity Studio
         </h1>

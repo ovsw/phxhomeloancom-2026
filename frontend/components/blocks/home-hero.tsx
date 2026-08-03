@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { urlFor } from "@/sanity/lib/image";
-import type { PAGE_QUERY_RESULT } from "@/sanity.types";
+import type { HOME_PAGE_QUERY_RESULT } from "@/sanity.types";
 import Image from "next/image";
 import Link from "next/link";
 
 type HomeHeroProps = Extract<
-  NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
+  NonNullable<NonNullable<HOME_PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "homeHero" }
 >;
 

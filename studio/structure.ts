@@ -10,12 +10,23 @@ import {
   Settings,
   PanelBottom,
   Tag,
+  House,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
   S.list()
     .title("Content")
     .items([
+      S.listItem()
+        .title("Home Page")
+        .icon(House)
+        .child(
+          S.editor()
+            .id("homePage")
+            .schemaType("homePage")
+            .documentId("homePage")
+        ),
+      S.divider(),
       S.listItem()
         .title("Pages")
         .icon(Files)

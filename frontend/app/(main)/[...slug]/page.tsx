@@ -12,6 +12,7 @@ import {
   type DynamicFetchOptions,
 } from "@/sanity/lib/live";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
+import { contentPath } from "@/lib/routes";
 import { PAGE_QUERY } from "@/sanity/queries/page";
 import { POST_QUERY } from "@/sanity/queries/post";
 import type {
@@ -88,7 +89,7 @@ export async function generateMetadata(props: {
   const content = resolveRootContent(page, post, slugPath);
   if (!content) notFound();
 
-  return generatePageMetadata({ page: content, slug: slugPath });
+  return generatePageMetadata({ page: content, path: contentPath(slugPath) });
 }
 
 export default async function RootContentPage(props: {

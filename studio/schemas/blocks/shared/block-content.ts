@@ -43,7 +43,11 @@ export default defineType({
                 name: "internalLink",
                 type: "reference",
                 title: "Internal Link",
-                to: [{ type: "page" }, { type: "post" }],
+                to: [
+                  { type: "homePage" },
+                  { type: "page" },
+                  { type: "post" },
+                ],
                 hidden: ({ parent }) => parent?.isExternal,
               },
               {

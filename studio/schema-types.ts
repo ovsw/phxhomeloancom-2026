@@ -11,6 +11,7 @@ import navigation, {
 import settings from "./schemas/documents/settings";
 import teamMember from "./schemas/documents/team-member";
 import blogIndex from "./schemas/documents/blog-index";
+import homePage from "./schemas/documents/home-page";
 import footer, { footerSchemaTypes } from "./schemas/documents/footer";
 
 // Schema UI shared objects
@@ -57,6 +58,7 @@ export const schemaTypes = [
   settings,
   teamMember,
   blogIndex,
+  homePage,
   footer,
   ...footerSchemaTypes,
   // shared objects

@@ -4,9 +4,9 @@ const destinationProjection = `{
   openInNewTab,
   "href": select(
     kind == "internal" => select(
+      internal->_id == "homePage" || internal->_type == "homePage" => "/",
       internal->_id == "blogIndex" => "/blog/",
       internal->_type == "post" && defined(internal->slug.current) => "/blog/" + internal->slug.current + "/",
-      internal->slug.current == "index" => "/",
       string::startsWith(internal->slug.current, "/") => internal->slug.current + "/",
       defined(internal->slug.current) => "/" + internal->slug.current + "/"
     ),
