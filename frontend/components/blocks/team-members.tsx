@@ -149,10 +149,6 @@ function TeamMemberProfile({
         </div>
       ) : null}
       <div className={cn("grid gap-[1.125rem]", reverse && "md:order-1")}>
-        <ProfileMeta
-          member={member}
-          memberDataAttribute={memberDataAttribute}
-        />
         {hasName ? (
           <h3
             className="text-balance text-[clamp(1.875rem,3vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
@@ -161,6 +157,10 @@ function TeamMemberProfile({
             {member.name}
           </h3>
         ) : null}
+        <ProfileMeta
+          member={member}
+          memberDataAttribute={memberDataAttribute}
+        />
         {hasBio ? (
           <div
             className="max-w-[35rem] text-pretty text-[1.03125rem] leading-[1.72] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.72]"
