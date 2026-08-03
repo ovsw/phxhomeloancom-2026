@@ -1,14 +1,15 @@
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import {
   Files,
-  BookA,
+  BookMarked,
+  FileText,
   User,
   ListCollapse,
   Quote,
   Menu,
   Settings,
-  Newspaper,
   PanelBottom,
+  Tag,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -25,36 +26,48 @@ export const structure = (S: any, context: any) =>
             .defaultOrdering([{ field: "title", direction: "asc" }])
         ),
       S.listItem()
-        .title("Posts")
-        .schemaType("post")
+        .title("Blog")
+        .icon(BookMarked)
         .child(
-          S.documentTypeList("post")
-            .title("Post")
-            .defaultOrdering([{ field: "_createdAt", direction: "desc" }]) // Default ordering
+          S.list()
+            .title("Blog")
+            .items([
+              S.listItem()
+                .title("Blog Index")
+                .icon(BookMarked)
+                .child(
+                  S.editor()
+                    .id("blogIndex")
+                    .schemaType("blogIndex")
+                    .documentId("blogIndex")
+                ),
+              S.listItem()
+                .title("Blog Posts")
+                .icon(FileText)
+                .schemaType("post")
+                .child(
+                  S.documentTypeList("post")
+                    .title("Blog Posts")
+                    .defaultOrdering([
+                      { field: "_createdAt", direction: "desc" },
+                    ])
+                ),
+              orderableDocumentListDeskItem({
+                type: "category",
+                title: "Categories",
+                icon: Tag,
+                S,
+                context,
+              }),
+              orderableDocumentListDeskItem({
+                type: "author",
+                title: "Authors",
+                icon: User,
+                S,
+                context,
+              }),
+            ])
         ),
-      S.listItem()
-        .title("Blog Index")
-        .icon(Newspaper)
-        .child(
-          S.editor()
-            .id("blogIndex")
-            .schemaType("blogIndex")
-            .documentId("blogIndex")
-        ),
-      orderableDocumentListDeskItem({
-        type: "category",
-        title: "Categories",
-        icon: BookA,
-        S,
-        context,
-      }),
-      orderableDocumentListDeskItem({
-        type: "author",
-        title: "Authors",
-        icon: User,
-        S,
-        context,
-      }),
       orderableDocumentListDeskItem({
         type: "faq",
         title: "FAQs",
