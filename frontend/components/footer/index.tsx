@@ -1,7 +1,9 @@
 import { createFooterModel } from "./model";
 import { SiteFooter } from "./site-footer";
+import { createDataAttribute } from "next-sanity";
 import { fetchSanityFooter, fetchSanitySettings, getCurrentYear } from "@/sanity/lib/fetch";
 import { getDynamicFetchOptions, type DynamicFetchOptions } from "@/sanity/lib/live";
+import { dataset, projectId } from "@/sanity/lib/env";
 
 export { SiteFooter } from "./site-footer";
 
@@ -41,6 +43,17 @@ export async function CachedFooter({ perspective, stega }: DynamicFetchOptions) 
     getCurrentYear(),
   ]);
   const model = createFooterModel(rawFooter, settings, year);
+  const dataAttribute = stega
+    ? (path: string) =>
+        createDataAttribute({
+          baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+          dataset,
+          id: "footer",
+          path,
+          projectId,
+          type: "footer",
+        }).toString()
+    : undefined;
 
-  return model ? <SiteFooter model={model} /> : <FooterUnavailable />;
+  return model ? <SiteFooter dataAttribute={dataAttribute} model={model} /> : <FooterUnavailable />;
 }

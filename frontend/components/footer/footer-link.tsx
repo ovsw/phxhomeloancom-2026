@@ -8,15 +8,18 @@ const baseClassName =
 export function FooterLink({
   children,
   className = "",
+  dataSanity,
   link,
 }: {
   children?: ReactNode;
   className?: string;
+  dataSanity?: string;
   link: FooterLinkModel;
 }) {
   return (
     <Link
       className={`${baseClassName} ${className}`}
+      data-sanity={dataSanity}
       href={link.href}
       rel={link.openInNewTab ? "noopener noreferrer" : undefined}
       target={link.openInNewTab ? "_blank" : undefined}

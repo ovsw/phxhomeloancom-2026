@@ -31,7 +31,13 @@ function FooterColumn({ column }: { column: FooterColumnModel }) {
   );
 }
 
-export function SiteFooter({ model }: { model: FooterModel }) {
+export function SiteFooter({
+  dataAttribute,
+  model,
+}: {
+  dataAttribute?: (path: string) => string | undefined;
+  model: FooterModel;
+}) {
   const firstColumn = model.columns[0]!;
   const remainingColumns = model.columns.slice(1);
 
@@ -133,14 +139,29 @@ export function SiteFooter({ model }: { model: FooterModel }) {
           </div>
           <div className="mt-8 border-t border-white/15 pt-6">
             <p className="leading-[1.6] text-white/65">
-              © {model.compliance.copyrightYears} {model.compliance.copyrightOwner}. NMLS ID{" "}
-              {model.compliance.organizationNmlsId}. Call:{" "}
+              ©{" "}
+              <span data-sanity={dataAttribute?.("compliance.copyrightStartYear")}>
+                {model.compliance.copyrightYears}
+              </span>{" "}
+              <span data-sanity={dataAttribute?.("compliance.copyrightOwner")}>
+                {model.compliance.copyrightOwner}
+              </span>
+              . NMLS ID{" "}
+              <span data-sanity={dataAttribute?.("compliance.organizationNmlsId")}>
+                {model.compliance.organizationNmlsId}
+              </span>
+              . Call:{" "}
               <FooterLink
                 className="inline text-[12.5px] leading-[1.6] text-white/75"
+                dataSanity={dataAttribute?.("compliance.organizationPhone")}
                 link={model.compliance.organizationPhone}
               />
               . All rights reserved.
-              {model.compliance.credit ? ` | ${model.compliance.credit}` : ""}
+              {model.compliance.credit ? (
+                <span data-sanity={dataAttribute?.("compliance.credit")}>
+                  {` | ${model.compliance.credit}`}
+                </span>
+              ) : null}
             </p>
             <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
               {model.compliance.legalLinks.map((link) => (
