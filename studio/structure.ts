@@ -8,6 +8,7 @@ import {
   Quote,
   Menu,
   Settings,
+  Settings2,
   PanelBottom,
   Tag,
   House,
@@ -93,32 +94,41 @@ export const structure = (S: any, context: any) =>
         S,
         context,
       }),
-      S.divider({ title: "Global" }),
+      S.divider(),
       S.listItem()
-        .title("Navigation")
-        .icon(Menu)
+        .title("Site Configuration")
+        .icon(Settings2)
         .child(
-          S.editor()
-            .id("navigation")
-            .schemaType("navigation")
-            .documentId("navigation")
-        ),
-      S.listItem()
-        .title("Site Footer")
-        .icon(PanelBottom)
-        .child(
-          S.editor()
-            .id("footer")
-            .schemaType("footer")
-            .documentId("footer")
-        ),
-      S.listItem()
-        .title("Settings")
-        .icon(Settings)
-        .child(
-          S.editor()
-            .id("settings")
-            .schemaType("settings")
-            .documentId("settings")
+          S.list()
+            .title("Site Configuration")
+            .items([
+              S.listItem()
+                .title("Navigation")
+                .icon(Menu)
+                .child(
+                  S.editor()
+                    .id("navigation")
+                    .schemaType("navigation")
+                    .documentId("navigation")
+                ),
+              S.listItem()
+                .title("Footer")
+                .icon(PanelBottom)
+                .child(
+                  S.editor()
+                    .id("footer")
+                    .schemaType("footer")
+                    .documentId("footer")
+                ),
+              S.listItem()
+                .title("Global Settings")
+                .icon(Settings)
+                .child(
+                  S.editor()
+                    .id("settings")
+                    .schemaType("settings")
+                    .documentId("settings")
+                ),
+            ])
         ),
     ]);
