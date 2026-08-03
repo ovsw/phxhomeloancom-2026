@@ -75,7 +75,7 @@ export default function HomeHero({
             fill
             priority
             sizes="(min-width: 1024px) 48vw, 0px"
-            src={urlFor(portraitImage).width(1200).height(1200).fit("max").url()}
+            src={urlFor(portraitImage).width(1200).fit("max").url()}
             alt={portraitImage.alt || ""}
           />
         </div>
