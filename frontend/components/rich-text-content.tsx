@@ -109,7 +109,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
     customLink: ({ children, value }) =>
       value?.href ? (
         <Link
-          className="text-cyan-800 underline underline-offset-2"
+          className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
           href={value.href}
           rel={value.openInNewTab ? "noopener noreferrer" : undefined}
           target={value.openInNewTab ? "_blank" : undefined}
@@ -142,11 +142,11 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       if (!asset?.url) return null;
 
       return (
-        <figure className="my-8">
+        <figure className="my-4">
           <Image
             alt={value.alt || ""}
             blurDataURL={asset.metadata?.lqip || undefined}
-            className="h-auto w-full rounded-2xl"
+            className="h-auto w-full rounded-lg"
             height={asset.metadata?.dimensions?.height ?? 900}
             placeholder={asset.metadata?.lqip ? "blur" : undefined}
             quality={100}
@@ -155,7 +155,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
             width={asset.metadata?.dimensions?.width ?? 1600}
           />
           {value.caption ? (
-            <figcaption className="mt-2 text-center text-sm text-slate-500">
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
               {value.caption}
             </figcaption>
           ) : null}
@@ -180,7 +180,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
               <tr>
                 {headerRow.cells.map((cell: string, index: number) => (
                   <th
-                    className="border border-slate-300 bg-slate-100 px-4 py-3 font-semibold text-slate-950"
+                    className="border border-border bg-muted px-4 py-3 font-semibold text-foreground"
                     key={`${headerRow._key ?? "header"}-${index}`}
                     scope="col"
                   >
@@ -195,7 +195,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
                   <tr key={row._key ?? `row-${rowIndex}`}>
                     {row.cells.map((cell, cellIndex) => (
                       <td
-                        className="border border-slate-300 px-4 py-3 align-top"
+                        className="border border-border px-4 py-3 align-top"
                         key={`${row._key ?? rowIndex}-${cellIndex}`}
                       >
                         {cell}
@@ -215,7 +215,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
         return value.url ? (
           <p className="mb-4">
             <a
-              className="text-cyan-800 underline underline-offset-2"
+              className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
               href={value.url}
               rel="noopener noreferrer"
               target="_blank"
@@ -237,7 +237,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       if (!src) return null;
 
       return (
-        <div className="my-8 overflow-hidden rounded-xl bg-slate-100">
+        <div className="my-8 overflow-hidden rounded-lg bg-muted">
           <iframe
             allowFullScreen
             className="w-full"
@@ -280,7 +280,7 @@ export default function RichTextContent({
   return (
     <div
       className={cn(
-        "text-[1.0625rem] leading-8 text-slate-700 [&_h2]:mt-12 [&_h3]:mt-10 [&_h4]:mt-8 [&_img]:my-8 [&_p]:text-pretty",
+        "max-w-none text-base leading-7 text-foreground/80 [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_a]:font-medium [&_blockquote]:border-l-4 [&_blockquote]:border-accent [&_blockquote]:bg-secondary/50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_blockquote]:text-foreground [&_figcaption]:text-muted-foreground [&_h2]:mt-12 [&_h2]:border-b [&_h2]:border-border [&_h2]:pb-3 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:tracking-normal [&_h3]:mt-10 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:tracking-normal [&_h4]:mt-8 [&_h4]:text-xl [&_h4]:font-semibold [&_li]:my-2 [&_ol]:my-6 [&_ol]:pl-6 [&_p]:my-5 [&_p]:text-pretty [&_strong]:font-semibold [&_strong]:text-foreground [&_ul]:my-6 [&_ul]:pl-6",
         className,
       )}
       data-sanity={dataSanity}

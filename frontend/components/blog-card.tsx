@@ -21,7 +21,7 @@ function BlogImage({
   if (!post.image?.asset?._id) return null;
   return (
     <div
-      className={featured ? "relative min-h-72 lg:min-h-full" : "relative aspect-[16/10]"}
+      className={featured ? "relative min-h-72 bg-muted lg:min-h-full" : "relative aspect-[16/10] bg-muted"}
       data-sanity={dataAttribute?.("image")}
     >
       <Image
@@ -56,7 +56,7 @@ function PublicationDate({
     .toUpperCase();
   return (
     <time
-      className="text-xs font-semibold uppercase leading-none tracking-[0.08em] text-slate-500"
+      className="text-xs font-semibold uppercase leading-none tracking-[0.08em] text-muted-foreground"
       data-sanity={dataAttribute?.("publishedAt")}
       dateTime={stegaClean(value)}
     >
@@ -92,12 +92,12 @@ export function LatestPostCard({ post, stega }: { post: BlogPost; stega: boolean
   if (!slug) return null;
   const dataAttribute = documentDataAttribute({ id: post._id, stega, type: "post" });
   return (
-    <article className="relative grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-2">
+    <article className="relative grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm lg:grid-cols-2">
       <BlogImage dataAttribute={dataAttribute} featured post={post} />
       <div className="self-center p-7 md:p-9 lg:p-10">
         <PublicationDate dataAttribute={dataAttribute} value={post.publishedAt} />
         <h3
-          className="mt-4 text-balance text-3xl font-semibold leading-tight text-slate-950"
+          className="mt-4 text-balance text-3xl font-semibold leading-tight text-card-foreground"
           data-sanity={dataAttribute?.("title")}
         >
           <Link href={contentPath(slug)}>
@@ -107,7 +107,7 @@ export function LatestPostCard({ post, stega }: { post: BlogPost; stega: boolean
         </h3>
         {post.excerpt ? (
           <p
-            className="mt-3 line-clamp-3 text-[0.90625rem] leading-[1.6] text-slate-600"
+            className="mt-3 line-clamp-3 text-[0.90625rem] leading-[1.6] text-muted-foreground"
             data-sanity={dataAttribute?.("excerpt")}
           >
             {post.excerpt}
@@ -128,8 +128,8 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
     ? documentDataAttribute({ id: firstCategory._id, stega, type: "category" })
     : undefined;
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(19,28,59,0.14)]">
-      <div className="relative bg-slate-100">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(19,28,59,0.14)] dark:hover:shadow-[0_22px_48px_rgba(0,0,0,0.28)]">
+      <div className="relative bg-muted">
         <BlogImage dataAttribute={dataAttribute} post={post} />
         {category ? (
           <span
@@ -143,7 +143,7 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
       <div className="flex flex-1 flex-col gap-3 px-7 pb-7 pt-6">
         <PublicationDate dataAttribute={dataAttribute} value={post.publishedAt} />
         <h3
-          className="text-balance text-[1.3125rem] font-semibold leading-[1.25] text-slate-950"
+          className="text-balance text-[1.3125rem] font-semibold leading-[1.25] text-card-foreground"
           data-sanity={dataAttribute?.("title")}
         >
           <Link href={contentPath(slug)}>
@@ -153,13 +153,13 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
         </h3>
         {post.excerpt ? (
           <p
-            className="line-clamp-3 text-[0.90625rem] leading-[1.6] text-slate-600"
+            className="line-clamp-3 text-[0.90625rem] leading-[1.6] text-muted-foreground"
             data-sanity={dataAttribute?.("excerpt")}
           >
             {post.excerpt}
           </p>
         ) : null}
-        <span className="mt-auto pt-2 text-sm font-semibold text-cyan-800">
+        <span className="mt-auto pt-2 text-sm font-semibold text-primary">
           Read post {"\u2192"}
         </span>
       </div>

@@ -16,6 +16,7 @@ const post = {
   _id: "post-1",
   _type: "post",
   body: [],
+  excerpt: "Post introduction",
   slug: { _type: "slug", current: "post-title" },
   title: "Post title",
 } as unknown as NonNullable<POST_QUERY_RESULT>;
@@ -29,5 +30,6 @@ describe("RootContentView", () => {
 
     rerender(<RootContentView content={post} perspective="published" stega={false} />);
     expect(screen.getByRole("complementary", { name: "Post sidebar" })).toBeInTheDocument();
+    expect(screen.getByText("Post introduction")).toBeInTheDocument();
   });
 });
