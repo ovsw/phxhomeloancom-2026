@@ -7,22 +7,17 @@ const viewports = [
   { height: 1000, width: 1440 },
 ] as const;
 
-for (const viewport of viewports) {
-  for (const colorScheme of ["light", "dark"] as const) {
-    test(`matches the ${viewport.width}px ${colorScheme} footer`, async ({ page }) => {
-      await page.setViewportSize(viewport);
-      await page.emulateMedia({ colorScheme });
-      await page.goto(route);
+test("keeps the responsive footer ready and free of local horizontal overflow", async ({ page }) => {
+  await page.goto(route);
 
-      const footer = page.getByRole("contentinfo");
-      await expect(footer).toHaveAttribute("data-footer-state", "ready");
-      await expect(footer).toHaveScreenshot(`site-footer-${viewport.width}-${colorScheme}.png`, {
-        animations: "disabled",
-      });
-      expect(await footer.evaluate((element) => element.scrollWidth - element.clientWidth)).toBe(0);
-    });
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+
+    const footer = page.getByRole("contentinfo");
+    await expect(footer).toHaveAttribute("data-footer-state", "ready");
+    expect(await footer.evaluate((element) => element.scrollWidth - element.clientWidth)).toBe(0);
   }
-}
+});
 
 test("keeps footer destinations correct from a nested route", async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 });

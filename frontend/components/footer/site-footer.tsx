@@ -129,12 +129,27 @@ export function SiteFooter({
             </div>
             <div className="flex shrink-0 flex-wrap gap-3">
               <FooterLink
-                className="rounded-md border border-white/35 px-3 py-2 text-[11px] font-semibold uppercase leading-none tracking-[0.06em] text-white/80 hover:border-white/60"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center"
                 link={model.compliance.nmlsConsumerAccess}
+              >
+                <Image
+                  alt={model.compliance.nmlsConsumerAccess.label}
+                  className="h-14 w-auto object-contain invert"
+                  height={512}
+                  src="/images/footer/nmls-consumer-access.png"
+                  width={703}
+                />
+                {model.compliance.nmlsConsumerAccess.openInNewTab ? (
+                  <span className="sr-only"> (opens in a new tab)</span>
+                ) : null}
+              </FooterLink>
+              <Image
+                alt=""
+                className="h-14 w-auto object-contain invert"
+                height={2400}
+                src="/images/footer/equal-housing-lender.png"
+                width={2400}
               />
-              <span className="inline-flex min-h-8 items-center rounded-md border border-white/35 px-3 text-[11px] font-semibold uppercase leading-none tracking-[0.06em] text-white/80">
-                {model.compliance.equalHousingLabel}
-              </span>
             </div>
           </div>
           <div className="mt-8 border-t border-white/15 pt-6">

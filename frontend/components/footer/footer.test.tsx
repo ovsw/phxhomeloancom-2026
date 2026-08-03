@@ -58,7 +58,7 @@ const model: FooterModel = {
   },
   compliance: {
     headline: "Important",
-    disclaimer: "Approved mortgage disclaimer.",
+    disclaimer: "Approved mortgage disclaimer. Equal Housing Lender.",
     nmlsConsumerAccess: link("nmls", "NMLS Consumer Access", "https://nmls.example.com", true),
     equalHousingLabel: "Equal Housing Lender",
     copyrightYears: "2019-2026",
@@ -85,8 +85,12 @@ describe("Site Footer", () => {
       "href",
       "/construction-to-permanent-loan",
     );
-    expect(within(footer).getByText("Approved mortgage disclaimer.")).toBeInTheDocument();
-    expect(within(footer).getByText("Equal Housing Lender")).toBeInTheDocument();
+    expect(
+      within(footer).getByText("Approved mortgage disclaimer. Equal Housing Lender."),
+    ).toBeInTheDocument();
+    const equalHousingLogo = footer.querySelector('img[src*="equal-housing-lender.png"]');
+    expect(equalHousingLogo).toHaveAttribute("alt", "");
+    expect(equalHousingLogo?.closest("a")).toBeNull();
     expect(
       within(footer).getByText(
         (_, element) =>
@@ -129,11 +133,16 @@ describe("Site Footer", () => {
   it("uses safe configured target behavior for external destinations", () => {
     render(<SiteFooter model={model} />);
 
-    for (const name of ["YouTube", "Google Maps", "NMLS Consumer Access"]) {
+    for (const name of ["YouTube", "Google Maps"]) {
       const external = screen.getByRole("link", { name });
       expect(external).toHaveAttribute("target", "_blank");
       expect(external).toHaveAttribute("rel", "noopener noreferrer");
     }
+    const nmlsConsumerAccess = screen.getByRole("link", {
+      name: /^NMLS Consumer Access\s*\(opens in a new tab\)$/,
+    });
+    expect(nmlsConsumerAccess).toHaveAttribute("target", "_blank");
+    expect(nmlsConsumerAccess).toHaveAttribute("rel", "noopener noreferrer");
     expect(screen.getByRole("link", { name: "Privacy Policy" })).not.toHaveAttribute("target");
   });
 

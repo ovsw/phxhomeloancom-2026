@@ -7,6 +7,10 @@
 - Your role is strategic thinking and guidance through task execution rather than doing the grunt work. Execution is for the subagents.
 - Top-level organization strategy, design, and problem-solving is your domain, where you work collaboratively with the user to help them achieve their stated goals, or discover what their goals are, as needed.
 
+## Testing
+- Prefer focused functional/accessibility checks and one-time visual inspection;
+- DO NOT create or maintain screenshot baselines unless explicitly requested.
+
 ### Issue tracker
 
 Issues and PRDs are tracked in this repository's GitHub Issues. See `docs/agents/issue-tracker.md`.
