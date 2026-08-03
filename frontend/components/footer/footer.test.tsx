@@ -16,13 +16,23 @@ const model: FooterModel = {
     image: null,
     phone: link("brand-phone", "602-908-5849", "tel:+16029085849"),
     addressLines: ["3602 E Campbell Ave,", "Phoenix AZ 85018"],
-    mapLink: link("map", "Google Maps", "https://maps.example.com", true),
     organizationNmlsId: "477166",
   },
-  resources: {
-    heading: "Useful Resources",
-    links: [link("c2p", "Construction-to-Permanent Loan", "/construction-to-permanent-loan/")],
-  },
+  columns: [
+    {
+      key: "resources",
+      heading: "Useful Resources",
+      links: [link("c2p", "Construction-to-Permanent Loan", "/construction-to-permanent-loan/")],
+    },
+    {
+      key: "follow",
+      heading: "Follow",
+      links: [
+        link("youtube", "YouTube", "https://youtube.com", true),
+        link("map", "Google Maps", "https://maps.example.com", true),
+      ],
+    },
+  ],
   contact: {
     heading: "Contact Jimmy",
     fullName: "Jimmy Vercellino",
@@ -31,7 +41,6 @@ const model: FooterModel = {
     email: link("email", "jimmy.vercellino@goluminate.com", "mailto:jimmy.vercellino@goluminate.com"),
     website: link("website", "phxhomeloan.com", "/"),
   },
-  social: { heading: "Follow", links: [link("youtube", "YouTube", "https://youtube.com", true)] },
   compliance: {
     headline: "Important",
     disclaimer: "Approved mortgage disclaimer.",
@@ -76,5 +85,34 @@ describe("Site Footer", () => {
       expect(external).toHaveAttribute("rel", "noopener noreferrer");
     }
     expect(screen.getByRole("link", { name: "Privacy Policy" })).not.toHaveAttribute("target");
+  });
+
+  it("renders authored columns in order around Contact without heading-specific behavior", () => {
+    const flexibleModel: FooterModel = {
+      ...model,
+      columns: [
+        { key: "community", heading: "Community", links: [link("news", "News", "/news")] },
+        { key: "help", heading: "Get Help", links: [link("faq", "FAQs", "/faqs")] },
+        { key: "more", heading: "More", links: [link("map", "Google Maps", "https://maps.example.com", true)] },
+      ],
+    };
+
+    render(<SiteFooter model={flexibleModel} />);
+
+    const headings = within(screen.getByRole("contentinfo"))
+      .getAllByRole("heading", { level: 3 })
+      .map((heading) => heading.textContent);
+    expect(headings).toEqual([
+      "PHX Home Loan",
+      "Community",
+      "Contact Jimmy",
+      "Get Help",
+      "More",
+      "Important",
+    ]);
+    expect(screen.getByRole("link", { name: "Google Maps" })).toHaveAttribute(
+      "href",
+      "https://maps.example.com",
+    );
   });
 });

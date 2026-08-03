@@ -1,4 +1,4 @@
-import { Link, PanelBottom } from "lucide-react";
+import { Columns3, Link, PanelBottom } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 const destination = defineType({
@@ -81,6 +81,33 @@ const footerLink = defineType({
   preview: { select: { title: "label" } },
 });
 
+const footerColumn = defineType({
+  name: "footerColumn",
+  title: "Footer column",
+  type: "object",
+  icon: Columns3,
+  fields: [
+    defineField({
+      name: "heading",
+      type: "string",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "links",
+      type: "array",
+      of: [defineArrayMember({ type: "footerLink" })],
+      validation: (rule) => rule.required().min(1).unique(),
+    }),
+  ],
+  preview: {
+    select: { title: "heading", links: "links" },
+    prepare: ({ title, links }) => ({
+      title,
+      subtitle: `${links?.length ?? 0} link${links?.length === 1 ? "" : "s"}`,
+    }),
+  },
+});
+
 const requiredLink = (name: string, title: string) =>
   defineField({
     name,
@@ -108,27 +135,16 @@ const footer = defineType({
           of: [defineArrayMember({ type: "string" })],
           validation: (rule) => rule.required().min(1),
         }),
-        requiredLink("mapLink", "Map destination"),
       ],
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "resources",
-      type: "object",
-      fields: [
-        defineField({
-          name: "heading",
-          type: "string",
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: "links",
-          type: "array",
-          of: [defineArrayMember({ type: "footerLink" })],
-          validation: (rule) => rule.required().min(1).unique(),
-        }),
-      ],
-      validation: (rule) => rule.required(),
+      name: "columns",
+      title: "Navigation columns",
+      description: "Ordered columns shown in the footer navigation.",
+      type: "array",
+      of: [defineArrayMember({ type: "footerColumn" })],
+      validation: (rule) => rule.required().min(1),
     }),
     defineField({
       name: "contact",
@@ -154,24 +170,6 @@ const footer = defineType({
         requiredLink("phone", "Phone"),
         requiredLink("email", "Email"),
         requiredLink("website", "Website"),
-      ],
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "social",
-      type: "object",
-      fields: [
-        defineField({
-          name: "heading",
-          type: "string",
-          validation: (rule) => rule.required(),
-        }),
-        defineField({
-          name: "links",
-          type: "array",
-          of: [defineArrayMember({ type: "footerLink" })],
-          validation: (rule) => rule.required().min(1).unique(),
-        }),
       ],
       validation: (rule) => rule.required(),
     }),
@@ -227,6 +225,6 @@ const footer = defineType({
   preview: { prepare: () => ({ title: "Site Footer" }) },
 });
 
-export const footerSchemaTypes = [destination, footerLink];
+export const footerSchemaTypes = [destination, footerLink, footerColumn];
 
 export default footer;

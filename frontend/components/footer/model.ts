@@ -8,16 +8,21 @@ export type FooterLinkModel = {
   openInNewTab: boolean;
 };
 
+export type FooterColumnModel = {
+  key: string;
+  heading: string;
+  links: FooterLinkModel[];
+};
+
 export type FooterModel = {
   brand: {
     label: string;
     image: { src: string; width: number; height: number } | null;
     phone: FooterLinkModel;
     addressLines: string[];
-    mapLink: FooterLinkModel;
     organizationNmlsId: string;
   };
-  resources: { heading: string; links: FooterLinkModel[] };
+  columns: FooterColumnModel[];
   contact: {
     heading: string;
     fullName: string;
@@ -26,7 +31,6 @@ export type FooterModel = {
     email: FooterLinkModel;
     website: FooterLinkModel;
   };
-  social: { heading: string; links: FooterLinkModel[] };
   compliance: {
     headline: string;
     disclaimer: string;
@@ -53,9 +57,12 @@ export type RawFooter = {
   brand?: {
     phone?: RawLink | null;
     addressLines?: Array<string | null> | null;
-    mapLink?: RawLink | null;
   } | null;
-  resources?: { heading?: string | null; links?: RawLink[] | null } | null;
+  columns?: Array<{
+    _key?: string | null;
+    heading?: string | null;
+    links?: RawLink[] | null;
+  } | null> | null;
   contact?: {
     heading?: string | null;
     fullName?: string | null;
@@ -64,7 +71,6 @@ export type RawFooter = {
     email?: RawLink | null;
     website?: RawLink | null;
   } | null;
-  social?: { heading?: string | null; links?: RawLink[] | null } | null;
   compliance?: {
     headline?: string | null;
     disclaimer?: string | null;
@@ -117,6 +123,17 @@ function links(raw: RawLink[] | null | undefined): FooterLinkModel[] {
   });
 }
 
+function columns(raw: NonNullable<RawFooter>["columns"]): FooterColumnModel[] {
+  return (raw ?? []).flatMap((column) => {
+    const key = text(column?._key);
+    const heading = text(column?.heading);
+    const columnLinks = links(column?.links);
+    return key && heading && columnLinks.length > 0
+      ? [{ key, heading, links: columnLinks }]
+      : [];
+  });
+}
+
 function image(settings: RawFooterSettings): FooterModel["brand"]["image"] {
   const source = settings?.logo?.light ?? settings?.logo?.dark;
   if (!source) return null;
@@ -140,21 +157,17 @@ export function createFooterModel(
 
   const label = text(settings?.siteName);
   const brandPhone = link(raw.brand?.phone, "brand-phone");
-  const mapLink = link(raw.brand?.mapLink, "map");
   const addressLines = (raw.brand?.addressLines ?? []).flatMap((line) => {
     const value = text(line);
     return value ? [value] : [];
   });
-  const resourcesHeading = text(raw.resources?.heading);
-  const resourceLinks = links(raw.resources?.links);
+  const footerColumns = columns(raw.columns);
   const contactHeading = text(raw.contact?.heading);
   const contactName = text(raw.contact?.fullName);
   const contactNmlsId = text(raw.contact?.nmlsId);
   const contactPhone = link(raw.contact?.phone, "contact-phone");
   const contactEmail = link(raw.contact?.email, "contact-email");
   const contactWebsite = link(raw.contact?.website, "contact-website");
-  const socialHeading = text(raw.social?.heading);
-  const socialLinks = links(raw.social?.links);
   const headline = text(raw.compliance?.headline);
   const disclaimer = text(raw.compliance?.disclaimer);
   const nmlsConsumerAccess = link(
@@ -171,18 +184,14 @@ export function createFooterModel(
   if (
     !label ||
     !brandPhone ||
-    !mapLink ||
     addressLines.length === 0 ||
-    !resourcesHeading ||
-    resourceLinks.length === 0 ||
+    footerColumns.length === 0 ||
     !contactHeading ||
     !contactName ||
     !contactNmlsId ||
     !contactPhone ||
     !contactEmail ||
     !contactWebsite ||
-    !socialHeading ||
-    socialLinks.length === 0 ||
     !headline ||
     !disclaimer ||
     !nmlsConsumerAccess ||
@@ -205,10 +214,9 @@ export function createFooterModel(
       image: image(settings),
       phone: brandPhone,
       addressLines,
-      mapLink,
       organizationNmlsId,
     },
-    resources: { heading: resourcesHeading, links: resourceLinks },
+    columns: footerColumns,
     contact: {
       heading: contactHeading,
       fullName: contactName,
@@ -217,7 +225,6 @@ export function createFooterModel(
       email: contactEmail,
       website: contactWebsite,
     },
-    social: { heading: socialHeading, links: socialLinks },
     compliance: {
       headline,
       disclaimer,

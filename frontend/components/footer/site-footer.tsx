@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { FooterLinkModel, FooterModel } from "./model";
+import type { FooterColumnModel, FooterLinkModel, FooterModel } from "./model";
 import { FooterLink } from "./footer-link";
 
 const headingClassName =
@@ -18,7 +18,23 @@ function LinkList({ links }: { links: FooterLinkModel[] }) {
   );
 }
 
+function FooterColumn({ column }: { column: FooterColumnModel }) {
+  const headingId = `footer-column-${column.key}-heading`;
+
+  return (
+    <section aria-labelledby={headingId}>
+      <h3 className={headingClassName} id={headingId}>
+        {column.heading}
+      </h3>
+      <LinkList links={column.links} />
+    </section>
+  );
+}
+
 export function SiteFooter({ model }: { model: FooterModel }) {
+  const firstColumn = model.columns[0]!;
+  const remainingColumns = model.columns.slice(1);
+
   return (
     <footer className="bg-[#0c1329] pt-16 text-white md:pt-[5.5rem]" data-footer-state="ready">
       <section
@@ -67,12 +83,7 @@ export function SiteFooter({ model }: { model: FooterModel }) {
             </div>
           </section>
 
-          <section aria-labelledby="footer-resources-heading">
-            <h3 className={headingClassName} id="footer-resources-heading">
-              {model.resources.heading}
-            </h3>
-            <LinkList links={model.resources.links} />
-          </section>
+          <FooterColumn column={firstColumn} />
 
           <section aria-labelledby="footer-contact-heading">
             <h3 className={headingClassName} id="footer-contact-heading">
@@ -92,12 +103,9 @@ export function SiteFooter({ model }: { model: FooterModel }) {
             </div>
           </section>
 
-          <section aria-labelledby="footer-social-heading">
-            <h3 className={headingClassName} id="footer-social-heading">
-              {model.social.heading}
-            </h3>
-            <LinkList links={[...model.social.links, model.brand.mapLink]} />
-          </section>
+          {remainingColumns.map((column) => (
+            <FooterColumn column={column} key={column.key} />
+          ))}
         </div>
 
         <section

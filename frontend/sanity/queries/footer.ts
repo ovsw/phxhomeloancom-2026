@@ -25,10 +25,10 @@ export const FOOTER_QUERY = defineQuery(`
     _id,
     brand{
       phone${linkProjection},
-      addressLines,
-      mapLink${linkProjection}
+      addressLines
     },
-    resources{
+    columns[]{
+      _key,
       heading,
       links[]${linkProjection}
     },
@@ -39,10 +39,6 @@ export const FOOTER_QUERY = defineQuery(`
       phone${linkProjection},
       email${linkProjection},
       website${linkProjection}
-    },
-    social{
-      heading,
-      links[]${linkProjection}
     },
     compliance{
       headline,

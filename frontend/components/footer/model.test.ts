@@ -12,15 +12,25 @@ const rawFooter: RawFooter = {
   brand: {
     phone: rawLink("brand-phone", "602-908-5849", "tel:+16029085849"),
     addressLines: ["3602 E Campbell Ave,", "Phoenix AZ 85018"],
-    mapLink: rawLink("map", "Google Maps", "https://maps.example.com", true),
   },
-  resources: {
-    heading: "Useful Resources",
-    links: [
-      rawLink("valid", "VA Loan", "phoenix-va-loan"),
-      rawLink("invalid", "Broken", "javascript:alert(1)"),
-    ],
-  },
+  columns: [
+    {
+      _key: "resources",
+      heading: "Useful Resources",
+      links: [
+        rawLink("valid", "VA Loan", "phoenix-va-loan"),
+        rawLink("invalid", "Broken", "javascript:alert(1)"),
+      ],
+    },
+    {
+      _key: "follow",
+      heading: "Follow",
+      links: [
+        rawLink("youtube", "YouTube", "https://youtube.com/example", true),
+        rawLink("map", "Google Maps", "https://maps.example.com", true),
+      ],
+    },
+  ],
   contact: {
     heading: "Contact Jimmy",
     fullName: "Jimmy Vercellino",
@@ -28,10 +38,6 @@ const rawFooter: RawFooter = {
     phone: rawLink("phone", "480-800-8387", "tel:+14808008387"),
     email: rawLink("email", "jimmy@example.com", "mailto:jimmy@example.com"),
     website: rawLink("website", "phxhomeloan.com", "/"),
-  },
-  social: {
-    heading: "Follow",
-    links: [rawLink("youtube", "YouTube", "https://youtube.com/example", true)],
   },
   compliance: {
     headline: "Important",
@@ -48,15 +54,48 @@ const rawFooter: RawFooter = {
 };
 
 describe("createFooterModel", () => {
-  it("normalizes the complete CMS contract and omits invalid destinations", () => {
+  it("normalizes ordered columns, omits invalid destinations, and retains map links as ordinary links", () => {
     const model = createFooterModel(rawFooter, { siteName: "PHX Home Loan" }, 2026);
 
-    expect(model?.resources.links).toEqual([
+    expect(model?.columns).toEqual([
+      {
+        key: "resources",
+        heading: "Useful Resources",
+        links: [
       { href: "/phoenix-va-loan", key: "valid", label: "VA Loan", openInNewTab: false },
+        ],
+      },
+      {
+        key: "follow",
+        heading: "Follow",
+        links: [
+          { href: "https://youtube.com/example", key: "youtube", label: "YouTube", openInNewTab: true },
+          { href: "https://maps.example.com", key: "map", label: "Google Maps", openInNewTab: true },
+        ],
+      },
     ]);
     expect(model?.contact.email.href).toBe("mailto:jimmy@example.com");
     expect(model?.compliance.copyrightYears).toBe("2019-2026");
-    expect(model?.social.links[0]).toMatchObject({ openInNewTab: true });
+  });
+
+  it("keeps valid renamed and reordered columns while discarding empty columns", () => {
+    const model = createFooterModel(
+      {
+        ...rawFooter,
+        columns: [
+          { _key: "new", heading: "Start Here", links: [rawLink("start", "Get Started", "/start")] },
+          { _key: "empty", heading: "Empty", links: [] },
+          { _key: "renamed", heading: "Community", links: [rawLink("news", "News", "/news")] },
+        ],
+      },
+      { siteName: "PHX Home Loan" },
+      2026,
+    );
+
+    expect(model?.columns.map(({ key, heading }) => ({ key, heading }))).toEqual([
+      { key: "new", heading: "Start Here" },
+      { key: "renamed", heading: "Community" },
+    ]);
   });
 
   it("returns the explicit unavailable outcome for the wrong singleton or missing required data", () => {
@@ -68,5 +107,6 @@ describe("createFooterModel", () => {
         2026,
       ),
     ).toBeNull();
+    expect(createFooterModel({ ...rawFooter, columns: [] }, { siteName: "PHX" }, 2026)).toBeNull();
   });
 });
