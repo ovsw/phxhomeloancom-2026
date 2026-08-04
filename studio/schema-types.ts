@@ -5,9 +5,12 @@ import author from "./schemas/documents/author";
 import category from "./schemas/documents/category";
 import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
-import navigation from "./schemas/documents/navigation";
+import navigation, {
+  navigationSchemaTypes,
+} from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
 import teamMember from "./schemas/documents/team-member";
+import blogIndex from "./schemas/documents/blog-index";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -17,6 +20,7 @@ import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import customUrl from "./schemas/blocks/shared/custom-url";
 import button from "./schemas/blocks/shared/button";
+import richTextContent from "./schemas/blocks/shared/rich-text-content";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import homeHero from "./schemas/blocks/home-hero";
@@ -37,6 +41,7 @@ import personContactCta from "./schemas/blocks/person-contact-cta";
 import contactForm from "./schemas/blocks/contact-form";
 import teamMembers from "./schemas/blocks/team-members";
 import richTextBlock from "./schemas/blocks/rich-text-block";
+import advisorCta from "./schemas/blocks/advisor-cta";
 
 export const schemaTypes = [
   // documents
@@ -47,8 +52,10 @@ export const schemaTypes = [
   faq,
   testimonial,
   navigation,
+  ...navigationSchemaTypes,
   settings,
   teamMember,
+  blogIndex,
   // shared objects
   blockContent,
   link,
@@ -57,6 +64,7 @@ export const schemaTypes = [
   sectionPadding,
   customUrl,
   button,
+  richTextContent,
   // blocks
   hero1,
   homeHero,
@@ -77,4 +85,5 @@ export const schemaTypes = [
   contactForm,
   teamMembers,
   richTextBlock,
+  advisorCta,
 ];

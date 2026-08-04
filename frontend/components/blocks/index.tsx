@@ -21,6 +21,7 @@ import PersonContactCta from "@/components/blocks/person-contact-cta";
 import ContactForm from "@/components/blocks/contact-form";
 import TeamMembers from "@/components/blocks/team-members";
 import RichTextBlock from "@/components/blocks/rich-text-block";
+import AdvisorCta from "@/components/blocks/advisor-cta";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
@@ -45,6 +46,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "contactForm",
   "teamMembers",
   "richTextBlock",
+  "advisorCta",
 ]);
 
 const componentMap: Partial<{
@@ -70,15 +72,18 @@ const componentMap: Partial<{
   contactForm: ContactForm,
   teamMembers: TeamMembers,
   richTextBlock: RichTextBlock,
+  advisorCta: AdvisorCta,
 };
 
 export default function Blocks({
   blocks,
   documentId,
+  documentType = "page",
   stega,
 }: {
   blocks: Block[];
   documentId: string;
+  documentType?: "blogIndex" | "page";
   perspective: LivePerspective;
   stega: boolean;
 }) {
@@ -98,7 +103,7 @@ export default function Blocks({
               id: documentId,
               path: blockPath,
               projectId,
-              type: "page",
+              type: documentType,
             }).toString()
           : undefined;
         const dataAttribute = stega
@@ -109,7 +114,7 @@ export default function Blocks({
                 id: documentId,
                 path: `${blockPath}.${path}`,
                 projectId,
-                type: "page",
+                type: documentType,
               }).toString()
           : undefined;
         const editingProps: BlockEditingProps =

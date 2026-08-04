@@ -1,5 +1,6 @@
 import { groq } from "next-sanity";
 import { bodyQuery } from "./shared/body";
+import { urlInternalHref } from "./shared/internal-href";
 
 // @sanity-typegen-ignore
 export const faqAccordionQuery = groq`
@@ -21,7 +22,7 @@ export const faqAccordionQuery = groq`
       description,
       "openInNewTab": url.openInNewTab,
       "href": select(
-        url.type == "internal" => url.internal->slug.current,
+        url.type == "internal" => ${urlInternalHref},
         url.type == "external" => url.external,
         url.href
       )

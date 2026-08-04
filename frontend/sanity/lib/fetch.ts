@@ -14,6 +14,17 @@ import {
   NAVIGATION_QUERY_RESULT,
   SETTINGS_QUERY_RESULT,
 } from "@/sanity.types";
+import type {
+  BLOG_INDEX_QUERY_RESULT,
+  LATEST_POST_QUERY_RESULT,
+  REGULAR_POSTS_QUERY_RESULT,
+} from "@/sanity.types";
+import {
+  BLOG_INDEX_QUERY,
+  LATEST_POST_QUERY,
+  REGULAR_POSTS_COUNT_QUERY,
+  REGULAR_POSTS_QUERY,
+} from "@/sanity/queries/blog-index";
 
 export async function fetchSanityPageBySlug({
   slug,
@@ -45,6 +56,68 @@ export async function fetchSanityPosts({
   });
 
   return data as POSTS_QUERY_RESULT;
+}
+
+export async function fetchBlogIndex({
+  perspective,
+  stega,
+}: DynamicFetchOptions): Promise<BLOG_INDEX_QUERY_RESULT> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: BLOG_INDEX_QUERY,
+    perspective,
+    stega,
+  });
+  return data as BLOG_INDEX_QUERY_RESULT;
+}
+
+export async function fetchLatestPost({
+  perspective,
+  stega,
+}: DynamicFetchOptions): Promise<LATEST_POST_QUERY_RESULT> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: LATEST_POST_QUERY,
+    perspective,
+    stega,
+  });
+  return data as LATEST_POST_QUERY_RESULT;
+}
+
+export async function fetchRegularPosts({
+  end,
+  latestPostId,
+  perspective,
+  start,
+  stega,
+}: {
+  end: number;
+  latestPostId: string;
+  start: number;
+} & DynamicFetchOptions): Promise<REGULAR_POSTS_QUERY_RESULT> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: REGULAR_POSTS_QUERY,
+    params: { end, latestPostId, start },
+    perspective,
+    stega,
+  });
+  return data as REGULAR_POSTS_QUERY_RESULT;
+}
+
+export async function fetchRegularPostsCount({
+  latestPostId,
+  perspective,
+  stega,
+}: { latestPostId: string } & DynamicFetchOptions): Promise<number> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: REGULAR_POSTS_COUNT_QUERY,
+    params: { latestPostId },
+    perspective,
+    stega,
+  });
+  return data as number;
 }
 
 export async function fetchSanityPostBySlug({

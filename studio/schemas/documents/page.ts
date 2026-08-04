@@ -1,6 +1,8 @@
 import { defineField, defineType } from "sanity";
 import { Files } from "lucide-react";
 import meta from "../blocks/shared/meta";
+import { blocksField } from "../blocks/page-builder";
+import { uniqueRootSlug } from "../validation/unique-root-slug";
 
 export default defineType({
   name: "page",
@@ -77,73 +79,9 @@ export default defineType({
         source: "title",
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().custom(uniqueRootSlug),
     }),
-    defineField({
-      name: "blocks",
-      type: "array",
-      group: "content",
-      of: [
-        { type: "homeHero" },
-        { type: "loanFeatureCards" },
-        { type: "videoFeature" },
-        { type: "phxEmbedSocialReviews" },
-        { type: "latestArticles" },
-        { type: "faqAccordion" },
-        { type: "awardCta" },
-        { type: "pageHeader" },
-        { type: "storyFeature" },
-        { type: "bigVideoFeature" },
-        { type: "editorialChapter" },
-        { type: "youtubeChannelFeature" },
-        { type: "personCta" },
-        { type: "locationMap" },
-        { type: "personContactCta" },
-        { type: "contactForm" },
-        { type: "teamMembers" },
-        { type: "richTextBlock" },
-      ],
-      options: {
-        insertMenu: {
-          groups: [
-            {
-              name: "hero",
-              title: "Hero",
-              of: ["homeHero", "pageHeader"],
-            },
-            {
-              name: "content",
-              title: "Content",
-              of: [
-                "loanFeatureCards",
-                "videoFeature",
-                "phxEmbedSocialReviews",
-                "latestArticles",
-                "faqAccordion",
-                "awardCta",
-                "storyFeature",
-                "bigVideoFeature",
-                "editorialChapter",
-                "youtubeChannelFeature",
-                "personCta",
-                "locationMap",
-                "personContactCta",
-                "contactForm",
-                "teamMembers",
-                "richTextBlock",
-              ],
-            },
-          ],
-          views: [
-            {
-              name: "grid",
-              previewImageUrl: (block) => `/static/images/preview/${block}.jpg`,
-            },
-            { name: "list" },
-          ],
-        },
-      },
-    }),
+    blocksField,
     meta,
   ],
 });

@@ -1,48 +1,12 @@
-import Link from "next/link";
-import Logo from "@/components/logo";
-import MobileNav from "@/components/header/mobile-nav";
-import DesktopNav from "@/components/header/desktop-nav";
-import { ModeToggle } from "@/components/menu-toggle";
+import { createHeaderBrandModel, createHeaderNavigationModel } from "./model";
+import { Header } from "./site-header";
 import { fetchSanityNavigation, fetchSanitySettings } from "@/sanity/lib/fetch";
-import {
-  getDynamicFetchOptions,
-  type DynamicFetchOptions,
-} from "@/sanity/lib/live";
-import { NAVIGATION_QUERY_RESULT, SETTINGS_QUERY_RESULT } from "@/sanity.types";
-
-type HeaderProps = {
-  settings: SETTINGS_QUERY_RESULT;
-  navigation: NAVIGATION_QUERY_RESULT;
-};
-
-export function Header({ settings, navigation }: HeaderProps) {
-  return (
-    <header className="sticky top-0 w-full border-border/40 bg-background/95 z-50">
-      <div className="container flex items-center justify-between h-14">
-        <Link href="/" aria-label="Home page">
-          <Logo settings={settings} />
-        </Link>
-        <div className="hidden xl:flex gap-7 items-center justify-between">
-          <DesktopNav navigation={navigation} />
-          <ModeToggle />
-        </div>
-        <div className="flex items-center xl:hidden">
-          <ModeToggle />
-          <MobileNav navigation={navigation} settings={settings} />
-        </div>
-      </div>
-    </header>
-  );
-}
+import { getDynamicFetchOptions, type DynamicFetchOptions } from "@/sanity/lib/live";
+export { Header } from "./site-header";
 
 export function HeaderFallback() {
   return (
-    <header
-      aria-busy
-      className="sticky top-0 w-full border-border/40 bg-background/95 z-50"
-    >
-      <div className="container h-14" />
-    </header>
+    <header aria-busy className="sticky top-0 z-[60] h-[86px] w-full border-b border-border/80 bg-background/95" />
   );
 }
 
@@ -51,14 +15,15 @@ export async function DynamicHeader() {
   return <CachedHeader perspective={perspective} stega={stega} />;
 }
 
-export async function CachedHeader({
-  perspective,
-  stega,
-}: DynamicFetchOptions) {
-  const [settings, navigation] = await Promise.all([
+export async function CachedHeader({ perspective, stega }: DynamicFetchOptions) {
+  const [settings, rawNavigation] = await Promise.all([
     fetchSanitySettings({ perspective, stega }),
     fetchSanityNavigation({ perspective, stega }),
   ]);
+  const model = {
+    brand: createHeaderBrandModel(settings),
+    navigation: createHeaderNavigationModel(rawNavigation),
+  };
 
-  return <Header settings={settings} navigation={navigation} />;
+  return <Header model={model} />;
 }

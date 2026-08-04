@@ -7,6 +7,7 @@ import {
   Quote,
   Menu,
   Settings,
+  Newspaper,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -29,6 +30,15 @@ export const structure = (S: any, context: any) =>
           S.documentTypeList("post")
             .title("Post")
             .defaultOrdering([{ field: "_createdAt", direction: "desc" }]) // Default ordering
+        ),
+      S.listItem()
+        .title("Blog Index")
+        .icon(Newspaper)
+        .child(
+          S.editor()
+            .id("blogIndex")
+            .schemaType("blogIndex")
+            .documentId("blogIndex")
         ),
       orderableDocumentListDeskItem({
         type: "category",

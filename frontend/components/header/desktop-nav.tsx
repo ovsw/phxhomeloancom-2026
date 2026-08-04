@@ -1,34 +1,122 @@
-import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+"use client";
+
+import { ChevronDown } from "lucide-react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FocusEvent,
+  type KeyboardEvent,
+} from "react";
 import { cn } from "@/lib/utils";
-import { NAVIGATION_QUERY_RESULT } from "@/sanity.types";
+import { HeaderLink } from "./header-link";
+import type { HeaderNavigationItem, HeaderNavigationModel } from "./model";
+import { NavigationIcon } from "./navigation-icon";
 
-type SanityLink = NonNullable<NAVIGATION_QUERY_RESULT[0]["links"]>[number];
+const primaryLinkClassName =
+  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 font-medium text-[14.5px] leading-none tracking-[0.01em] text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40";
 
-export default function DesktopNav({
-  navigation,
-}: {
-  navigation: NAVIGATION_QUERY_RESULT;
-}) {
+function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "group" }> }) {
+  const [open, setOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const container = useRef<HTMLDivElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  const panelId = `header-group-${item.key}`;
+
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+  const openGroup = () => {
+    cancelClose();
+    setOpen(true);
+  };
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpen(false), 120);
+  };
+  const onBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) scheduleClose();
+  };
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape" && open) {
+      event.preventDefault();
+      cancelClose();
+      setOpen(false);
+      trigger.current?.focus();
+    }
+  };
+
+  useEffect(() => cancelClose, []);
+
   return (
-    <div className="hidden xl:flex items-center gap-7 text-primary">
-      {navigation[0]?.links?.map((navItem: SanityLink) => (
-        <Link
-          key={navItem._key}
-          href={navItem.href || "#"}
-          target={navItem.target ? "_blank" : undefined}
-          rel={navItem.target ? "noopener noreferrer" : undefined}
-          className={cn(
-            buttonVariants({
-              variant: navItem.buttonVariant || "default",
-            }),
-            navItem.buttonVariant === "ghost" &&
-              "transition-colors hover:text-foreground/80 text-foreground/60 text-sm p-0 h-auto hover:bg-transparent",
-          )}
+    <div
+      className="group/nav-column relative"
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      onMouseEnter={openGroup}
+      onMouseLeave={scheduleClose}
+      ref={container}
+    >
+      <button
+        aria-controls={panelId}
+        aria-expanded={open}
+        className={cn(primaryLinkClassName, "gap-1")}
+        onClick={(event) => {
+          if (event.detail === 0) setOpen((value) => !value);
+          else setOpen(true);
+        }}
+        ref={trigger}
+        type="button"
+      >
+        {item.label}
+        <ChevronDown
+          aria-hidden="true"
+          className={cn("size-3 transition-transform", open && "rotate-180")}
+        />
+      </button>
+      {open ? (
+        <div
+          className="absolute left-1/2 top-full z-[70] w-80 -translate-x-1/2 pt-2"
+          id={panelId}
         >
-          {navItem.title}
-        </Link>
-      ))}
+          <div className="grid gap-1 rounded-xl border border-border/80 bg-popover p-2 text-popover-foreground shadow-xl">
+            {item.links.map((child) => (
+              <HeaderLink
+                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                key={child.key}
+                link={child.link}
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-secondary text-primary">
+                  <NavigationIcon name={child.icon} />
+                </span>
+                <span className="grid gap-0.5">
+                  <span className="font-semibold text-sm leading-none text-popover-foreground">
+                    {child.label}
+                  </span>
+                  <span className="line-clamp-2 text-xs font-normal leading-5 text-muted-foreground">
+                    {child.description}
+                  </span>
+                </span>
+              </HeaderLink>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
+  );
+}
+
+export default function DesktopNav({ navigation }: { navigation: HeaderNavigationModel }) {
+  return (
+    <nav aria-label="Main navigation" className="hidden items-center gap-3 lg:flex xl:gap-[34px]">
+      {navigation.items.map((item) =>
+        item.kind === "group" ? (
+          <DesktopGroup item={item} key={item.key} />
+        ) : (
+          <HeaderLink className={primaryLinkClassName} key={item.key} link={item.link} />
+        ),
+      )}
+    </nav>
   );
 }
