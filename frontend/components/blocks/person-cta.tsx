@@ -1,5 +1,6 @@
 import PortableTextRenderer from "@/components/portable-text-renderer";
 import { Button } from "@/components/ui/button";
+import { getSafeLinkHref } from "@/lib/safe-href";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -72,23 +73,12 @@ function PersonButtons({
       data-sanity={dataAttribute?.("buttons")}
     >
       {buttons.slice(0, 2).map((button, index) => {
-        const href = stegaClean(button.href);
+        const href = getSafeLinkHref(button.href);
         const variant = stegaClean(button.variant);
         const secondary =
           index > 0 || variant === "outline" || variant === "secondary";
 
-        if (!href) {
-          return (
-            <Button
-              className="h-12 w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold sm:w-auto"
-              disabled
-              key={button._key || `broken-button-${index}`}
-              size="lg"
-            >
-              Link Broken
-            </Button>
-          );
-        }
+        if (!href) return null;
 
         return (
           <Button

@@ -2,6 +2,7 @@
 
 import { urlFor } from "@/sanity/lib/image";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { getYouTubeVideoId } from "@/lib/youtube-video-id";
 import { XIcon } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import Image from "next/image";
@@ -36,38 +37,6 @@ type BigVideoLightboxProps = {
   title?: string;
   titleId: string;
 };
-
-const youtubeHosts = [
-  "youtube.com",
-  "youtube-nocookie.com",
-  "youtu.be",
-] as const;
-
-function getYouTubeVideoId(value?: string | null) {
-  const cleanUrl = stegaClean(value);
-  if (!cleanUrl) return null;
-
-  try {
-    const url = new URL(cleanUrl);
-    const hostname = url.hostname.replace(/^www\./, "");
-
-    if (!youtubeHosts.includes(hostname as (typeof youtubeHosts)[number])) {
-      return null;
-    }
-
-    if (hostname === "youtu.be") {
-      return url.pathname.split("/").filter(Boolean)[0] ?? null;
-    }
-
-    if (url.pathname.startsWith("/embed/")) {
-      return url.pathname.split("/").filter(Boolean)[1] ?? null;
-    }
-
-    return url.searchParams.get("v");
-  } catch {
-    return null;
-  }
-}
 
 function BigVideoLightbox({
   closeRef,
@@ -141,7 +110,7 @@ export default function BigVideoFeature({
   const displayDescription = stegaClean(description)?.trim();
   const displayEyebrow = stegaClean(eyebrow)?.trim();
   const displayTitle = stegaClean(title)?.trim();
-  const videoId = getYouTubeVideoId(youtubeUrl);
+  const videoId = getYouTubeVideoId(stegaClean(youtubeUrl));
   const embedUrl = videoId
     ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`
     : null;
