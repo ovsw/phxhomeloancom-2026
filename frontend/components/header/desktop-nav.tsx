@@ -14,7 +14,7 @@ import type { HeaderNavigationItem, HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const primaryLinkClassName =
-  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 typo-nav text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40";
+  "flex min-h-11 items-center whitespace-nowrap rounded-control px-1 typo-nav text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40";
 
 function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "group" }> }) {
   const [open, setOpen] = useState(false);
@@ -80,14 +80,14 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
           className="absolute left-1/2 top-full z-[70] w-72 -translate-x-1/2 pt-0.5"
           id={panelId}
         >
-          <div className="grid gap-1 rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-menu-layer dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
+          <div className="grid gap-1 rounded-card border border-border bg-popover p-2 text-popover-foreground shadow-menu-layer dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
             {item.links.map((child) => (
               <HeaderLink
-                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40"
+                className="group/nav-link flex items-center gap-3 rounded-control px-4 py-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40"
                 key={child.key}
                 link={child.link}
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-control bg-secondary text-primary">
                   <NavigationIcon name={child.icon} />
                 </span>
                 <span className="grid gap-0.5">

@@ -92,7 +92,7 @@ export function LatestPostCard({ post, stega }: { post: BlogPost; stega: boolean
   if (!slug) return null;
   const dataAttribute = documentDataAttribute({ id: post._id, stega, type: "post" });
   return (
-    <article className="relative grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm lg:grid-cols-2">
+    <article className="relative grid overflow-hidden rounded-card border border-border bg-card shadow-sm lg:grid-cols-2">
       <BlogImage dataAttribute={dataAttribute} featured post={post} />
       <div className="self-center p-7 md:p-9 lg:p-10">
         <PublicationDate dataAttribute={dataAttribute} value={post.publishedAt} />
@@ -128,7 +128,7 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
     ? documentDataAttribute({ id: firstCategory._id, stega, type: "category" })
     : undefined;
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-1 hover:shadow-interactive-lift dark:hover:shadow-[0_22px_48px_rgba(0,0,0,0.28)]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-border bg-card transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-1 hover:shadow-interactive-lift dark:hover:shadow-[0_22px_48px_rgba(0,0,0,0.28)]">
       <div className="relative bg-muted">
         <BlogImage dataAttribute={dataAttribute} post={post} />
         {category ? (

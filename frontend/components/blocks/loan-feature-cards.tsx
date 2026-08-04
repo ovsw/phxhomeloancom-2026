@@ -160,8 +160,8 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
   const href = stegaClean(card.link?.href);
   const title = getLoanDisplayTitle(card);
   const content = (
-    <article className="group flex h-full min-h-[255px] flex-col rounded-xl border border-border bg-card p-(--space-card) text-card-foreground transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-interactive-lift">
-      <div className="mb-6 flex size-[46px] items-center justify-center rounded-[11px] bg-secondary text-primary">
+    <article className="group flex h-full min-h-[255px] flex-col rounded-card border border-border bg-card p-(--space-card) text-card-foreground transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-interactive-lift">
+      <div className="mb-6 flex size-[46px] items-center justify-center rounded-control bg-secondary text-primary">
         <LoanIcon icon={card.icon} />
       </div>
       {title ? <h3 className="mb-4 typo-showcase-title text-foreground">{title}</h3> : null}
@@ -198,14 +198,14 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
 
 function LoanHelpCard() {
   return (
-    <article className="flex h-full min-h-[255px] flex-col justify-center rounded-xl bg-primary p-(--space-card) text-primary-foreground">
-      <div className="mb-5 flex size-[46px] items-center justify-center rounded-[11px] bg-white/15 text-white">
+    <article className="flex h-full min-h-[255px] flex-col justify-center rounded-card bg-primary p-(--space-card) text-primary-foreground">
+      <div className="mb-5 flex size-[46px] items-center justify-center rounded-control bg-white/15 text-white">
         <HelpIcon />
       </div>
       <h3 className="mb-4 typo-showcase-title">Not sure which fits?</h3>
       <p className="mb-6 typo-body-sm text-white/90">{helpCopy}</p>
       <Link
-        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-white px-6 typo-button text-primary no-underline transition-transform hover:-translate-y-0.5 hover:text-accent-hover"
+        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-control bg-white px-6 typo-button text-primary no-underline transition-transform hover:-translate-y-0.5 hover:text-accent-hover"
         href="#contact"
       >
         Ask us

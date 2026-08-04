@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  * Call sites should not override height, padding, or radius.
  */
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-interactive-lift disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-ring/50 focus-visible:ring-3 focus-visible:ring-primary/40 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-control font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:shadow-interactive-lift disabled:pointer-events-none disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-ring/50 focus-visible:ring-3 focus-visible:ring-primary/40 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 motion-reduce:transition-none motion-reduce:hover:translate-y-0",
   {
     variants: {
       variant: {

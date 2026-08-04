@@ -230,6 +230,21 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+  /* Radius roles — three steps, 6px apart. See DESIGN.md Shapes.
+     Anything with a corner picks one of these; nothing invents a value. */
+  --radius-control: var(--radius); /* 8px  — buttons, inputs, nav items, tiles inside cards */
+  --radius-card: 0.875rem; /* 14px — cards, panels, figures, form containers */
+  --radius-frame: 1.25rem; /* 20px — dark media chrome and full-bleed feature panels */
+
+  /* A screen inset inside a padded frame is concentric with it:
+     inner radius = outer radius − the inset. Keeps the corners parallel. */
+  --radius-frame-inset: 0.5rem; /* the p-2 padding on media frames */
+  --radius-frame-inner: calc(var(--radius-frame) - var(--radius-frame-inset));
+
+  /* Not a radius role — the arch silhouette behind portrait CTAs. Its top is a
+     shape, so it is exempt from the scale; its base still uses the frame role. */
+  --radius-arch: 13.75rem;
+
   /* Control geometry — the two button/control sizes. See DESIGN.md
      Components → Buttons. Interactive controls are rounded-lg (8px);
      call sites must not override height, padding, or radius. */
@@ -312,6 +327,28 @@
 
 @utility shadow-media-frame {
   box-shadow: var(--shadow-media-frame);
+}
+
+/* ---------------------------------------------------------------------------
+   Radius roles — control (8px), card (14px), frame (20px). See DESIGN.md
+   Shapes. rounded-frame-inner is concentric with rounded-frame; use it only
+   on a screen inset inside a padded frame.
+--------------------------------------------------------------------------- */
+
+@utility rounded-control {
+  border-radius: var(--radius-control);
+}
+
+@utility rounded-card {
+  border-radius: var(--radius-card);
+}
+
+@utility rounded-frame {
+  border-radius: var(--radius-frame);
+}
+
+@utility rounded-frame-inner {
+  border-radius: var(--radius-frame-inner);
 }
 
 /* ---------------------------------------------------------------------------
@@ -553,12 +590,14 @@
 }
 
 @layer base {
+  /* Images carry no radius of their own — a logo, icon, or diagram must stay
+     square. Rounding belongs to the container that clips the image, which
+     already picks a radius role (card or frame). */
   img {
     display: block;
     max-width: 100%;
     width: 100%;
     height: auto;
     object-fit: cover;
-    border-radius: var(--radius-md);
   }
 }

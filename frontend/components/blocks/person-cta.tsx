@@ -132,7 +132,7 @@ export default function PersonCta({
           <div
             aria-hidden="true"
             className={cn(
-              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-[24px] rounded-t-[220px]",
+              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-frame rounded-t-(--radius-arch)",
               "bg-card",
             )}
           />

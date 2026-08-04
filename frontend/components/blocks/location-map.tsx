@@ -158,7 +158,7 @@ export default function LocationMap({
         </header>
 
         <div className="grid items-stretch gap-6 min-[641px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-2xl border border-border bg-[var(--phx-navy-900)] shadow-ambient-feature md:min-h-[30rem]">
+          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-card border border-border bg-[var(--phx-navy-900)] shadow-ambient-feature md:min-h-[30rem]">
             {image?.asset?._id ? (
               <Image
                 alt={stegaClean(image.alt) || ""}
@@ -196,7 +196,7 @@ export default function LocationMap({
           </figure>
 
           <div
-            className="relative min-h-[30rem] overflow-hidden rounded-2xl border border-border bg-muted shadow-ambient-feature"
+            className="relative min-h-[30rem] overflow-hidden rounded-card border border-border bg-muted shadow-ambient-feature"
             data-sanity={dataAttribute?.("mapEmbedUrl")}
           >
             {cleanMapEmbedUrl && cleanMapTitle ? (
@@ -210,7 +210,7 @@ export default function LocationMap({
                 title={cleanMapTitle}
               />
             ) : null}
-            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-xl border border-border bg-white/95 px-6 py-5 shadow-menu-layer backdrop-blur-sm md:top-6 md:right-auto md:left-6">
+            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-card border border-border bg-white/95 px-6 py-5 shadow-menu-layer backdrop-blur-sm md:top-6 md:right-auto md:left-6">
               {displayBusinessName ? (
                 <p
                   className="typo-button text-[#131c3b]"

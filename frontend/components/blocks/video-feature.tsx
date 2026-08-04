@@ -96,10 +96,10 @@ export default function VideoFeature({
     >
       <div className="container grid gap-split lg:grid-cols-[1.05fr_1fr] lg:items-center">
         <div className="flex flex-col gap-3.5">
-          <div className="overflow-hidden rounded-[14px] bg-[#0c1329] shadow-media-frame">
+          <div className="overflow-hidden rounded-frame bg-[#0c1329] shadow-media-frame">
             <button
               aria-label={playLabel}
-              className="group relative block aspect-video w-full overflow-hidden rounded-[10px] bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="group relative block aspect-video w-full overflow-hidden rounded-frame bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               disabled={!embedUrl}
               onClick={() => {
                 if (embedUrl) setIsLightboxOpen(true);
@@ -208,7 +208,7 @@ export default function VideoFeature({
           }}
           role="dialog"
         >
-          <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
+          <div className="relative w-full max-w-5xl rounded-frame border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
             <h3 className="sr-only" id={dialogTitleId}>
               {cleanTitle ? `${title} video` : "Video"}
             </h3>
@@ -221,7 +221,7 @@ export default function VideoFeature({
             >
               <XIcon aria-hidden="true" className="size-5" />
             </button>
-            <div className="aspect-video overflow-hidden rounded-[10px] bg-black">
+            <div className="aspect-video overflow-hidden rounded-frame-inner bg-black">
               <iframe
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen

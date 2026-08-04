@@ -159,13 +159,11 @@ typography:
     lineHeight: 1.5
     letterSpacing: "normal"
 rounded:
-  sm: "4px"
-  md: "6px"
-  lg: "8px"
   control: "8px"
-  xl: "12px"
-  card: "16px"
-  feature: "24px"
+  card: "14px"
+  frame: "20px"
+  frame-inner: "12px"
+  arch: "13.75rem"
   pill: "999px"
 spacing:
   section: "clamp(5rem, 2.5vw + 4rem, 6rem)"
@@ -528,24 +526,46 @@ one. A new `shadow-[...]` arbitrary value is drift, not composition.
 
 ## Shapes
 
-Controls use one precise softened corner: `8px` (`--radius-lg`) for buttons,
-fields, and every other interactive control — no exceptions and no arbitrary
-near-values. Standard content cards use approximately `16px`; feature
-containers may use `24px`. Fully rounded pills are reserved for compact labels,
-categories, and
-true capsule controls. Circular and arched geometry may frame portraits or
-other signature imagery, but should not spread to unrelated containers.
+There are three radius roles, six pixels apart. Every corner in the system picks
+one; nothing invents a near-value.
+
+| Role | Value | Utility | Applies to |
+| --- | --- | --- | --- |
+| Control | `8px` | `rounded-control` | Buttons, inputs, nav items, badges, and any small tile nested inside a card |
+| Card | `14px` | `rounded-card` | Cards, panels, figures, form containers, popovers |
+| Frame | `20px` | `rounded-frame` | Dark media chrome and large full-bleed feature panels |
+
+A screen inset inside a padded frame is **concentric** with it, never
+independently chosen: `rounded-frame-inner` computes `--radius-frame` minus the
+frame's padding so the inner corner stays parallel to the outer one. Use it only
+where a frame actually has padding; a flush inner element repeats
+`rounded-frame`.
+
+Fully rounded pills stay reserved for compact labels, categories, and true
+capsule controls. The arch behind portrait CTAs (`--radius-arch`) is a
+silhouette rather than a radius role and is exempt from the scale — but its base
+corners still use the frame role.
+
+Images carry no radius of their own. A logo, icon, or diagram must stay square,
+so rounding belongs to the container that clips the image, which has already
+picked a role.
 
 Borders use the sand neutral family and remain visible enough to define a
-surface without making the page feel boxed in. Image clipping follows the
-container: small images use the base radius, card media is clipped by the card,
-and immersive media may use larger feature geometry.
+surface without making the page feel boxed in.
 
 ### Named Rules
 
 **The Softness Has Scale Rule.** Radius grows with the physical and visual size
 of the object. Do not apply one exaggerated radius to controls, cards, sections,
 and media indiscriminately.
+
+**The Three Corners Rule.** A corner is control, card, or frame. If a design
+seems to need a fourth value, it is a container that has not decided which of
+the three it is.
+
+**The Concentric Inset Rule.** When one rounded box sits inside another, the
+inner radius is the outer radius minus the gap between them. Corners that are
+not concentric read as a bulge, however small the difference.
 
 ## Components
 
@@ -558,8 +578,8 @@ without changing the color, type, focus, or state logic.
 Four variants and two sizes. Everything else is a call-site override and is
 treated as drift.
 
-- **Shape:** `8px` corners (`--radius-lg`), shared with inputs and every other
-  interactive control.
+- **Shape:** `8px` corners (`--radius-control`), shared with inputs and every
+  other interactive control.
 - **Sizes:** **Default** — `48px` tall, `28px` inline padding
   (`--control-height` / `--control-inline`). The page-builder CTA, the form
   submit, the in-article button. **Compact** — `40px` tall, `20px` inline

@@ -13,7 +13,7 @@ export default function BlogPagination({ pagination }: { pagination: BlogPaginat
     pagination.totalPages,
   );
   const buttonClass =
-    "inline-flex min-h-9 min-w-10 items-center justify-center rounded-lg border-[1.5px] border-border bg-card px-4 text-sm font-semibold leading-none text-card-foreground transition-colors hover:bg-background";
+    "inline-flex min-h-9 min-w-10 items-center justify-center rounded-control border-[1.5px] border-border bg-card px-4 text-sm font-semibold leading-none text-card-foreground transition-colors hover:bg-background";
 
   return (
     <nav aria-label="Pagination" className="mt-14 flex flex-wrap items-center justify-center gap-2">

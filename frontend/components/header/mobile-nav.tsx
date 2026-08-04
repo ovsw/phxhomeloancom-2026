@@ -25,7 +25,7 @@ import type { HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const mobileLinkClassName =
-  "flex min-h-11 items-center rounded-md px-3 typo-nav transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40";
+  "flex min-h-11 items-center rounded-control px-3 typo-nav transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40";
 
 export default function MobileNav({
   brand,
@@ -55,7 +55,7 @@ export default function MobileNav({
           <SheetDescription className="sr-only">
             Browse primary destinations and mortgage resources.
           </SheetDescription>
-          <SheetClose className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus:outline-none focus:ring-3 focus:ring-ring focus:ring-offset-2">
+          <SheetClose className="rounded-control p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus:outline-none focus:ring-3 focus:ring-ring focus:ring-offset-2">
             <X aria-hidden="true" className="size-5" />
             <span className="sr-only">Close</span>
           </SheetClose>
@@ -67,14 +67,14 @@ export default function MobileNav({
                 <HeaderLink className={mobileLinkClassName} key={item.key} link={item.link} onClick={close} />
               ) : (
                 <AccordionItem className="border-b-0" key={item.key} value={item.key}>
-                  <AccordionTrigger className="min-h-11 rounded-md px-3 py-2 typo-nav hover:bg-secondary hover:no-underline">
+                  <AccordionTrigger className="min-h-11 rounded-control px-3 py-2 typo-nav hover:bg-secondary hover:no-underline">
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="ml-4 grid gap-1 border-l border-border pl-3">
                       {item.links.map((child) => (
                         <HeaderLink
-                          className="flex min-h-11 items-start gap-3 rounded-md p-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+                          className="flex min-h-11 items-start gap-3 rounded-control p-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
                           key={child.key}
                           link={child.link}
                           onClick={close}

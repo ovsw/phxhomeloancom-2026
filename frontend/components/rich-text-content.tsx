@@ -151,7 +151,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
           <Image
             alt={value.alt || ""}
             blurDataURL={asset.metadata?.lqip || undefined}
-            className="h-auto w-full rounded-lg"
+            className="h-auto w-full rounded-card"
             height={asset.metadata?.dimensions?.height ?? 900}
             placeholder={asset.metadata?.lqip ? "blur" : undefined}
             quality={100}
@@ -233,7 +233,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       }
 
       return (
-        <div className="my-8 aspect-video max-w-[45rem] overflow-hidden rounded-xl">
+        <div className="my-8 aspect-video max-w-[45rem] overflow-hidden rounded-card">
           <YouTubeEmbed videoid={videoId} params="rel=0" />
         </div>
       );
@@ -243,7 +243,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       if (!src) return null;
 
       return (
-        <div className="my-8 overflow-hidden rounded-lg bg-muted">
+        <div className="my-8 overflow-hidden rounded-card bg-muted">
           <iframe
             allowFullScreen
             className="w-full"

@@ -121,7 +121,7 @@ function ImpactStatement({
   }
 
   return (
-    <aside className="grid min-w-0 gap-7 rounded-lg bg-[var(--phx-navy-900)] p-(--space-inset) text-white lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
+    <aside className="grid min-w-0 gap-7 rounded-frame bg-[var(--phx-navy-900)] p-(--space-inset) text-white lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
       <div className="min-w-0">
         <p
           className="break-words typo-stat-lg"

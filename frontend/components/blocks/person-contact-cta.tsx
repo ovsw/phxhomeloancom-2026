@@ -58,7 +58,7 @@ export default function PersonContactCta({
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
-      <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-[24px] border border-border bg-card shadow-ambient-feature max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
+      <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-frame border border-border bg-card shadow-ambient-feature max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
         <div className="relative isolate flex items-end justify-center overflow-hidden bg-transparent min-[641px]:bg-muted min-[641px]:pt-10 min-[1101px]:min-h-[35.5rem] min-[1101px]:pt-12">
           <div className="relative flex h-[clamp(20rem,88vw,25rem)] w-full items-end justify-center min-[641px]:h-[clamp(24.375rem,52vw,31.25rem)] min-[1101px]:h-[32.5rem]">
             <div
@@ -129,7 +129,7 @@ export default function PersonContactCta({
                     <li data-sanity={dataAttribute?.(path)} key={method._key}>
                       <a
                         className={cn(
-                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/30",
+                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-visible:rounded-control focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/30",
                           methodType === "address"
                             ? "items-start"
                             : "items-center",

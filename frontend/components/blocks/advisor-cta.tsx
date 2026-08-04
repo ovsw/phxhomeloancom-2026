@@ -43,7 +43,7 @@ export default function AdvisorCta({
           <div
             aria-hidden="true"
             className={cn(
-              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-3xl rounded-t-[13.75rem]",
+              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-frame rounded-t-(--radius-arch)",
               "bg-card",
             )}
           />

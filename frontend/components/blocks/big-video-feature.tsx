@@ -65,7 +65,7 @@ function BigVideoLightbox({
         onFocus={() => iframeRef.current?.focus()}
         type="button"
       />
-      <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
+      <div className="relative w-full max-w-5xl rounded-frame border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
         <h3 className="sr-only" id={titleId}>
           {title ? `${title} video` : "Featured video"}
         </h3>
@@ -78,7 +78,7 @@ function BigVideoLightbox({
         >
           <XIcon aria-hidden="true" className="size-5" />
         </button>
-        <div className="aspect-video overflow-hidden rounded-[10px] bg-black">
+        <div className="aspect-video overflow-hidden rounded-frame-inner bg-black">
           <iframe
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
@@ -185,7 +185,7 @@ export default function BigVideoFeature({
 
         <button
           aria-label={displayTitle ? `Play: ${displayTitle}` : "Play video"}
-          className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-[18px] bg-[var(--phx-navy-900)] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-label-on-dark focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--phx-navy-800)] disabled:cursor-not-allowed"
+          className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-frame bg-[var(--phx-navy-900)] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-label-on-dark focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--phx-navy-800)] disabled:cursor-not-allowed"
           data-sanity={dataAttributes?.youtubeUrl}
           disabled={!embedUrl}
           onClick={() => setIsOpen(Boolean(embedUrl))}
