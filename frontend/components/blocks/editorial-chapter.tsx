@@ -30,7 +30,7 @@ function QuoteCallout({
   if (!hasText(module.quote)) return null;
 
   return (
-    <blockquote className="relative mt-3 border-l-[3px] border-primary py-1 pl-6 md:pl-8">
+    <blockquote className="relative mt-3 blockquote-accent py-1 pl-6 md:pl-8">
       <p
         className="text-balance typo-pull-quote text-foreground"
         data-sanity={dataAttribute?.(`${path}.quote`)}

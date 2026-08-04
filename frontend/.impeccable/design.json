@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T19:58:00Z",
+  "generatedAt": "2026-08-04T20:10:00Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -685,6 +685,16 @@
           "name": "border-input",
           "value": "#d8d1c3",
           "purpose": "Form fields at rest, before focus takes over."
+        },
+        {
+          "name": "border-edge-on-dark",
+          "value": "rgb(255 255 255 / 12%)",
+          "purpose": "Structural edges on always-navy sections: media frames, dividers."
+        },
+        {
+          "name": "border-edge-on-dark-strong",
+          "value": "rgb(255 255 255 / 24%)",
+          "purpose": "Controls sitting on a navy surface."
         }
       ],
       "rejected": {
@@ -692,9 +702,13 @@
         "why": "Used at four call sites to signal emphasis. At devicePixelRatio 1 the browser rounds it down and it computes to exactly 1px — identical to the default — so the emphasis appeared only on retina screens and the same component read as two different weights depending on the monitor. Verified in the browser, not assumed. Colour-based emphasis renders the same everywhere."
       },
       "exceptions": {
-        "css-triangles": "Play buttons on media posters use border-y-[11px] / border-l-[18px] on an h-0 w-0 element. That is the CSS triangle trick — borders constructing an arrow shape, not edges. The values are geometry scaled to their disc; tokenizing them as border widths would be a category error.",
-        "blockquote-accents": "border-l-4 and border-l-[3px] on blockquotes are decorative accent rules rather than edges. They currently disagree across rich-text-content, story-feature and editorial-chapter — a known divergence, not yet resolved.",
-        "dark-surfaces": "Dark sections hand-pick white alphas (border-white/10, /15, /20) rather than using the roles above. Consistent enough to read as an informal scale, but not yet tokenized."
+        "css-triangles": "Play buttons on media posters use border-y-[11px] / border-l-[18px] on an h-0 w-0 element. That is the CSS triangle trick — borders constructing an arrow shape, not edges. The values are geometry scaled to their disc; tokenizing them as border widths would be a category error."
+      },
+      "onDarkNote": "Navy sections are always dark regardless of the light/dark theme, so they cannot use --border, which follows the theme switch. These two mirror the light pair the same way focus-ring-on-dark mirrors focus-ring. Named edge- rather than border-border-on-dark to avoid a doubled prefix that reads as a typo.",
+      "blockquoteAccent": {
+        "utility": "blockquote-accent",
+        "value": "3px solid var(--phx-copper-600)",
+        "why": "An accent, not an edge, which is why it is a named role rather than a border colour token. Previously three live components disagreed: rich-text-content used border-l-4 + border-accent + a tinted background, story-feature border-l-[3px] + copper, editorial-chapter border-l-[3px] + primary. Now one rule. Size and padding stay with the call site; the mark identifying it as a quote does not vary."
       }
     }
   },

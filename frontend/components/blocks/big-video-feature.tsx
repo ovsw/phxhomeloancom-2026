@@ -65,13 +65,13 @@ function BigVideoLightbox({
         onFocus={() => iframeRef.current?.focus()}
         type="button"
       />
-      <div className="relative w-full max-w-5xl rounded-frame border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
+      <div className="relative w-full max-w-5xl rounded-frame border border-edge-on-dark bg-[#0c1329] p-2 shadow-media-frame">
         <h3 className="sr-only" id={titleId}>
           {title ? `${title} video` : "Featured video"}
         </h3>
         <button
           aria-label="Close video"
-          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors motion-fast hover:bg-white/20 focus-ring-on-dark"
+          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-edge-on-dark-strong bg-white/10 text-white transition-colors motion-fast hover:bg-white/20 focus-ring-on-dark"
           onClick={onClose}
           ref={closeRef}
           type="button"

@@ -210,7 +210,7 @@ export default function StoryFeature({
           <div className="flex min-w-0 flex-col gap-(--space-stack)">
             {richText?.length ? (
               <div
-                className="flex flex-col gap-(--space-stack) text-pretty typo-body-editorial text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-copper-600 [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
+                className="flex flex-col gap-(--space-stack) text-pretty typo-body-editorial text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:blockquote-accent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableText components={storyRichTextComponents} value={richText} />

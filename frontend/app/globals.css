@@ -126,6 +126,12 @@
   --border-strong: var(--phx-border-strong);
   --input: var(--phx-border-input);
   --ring: var(--phx-accent);
+
+  /* On-dark borders. Navy sections are always dark regardless of theme, so
+     they cannot use --border, which follows the light/dark switch. These
+     mirror the two roles above at alphas that read against navy. */
+  --border-on-dark: rgb(255 255 255 / 12%); /* structural: frames, dividers */
+  --border-on-dark-strong: rgb(255 255 255 / 24%); /* controls on dark */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -210,6 +216,8 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
+  --color-edge-on-dark: var(--border-on-dark);
+  --color-edge-on-dark-strong: var(--border-on-dark-strong);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
@@ -407,6 +415,21 @@
 
 @utility rounded-frame-inner {
   border-radius: var(--radius-frame-inner);
+}
+
+/* ---------------------------------------------------------------------------
+   Blockquote accent — see DESIGN.md Borders. One rule for every quote on the
+   site: a 3px Mesa Copper left rule, no tinted background.
+
+   This is an accent, not an edge, which is why it is a named role rather than
+   one of the border colour tokens. Size and padding stay with the call site —
+   a pull-quote in a story feature is legitimately larger than one in article
+   body copy — but the mark that identifies it as a quote does not vary.
+--------------------------------------------------------------------------- */
+
+@utility blockquote-accent {
+  border-left: 3px solid var(--phx-copper-600);
+  background-color: transparent;
 }
 
 /* ---------------------------------------------------------------------------

@@ -177,6 +177,9 @@ border:
   default: "var(--border)"
   strong: "var(--border-strong)"
   input: "var(--input)"
+  on-dark: "rgb(255 255 255 / 12%)"
+  on-dark-strong: "rgb(255 255 255 / 24%)"
+  blockquote-accent: "3px solid var(--phx-copper-600)"
 motion:
   fast: "150ms"
   base: "200ms"
@@ -665,6 +668,18 @@ colour roles carry the whole system:
 | `border-border-strong` | `#c9c2b4` | Emphasis: outline controls that must hold their own beside a solid button |
 | `border-input` | `#d8d1c3` | Form fields at rest, before focus takes over |
 
+Navy sections are always dark regardless of the light/dark theme, so they cannot
+use `--border` — it follows the theme switch. Two on-dark roles mirror the pair
+above, the same way `focus-ring-on-dark` mirrors `focus-ring`:
+
+| Role | Value | Use for |
+| --- | --- | --- |
+| `border-edge-on-dark` | `white / 12%` | Structural: media frames, dividers |
+| `border-edge-on-dark-strong` | `white / 24%` | Controls sitting on a navy surface |
+
+They are named `edge-` rather than `border-border-on-dark` to avoid a doubled
+prefix that reads as a typo.
+
 A border marks an edge. When something needs more separation than the default
 gives, reach for the next colour up, a surface change, or a shadow — not a
 thicker line.
@@ -688,13 +703,11 @@ triangle trick, where borders construct an arrow shape. The values are geometry
 scaled to their disc, and tokenizing them as border widths would be a category
 error. A future audit should skip them.
 
-`border-l-4` and `border-l-[3px]` on blockquotes are decorative accent rules
-rather than edges. These currently disagree across `rich-text-content`,
-`story-feature`, and `editorial-chapter` — a known divergence, not yet resolved.
-
-Dark sections hand-pick white alphas (`border-white/10`, `/15`, `/20`) rather
-than using the roles above. The values are consistent enough to read as an
-informal scale, but they are not yet tokenized.
+Blockquotes use the `blockquote-accent` role — a `3px` Mesa Copper left rule on
+a transparent background. That is an accent, not an edge, which is why it is a
+named role rather than one of the border colour tokens. Size and padding stay
+with the call site (a pull-quote in a story feature is legitimately larger than
+one in article body copy), but the mark identifying it as a quote never varies.
 
 ### Named Rules
 

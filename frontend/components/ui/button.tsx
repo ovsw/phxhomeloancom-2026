@@ -56,7 +56,7 @@ const buttonVariants = cva(
         variant: ["outline", "secondary"],
         onDark: true,
         class:
-          "border-white/35 text-white hover:border-white/50 hover:bg-white/10 hover:text-white",
+          "border-edge-on-dark-strong text-white hover:border-white/45 hover:bg-white/10 hover:text-white",
       },
       {
         variant: "copper",

@@ -116,7 +116,7 @@ export function SiteFooter({
 
         <section
           aria-labelledby="footer-compliance-heading"
-          className="border-t border-white/15 py-8 typo-fine-print text-white/75"
+          className="border-t border-edge-on-dark py-8 typo-fine-print text-white/75"
         >
           <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-start">
             <div>
@@ -154,7 +154,7 @@ export function SiteFooter({
               </span>
             </div>
           </div>
-          <div className="mt-8 border-t border-white/15 pt-6">
+          <div className="mt-8 border-t border-edge-on-dark pt-6">
             <p className="text-white/65">
               ©{" "}
               <span data-sanity={dataAttribute?.("compliance.copyrightStartYear")}>

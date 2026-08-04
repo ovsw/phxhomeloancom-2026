@@ -80,7 +80,7 @@ export default function PageHeader({
         ) : null}
 
         {visibleStatistics.length ? (
-          <div className="mt-10 flex flex-wrap gap-x-split gap-y-8 border-t border-white/15 pt-8">
+          <div className="mt-10 flex flex-wrap gap-x-split gap-y-8 border-t border-edge-on-dark pt-8">
             {visibleStatistics.map((statistic) => (
               <div className="flex flex-col gap-1" key={statistic._key}>
                 <p
