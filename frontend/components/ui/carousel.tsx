@@ -276,7 +276,7 @@ function CarouselDots({
             {
               "w-8 h-8 flex items-center justify-center": true,
             },
-            "hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2",
             "disabled:pointer-events-none disabled:opacity-50"
           )}
           aria-label={`Go to slide ${index + 1}`}

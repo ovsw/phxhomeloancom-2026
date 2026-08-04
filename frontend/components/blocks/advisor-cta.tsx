@@ -34,7 +34,7 @@ export default function AdvisorCta({
       aria-labelledby={titleId}
       className={cn(
         "px-4 py-20 md:px-10 md:py-24",
-        creamSurface ? "bg-[#f7f4ed]" : "bg-white",
+        creamSurface ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
@@ -44,7 +44,7 @@ export default function AdvisorCta({
             aria-hidden="true"
             className={cn(
               "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-3xl rounded-t-[13.75rem]",
-              creamSurface ? "bg-white" : "bg-[#fbf9f4]",
+              "bg-card",
             )}
           />
           {portraitImage?.asset?._id ? (

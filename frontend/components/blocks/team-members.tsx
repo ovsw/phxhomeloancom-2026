@@ -76,7 +76,7 @@ function ProfileContact({
     <div className="mt-1.5 flex flex-wrap items-center gap-3.5">
       {email ? (
         <a
-          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] text-[0.90625rem] font-semibold text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] text-[0.90625rem] font-semibold text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
           data-sanity={memberDataAttribute?.(member._id, "email")}
           href={`mailto:${email}`}
         >
@@ -86,7 +86,7 @@ function ProfileContact({
       ) : null}
       {phone && phoneHref ? (
         <a
-          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] text-[0.90625rem] font-semibold text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] text-[0.90625rem] font-semibold text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
           data-sanity={memberDataAttribute?.(member._id, "phone")}
           href={`tel:${phoneHref}`}
         >

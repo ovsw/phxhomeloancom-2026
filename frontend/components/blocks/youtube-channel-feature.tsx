@@ -135,7 +135,8 @@ export default function YoutubeChannelFeature({
             >
               <Button
                 asChild
-                className="h-[3.125rem] w-full rounded-[9px] bg-copper-600 px-7 text-[0.9375rem] font-semibold text-white shadow-[0_14px_40px_-12px_var(--phx-copper-shadow)] transition-[filter,transform] hover:-translate-y-0.5 hover:bg-copper-600 hover:text-white hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
+                className="h-[3.125rem] w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold shadow-[0_14px_40px_-12px_var(--phx-copper-shadow)] transition-[filter,transform] hover:-translate-y-0.5 hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
+                variant="copper"
               >
                 <Link href={youtubeUrl} prefetch={false}>
                   <Play aria-hidden="true" className="size-[1.125rem] fill-current" />

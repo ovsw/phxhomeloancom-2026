@@ -14,7 +14,7 @@ import type { HeaderNavigationItem, HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const primaryLinkClassName =
-  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 font-medium text-[14.5px] leading-none tracking-[0.01em] text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40";
+  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 font-medium text-[14.5px] leading-none tracking-[0.01em] text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40";
 
 function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "group" }> }) {
   const [open, setOpen] = useState(false);
@@ -83,7 +83,7 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
           <div className="grid gap-1 rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-[0_18px_44px_rgba(19,28,59,0.16)] dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
             {item.links.map((child) => (
               <HeaderLink
-                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-[11px] transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-[11px] transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40"
                 key={child.key}
                 link={child.link}
               >

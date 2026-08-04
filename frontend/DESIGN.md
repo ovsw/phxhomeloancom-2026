@@ -20,6 +20,7 @@ colors:
   alternate-body-ink: "#454b5e"
   muted-ink: "#5b6172"
   faint-ink: "#8a8f9c"
+  faintest-ink: "#9aa0ae"
   rating-gold: "#e8a33d"
   label-peach: "#feb77d"
 typography:
@@ -170,6 +171,8 @@ copper is a supporting detail, not an alternate primary.
   Paper.
 - **Body Ink** (`#3d4356`): Standard long-form and supporting copy.
 - **Muted Ink** (`#5b6172`): Secondary information that must remain readable.
+- **Faintest Ink** (`#9aa0ae`): Low-emphasis metadata on light surfaces; use
+  only where its contrast remains sufficient for the text size.
 - **Border Sand** (`#e7e1d6`): Default borders and dividers.
 
 ### Supporting
@@ -181,8 +184,8 @@ copper is a supporting detail, not an alternate primary.
 ### Named Rules
 
 **The Teal Leads Rule.** Advisor Teal owns primary actions and active states.
-Mesa Copper may warm a composition, but it must never create a second primary
-action hierarchy.
+Mesa Copper may warm a composition and style subordinate media or editorial
+actions, but it must never create a second primary action hierarchy.
 
 **The Explicit Neutral Surface Rule.** Page Builder sections that expose the
 Sanity background toggle use white by default and may be set to cream.
@@ -297,6 +300,9 @@ without changing the color, type, focus, or state logic.
   visible `3px` teal focus ring with sufficient offset and contrast.
 - **Outline:** Light surface, Trust Navy text, sand border; hover shifts toward
   the secondary paper surface and a subtle teal border.
+- **Copper secondary:** Mesa Copper with white text, reserved for subordinate
+  media and editorial actions. It must not compete with a primary teal action
+  in the same action group.
 - **Ghost / Link:** Use only when hierarchy clearly calls for low emphasis.
 
 ### Labels and Chips

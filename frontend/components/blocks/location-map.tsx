@@ -147,7 +147,7 @@ export default function LocationMap({
 
           {cleanDirectionsUrl && displayDirectionsLabel ? (
             <a
-              className="w-fit whitespace-nowrap text-[0.9375rem] font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
+              className="w-fit whitespace-nowrap text-[0.9375rem] font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-[3px] focus-visible:outline-primary focus-visible:outline-offset-4"
               data-sanity={dataAttribute?.("directionsUrl")}
               href={cleanDirectionsUrl}
             >

@@ -57,7 +57,7 @@ export function SiteFooter({
             </h3>
             <Link
               aria-label="Home page"
-              className="w-fit rounded-[10px] bg-white px-[18px] py-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#feb77d] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0c1329]"
+              className="w-fit rounded-[10px] bg-white px-[18px] py-3.5 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-[#feb77d] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0c1329]"
               href="/"
             >
               {model.brand.image ? (

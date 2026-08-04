@@ -22,7 +22,7 @@ export function Header({ model }: { model: HeaderModel }) {
           <ModeToggle />
           {navigation.actions.map((action) => (
             <HeaderLink
-              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-5 py-3 text-[14.5px] font-semibold text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-5 py-3 text-[14.5px] font-semibold text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/50"
               key={action.key}
               link={action.link}
             />
