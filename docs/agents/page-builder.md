@@ -29,8 +29,6 @@ Start with the closest existing section and preserve the mirrored folder structu
 7. Create its React renderer in `frontend/components/blocks/` and register it in the `componentMap` in `frontend/components/blocks/index.tsx`.
 8. Run TypeGen. Do not edit `studio/schema.json` or `frontend/sanity.types.ts` by hand.
 
-`all-posts` is the current exception to normal renderer registration. It receives `perspective` and `stega`, so `frontend/components/blocks/index.tsx` dispatches it explicitly outside `componentMap`. Follow that pattern only when a section genuinely needs dispatcher-level context.
-
 ## Add a nested block
 
 A nested block is an object used only inside another section, such as a card inside a grid. It still needs a Studio schema registration, a parent GROQ projection, and a React renderer or parent rendering logic. It does not belong in the Page schema's `blocks.of`, Page insert-menu groups, or the top-level `componentMap` unless editors can insert it directly as a page section.

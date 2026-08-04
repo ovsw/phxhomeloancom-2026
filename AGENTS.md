@@ -15,3 +15,7 @@ This repository uses a single-context domain-doc layout. See `docs/agents/domain
 ### Page Builder work
 
 Before adding or changing a Page Builder section, read `docs/agents/page-builder.md`.
+
+### Development workflow
+
+Before changing workspace dependencies, Sanity schemas, GROQ queries, or development scripts, consult the relevant section of `README.md`.
