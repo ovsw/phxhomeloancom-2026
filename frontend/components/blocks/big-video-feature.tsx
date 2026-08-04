@@ -65,7 +65,7 @@ function BigVideoLightbox({
         onFocus={() => iframeRef.current?.focus()}
         type="button"
       />
-      <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-2xl">
+      <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
         <h3 className="sr-only" id={titleId}>
           {title ? `${title} video` : "Featured video"}
         </h3>

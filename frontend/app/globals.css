@@ -101,6 +101,7 @@
   --shadow-interactive-lift: 0 22px 48px rgba(19, 28, 59, 0.14); /* card hover, paired with ≤4px upward movement */
   --shadow-menu-layer: 0 18px 44px rgba(19, 28, 59, 0.16); /* dropdowns, popovers, temporary overlays */
   --shadow-teal-action: 0 14px 40px -12px rgba(31, 110, 140, 0.72); /* rare, emphasized primary actions on dark/feature surfaces */
+  --shadow-media-frame: 0 28px 64px rgba(19, 28, 59, 0.22); /* dark video chrome — inline embeds and lightboxes */
 
   --radius: 0.5rem;
   --card: var(--surface-card-default);
@@ -299,6 +300,10 @@
 
 @utility shadow-teal-action {
   box-shadow: var(--shadow-teal-action);
+}
+
+@utility shadow-media-frame {
+  box-shadow: var(--shadow-media-frame);
 }
 
 /* ---------------------------------------------------------------------------

@@ -96,7 +96,7 @@ export default function VideoFeature({
     >
       <div className="container grid gap-split lg:grid-cols-[1.05fr_1fr] lg:items-center">
         <div className="flex flex-col gap-3.5">
-          <div className="overflow-hidden rounded-[14px] bg-[#0c1329] shadow-[0_28px_64px_rgba(19,28,59,0.22)]">
+          <div className="overflow-hidden rounded-[14px] bg-[#0c1329] shadow-media-frame">
             <button
               aria-label={playLabel}
               className="group relative block aspect-video w-full overflow-hidden rounded-[10px] bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -214,7 +214,7 @@ export default function VideoFeature({
           }}
           role="dialog"
         >
-          <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-2xl">
+          <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-media-frame">
             <h3 className="sr-only" id={dialogTitleId}>
               {cleanTitle ? `${title} video` : "Video"}
             </h3>

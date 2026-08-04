@@ -464,20 +464,46 @@ they are not decoration applied to every container.
 
 ### Shadow Vocabulary
 
-- **Ambient feature** (`0 24px 64px rgba(19, 28, 59, 0.08)`): Large inset
-  advisor or contact compositions.
-- **Interactive lift** (`0 22px 48px rgba(19, 28, 59, 0.14)`): Card hover,
-  paired with no more than `4px` upward movement.
-- **Menu layer** (`0 18px 44px rgba(19, 28, 59, 0.16)`): Dropdowns and
-  temporary overlays.
-- **Teal action** (`0 14px 40px -12px rgba(31, 110, 140, 0.72)`): Rare,
-  emphasized primary actions on dark feature surfaces.
+Implemented as `--shadow-*` tokens and `shadow-*` utilities in `globals.css`.
+Components must use the utility, never a one-off `shadow-[...]` value.
+
+- **Ambient feature** (`shadow-ambient-feature`, `0 24px 64px rgba(19, 28, 59, 0.08)`):
+  Large inset advisor, contact, map, or portrait compositions.
+- **Interactive lift** (`shadow-interactive-lift`, `0 22px 48px rgba(19, 28, 59, 0.14)`):
+  Card hover, paired with no more than `4px` upward movement.
+- **Menu layer** (`shadow-menu-layer`, `0 18px 44px rgba(19, 28, 59, 0.16)`):
+  Dropdowns, popovers, and temporary overlays.
+- **Teal action** (`shadow-teal-action`, `0 14px 40px -12px rgba(31, 110, 140, 0.72)`):
+  Rare, emphasized primary actions on dark feature surfaces.
+- **Media frame** (`shadow-media-frame`, `0 28px 64px rgba(19, 28, 59, 0.22)`):
+  Dark video chrome — inline embeds and their lightboxes.
+
+### Documented Exceptions
+
+A small set of single-use decorative shadows are deliberate and must not be
+generalized into a sixth token:
+
+- **Hover intensification:** `award-cta`'s primary button and `blog-card`'s
+  hover state each deepen their resting token on `:hover` — a state variant,
+  not a new role.
+- **Cutout drop-shadows:** the homepage hero photo and the award trophy use
+  one-off `drop-shadow(...)` values grounding an isolated cutout image against
+  its background, not a container shadow.
+- **Play-button glow:** the two video play-button icons use a small glow tied
+  to their own fill color (copper, cyan), not the shared palette.
+- **YouTube channel frame:** the tilted 3D showcase frame
+  (`youtube-channel-feature.module.css`) uses a dramatic directional shadow
+  unique to that signature composition.
 
 ### Named Rules
 
 **The Ambient, Not Floating Rule.** Depth should feel like soft environmental
 light. Use tonal separation and borders first; reserve stronger shadows for
 state, overlap, or high-value emphasis.
+
+**The Five Shadows Rule.** Every shadow in the system is one of the five
+named tokens above, a documented exception, or a `:hover` intensification of
+one. A new `shadow-[...]` arbitrary value is drift, not composition.
 
 ## Shapes
 

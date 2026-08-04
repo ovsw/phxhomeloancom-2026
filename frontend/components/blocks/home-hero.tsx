@@ -105,7 +105,7 @@ export default function HomeHero({
                     asChild
                     className={secondary
                       ? "h-12 w-full rounded-[9px] border-white/35 bg-transparent px-6 text-white shadow-none hover:border-white/50 hover:bg-white/10 hover:text-white sm:w-auto md:h-[3.25rem] md:px-7"
-                      : "h-12 w-full rounded-[9px] bg-primary px-6 text-primary-foreground shadow-[0_12px_28px_rgba(31,110,140,.28)] hover:bg-accent-hover sm:w-auto md:h-[3.25rem] md:px-7"}
+                      : "h-12 w-full rounded-[9px] bg-primary px-6 text-primary-foreground shadow-teal-action hover:bg-accent-hover sm:w-auto md:h-[3.25rem] md:px-7"}
                     key={button._key || `${button.href}-${index}`}
                     size="lg"
                     variant={secondary ? "outline" : "default"}

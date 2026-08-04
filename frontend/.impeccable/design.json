@@ -430,6 +430,11 @@
         "name": "teal-action",
         "value": "0 14px 40px -12px rgba(31, 110, 140, 0.72)",
         "purpose": "Rare emphasized primary actions on dark feature surfaces."
+      },
+      {
+        "name": "media-frame",
+        "value": "0 28px 64px rgba(19, 28, 59, 0.22)",
+        "purpose": "Dark video chrome shared by inline embeds and their lightboxes."
       }
     ],
     "motion": [
@@ -646,6 +651,11 @@
         "name": "The Softness Has Scale Rule",
         "body": "Radius grows with the physical and visual size of the object. Do not apply one exaggerated radius to controls, cards, sections, and media indiscriminately.",
         "section": "shapes"
+      },
+      {
+        "name": "The Five Shadows Rule",
+        "body": "Every shadow in the system is one of the five named tokens, a documented exception, or a :hover intensification of one. A new arbitrary shadow value is drift, not composition.",
+        "section": "elevation"
       }
     ],
     "dos": [
