@@ -1,0 +1,510 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-29T15:42:28Z",
+  "title": "Design System: PHX Home Loan",
+  "extensions": {
+    "colorMeta": {
+      "advisor-teal": {
+        "role": "primary",
+        "displayName": "Advisor Teal",
+        "canonical": "#1f6e8c",
+        "tonalRamp": [
+          "oklch(15% 0.075 220)",
+          "oklch(27% 0.085 220)",
+          "oklch(39% 0.09 220)",
+          "oklch(51% 0.09 220)",
+          "oklch(63% 0.085 220)",
+          "oklch(75% 0.065 220)",
+          "oklch(87% 0.04 220)",
+          "oklch(95% 0.02 220)"
+        ]
+      },
+      "deep-advisor-teal": {
+        "role": "primary",
+        "displayName": "Deep Advisor Teal",
+        "canonical": "#18576f",
+        "tonalRamp": [
+          "oklch(15% 0.07 220)",
+          "oklch(27% 0.08 220)",
+          "oklch(39% 0.085 220)",
+          "oklch(51% 0.08 220)",
+          "oklch(63% 0.07 220)",
+          "oklch(75% 0.055 220)",
+          "oklch(87% 0.035 220)",
+          "oklch(95% 0.018 220)"
+        ]
+      },
+      "mesa-copper": {
+        "role": "secondary",
+        "displayName": "Mesa Copper",
+        "canonical": "#b4552d",
+        "tonalRamp": [
+          "oklch(15% 0.09 48)",
+          "oklch(27% 0.11 48)",
+          "oklch(39% 0.13 48)",
+          "oklch(51% 0.14 48)",
+          "oklch(63% 0.12 48)",
+          "oklch(75% 0.09 48)",
+          "oklch(87% 0.055 48)",
+          "oklch(95% 0.025 48)"
+        ]
+      },
+      "midnight-navy": {
+        "role": "neutral",
+        "displayName": "Midnight Navy",
+        "canonical": "#0c1329",
+        "tonalRamp": [
+          "oklch(15% 0.035 270)",
+          "oklch(27% 0.04 270)",
+          "oklch(39% 0.04 270)",
+          "oklch(51% 0.035 270)",
+          "oklch(63% 0.03 270)",
+          "oklch(75% 0.025 270)",
+          "oklch(87% 0.015 270)",
+          "oklch(95% 0.008 270)"
+        ]
+      },
+      "trust-navy": {
+        "role": "neutral",
+        "displayName": "Trust Navy",
+        "canonical": "#131c3b",
+        "tonalRamp": [
+          "oklch(15% 0.04 270)",
+          "oklch(27% 0.045 270)",
+          "oklch(39% 0.045 270)",
+          "oklch(51% 0.04 270)",
+          "oklch(63% 0.032 270)",
+          "oklch(75% 0.025 270)",
+          "oklch(87% 0.015 270)",
+          "oklch(95% 0.008 270)"
+        ]
+      },
+      "layered-navy": {
+        "role": "neutral",
+        "displayName": "Layered Navy",
+        "canonical": "#1c2237",
+        "tonalRamp": [
+          "oklch(15% 0.03 270)",
+          "oklch(27% 0.035 270)",
+          "oklch(39% 0.035 270)",
+          "oklch(51% 0.03 270)",
+          "oklch(63% 0.026 270)",
+          "oklch(75% 0.02 270)",
+          "oklch(87% 0.012 270)",
+          "oklch(95% 0.006 270)"
+        ]
+      },
+      "warm-paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#f7f4ee",
+        "tonalRamp": [
+          "oklch(15% 0.018 85)",
+          "oklch(27% 0.02 85)",
+          "oklch(39% 0.022 85)",
+          "oklch(51% 0.024 85)",
+          "oklch(63% 0.022 85)",
+          "oklch(75% 0.018 85)",
+          "oklch(87% 0.012 85)",
+          "oklch(95% 0.008 85)"
+        ]
+      },
+      "soft-ivory": {
+        "role": "neutral",
+        "displayName": "Soft Ivory",
+        "canonical": "#fdfcf9",
+        "tonalRamp": [
+          "oklch(15% 0.012 85)",
+          "oklch(27% 0.014 85)",
+          "oklch(39% 0.016 85)",
+          "oklch(51% 0.017 85)",
+          "oklch(63% 0.015 85)",
+          "oklch(75% 0.012 85)",
+          "oklch(87% 0.008 85)",
+          "oklch(95% 0.004 85)"
+        ]
+      },
+      "paper-light": {
+        "role": "neutral",
+        "displayName": "Paper Light",
+        "canonical": "#fbf9f4",
+        "tonalRamp": [
+          "oklch(15% 0.015 85)",
+          "oklch(27% 0.017 85)",
+          "oklch(39% 0.019 85)",
+          "oklch(51% 0.02 85)",
+          "oklch(63% 0.018 85)",
+          "oklch(75% 0.014 85)",
+          "oklch(87% 0.009 85)",
+          "oklch(95% 0.005 85)"
+        ]
+      },
+      "clear-white": {
+        "role": "neutral",
+        "displayName": "Clear White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(27% 0 0)",
+          "oklch(39% 0 0)",
+          "oklch(51% 0 0)",
+          "oklch(63% 0 0)",
+          "oklch(75% 0 0)",
+          "oklch(87% 0 0)",
+          "oklch(100% 0 0)"
+        ]
+      },
+      "border-sand": {
+        "role": "neutral",
+        "displayName": "Border Sand",
+        "canonical": "#e7e1d6",
+        "tonalRamp": [
+          "oklch(15% 0.018 75)",
+          "oklch(27% 0.02 75)",
+          "oklch(39% 0.022 75)",
+          "oklch(51% 0.024 75)",
+          "oklch(63% 0.022 75)",
+          "oklch(75% 0.018 75)",
+          "oklch(87% 0.012 75)",
+          "oklch(95% 0.007 75)"
+        ]
+      },
+      "strong-border-sand": {
+        "role": "neutral",
+        "displayName": "Strong Border Sand",
+        "canonical": "#c9c2b4",
+        "tonalRamp": [
+          "oklch(15% 0.022 75)",
+          "oklch(27% 0.024 75)",
+          "oklch(39% 0.026 75)",
+          "oklch(51% 0.028 75)",
+          "oklch(63% 0.025 75)",
+          "oklch(75% 0.02 75)",
+          "oklch(87% 0.013 75)",
+          "oklch(95% 0.007 75)"
+        ]
+      },
+      "input-sand": {
+        "role": "neutral",
+        "displayName": "Input Sand",
+        "canonical": "#d8d1c3",
+        "tonalRamp": [
+          "oklch(15% 0.02 75)",
+          "oklch(27% 0.022 75)",
+          "oklch(39% 0.024 75)",
+          "oklch(51% 0.026 75)",
+          "oklch(63% 0.023 75)",
+          "oklch(75% 0.019 75)",
+          "oklch(87% 0.012 75)",
+          "oklch(95% 0.006 75)"
+        ]
+      },
+      "divider-sand": {
+        "role": "neutral",
+        "displayName": "Divider Sand",
+        "canonical": "#ddd5c4",
+        "tonalRamp": [
+          "oklch(15% 0.019 75)",
+          "oklch(27% 0.021 75)",
+          "oklch(39% 0.023 75)",
+          "oklch(51% 0.025 75)",
+          "oklch(63% 0.022 75)",
+          "oklch(75% 0.018 75)",
+          "oklch(87% 0.011 75)",
+          "oklch(95% 0.006 75)"
+        ]
+      },
+      "body-ink": {
+        "role": "neutral",
+        "displayName": "Body Ink",
+        "canonical": "#3d4356",
+        "tonalRamp": [
+          "oklch(15% 0.025 270)",
+          "oklch(27% 0.03 270)",
+          "oklch(39% 0.032 270)",
+          "oklch(51% 0.03 270)",
+          "oklch(63% 0.026 270)",
+          "oklch(75% 0.02 270)",
+          "oklch(87% 0.012 270)",
+          "oklch(95% 0.006 270)"
+        ]
+      },
+      "alternate-body-ink": {
+        "role": "neutral",
+        "displayName": "Alternate Body Ink",
+        "canonical": "#454b5e",
+        "tonalRamp": [
+          "oklch(15% 0.024 270)",
+          "oklch(27% 0.029 270)",
+          "oklch(39% 0.031 270)",
+          "oklch(51% 0.029 270)",
+          "oklch(63% 0.025 270)",
+          "oklch(75% 0.019 270)",
+          "oklch(87% 0.011 270)",
+          "oklch(95% 0.006 270)"
+        ]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#5b6172",
+        "tonalRamp": [
+          "oklch(15% 0.02 270)",
+          "oklch(27% 0.025 270)",
+          "oklch(39% 0.028 270)",
+          "oklch(51% 0.027 270)",
+          "oklch(63% 0.023 270)",
+          "oklch(75% 0.018 270)",
+          "oklch(87% 0.011 270)",
+          "oklch(95% 0.006 270)"
+        ]
+      },
+      "faint-ink": {
+        "role": "neutral",
+        "displayName": "Faint Ink",
+        "canonical": "#8a8f9c",
+        "tonalRamp": [
+          "oklch(15% 0.014 270)",
+          "oklch(27% 0.018 270)",
+          "oklch(39% 0.021 270)",
+          "oklch(51% 0.022 270)",
+          "oklch(63% 0.019 270)",
+          "oklch(75% 0.015 270)",
+          "oklch(87% 0.009 270)",
+          "oklch(95% 0.005 270)"
+        ]
+      },
+      "rating-gold": {
+        "role": "tertiary",
+        "displayName": "Rating Gold",
+        "canonical": "#e8a33d",
+        "tonalRamp": [
+          "oklch(15% 0.08 75)",
+          "oklch(27% 0.1 75)",
+          "oklch(39% 0.12 75)",
+          "oklch(51% 0.14 75)",
+          "oklch(63% 0.13 75)",
+          "oklch(75% 0.1 75)",
+          "oklch(87% 0.06 75)",
+          "oklch(95% 0.03 75)"
+        ]
+      },
+      "label-peach": {
+        "role": "tertiary",
+        "displayName": "Label Peach",
+        "canonical": "#feb77d",
+        "tonalRamp": [
+          "oklch(15% 0.07 55)",
+          "oklch(27% 0.085 55)",
+          "oklch(39% 0.1 55)",
+          "oklch(51% 0.11 55)",
+          "oklch(63% 0.1 55)",
+          "oklch(75% 0.08 55)",
+          "oklch(87% 0.05 55)",
+          "oklch(95% 0.025 55)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Major persuasive statements and fixed feature sections."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Canonical section headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Cards and compact content groups."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Page introductions and important explanatory copy."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Educational content, forms, and supporting information."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Eyebrows and compact orientation cues."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-feature",
+        "value": "0 24px 64px rgba(19, 28, 59, 0.08)",
+        "purpose": "Large inset advisor or contact compositions."
+      },
+      {
+        "name": "interactive-lift",
+        "value": "0 22px 48px rgba(19, 28, 59, 0.14)",
+        "purpose": "Interactive card hover with a restrained upward movement."
+      },
+      {
+        "name": "menu-layer",
+        "value": "0 18px 44px rgba(19, 28, 59, 0.16)",
+        "purpose": "Dropdowns and temporary overlays."
+      },
+      {
+        "name": "teal-action",
+        "value": "0 14px 40px -12px rgba(31, 110, 140, 0.72)",
+        "purpose": "Rare emphasized primary actions on dark feature surfaces."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-fast",
+        "value": "150ms ease-out",
+        "purpose": "Color, border, and focus feedback."
+      },
+      {
+        "name": "interactive-standard",
+        "value": "200ms ease-out",
+        "purpose": "Card lift and small spatial transitions."
+      },
+      {
+        "name": "navigation",
+        "value": "300ms ease-out",
+        "purpose": "Sticky navigation and menu movement; disabled for reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "section-collapse",
+        "value": "900px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "wide-feature",
+        "value": "1100px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The default high-emphasis action in the PHX interface.",
+      "html": "<button class=\"ds-btn-primary\">SCHEDULE A CONSULTATION</button>",
+      "css": ".ds-btn-primary { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 14px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.01em; cursor: pointer; box-shadow: 0 1px 3px rgba(31, 110, 140, 0.15); transition: background-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out; } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "A secondary action that remains clear without competing with teal.",
+      "html": "<button class=\"ds-btn-outline\">LEARN MORE</button>",
+      "css": ".ds-btn-outline { min-height: 44px; padding: 12px 22px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 10px; background: #fff; color: var(--phx-text-heading, #131c3b); font: 600 14px/1 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 1px 2px rgba(19, 28, 59, 0.05); transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out; } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--phx-cream-050, #fbf9f4); } .ds-btn-outline:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A comfortable, clearly bounded field for contact and guidance flows.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">EMAIL ADDRESS</span><input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\"></label>",
+      "css": ".ds-field { display: grid; gap: 8px; color: var(--phx-text-heading, #131c3b); font-family: \"Archivo\", Helvetica, Arial, sans-serif; } .ds-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-input { min-height: 48px; box-sizing: border-box; width: 100%; padding: 14px 16px; border: 1.5px solid var(--phx-border-input, #d8d1c3); border-radius: 9px; background: var(--phx-cream-000, #fdfcf9); color: var(--phx-text-heading, #131c3b); font: 400 15px/1.4 \"Archivo\", Helvetica, Arial, sans-serif; outline: none; transition: border-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-input::placeholder { color: var(--phx-text-muted, #5b6172); } .ds-input:focus-visible { border-color: var(--phx-accent, #1f6e8c); box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.2); }"
+    },
+    {
+      "name": "Editorial Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The default evidence or educational card on a neutral section.",
+      "html": "<article class=\"ds-card\"><p class=\"ds-card-label\">HOME LOAN GUIDANCE</p><h3 class=\"ds-card-title\">Clear options, explained personally.</h3><p class=\"ds-card-copy\">Understand the tradeoffs before choosing your next step.</p></article>",
+      "css": ".ds-card { padding: 28px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 16px; background: var(--surface-card-default, #fff); color: var(--phx-text-heading, #131c3b); box-shadow: 0 1px 3px rgba(19, 28, 59, 0.06); transition: box-shadow 200ms ease-out, transform 200ms ease-out; } .ds-card:hover { box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); transform: translateY(-4px); } .ds-card-label { margin: 0 0 12px; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.18em; } .ds-card-title { margin: 0; color: var(--phx-text-heading, #131c3b); font: 600 24px/1.2 \"Source Serif 4\", Georgia, serif; } .ds-card-copy { margin: 12px 0 0; color: var(--phx-text-body, #3d4356); font: 400 16px/1.7 \"Archivo\", Helvetica, Arial, sans-serif; }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "description": "The default desktop navigation link and focus behavior.",
+      "html": "<a class=\"ds-nav-link\" href=\"#\">LOAN OPTIONS</a>",
+      "css": ".ds-nav-link { display: inline-flex; align-items: center; min-height: 40px; color: var(--phx-text-heading, #131c3b); font: 500 14.5px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.01em; text-decoration: none; transition: color 150ms ease-out; } .ds-nav-link:hover { color: var(--phx-accent, #1f6e8c); } .ds-nav-link:focus-visible { border-radius: 6px; outline: 2px solid rgba(31, 110, 140, 0.4); outline-offset: 4px; }"
+    },
+    {
+      "name": "Eyebrow Label",
+      "kind": "chip",
+      "description": "A compact orientation cue; teal by default and copper only as secondary warmth.",
+      "html": "<span class=\"ds-eyebrow\">PERSONALIZED GUIDANCE</span>",
+      "css": ".ds-eyebrow { display: inline-block; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.22em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Neutral Surface Section",
+      "kind": "custom",
+      "description": "A canonical Page Builder section that receives white or cream from the shared resolver.",
+      "html": "<section class=\"ds-surface\"><div class=\"ds-surface-inner\"><p class=\"ds-eyebrow\">LOCAL EXPERTISE</p><h2 class=\"ds-surface-title\">A clearer path through your home loan.</h2></div></section>",
+      "css": ".ds-surface { padding: 80px 24px; background: var(--surface-section-cream, #f7f4ee); color: var(--phx-text-heading, #131c3b); } .ds-surface-inner { width: min(100%, 1280px); margin: 0 auto; } .ds-eyebrow { margin: 0 0 16px; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.22em; text-transform: uppercase; } .ds-surface-title { max-width: 720px; margin: 0; font: 600 clamp(30px, 3vw, 36px)/1.25 \"Source Serif 4\", Georgia, serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Trusted Local Advisor",
+    "overview": "PHX Home Loan should feel like a knowledgeable local advisor sitting beside a customer: warm, personal, credible, clear, calm, and locally grounded. The system earns trust through legible explanations, real people, useful evidence, and confident next steps. It does not borrow authority from cold institutional banking or luxury-mortgage gloss.\n\nThe canonical implementation and shared tokens are the design authority. Prototypes in `PHXHomeLoan-web-prototype` express the intended composition and editorial direction, with one correction: their exported copper accents should usually be Advisor Teal. Legacy and template blocks are anti-reference; their generic colors, typography, and component language must not be propagated into new canonical work.",
+    "keyCharacteristics": [
+      "Warm editorial typography paired with plainspoken interface copy",
+      "Advisor Teal actions against navy, paper, ivory, and white surfaces",
+      "Restrained Mesa Copper details that add warmth without competing with teal",
+      "Structured grids, generous reading space, and evidence-led compositions",
+      "Soft, precise geometry with restrained ambient depth",
+      "Full WCAG 2.2 AA behavior across states, themes, and viewport sizes"
+    ],
+    "rules": [
+      {
+        "name": "The Teal Leads Rule",
+        "body": "Advisor Teal owns primary actions and active states. Mesa Copper may warm a composition, but it must never create a second primary action hierarchy.",
+        "section": "colors"
+      },
+      {
+        "name": "The Alternating Neutral Rhythm Rule",
+        "body": "Canonical neutral Page Builder blocks start on white and alternate white/cream. Canonical fixed blocks keep their designed surface and reset the sequence. Legacy and template blocks neither receive nor interrupt the automatic sequence.",
+        "section": "colors"
+      },
+      {
+        "name": "The Editorial Clarity Rule",
+        "body": "Serif type establishes trust and hierarchy; Archivo carries every task, explanation, label, and action. Do not use the display face as decorative body copy.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ambient, Not Floating Rule",
+        "body": "Depth should feel like soft environmental light. Use tonal separation and borders first; reserve stronger shadows for state, overlap, or high-value emphasis.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Softness Has Scale Rule",
+        "body": "Radius grows with the physical and visual size of the object. Do not apply one exaggerated radius to controls, cards, sections, and media indiscriminately.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do lead with Advisor Teal for actions, active states, links, and focus.",
+      "Do use Mesa Copper as restrained warmth in labels and secondary details.",
+      "Do preserve the white/cream Page Builder rhythm defined by the shared block inventory.",
+      "Do use Source Serif 4 for editorial authority and Archivo for clarity and task completion.",
+      "Do build trust with real people, evidence, education, and verified claims.",
+      "Do meet WCAG 2.2 AA, including keyboard, focus, contrast, zoom, reduced motion, media, and responsive behavior."
+    ],
+    "donts": [
+      "Don't copy the prototypes' exported copper default into primary actions; translate those accents to Advisor Teal unless the detail is intentionally secondary.",
+      "Don't propagate generic template colors, typography, or component treatments into canonical sections.",
+      "Don't treat migrated legacy sections as design-system authority.",
+      "Don't make the interface feel like generic SaaS, cold institutional banking, luxury-mortgage advertising, or Jimmy's national veteran-first brand.",
+      "Don't use strong shadows, pills, oversized radii, or motion as universal decoration.",
+      "Don't let a fixed, legacy, or template block accidentally participate in the neutral surface sequence."
+    ]
+  }
+}
