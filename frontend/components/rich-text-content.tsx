@@ -127,7 +127,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       return href ? (
         <Link
           className={cn(
-            buttonVariants({ variant: getButtonVariant(value.variant), size: "lg" }),
+            buttonVariants({ variant: getButtonVariant(value.variant) }),
             "my-2 no-underline",
           )}
           href={href}

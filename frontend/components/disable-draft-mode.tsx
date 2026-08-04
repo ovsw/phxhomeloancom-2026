@@ -22,7 +22,7 @@ export function DisableDraftMode() {
   return (
     <button
       className={cn(
-        buttonVariants({ size: "lg" }),
+        buttonVariants({ size: "compact" }),
         "fixed z-9999 bottom-4 right-4 cursor-pointer",
       )}
       disabled={pending}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T13:05:00Z",
+  "generatedAt": "2026-08-04T13:41:10.285808Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -558,24 +558,32 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The default high-emphasis action in the PHX interface.",
+      "description": "Default teal action, 48px tall. Flat at rest; lifts 2px on hover.",
       "html": "<button class=\"ds-btn-primary\">Schedule a Consultation</button>",
-      "css": ".ds-btn-primary { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 1px 3px rgba(31, 110, 140, 0.15); transition: background-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out; } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(0); }"
+      "css": ".ds-btn-primary { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.4); } .ds-btn-primary:active { translate: 0 0; }"
+    },
+    {
+      "name": "Primary Button (Compact)",
+      "kind": "button",
+      "refersTo": "button-primary-compact",
+      "description": "40px compact action for the header, nav, and dense repeating UI.",
+      "html": "<button class=\"ds-btn-primary-compact\">Schedule Consult</button>",
+      "css": ".ds-btn-primary-compact { min-height: 40px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary-compact:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-compact:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.4); }"
     },
     {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
-      "description": "A secondary action that remains clear without competing with teal.",
+      "description": "Default-size secondary action with a sand edge. Switches to a white edge on dark surfaces.",
       "html": "<button class=\"ds-btn-outline\">Learn More</button>",
-      "css": ".ds-btn-outline { min-height: 44px; padding: 12px 22px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 10px; background: #fff; color: var(--phx-text-heading, #131c3b); font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 1px 2px rgba(19, 28, 59, 0.05); transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out; } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--phx-cream-050, #fbf9f4); } .ds-btn-outline:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; }"
+      "css": ".ds-btn-outline { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: 1.5px solid var(--phx-border-strong, #c9c2b4); background: transparent; color: var(--phx-text-heading, #131c3b); } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--phx-cream-050, #fbf9f4); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-outline:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.4); }"
     },
     {
       "name": "Copper Button",
       "kind": "button",
-      "description": "A subordinate media or editorial action that adds warmth without competing with a primary teal action.",
+      "description": "Rare warm action for media and editorial CTAs. Never paired against a primary teal in the same group.",
       "html": "<button class=\"ds-btn-copper\">Watch the Latest Video</button>",
-      "css": ".ds-btn-copper { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-copper-600, #b4552d); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 14px 40px -12px rgba(180, 85, 45, 0.7); transition: filter 150ms ease-out, transform 150ms ease-out; } .ds-btn-copper:hover { filter: brightness(1.1); transform: translateY(-1px); } .ds-btn-copper:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.55); outline-offset: 3px; } .ds-btn-copper:active { transform: translateY(0); }"
+      "css": ".ds-btn-copper { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-copper-600, #b4552d); color: #fff; box-shadow: 0 14px 40px -12px rgba(180, 85, 45, 0.7); } .ds-btn-copper:hover { filter: brightness(1.1); translate: 0 -2px; } .ds-btn-copper:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.4); } .ds-btn-copper:active { translate: 0 0; }"
     },
     {
       "name": "Text Input",
@@ -583,7 +591,7 @@
       "refersTo": "input",
       "description": "A comfortable, clearly bounded field for contact and guidance flows.",
       "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">EMAIL ADDRESS</span><input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\"></label>",
-      "css": ".ds-field { display: grid; gap: 8px; color: var(--phx-text-heading, #131c3b); font-family: \"Archivo\", Helvetica, Arial, sans-serif; } .ds-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-input { min-height: 48px; box-sizing: border-box; width: 100%; padding: 14px 16px; border: 1.5px solid var(--phx-border-input, #d8d1c3); border-radius: 9px; background: var(--phx-cream-000, #fdfcf9); color: var(--phx-text-heading, #131c3b); font: 400 15px/1.4 \"Archivo\", Helvetica, Arial, sans-serif; outline: none; transition: border-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-input::placeholder { color: var(--phx-text-muted, #5b6172); } .ds-input:focus-visible { border-color: var(--phx-accent, #1f6e8c); box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.2); }"
+      "css": ".ds-field { display: grid; gap: 8px; color: var(--phx-text-heading, #131c3b); font-family: \"Archivo\", Helvetica, Arial, sans-serif; } .ds-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-input { min-height: 48px; box-sizing: border-box; width: 100%; padding: 14px 16px; border: 1.5px solid var(--phx-border-input, #d8d1c3); border-radius: 8px; background: var(--phx-cream-000, #fdfcf9); color: var(--phx-text-heading, #131c3b); font: 400 15px/1.4 \"Archivo\", Helvetica, Arial, sans-serif; outline: none; transition: border-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-input::placeholder { color: var(--phx-text-muted, #5b6172); } .ds-input:focus-visible { border-color: var(--phx-accent, #1f6e8c); box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.2); }"
     },
     {
       "name": "Editorial Card",
@@ -656,6 +664,16 @@
         "name": "The Five Shadows Rule",
         "body": "Every shadow in the system is one of the five named tokens, a documented exception, or a :hover intensification of one. A new arbitrary shadow value is drift, not composition.",
         "section": "elevation"
+      },
+      {
+        "name": "The Two Sizes Rule",
+        "body": "A button is default (48px) or compact (40px). If a design seems to need a third height, the surrounding spacing is wrong, not the button.",
+        "section": "components"
+      },
+      {
+        "name": "The Earned Shadow Rule",
+        "body": "Buttons are flat at rest. A resting shadow is an explicit emphasis opt-in, never a default, and never more than one per screen.",
+        "section": "components"
       }
     ],
     "dos": [

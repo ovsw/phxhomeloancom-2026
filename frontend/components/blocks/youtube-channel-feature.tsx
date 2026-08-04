@@ -137,8 +137,8 @@ export default function YoutubeChannelFeature({
             >
               <Button
                 asChild
-                className="h-[3.125rem] w-full rounded-[9px] px-7 shadow-[0_14px_40px_-12px_var(--phx-copper-shadow)] transition-[filter,transform] hover:-translate-y-0.5 hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
-                size="lg"
+                className="w-full min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
+                emphasis
                 variant="copper"
               >
                 <Link href={youtubeUrl} prefetch={false}>

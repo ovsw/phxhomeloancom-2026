@@ -87,7 +87,7 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
                 key={child.key}
                 link={child.link}
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-secondary text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
                   <NavigationIcon name={child.icon} />
                 </span>
                 <span className="grid gap-0.5">

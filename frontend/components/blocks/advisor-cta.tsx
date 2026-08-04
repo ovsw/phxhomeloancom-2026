@@ -100,14 +100,8 @@ export default function AdvisorCta({
                 return (
                   <Button
                     asChild
-                    className={cn(
-                      "h-12 w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold sm:w-auto",
-                      secondary
-                        ? "border-[1.5px] border-slate-300 bg-white text-slate-950 hover:bg-white"
-                        : "bg-cyan-700 text-white hover:bg-cyan-600",
-                    )}
+                    className="w-full sm:w-auto"
                     key={button._key}
-                    size="lg"
                     variant={secondary ? "outline" : "default"}
                   >
                     <Link

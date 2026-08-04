@@ -162,8 +162,7 @@ rounded:
   sm: "4px"
   md: "6px"
   lg: "8px"
-  control: "9px"
-  action: "10px"
+  control: "8px"
   xl: "12px"
   card: "16px"
   feature: "24px"
@@ -177,6 +176,10 @@ spacing:
   stack: "1.125rem"
   card: "1.75rem"
   inset: "clamp(1.75rem, 3.125vw + 0.5rem, 3rem)"
+  control-height: "3rem"
+  control-inline: "1.75rem"
+  control-height-compact: "2.5rem"
+  control-inline-compact: "1.25rem"
   container-max: "80rem"
   container-narrow: "70rem"
   container-inline: "clamp(1rem, 4vw, 2.5rem)"
@@ -186,20 +189,38 @@ components:
     backgroundColor: "{colors.advisor-teal}"
     textColor: "{colors.clear-white}"
     typography: "{typography.button}"
-    rounded: "{rounded.action}"
-    padding: "12px 22px"
-    height: "44px"
+    rounded: "{rounded.control}"
+    padding: "0 28px"
+    height: "48px"
   button-primary-hover:
     backgroundColor: "{colors.deep-advisor-teal}"
     textColor: "{colors.clear-white}"
-    rounded: "{rounded.action}"
+    rounded: "{rounded.control}"
+  button-primary-compact:
+    backgroundColor: "{colors.advisor-teal}"
+    textColor: "{colors.clear-white}"
+    typography: "{typography.button}"
+    rounded: "{rounded.control}"
+    padding: "0 20px"
+    height: "40px"
   button-outline:
-    backgroundColor: "{colors.clear-white}"
+    backgroundColor: "transparent"
     textColor: "{colors.trust-navy}"
     typography: "{typography.button}"
-    rounded: "{rounded.action}"
-    padding: "12px 22px"
-    height: "44px"
+    rounded: "{rounded.control}"
+    padding: "0 28px"
+    height: "48px"
+  button-outline-hover:
+    backgroundColor: "{colors.paper-light}"
+    textColor: "{colors.trust-navy}"
+    rounded: "{rounded.control}"
+  button-copper:
+    backgroundColor: "{colors.mesa-copper}"
+    textColor: "{colors.clear-white}"
+    typography: "{typography.button}"
+    rounded: "{rounded.control}"
+    padding: "0 28px"
+    height: "48px"
   input:
     backgroundColor: "{colors.soft-ivory}"
     textColor: "{colors.trust-navy}"
@@ -507,9 +528,11 @@ one. A new `shadow-[...]` arbitrary value is drift, not composition.
 
 ## Shapes
 
-Controls use precise softened corners: `8–10px` for buttons and fields.
-Standard content cards use approximately `16px`; feature containers may use
-`24px`. Fully rounded pills are reserved for compact labels, categories, and
+Controls use one precise softened corner: `8px` (`--radius-lg`) for buttons,
+fields, and every other interactive control — no exceptions and no arbitrary
+near-values. Standard content cards use approximately `16px`; feature
+containers may use `24px`. Fully rounded pills are reserved for compact labels,
+categories, and
 true capsule controls. Circular and arched geometry may frame portraits or
 other signature imagery, but should not spread to unrelated containers.
 
@@ -532,17 +555,39 @@ without changing the color, type, focus, or state logic.
 
 ### Buttons
 
-- **Shape:** `8–10px` corners; compact enough to feel precise.
-- **Primary:** Advisor Teal with white text, semibold Archivo, and a minimum
-  practical target height of `40px`; important actions commonly use `44–56px`.
-- **Hover / Focus:** Deep Advisor Teal or a controlled brightness increase;
-  visible `3px` teal focus ring with sufficient offset and contrast.
-- **Outline:** Light surface, Trust Navy text, sand border; hover shifts toward
-  the secondary paper surface and a subtle teal border.
-- **Copper secondary:** Mesa Copper with white text, reserved for subordinate
-  media and editorial actions. It must not compete with a primary teal action
-  in the same action group.
+Four variants and two sizes. Everything else is a call-site override and is
+treated as drift.
+
+- **Shape:** `8px` corners (`--radius-lg`), shared with inputs and every other
+  interactive control.
+- **Sizes:** **Default** — `48px` tall, `28px` inline padding
+  (`--control-height` / `--control-inline`). The page-builder CTA, the form
+  submit, the in-article button. **Compact** — `40px` tall, `20px` inline
+  padding (`--control-height-compact` / `--control-inline-compact`). The header
+  CTA, team contact links, dense or repeating UI. Buttons carrying a leading
+  icon shed `4px` of inline padding to keep the optical weight even.
+- **Primary:** Advisor Teal with white text, semibold Archivo. Hover moves to
+  Deep Advisor Teal.
+- **Outline:** Transparent, Trust Navy text, `1.5px` Strong Border Sand edge.
+  Hover shifts to the card surface with a teal-tinted border. On dark or
+  photographic surfaces it switches to a translucent white edge and white text.
+- **Copper:** Mesa Copper with white text, reserved for subordinate media and
+  editorial actions. It must not compete with a primary teal action in the same
+  action group.
 - **Ghost / Link:** Use only when hierarchy clearly calls for low emphasis.
+- **Hover:** Every solid and outline button lifts `2px` and takes the
+  interactive-lift shadow. Ghost and link buttons do not lift.
+- **Focus:** Visible `3px` teal ring at `40%` opacity, plus a `1px` outline.
+- **Emphasis:** An opt-in flag that adds the teal action shadow (or the copper
+  equivalent) at rest. Reserved for the single action a page is built around.
+
+### Named Rules
+
+**The Two Sizes Rule.** A button is default or compact. If a design seems to
+need a third height, the surrounding spacing is wrong, not the button.
+
+**The Earned Shadow Rule.** Buttons are flat at rest. A resting shadow is an
+explicit `emphasis` opt-in, never a default, and never more than one per screen.
 
 ### Labels and Chips
 
@@ -564,8 +609,8 @@ without changing the color, type, focus, or state logic.
 
 ### Inputs / Fields
 
-- **Style:** Soft Ivory background, `1–1.5px` Input Sand border, `9px` corners,
-  and comfortable `14px 16px` padding.
+- **Style:** Soft Ivory background, `1.5px` Input Sand border, `8px` corners
+  matching every other control, and comfortable `14px 16px` padding.
 - **Focus:** Advisor Teal border plus a visible translucent `3px` ring.
 - **Error / Disabled:** Error color and ring remain explicit; disabled fields
   reduce opacity without removing labels or context.

@@ -8,7 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetClose,
@@ -39,7 +40,7 @@ export default function MobileNav({
   return (
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
-        <Button aria-label="Open menu" className="min-h-11 min-w-11" size="icon" variant="ghost">
+        <Button aria-label="Open menu" size="icon" variant="ghost">
           <Menu aria-hidden="true" className="size-5" />
         </Button>
       </SheetTrigger>
@@ -98,7 +99,7 @@ export default function MobileNav({
           <SheetFooter className="border-t border-border/80 p-4">
             {navigation.actions.map((action) => (
               <HeaderLink
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-primary px-5 py-3 typo-button text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/50"
+                className={cn(buttonVariants({ size: "compact" }), "w-full")}
                 key={action.key}
                 link={action.link}
                 onClick={close}

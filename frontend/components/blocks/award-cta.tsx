@@ -99,9 +99,9 @@ export default function AwardCta({
                 return (
                   <Button
                     asChild
-                    className="h-14 w-full rounded-[9px] bg-primary px-8 text-primary-foreground shadow-teal-action transition-[background-color,box-shadow,transform] hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_20px_50px_-12px_rgba(31,110,140,0.86)] focus-visible:ring-primary/40 sm:w-auto"
+                    className="w-full sm:w-auto"
+                    emphasis
                     key={button._key || `${href}-${index}`}
-                    size="lg"
                   >
                     <Link
                       href={href}

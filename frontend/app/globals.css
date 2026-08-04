@@ -229,6 +229,14 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Control geometry — the two button/control sizes. See DESIGN.md
+     Components → Buttons. Interactive controls are rounded-lg (8px);
+     call sites must not override height, padding, or radius. */
+  --control-height: 3rem; /* default: page-builder CTAs, form submits */
+  --control-inline: 1.75rem;
+  --control-height-compact: 2.5rem; /* compact: header, nav, dense UI */
+  --control-inline-compact: 1.25rem;
 }
 
 /* ---------------------------------------------------------------------------

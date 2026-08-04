@@ -83,14 +83,8 @@ function PersonButtons({
         return (
           <Button
             asChild
-            className={cn(
-              "h-12 w-full rounded-[9px] px-7 transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 sm:w-auto",
-              secondary
-                ? "border-[1.5px] border-[var(--phx-border-strong)] bg-[var(--surface-section-white)] text-foreground shadow-none hover:border-primary/30 hover:bg-card hover:text-foreground"
-                : "bg-primary text-primary-foreground hover:bg-accent-hover hover:text-primary-foreground",
-            )}
+            className="w-full sm:w-auto"
             key={button._key || `${href}-${index}`}
-            size="lg"
             variant={secondary ? "outline" : "default"}
           >
             <Link

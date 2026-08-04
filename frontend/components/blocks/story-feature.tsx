@@ -76,9 +76,7 @@ function StoryButtons({
         return (
           <Button
             asChild
-            className="h-12 rounded-[9px] px-7"
             key={button._key || `${href}-${index}`}
-            size="lg"
             variant={getButtonVariant(button.variant)}
           >
             <Link

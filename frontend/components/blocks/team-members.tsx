@@ -1,4 +1,5 @@
 import PortableTextRenderer from "@/components/portable-text-renderer";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -76,7 +77,7 @@ function ProfileContact({
     <div className="mt-1.5 flex flex-wrap items-center gap-3.5">
       {email ? (
         <a
-          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] typo-button text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className={cn(buttonVariants({ size: "compact", variant: "outline" }), "no-underline")}
           data-sanity={memberDataAttribute?.(member._id, "email")}
           href={`mailto:${email}`}
         >

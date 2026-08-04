@@ -177,13 +177,7 @@ export default function VideoFeature({
                 return (
                   <Button
                     asChild
-                    className={cn(
-                      "h-12 rounded-[9px] px-7",
-                      secondary &&
-                        "border-[var(--phx-border-strong)] bg-transparent text-foreground shadow-none hover:border-foreground hover:bg-transparent hover:text-foreground",
-                    )}
                     key={button._key}
-                    size="lg"
                     variant={secondary ? "outline" : "default"}
                   >
                     <Link
