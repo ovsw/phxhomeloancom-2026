@@ -14,7 +14,7 @@ import type { HeaderNavigationItem, HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const primaryLinkClassName =
-  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 font-medium text-[14.5px] leading-none tracking-[0.01em] text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40";
+  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 typo-nav text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/40";
 
 function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "group" }> }) {
   const [open, setOpen] = useState(false);
@@ -91,10 +91,10 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
                   <NavigationIcon name={child.icon} />
                 </span>
                 <span className="grid gap-0.5">
-                  <span className="font-semibold text-sm leading-none text-popover-foreground">
+                  <span className="typo-nav font-semibold text-popover-foreground">
                     {child.label}
                   </span>
-                  <span className="line-clamp-2 text-xs font-normal leading-5 text-muted-foreground">
+                  <span className="line-clamp-2 typo-fine-print text-muted-foreground">
                     {child.description}
                   </span>
                 </span>

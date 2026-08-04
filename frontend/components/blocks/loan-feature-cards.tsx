@@ -164,9 +164,9 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
       <div className="mb-6 flex size-[46px] items-center justify-center rounded-[11px] bg-secondary text-primary">
         <LoanIcon icon={card.icon} />
       </div>
-      {title ? <h3 className="mb-4 font-display text-[1.4375rem] leading-tight text-foreground">{title}</h3> : null}
+      {title ? <h3 className="mb-4 typo-showcase-title text-foreground">{title}</h3> : null}
       {card.bullets?.length ? (
-        <ul className="grid gap-2.5 text-[0.90625rem] leading-normal text-muted-foreground">
+        <ul className="grid gap-2.5 typo-body-sm text-muted-foreground">
           {card.bullets.map((bullet, index) => (
             <li className="flex gap-2.5" key={`${card._key}-${index}`}>
               <CheckIcon />
@@ -175,7 +175,7 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
           ))}
         </ul>
       ) : null}
-      <span className="mt-auto inline-flex items-center gap-1 pt-8 text-sm font-semibold text-primary transition-colors group-hover:text-accent-hover">
+      <span className="mt-auto inline-flex items-center gap-1 pt-8 typo-button text-primary transition-colors group-hover:text-accent-hover">
         Learn more
         <ArrowIcon className="size-3.5" />
       </span>
@@ -202,10 +202,10 @@ function LoanHelpCard() {
       <div className="mb-5 flex size-[46px] items-center justify-center rounded-[11px] bg-white/15 text-white">
         <HelpIcon />
       </div>
-      <h3 className="mb-4 font-display text-[1.4375rem] leading-tight">Not sure which fits?</h3>
-      <p className="mb-6 text-[0.9375rem] leading-relaxed text-white/90">{helpCopy}</p>
+      <h3 className="mb-4 typo-showcase-title">Not sure which fits?</h3>
+      <p className="mb-6 typo-body-sm text-white/90">{helpCopy}</p>
       <Link
-        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-white px-6 text-sm font-semibold text-primary no-underline transition-transform hover:-translate-y-0.5 hover:text-accent-hover"
+        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg bg-white px-6 typo-button text-primary no-underline transition-transform hover:-translate-y-0.5 hover:text-accent-hover"
         href="#contact"
       >
         Ask us
@@ -234,14 +234,14 @@ export default function LoanFeatureCards({
       <div className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
         <div className="mb-11 flex flex-wrap items-end justify-between gap-10 md:mb-[3.25rem] md:gap-12">
           <div className="max-w-xl">
-            <p className="mb-3.5 text-xs font-semibold uppercase leading-none tracking-[0.22em] text-primary">
+            <p className="mb-3.5 typo-eyebrow text-primary">
               {getSectionEyebrow(eyebrow)}
             </p>
-            <h2 className="text-balance font-display text-[2.125rem] font-semibold leading-[1.12] text-foreground md:text-[2.75rem]">
+            <h2 className="text-balance typo-section-heading text-foreground">
               {getSectionTitle(title)}
             </h2>
           </div>
-          <p className="max-w-[25rem] text-[1.03125rem] leading-relaxed text-muted-foreground">{introCopy}</p>
+          <p className="max-w-[25rem] typo-body-editorial text-muted-foreground">{introCopy}</p>
         </div>
         <div className={cn("grid gap-5 sm:grid-cols-2", cards.length > 2 ? "lg:grid-cols-3" : "lg:grid-cols-2")}>
           {cards.map((card) => (

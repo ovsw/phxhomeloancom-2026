@@ -56,7 +56,7 @@ function PublicationDate({
     .toUpperCase();
   return (
     <time
-      className="text-xs font-semibold uppercase leading-none tracking-[0.08em] text-muted-foreground"
+      className="typo-meta-label text-muted-foreground"
       data-sanity={dataAttribute?.("publishedAt")}
       dateTime={stegaClean(value)}
     >
@@ -107,7 +107,7 @@ export function LatestPostCard({ post, stega }: { post: BlogPost; stega: boolean
         </h3>
         {post.excerpt ? (
           <p
-            className="mt-3 line-clamp-3 text-[0.90625rem] leading-[1.6] text-muted-foreground"
+            className="mt-3 line-clamp-3 typo-body-sm text-muted-foreground"
             data-sanity={dataAttribute?.("excerpt")}
           >
             {post.excerpt}
@@ -133,7 +133,7 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
         <BlogImage dataAttribute={dataAttribute} post={post} />
         {category ? (
           <span
-            className="absolute left-3.5 top-3.5 rounded-full bg-[rgba(12,19,41,0.82)] px-3 py-1.5 text-[0.65625rem] font-semibold uppercase leading-none tracking-[0.12em] text-white backdrop-blur-sm"
+            className="absolute left-3.5 top-3.5 rounded-full bg-[rgba(12,19,41,0.82)] px-3 py-1.5 typo-meta-label text-white backdrop-blur-sm"
             data-sanity={categoryDataAttribute?.("title")}
           >
             {category}
@@ -143,7 +143,7 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
       <div className="flex flex-1 flex-col gap-3 px-7 pb-7 pt-6">
         <PublicationDate dataAttribute={dataAttribute} value={post.publishedAt} />
         <h3
-          className="text-balance text-[1.3125rem] font-semibold leading-[1.25] text-card-foreground"
+          className="text-balance typo-card-title text-card-foreground"
           data-sanity={dataAttribute?.("title")}
         >
           <Link href={contentPath(slug)}>
@@ -153,13 +153,13 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
         </h3>
         {post.excerpt ? (
           <p
-            className="line-clamp-3 text-[0.90625rem] leading-[1.6] text-muted-foreground"
+            className="line-clamp-3 typo-body-sm text-muted-foreground"
             data-sanity={dataAttribute?.("excerpt")}
           >
             {post.excerpt}
           </p>
         ) : null}
-        <span className="mt-auto pt-2 text-sm font-semibold text-primary">
+        <span className="mt-auto pt-2 typo-button text-primary">
           Read post {"\u2192"}
         </span>
       </div>

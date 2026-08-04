@@ -228,6 +228,183 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Typography roles — one complete recipe per semantic role.
+   Responsive sizes always use clamp(); fixed sizes never carry breakpoints.
+   Families are fixed: headings = Source Serif 4, everything else = Archivo.
+--------------------------------------------------------------------------- */
+
+@utility typo-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 4.6vw, 4.125rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: normal;
+}
+
+@utility typo-page-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4.7vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: normal;
+}
+
+@utility typo-section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+@utility typo-feature-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 3vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+@utility typo-subsection-heading {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+
+@utility typo-card-title {
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: normal;
+}
+
+/* Loan showcase cards: deliberately lighter, airier than typo-card-title. */
+@utility typo-showcase-title {
+  font-family: var(--font-display);
+  font-size: 1.4375rem;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: normal;
+}
+
+/* Small serif title for dense interactive rows (FAQ questions). */
+@utility typo-title-minor {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+@utility typo-lead {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+@utility typo-body-editorial {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+@utility typo-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+@utility typo-body-sm {
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility typo-fine-print {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility typo-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+@utility typo-meta-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@utility typo-nav {
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-button {
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@utility typo-button-lg {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@utility typo-stat-lg {
+  font-family: var(--font-body);
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+@utility typo-stat-md {
+  font-family: var(--font-body);
+  font-size: clamp(1.875rem, 2.7vw, 2.125rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: normal;
+}
+
+@utility typo-pull-quote {
+  font-family: var(--font-body);
+  font-size: clamp(1.5rem, 2.2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@utility typo-blockquote {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

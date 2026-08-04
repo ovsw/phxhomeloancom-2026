@@ -157,7 +157,7 @@ export default function BigVideoFeature({
       <div className="container relative grid justify-items-center text-center">
         {displayEyebrow ? (
           <p
-            className="text-xs font-semibold uppercase tracking-[0.26em] text-label-on-dark/90"
+            className="typo-eyebrow text-label-on-dark/90"
             data-sanity={dataAttributes?.eyebrow}
           >
             {eyebrow}
@@ -165,7 +165,7 @@ export default function BigVideoFeature({
         ) : null}
         {displayTitle ? (
           <h2
-            className="mt-3.5 max-w-[47.5rem] text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.015em] text-white md:text-[2.875rem]"
+            className="mt-3.5 max-w-[47.5rem] text-balance typo-section-heading text-white"
             data-sanity={dataAttributes?.title}
             id={headingId}
           >
@@ -174,7 +174,7 @@ export default function BigVideoFeature({
         ) : null}
         {displayDescription ? (
           <p
-            className="mb-[1.875rem] mt-5 max-w-[38.75rem] text-pretty text-[1.0625rem] leading-[1.7] text-white/70"
+            className="mb-[1.875rem] mt-5 max-w-[38.75rem] text-pretty typo-body-editorial text-white/70"
             data-sanity={dataAttributes?.description}
           >
             {description}

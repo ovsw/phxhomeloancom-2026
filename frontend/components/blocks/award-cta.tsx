@@ -33,7 +33,7 @@ function AwardHeading({
     stegaClean(title)?.trim() === "Mortgage Loan Originators"
   ) {
     return (
-      <h2 className="text-5xl font-semibold leading-[1.05] tracking-normal text-white md:text-6xl lg:text-[4rem] xl:text-[4.125rem]">
+      <h2 className="text-[clamp(3rem,5.2vw,4.125rem)] font-semibold leading-[1.05] tracking-normal text-white">
         <span className="sm:whitespace-nowrap">
           &ldquo;{normalizedHighlight} Mortgage
         </span>
@@ -44,7 +44,7 @@ function AwardHeading({
   }
 
   return (
-    <h2 className="text-balance text-5xl font-semibold leading-[1.05] tracking-normal text-white md:text-6xl lg:text-[4rem] xl:text-[4.125rem]">
+    <h2 className="text-balance text-[clamp(3rem,5.2vw,4.125rem)] font-semibold leading-[1.05] tracking-normal text-white">
       &ldquo;{[normalizedHighlight, title].filter(Boolean).join(" ")}&rdquo;
     </h2>
   );
@@ -81,12 +81,12 @@ export default function AwardCta({
         </div>
 
         <div className="flex max-w-xl flex-col items-center gap-5 lg:items-start">
-          <p className="text-xs font-semibold uppercase leading-none tracking-[0.26em] text-white/55">
+          <p className="typo-eyebrow text-white/55">
             {DEFAULT_EYEBROW}
           </p>
           <AwardHeading highlight={highlight} title={title} />
           {description ? (
-            <p className="text-pretty text-base leading-7 text-white/65 md:text-[1.0625rem]">
+            <p className="text-pretty typo-body-editorial text-white/65">
               {description}
             </p>
           ) : null}
@@ -99,7 +99,7 @@ export default function AwardCta({
                 return (
                   <Button
                     asChild
-                    className="h-14 w-full rounded-[9px] bg-primary px-8 text-base font-semibold text-primary-foreground shadow-[0_14px_40px_-12px_rgba(31,110,140,0.72)] transition-[background-color,box-shadow,transform] hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_20px_50px_-12px_rgba(31,110,140,0.86)] focus-visible:ring-primary/40 sm:w-auto"
+                    className="h-14 w-full rounded-[9px] bg-primary px-8 text-primary-foreground shadow-[0_14px_40px_-12px_rgba(31,110,140,0.72)] transition-[background-color,box-shadow,transform] hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-[0_20px_50px_-12px_rgba(31,110,140,0.86)] focus-visible:ring-primary/40 sm:w-auto"
                     key={button._key || `${href}-${index}`}
                     size="lg"
                   >

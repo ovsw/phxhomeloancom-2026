@@ -59,7 +59,7 @@ function Address({
   const country = stegaClean(address?.country)?.trim();
 
   return (
-    <address className="grid text-sm leading-[1.55] text-[#454b5e] not-italic">
+    <address className="grid typo-body-sm text-[#454b5e] not-italic">
       {street ? (
         <span data-sanity={dataAttribute?.("address.street")}>{address?.street}</span>
       ) : null}
@@ -128,7 +128,7 @@ export default function LocationMap({
           <div>
             {displayEyebrow ? (
               <p
-                className="mb-3.5 text-[0.8125rem] font-semibold uppercase tracking-[0.22em] text-primary"
+                className="mb-3.5 typo-eyebrow text-primary"
                 data-sanity={dataAttribute?.("eyebrow")}
               >
                 {eyebrow}
@@ -136,7 +136,7 @@ export default function LocationMap({
             ) : null}
             {displayTitle ? (
               <h2
-                className="text-balance text-[2rem] font-semibold leading-[1.15] tracking-[-0.01em] text-foreground md:text-[2.625rem]"
+                className="text-balance typo-section-heading text-foreground"
                 data-sanity={dataAttribute?.("title")}
                 id={headingId}
               >
@@ -147,7 +147,7 @@ export default function LocationMap({
 
           {cleanDirectionsUrl && displayDirectionsLabel ? (
             <a
-              className="w-fit whitespace-nowrap text-[0.9375rem] font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-[3px] focus-visible:outline-primary focus-visible:outline-offset-4"
+              className="w-fit whitespace-nowrap typo-button text-primary underline-offset-4 hover:underline focus-visible:outline-[3px] focus-visible:outline-primary focus-visible:outline-offset-4"
               data-sanity={dataAttribute?.("directionsUrl")}
               href={cleanDirectionsUrl}
             >
@@ -178,7 +178,7 @@ export default function LocationMap({
             <figcaption className="absolute right-6 bottom-6 left-6">
               {displayImageEyebrow ? (
                 <p
-                  className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f2c4a9]"
+                  className="mb-2 typo-eyebrow text-[#f2c4a9]"
                   data-sanity={dataAttribute?.("imageEyebrow")}
                 >
                   {imageEyebrow}
@@ -213,7 +213,7 @@ export default function LocationMap({
             <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-xl border border-border bg-white/95 px-6 py-5 shadow-[0_14px_36px_rgba(19,28,59,0.18)] backdrop-blur-sm md:top-6 md:right-auto md:left-6">
               {displayBusinessName ? (
                 <p
-                  className="text-[0.9375rem] font-semibold text-[#131c3b]"
+                  className="typo-button text-[#131c3b]"
                   data-sanity={dataAttribute?.("businessName")}
                 >
                   {businessName}
@@ -221,7 +221,7 @@ export default function LocationMap({
               ) : null}
               {displayCredentialLine ? (
                 <p
-                  className="mt-0.5 mb-2 text-[0.78125rem] text-[#9aa0ae]"
+                  className="mt-0.5 mb-2 typo-fine-print text-[#9aa0ae]"
                   data-sanity={dataAttribute?.("credentialLine")}
                 >
                   {credentialLine}

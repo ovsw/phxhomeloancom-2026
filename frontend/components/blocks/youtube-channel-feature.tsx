@@ -71,13 +71,13 @@ export default function YoutubeChannelFeature({
       <div className="relative mx-auto w-full max-w-7xl">
         <div className="grid max-w-[35rem] justify-items-start gap-[1.375rem] max-[900px]:max-w-none min-[901px]:max-w-[min(35rem,52%)]">
           <p
-            className="text-[0.8125rem] font-semibold uppercase tracking-[0.26em] text-label-on-dark/90"
+            className="typo-eyebrow text-label-on-dark/90"
             data-sanity={dataAttribute?.("eyebrow")}
           >
             {eyebrow}
           </p>
           <h2
-            className="text-balance text-[clamp(2.125rem,3.6vw,3.25rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-white"
+            className="text-balance typo-section-heading text-white"
             data-sanity={dataAttribute?.("title")}
             id={titleId}
           >
@@ -85,7 +85,7 @@ export default function YoutubeChannelFeature({
           </h2>
           {richText?.length ? (
             <div
-              className="grid gap-[1.125rem] text-pretty text-[1.0625rem] leading-[1.75] text-white/70"
+              className="grid gap-[1.125rem] text-pretty typo-body-editorial text-white/70"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableText components={richTextComponents} value={richText} />
@@ -95,13 +95,13 @@ export default function YoutubeChannelFeature({
             {facts?.map((fact) => (
               <div className="grid min-w-0 gap-1" key={fact._key}>
                 <dt
-                  className="order-2 whitespace-nowrap text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-label-on-dark/90 min-[901px]:text-xs min-[901px]:tracking-[0.14em]"
+                  className="order-2 whitespace-nowrap typo-meta-label text-label-on-dark/90"
                   data-sanity={dataAttribute?.(`facts[_key=="${fact._key}"].label`)}
                 >
                   {fact.label}
                 </dt>
                 <dd
-                  className="order-1 text-[1.875rem] font-semibold leading-none text-white min-[901px]:text-[2.125rem]"
+                  className="order-1 typo-stat-md text-white"
                   data-sanity={dataAttribute?.(`facts[_key=="${fact._key}"].value`)}
                 >
                   {fact.value}
@@ -135,7 +135,8 @@ export default function YoutubeChannelFeature({
             >
               <Button
                 asChild
-                className="h-[3.125rem] w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold shadow-[0_14px_40px_-12px_var(--phx-copper-shadow)] transition-[filter,transform] hover:-translate-y-0.5 hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
+                className="h-[3.125rem] w-full rounded-[9px] px-7 shadow-[0_14px_40px_-12px_var(--phx-copper-shadow)] transition-[filter,transform] hover:-translate-y-0.5 hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
+                size="lg"
                 variant="copper"
               >
                 <Link href={youtubeUrl} prefetch={false}>

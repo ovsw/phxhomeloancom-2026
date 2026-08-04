@@ -76,7 +76,7 @@ function StoryButtons({
         return (
           <Button
             asChild
-            className="h-12 rounded-[9px] px-7 text-[0.9375rem]"
+            className="h-12 rounded-[9px] px-7"
             key={button._key || `${href}-${index}`}
             size="lg"
             variant={getButtonVariant(button.variant)}
@@ -114,7 +114,7 @@ function KeyDetails({
     <div className="mt-1">
       {title ? (
         <p
-          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+          className="mb-4 typo-eyebrow text-muted-foreground"
           data-sanity={dataAttribute?.("keyDetails.title")}
         >
           {title}
@@ -123,7 +123,7 @@ function KeyDetails({
       <ul className="flex list-none flex-wrap gap-2.5 p-0">
         {items.map((item) => (
           <li
-            className="rounded-full border border-border bg-card px-[1.125rem] py-2 text-[0.90625rem] font-medium text-muted-foreground"
+            className="rounded-full border border-border bg-card px-[1.125rem] py-2 typo-body-sm font-medium text-muted-foreground"
             data-sanity={dataAttribute?.(`keyDetails.items[${item.index}]`)}
             key={`${item.value}-${item.index}`}
           >
@@ -164,7 +164,7 @@ export default function StoryFeature({
         <header className="mb-10 max-w-3xl">
           {displayEyebrow ? (
             <p
-              className="mb-[1.125rem] text-xs font-semibold uppercase tracking-[0.26em] text-primary"
+              className="mb-[1.125rem] typo-eyebrow text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {displayEyebrow}
@@ -172,7 +172,7 @@ export default function StoryFeature({
           ) : null}
           {displayTitle ? (
             <h2
-              className="text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.01em] text-foreground md:text-[2.625rem]"
+              className="text-balance typo-section-heading text-foreground"
               data-sanity={dataAttribute?.("title")}
               id={headingId}
             >
@@ -201,7 +201,7 @@ export default function StoryFeature({
             ) : null}
             {displayCaption ? (
               <figcaption
-                className="mt-3 text-sm text-muted-foreground"
+                className="mt-3 typo-body-sm text-muted-foreground"
                 data-sanity={dataAttribute?.("imageCaption")}
               >
                 {displayCaption}
@@ -212,7 +212,7 @@ export default function StoryFeature({
           <div className="flex min-w-0 flex-col gap-[1.125rem]">
             {richText?.length ? (
               <div
-                className="flex flex-col gap-[1.125rem] text-pretty text-[1.0625rem] leading-[1.75] text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-copper-600 [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
+                className="flex flex-col gap-[1.125rem] text-pretty typo-body-editorial text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-copper-600 [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableText components={storyRichTextComponents} value={richText} />

@@ -38,7 +38,7 @@ function ProfileMeta({
     <div className="flex flex-wrap items-center gap-2.5">
       {role ? (
         <span
-          className="rounded-full bg-primary px-3 py-1.5 text-[0.71875rem] font-semibold uppercase leading-none tracking-[0.1em] text-primary-foreground"
+          className="rounded-full bg-primary px-3 py-1.5 typo-meta-label text-primary-foreground"
           data-sanity={memberDataAttribute?.(member._id, "role")}
         >
           {member.role}
@@ -46,7 +46,7 @@ function ProfileMeta({
       ) : null}
       {nmlsId ? (
         <span
-          className="text-[0.78125rem] font-medium tracking-[0.02em] text-muted-foreground"
+          className="typo-fine-print font-medium text-muted-foreground"
           data-sanity={memberDataAttribute?.(member._id, "nmlsId")}
         >
           NMLS #{member.nmlsId}
@@ -76,7 +76,7 @@ function ProfileContact({
     <div className="mt-1.5 flex flex-wrap items-center gap-3.5">
       {email ? (
         <a
-          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] text-[0.90625rem] font-semibold text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] typo-button text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
           data-sanity={memberDataAttribute?.(member._id, "email")}
           href={`mailto:${email}`}
         >
@@ -86,7 +86,7 @@ function ProfileContact({
       ) : null}
       {phone && phoneHref ? (
         <a
-          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] text-[0.90625rem] font-semibold text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] typo-button text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
           data-sanity={memberDataAttribute?.(member._id, "phone")}
           href={`tel:${phoneHref}`}
         >
@@ -151,7 +151,7 @@ function TeamMemberProfile({
       <div className={cn("grid gap-[1.125rem]", reverse && "md:order-1")}>
         {hasName ? (
           <h3
-            className="text-balance text-[clamp(1.875rem,3vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
+            className="text-balance typo-feature-heading text-foreground"
             data-sanity={memberDataAttribute?.(member._id, "name")}
           >
             {member.name}
@@ -163,7 +163,7 @@ function TeamMemberProfile({
         />
         {hasBio ? (
           <div
-            className="max-w-[35rem] text-pretty text-[1.03125rem] leading-[1.72] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.72]"
+            className="max-w-[35rem] text-pretty typo-body-editorial text-muted-foreground [&_p]:!my-0"
             data-sanity={memberDataAttribute?.(member._id, "bio")}
           >
             <PortableTextRenderer value={member.bio ?? []} />
@@ -218,7 +218,7 @@ export default function TeamMembers({
         <header className="mx-auto grid max-w-[47.5rem] justify-items-center gap-3.5 text-center">
           {displayEyebrow ? (
             <p
-              className="text-[0.8125rem] font-semibold uppercase leading-none tracking-[0.22em] text-primary"
+              className="typo-eyebrow text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {eyebrow}
@@ -226,7 +226,7 @@ export default function TeamMembers({
           ) : null}
           {displayTitle ? (
             <h2
-              className="text-balance text-[clamp(2.125rem,3.4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
+              className="text-balance typo-section-heading text-foreground"
               data-sanity={dataAttribute?.("title")}
               id={titleId}
             >
@@ -235,7 +235,7 @@ export default function TeamMembers({
           ) : null}
           {richText?.length ? (
             <div
-              className="text-pretty text-[1.0625rem] leading-[1.7] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.7]"
+              className="text-pretty typo-body-editorial text-muted-foreground [&_p]:!my-0"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableTextRenderer value={richText} />

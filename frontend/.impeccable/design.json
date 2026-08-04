@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T08:24:28Z",
+  "generatedAt": "2026-08-04T10:46:14Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -323,27 +323,91 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Major persuasive statements and fixed feature sections."
+        "purpose": "The homepage hero statement."
       },
-      "headline": {
-        "displayName": "Headline",
-        "purpose": "Canonical section headings."
+      "page-heading": {
+        "displayName": "Page Heading",
+        "purpose": "Interior page h1s."
       },
-      "title": {
-        "displayName": "Title",
-        "purpose": "Cards and compact content groups."
+      "section-heading": {
+        "displayName": "Section Heading",
+        "purpose": "Every section-level h2."
+      },
+      "feature-heading": {
+        "displayName": "Feature Heading",
+        "purpose": "Featured profiles (team member names) between section and card level."
+      },
+      "subsection-heading": {
+        "displayName": "Subsection Heading",
+        "purpose": "Sub-groups inside a section."
+      },
+      "card-title": {
+        "displayName": "Card Title",
+        "purpose": "Blog cards and compact content groups."
+      },
+      "showcase-title": {
+        "displayName": "Showcase Title",
+        "purpose": "Loan showcase cards only; deliberately lighter than card-title."
+      },
+      "title-minor": {
+        "displayName": "Minor Title",
+        "purpose": "Dense interactive rows such as FAQ questions."
       },
       "lead": {
         "displayName": "Lead",
-        "purpose": "Page introductions and important explanatory copy."
+        "purpose": "Copy directly under h1s."
+      },
+      "body-editorial": {
+        "displayName": "Editorial Body",
+        "purpose": "Long-form narrative and section intros."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Educational content, forms, and supporting information."
+        "purpose": "Rich text and default copy."
       },
-      "label": {
-        "displayName": "Label",
-        "purpose": "Eyebrows and compact orientation cues."
+      "body-sm": {
+        "displayName": "Small Body",
+        "purpose": "Card excerpts, captions, footer links."
+      },
+      "fine-print": {
+        "displayName": "Fine Print",
+        "purpose": "Legal, disclaimers, NMLS lines, form labels (600 weight), breadcrumbs."
+      },
+      "eyebrow": {
+        "displayName": "Eyebrow",
+        "purpose": "Section intro labels."
+      },
+      "meta-label": {
+        "displayName": "Meta Label",
+        "purpose": "Dates, category badges, role chips, stat captions."
+      },
+      "nav": {
+        "displayName": "Navigation",
+        "purpose": "Header and mobile navigation."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "All actions and text CTAs."
+      },
+      "button-lg": {
+        "displayName": "Large Button",
+        "purpose": "Hero-scale buttons."
+      },
+      "stat-lg": {
+        "displayName": "Large Stat",
+        "purpose": "Big evidence numbers."
+      },
+      "stat-md": {
+        "displayName": "Medium Stat",
+        "purpose": "Supporting evidence numbers and timeline markers."
+      },
+      "pull-quote": {
+        "displayName": "Pull Quote",
+        "purpose": "Standalone emphasized statements."
+      },
+      "blockquote": {
+        "displayName": "Blockquote",
+        "purpose": "Quoted speech inside body copy."
       }
     },
     "shadows": [
@@ -418,23 +482,23 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "The default high-emphasis action in the PHX interface.",
-      "html": "<button class=\"ds-btn-primary\">SCHEDULE A CONSULTATION</button>",
-      "css": ".ds-btn-primary { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 14px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.01em; cursor: pointer; box-shadow: 0 1px 3px rgba(31, 110, 140, 0.15); transition: background-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out; } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(0); }"
+      "html": "<button class=\"ds-btn-primary\">Schedule a Consultation</button>",
+      "css": ".ds-btn-primary { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 1px 3px rgba(31, 110, 140, 0.15); transition: background-color 150ms ease-out, box-shadow 150ms ease-out, transform 150ms ease-out; } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); transform: translateY(-1px); } .ds-btn-primary:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(0); }"
     },
     {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
       "description": "A secondary action that remains clear without competing with teal.",
-      "html": "<button class=\"ds-btn-outline\">LEARN MORE</button>",
-      "css": ".ds-btn-outline { min-height: 44px; padding: 12px 22px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 10px; background: #fff; color: var(--phx-text-heading, #131c3b); font: 600 14px/1 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 1px 2px rgba(19, 28, 59, 0.05); transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out; } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--phx-cream-050, #fbf9f4); } .ds-btn-outline:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; }"
+      "html": "<button class=\"ds-btn-outline\">Learn More</button>",
+      "css": ".ds-btn-outline { min-height: 44px; padding: 12px 22px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 10px; background: #fff; color: var(--phx-text-heading, #131c3b); font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 1px 2px rgba(19, 28, 59, 0.05); transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out; } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--phx-cream-050, #fbf9f4); } .ds-btn-outline:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.4); outline-offset: 3px; }"
     },
     {
       "name": "Copper Button",
       "kind": "button",
       "description": "A subordinate media or editorial action that adds warmth without competing with a primary teal action.",
-      "html": "<button class=\"ds-btn-copper\">WATCH THE LATEST VIDEO</button>",
-      "css": ".ds-btn-copper { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-copper-600, #b4552d); color: #fff; font: 600 14px/1 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 14px 40px -12px rgba(180, 85, 45, 0.7); transition: filter 150ms ease-out, transform 150ms ease-out; } .ds-btn-copper:hover { filter: brightness(1.1); transform: translateY(-1px); } .ds-btn-copper:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.55); outline-offset: 3px; } .ds-btn-copper:active { transform: translateY(0); }"
+      "html": "<button class=\"ds-btn-copper\">Watch the Latest Video</button>",
+      "css": ".ds-btn-copper { min-height: 44px; padding: 12px 22px; border: 1px solid transparent; border-radius: 10px; background: var(--phx-copper-600, #b4552d); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; box-shadow: 0 14px 40px -12px rgba(180, 85, 45, 0.7); transition: filter 150ms ease-out, transform 150ms ease-out; } .ds-btn-copper:hover { filter: brightness(1.1); transform: translateY(-1px); } .ds-btn-copper:focus-visible { outline: 3px solid rgba(31, 110, 140, 0.55); outline-offset: 3px; } .ds-btn-copper:active { transform: translateY(0); }"
     },
     {
       "name": "Text Input",

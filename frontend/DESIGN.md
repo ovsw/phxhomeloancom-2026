@@ -26,27 +26,63 @@ colors:
 typography:
   display:
     fontFamily: "Source Serif 4, Georgia, serif"
-    fontSize: "clamp(3rem, 5vw, 4.125rem)"
+    fontSize: "clamp(2.75rem, 4.6vw, 4.125rem)"
     fontWeight: 600
-    lineHeight: 1.05
+    lineHeight: 1.08
     letterSpacing: "normal"
-  headline:
+  page-heading:
     fontFamily: "Source Serif 4, Georgia, serif"
-    fontSize: "clamp(1.875rem, 3vw, 2.25rem)"
+    fontSize: "clamp(2.5rem, 4.7vw, 3.75rem)"
     fontWeight: 600
-    lineHeight: 1.25
+    lineHeight: 1.08
     letterSpacing: "normal"
-  title:
+  section-heading:
+    fontFamily: "Source Serif 4, Georgia, serif"
+    fontSize: "clamp(1.875rem, 3.2vw, 2.75rem)"
+    fontWeight: 600
+    lineHeight: 1.12
+    letterSpacing: "-0.01em"
+  feature-heading:
+    fontFamily: "Source Serif 4, Georgia, serif"
+    fontSize: "clamp(1.875rem, 3vw, 2.5rem)"
+    fontWeight: 600
+    lineHeight: 1.1
+    letterSpacing: "-0.01em"
+  subsection-heading:
+    fontFamily: "Source Serif 4, Georgia, serif"
+    fontSize: "1.5rem"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "normal"
+  card-title:
     fontFamily: "Source Serif 4, Georgia, serif"
     fontSize: "1.3125rem"
     fontWeight: 600
     lineHeight: 1.25
     letterSpacing: "normal"
+  showcase-title:
+    fontFamily: "Source Serif 4, Georgia, serif"
+    fontSize: "1.4375rem"
+    fontWeight: 400
+    lineHeight: 1.25
+    letterSpacing: "normal"
+  title-minor:
+    fontFamily: "Source Serif 4, Georgia, serif"
+    fontSize: "1.0625rem"
+    fontWeight: 500
+    lineHeight: 1.5
+    letterSpacing: "normal"
   lead:
     fontFamily: "Archivo, Helvetica, Arial, sans-serif"
     fontSize: "1.125rem"
     fontWeight: 400
-    lineHeight: 1.78
+    lineHeight: 1.65
+    letterSpacing: "normal"
+  body-editorial:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "1.0625rem"
+    fontWeight: 400
+    lineHeight: 1.75
     letterSpacing: "normal"
   body:
     fontFamily: "Archivo, Helvetica, Arial, sans-serif"
@@ -54,12 +90,74 @@ typography:
     fontWeight: 400
     lineHeight: 1.75
     letterSpacing: "normal"
-  label:
+  body-sm:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "0.90625rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "normal"
+  fine-print:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "normal"
+  eyebrow:
     fontFamily: "Archivo, Helvetica, Arial, sans-serif"
     fontSize: "0.75rem"
     fontWeight: 600
     lineHeight: 1
     letterSpacing: "0.22em"
+    textTransform: "uppercase"
+  meta-label:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "0.6875rem"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "0.1em"
+    textTransform: "uppercase"
+  nav:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "0.90625rem"
+    fontWeight: 500
+    lineHeight: 1
+    letterSpacing: "0.01em"
+  button:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "0.90625rem"
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: "normal"
+  button-lg:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: "normal"
+  stat-lg:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(2.75rem, 5vw, 4rem)"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.02em"
+  stat-md:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(1.875rem, 2.7vw, 2.125rem)"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "normal"
+  pull-quote:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "clamp(1.5rem, 2.2vw, 1.75rem)"
+    fontWeight: 600
+    lineHeight: 1.35
+    letterSpacing: "normal"
+  blockquote:
+    fontFamily: "Archivo, Helvetica, Arial, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: "normal"
 rounded:
   sm: "4px"
   md: "6px"
@@ -82,7 +180,7 @@ components:
   button-primary:
     backgroundColor: "{colors.advisor-teal}"
     textColor: "{colors.clear-white}"
-    typography: "{typography.label}"
+    typography: "{typography.button}"
     rounded: "{rounded.action}"
     padding: "12px 22px"
     height: "44px"
@@ -93,7 +191,7 @@ components:
   button-outline:
     backgroundColor: "{colors.clear-white}"
     textColor: "{colors.trust-navy}"
-    typography: "{typography.label}"
+    typography: "{typography.button}"
     rounded: "{rounded.action}"
     padding: "12px 22px"
     height: "44px"
@@ -204,24 +302,69 @@ and contemporary.
 
 ### Hierarchy
 
-- **Display** (600, `clamp(3rem, 5vw, 4.125rem)`, 1.05): Major persuasive
-  statements and fixed feature sections.
-- **Page title** (600, `2.25rem` to `3rem`, tight): Primary page orientation.
-- **Headline** (600, `1.875rem` to `2.25rem`, 1.25): Section headings.
-- **Title** (600, approximately `1.125rem` to `1.3125rem`, 1.25): Cards and
-  compact content groups.
-- **Lead** (400, `1.125rem`, approximately 1.78): Page introductions and
-  important explanatory copy.
-- **Body** (400, `1rem`, 1.75): Educational and supporting text, generally
-  constrained to a readable measure near `48rem`.
-- **Label** (600, `0.75rem`, `0.22em`, uppercase): Eyebrows and compact
-  orientation cues.
+Every role below is implemented as a `typo-<role>` utility in `globals.css`.
+Components must use the utility, never re-declare the recipe inline.
+Responsive sizes always use `clamp()`; fixed sizes never carry breakpoints.
+
+Serif roles (Source Serif 4, 600 unless noted):
+
+- **display** (`clamp(2.75rem, 4.6vw, 4.125rem)`, 1.08): The homepage hero
+  statement.
+- **page-heading** (`clamp(2.5rem, 4.7vw, 3.75rem)`, 1.08): Interior page h1s.
+- **section-heading** (`clamp(1.875rem, 3.2vw, 2.75rem)`, 1.12, `-0.01em`):
+  Every section-level h2.
+- **feature-heading** (`clamp(1.875rem, 3vw, 2.5rem)`, 1.1, `-0.01em`):
+  Featured profiles (team member names) between section and card level.
+- **subsection-heading** (`1.5rem`, 1.2): Sub-groups inside a section.
+- **card-title** (`1.3125rem`, 1.25): Blog cards and compact content groups.
+- **showcase-title** (400, `1.4375rem`, 1.25): Loan showcase cards only — a
+  deliberately lighter, airier treatment than card-title.
+- **title-minor** (500, `1.0625rem`, 1.5): Dense interactive rows (FAQ
+  questions).
+
+Sans roles (Archivo):
+
+- **lead** (400, `1.125rem`, 1.65): Copy directly under h1s.
+- **body-editorial** (400, `1.0625rem`, 1.75): Long-form narrative and section
+  intros.
+- **body** (400, `1rem`, 1.75): Rich text and default copy, constrained to a
+  readable measure near `48rem`.
+- **body-sm** (400, `0.90625rem`, 1.6): Card excerpts, captions, footer links.
+- **fine-print** (400, `0.8125rem`, 1.6): Legal, disclaimers, NMLS lines,
+  form labels (with 600 weight), breadcrumbs.
+- **eyebrow** (600, `0.75rem`, `0.22em`, uppercase): Section intro labels.
+- **meta-label** (600, `0.6875rem`, `0.1em`, uppercase): Dates, category
+  badges, role chips, stat captions.
+- **nav** (500, `0.90625rem`, `0.01em`): Header and mobile navigation.
+- **button** (600, `0.90625rem`) / **button-lg** (600, `1rem`): All actions
+  and text CTAs; lg is for hero-scale buttons.
+- **stat-lg** (`clamp(2.75rem, 5vw, 4rem)`, 1, `-0.02em`) / **stat-md**
+  (`clamp(1.875rem, 2.7vw, 2.125rem)`, 1): Big evidence numbers.
+- **pull-quote** (600, `clamp(1.5rem, 2.2vw, 1.75rem)`, 1.35): Standalone
+  emphasized statements.
+- **blockquote** (600, `1.25rem`, 1.5): Quoted speech inside body copy.
+
+### Documented Exceptions
+
+Three one-offs are deliberate and must not be normalized or copied elsewhere:
+
+- **Footer column headings:** serif `0.8125rem`, 600, uppercase, `0.18em` —
+  the only serif label in the system, a footer signature.
+- **Award showpiece quote:** serif `clamp(3rem, 5.2vw, 4.125rem)`, 600, 1.05 —
+  the "Top 1%" award statement.
+- **Location photo overlay title:** Archivo `1.25rem`, 600, 1.3 — the
+  building photo caption on the contact page.
 
 ### Named Rules
 
 **The Editorial Clarity Rule.** Serif type establishes trust and hierarchy;
 Archivo carries every task, explanation, label, and action. Do not use the
 display face as decorative body copy.
+
+**The One Recipe Rule.** Components serving the same semantic role share the
+same complete `typo-*` recipe — size, responsive behavior, weight, line
+height, and tracking. New typography variants require a new documented role,
+not an inline override.
 
 ## Layout
 

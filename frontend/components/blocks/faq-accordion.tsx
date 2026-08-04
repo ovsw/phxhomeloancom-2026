@@ -36,12 +36,12 @@ export default function FaqAccordion({
               <Badge variant="secondary">{eyebrow}</Badge>
             ) : null}
             {stegaClean(title)?.trim() ? (
-              <h2 className="font-display text-3xl font-semibold md:text-5xl">
+              <h2 className="text-balance typo-section-heading">
                 {title}
               </h2>
             ) : null}
             {stegaClean(subtitle)?.trim() ? (
-              <h3 className="text-balance text-lg font-normal text-muted-foreground">
+              <h3 className="text-balance typo-lead text-muted-foreground">
                 {subtitle}
               </h3>
             ) : null}
@@ -61,12 +61,12 @@ export default function FaqAccordion({
 
                 return (
                   <AccordionItem className="py-2" key={value} value={value}>
-                    <AccordionTrigger className="group py-2 text-[15px] leading-6 hover:no-underline">
+                    <AccordionTrigger className="group py-2 typo-title-minor hover:no-underline">
                       {faq.title}
                     </AccordionTrigger>
                     {faq.answer?.length ? (
                       <AccordionContent className="pb-2 text-muted-foreground">
-                        <div className="text-sm md:text-base">
+                        <div className="typo-body">
                           <PortableTextRenderer value={faq.answer} />
                         </div>
                       </AccordionContent>
@@ -80,7 +80,7 @@ export default function FaqAccordion({
           {href && (link?.description || link?.title) ? (
             <div className="w-full py-6">
               {link.title ? (
-                <p className="mb-1 text-xs">
+                <p className="mb-1 typo-fine-print">
                   {link.title}
                 </p>
               ) : null}
@@ -94,7 +94,7 @@ export default function FaqAccordion({
                 target={link.openInNewTab ? "_blank" : undefined}
               >
                 {link.description ? (
-                  <p className="text-[15px] font-medium leading-6">
+                  <p className="typo-button">
                     {link.description}
                   </p>
                 ) : null}

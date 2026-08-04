@@ -32,14 +32,14 @@ function QuoteCallout({
   return (
     <blockquote className="relative mt-3 border-l-[3px] border-primary py-1 pl-6 md:pl-8">
       <p
-        className="text-balance text-2xl font-semibold leading-[1.35] text-foreground md:text-[1.75rem]"
+        className="text-balance typo-pull-quote text-foreground"
         data-sanity={dataAttribute?.(`${path}.quote`)}
       >
         “{module.quote}”
       </p>
       {hasText(module.context) ? (
         <footer
-          className="mt-3 text-sm leading-relaxed text-muted-foreground"
+          className="mt-3 typo-body-sm text-muted-foreground"
           data-sanity={dataAttribute?.(`${path}.context`)}
         >
           {module.context}
@@ -82,7 +82,7 @@ function ProofPoints({
           key={item._key}
         >
           <h3
-            className="text-2xl font-semibold leading-tight text-foreground"
+            className="typo-subsection-heading text-foreground"
             data-sanity={dataAttribute?.(
               `${path}.items[_key=="${item._key}"].title`,
             )}
@@ -90,7 +90,7 @@ function ProofPoints({
             {item.title}
           </h3>
           <p
-            className="mt-3 text-[15.5px] leading-[1.7] text-muted-foreground"
+            className="mt-3 typo-body-sm text-muted-foreground"
             data-sanity={dataAttribute?.(
               `${path}.items[_key=="${item._key}"].description`,
             )}
@@ -124,20 +124,20 @@ function ImpactStatement({
     <aside className="grid min-w-0 gap-7 rounded-lg bg-[var(--phx-navy-900)] px-7 py-9 text-white md:px-10 md:py-10 lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
       <div className="min-w-0">
         <p
-          className="break-words text-[clamp(2.75rem,5vw,4rem)] font-semibold leading-none tracking-[-0.02em]"
+          className="break-words typo-stat-lg"
           data-sanity={dataAttribute?.(`${path}.statement`)}
         >
           {module.statement}
         </p>
         <p
-          className="mt-2 text-[0.78rem] font-semibold uppercase leading-snug tracking-[0.14em] text-label-on-dark"
+          className="mt-2 typo-meta-label leading-snug text-label-on-dark"
           data-sanity={dataAttribute?.(`${path}.label`)}
         >
           {module.label}
         </p>
       </div>
       <p
-        className="min-w-0 text-[16px] leading-[1.7] text-white/80 md:text-[17px]"
+        className="min-w-0 typo-body-editorial text-white/80"
         data-sanity={dataAttribute?.(`${path}.description`)}
       >
         {module.description}
@@ -196,7 +196,7 @@ export default function EditorialChapter({
           <header>
             {hasText(eyebrow) ? (
               <p
-                className="mb-[18px] text-xs font-semibold uppercase tracking-[0.26em] text-primary"
+                className="mb-[18px] typo-eyebrow text-primary"
                 data-sanity={dataAttribute?.("eyebrow")}
               >
                 {eyebrow}
@@ -204,7 +204,7 @@ export default function EditorialChapter({
             ) : null}
             {hasTitle ? (
               <h2
-                className="text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.01em] text-foreground md:text-[42px]"
+                className="text-balance typo-section-heading text-foreground"
                 data-sanity={dataAttribute?.("title")}
                 id={headingId}
               >
@@ -216,7 +216,7 @@ export default function EditorialChapter({
           <div className="grid min-w-0 gap-9">
             {richText?.length ? (
               <div
-                className="grid gap-4 text-pretty text-[17px] leading-[1.75] text-muted-foreground [&_p]:!mb-0"
+                className="grid gap-4 text-pretty typo-body-editorial text-muted-foreground [&_p]:!mb-0"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableTextRenderer value={richText} />

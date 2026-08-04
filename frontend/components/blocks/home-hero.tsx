@@ -84,12 +84,12 @@ export default function HomeHero({
         <div className="flex w-full max-w-[37.5rem] flex-col gap-6">
           {marketPositioning ? <p className="sr-only">{marketPositioning}</p> : null}
           {servicePromise ? (
-            <h1 className="text-balance font-display text-[clamp(2.75rem,4.6vw,4.125rem)] font-semibold leading-[1.08] tracking-normal text-white">
+            <h1 className="text-balance typo-display text-white">
               {servicePromise}
             </h1>
           ) : null}
           {richText ? (
-            <div className="max-w-[34rem] text-base leading-8 text-white/80 sm:text-lg [&_a]:!text-white [&_p]:!my-0">
+            <div className="max-w-[34rem] typo-lead text-white/80 [&_a]:!text-white [&_p]:!my-0">
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
@@ -104,8 +104,8 @@ export default function HomeHero({
                   <Button
                     asChild
                     className={secondary
-                      ? "h-12 w-full rounded-[9px] border-white/35 bg-transparent px-6 text-base font-semibold text-white shadow-none hover:border-white/50 hover:bg-white/10 hover:text-white sm:w-auto md:h-[3.25rem] md:px-7"
-                      : "h-12 w-full rounded-[9px] bg-primary px-6 text-base font-semibold text-primary-foreground shadow-[0_12px_28px_rgba(31,110,140,.28)] hover:bg-accent-hover sm:w-auto md:h-[3.25rem] md:px-7"}
+                      ? "h-12 w-full rounded-[9px] border-white/35 bg-transparent px-6 text-white shadow-none hover:border-white/50 hover:bg-white/10 hover:text-white sm:w-auto md:h-[3.25rem] md:px-7"
+                      : "h-12 w-full rounded-[9px] bg-primary px-6 text-primary-foreground shadow-[0_12px_28px_rgba(31,110,140,.28)] hover:bg-accent-hover sm:w-auto md:h-[3.25rem] md:px-7"}
                     key={button._key || `${button.href}-${index}`}
                     size="lg"
                     variant={secondary ? "outline" : "default"}

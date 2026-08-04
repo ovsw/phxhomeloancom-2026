@@ -24,7 +24,7 @@ import type { HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const mobileLinkClassName =
-  "flex min-h-11 items-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40";
+  "flex min-h-11 items-center rounded-md px-3 typo-nav transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/40";
 
 export default function MobileNav({
   brand,
@@ -66,7 +66,7 @@ export default function MobileNav({
                 <HeaderLink className={mobileLinkClassName} key={item.key} link={item.link} onClick={close} />
               ) : (
                 <AccordionItem className="border-b-0" key={item.key} value={item.key}>
-                  <AccordionTrigger className="min-h-11 rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary hover:no-underline">
+                  <AccordionTrigger className="min-h-11 rounded-md px-3 py-2 typo-nav hover:bg-secondary hover:no-underline">
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent>
@@ -83,7 +83,7 @@ export default function MobileNav({
                           </span>
                           <span className="grid gap-1">
                             <span className="font-medium text-foreground">{child.label}</span>
-                            <span className="text-xs leading-5 text-muted-foreground">{child.description}</span>
+                            <span className="typo-fine-print text-muted-foreground">{child.description}</span>
                           </span>
                         </HeaderLink>
                       ))}
@@ -98,7 +98,7 @@ export default function MobileNav({
           <SheetFooter className="border-t border-border/80 p-4">
             {navigation.actions.map((action) => (
               <HeaderLink
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/50"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-primary px-5 py-3 typo-button text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/50"
                 key={action.key}
                 link={action.link}
                 onClick={close}

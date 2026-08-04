@@ -91,7 +91,7 @@ export default function PersonContactCta({
             <div className="grid gap-3">
               {displayEyebrow ? (
                 <p
-                  className="text-xs font-semibold uppercase tracking-[0.26em] text-primary"
+                  className="typo-eyebrow text-primary"
                   data-sanity={dataAttribute?.("eyebrow")}
                 >
                   {eyebrow}
@@ -99,7 +99,7 @@ export default function PersonContactCta({
               ) : null}
               {displayTitle ? (
                 <h2
-                  className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-card-foreground"
+                  className="text-balance typo-section-heading text-card-foreground"
                   data-sanity={dataAttribute?.("title")}
                   id={titleId}
                 >
@@ -147,7 +147,7 @@ export default function PersonContactCta({
                         </span>
                         {methodType === "address" ? (
                           <address
-                            className="whitespace-pre-line text-base not-italic leading-[1.4] min-[1101px]:text-[1.0625rem]"
+                            className="whitespace-pre-line typo-button-lg not-italic leading-[1.4]"
                             data-sanity={dataAttribute?.(`${path}.label`)}
                           >
                             {method.label}
@@ -155,7 +155,7 @@ export default function PersonContactCta({
                         ) : (
                           <span
                             className={cn(
-                              "whitespace-pre-line text-base leading-[1.4] min-[1101px]:text-[1.0625rem]",
+                              "whitespace-pre-line typo-button-lg leading-[1.4]",
                               methodType === "email" && "break-all",
                             )}
                             data-sanity={dataAttribute?.(`${path}.label`)}
@@ -172,7 +172,7 @@ export default function PersonContactCta({
 
             {displayCredential ? (
               <p
-                className="mt-1.5 text-pretty text-[0.8125rem] leading-normal tracking-[0.01em] text-muted-foreground"
+                className="mt-1.5 text-pretty typo-fine-print text-muted-foreground"
                 data-sanity={dataAttribute?.("credentialLine")}
               >
                 {credentialLine}

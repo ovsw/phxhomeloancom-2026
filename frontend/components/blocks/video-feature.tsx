@@ -136,27 +136,27 @@ export default function VideoFeature({
               </span>
             </button>
           </div>
-          <p className="pl-6 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+          <p className="pl-6 typo-meta-label text-muted-foreground">
             ▶ {cleanTitle ? title : "Video"} · 2 min
           </p>
         </div>
 
         <div className="flex max-w-2xl flex-col gap-5">
           {cleanEyebrow ? (
-            <p className="text-xs font-semibold uppercase leading-none tracking-[0.22em] text-primary">
+            <p className="typo-eyebrow text-primary">
               {eyebrow}
             </p>
           ) : null}
           {cleanTitle ? (
             <h2
-              className="text-balance font-display text-3xl font-semibold leading-tight tracking-normal text-foreground md:text-[42px]"
+              className="text-balance typo-section-heading text-foreground"
               id={headingId}
             >
               {title}
             </h2>
           ) : null}
           {richText?.length ? (
-            <div className="text-pretty text-base leading-7 text-muted-foreground [&_p]:my-0">
+            <div className="text-pretty typo-body text-muted-foreground [&_p]:my-0">
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
@@ -174,7 +174,7 @@ export default function VideoFeature({
                   <Button
                     asChild
                     className={cn(
-                      "h-12 rounded-[9px] px-7 text-[15px]",
+                      "h-12 rounded-[9px] px-7",
                       secondary &&
                         "border-[var(--phx-border-strong)] bg-transparent text-foreground shadow-none hover:border-foreground hover:bg-transparent hover:text-foreground",
                     )}

@@ -44,7 +44,7 @@ export default function PageHeader({
         {cleanEyebrow ? (
           <nav
             aria-label="Breadcrumb"
-            className="mb-[1.375rem] flex items-center gap-2.5 text-[0.8125rem] font-medium text-white/55"
+            className="mb-[1.375rem] flex items-center gap-2.5 typo-fine-print font-medium text-white/55"
           >
             <Link
               className="text-white/65 no-underline transition-colors hover:text-white"
@@ -56,7 +56,7 @@ export default function PageHeader({
               /
             </span>
             <span
-              className="text-xs font-semibold uppercase leading-none tracking-[0.24em] text-label-on-dark"
+              className="typo-eyebrow text-label-on-dark"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {eyebrow}
@@ -65,14 +65,14 @@ export default function PageHeader({
         ) : null}
 
         <h1
-          className="max-w-[51.25rem] text-balance text-[2.5rem] font-semibold leading-[1.08] tracking-normal text-white md:text-[3.75rem]"
+          className="max-w-[51.25rem] text-balance typo-page-heading text-white"
           data-sanity={dataAttribute?.("title")}
         >
           {title}
         </h1>
         {stegaClean(description)?.trim() ? (
           <p
-            className="mt-5 max-w-[38.75rem] text-pretty text-lg leading-[1.65] text-white/70"
+            className="mt-5 max-w-[38.75rem] text-pretty typo-lead text-white/70"
             data-sanity={dataAttribute?.("description")}
           >
             {description}
@@ -84,7 +84,7 @@ export default function PageHeader({
             {visibleStatistics.map((statistic) => (
               <div className="flex flex-col gap-1" key={statistic._key}>
                 <p
-                  className="text-[1.875rem] font-semibold leading-tight text-white"
+                  className="typo-stat-md text-white"
                   data-sanity={dataAttribute?.(
                     `statistics[_key=="${statistic._key}"].value`,
                   )}
@@ -92,7 +92,7 @@ export default function PageHeader({
                   {statistic.value}
                 </p>
                 <p
-                  className="text-[0.84375rem] leading-relaxed text-white/60"
+                  className="typo-body-sm text-white/60"
                   data-sanity={dataAttribute?.(
                     `statistics[_key=="${statistic._key}"].description`,
                   )}

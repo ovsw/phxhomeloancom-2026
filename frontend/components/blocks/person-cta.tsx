@@ -38,7 +38,7 @@ function KeyDetails({
     <div className="mt-1">
       {title ? (
         <p
-          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+          className="mb-4 typo-eyebrow text-muted-foreground"
           data-sanity={dataAttribute?.("keyDetails.title")}
         >
           {title}
@@ -48,7 +48,7 @@ function KeyDetails({
         {items.map((item) => (
           <li
             className={cn(
-              "rounded-full border border-border bg-card px-[1.125rem] py-2 text-[0.90625rem] font-medium text-muted-foreground",
+              "rounded-full border border-border bg-card px-[1.125rem] py-2 typo-body-sm font-medium text-muted-foreground",
             )}
             data-sanity={dataAttribute?.(`keyDetails.items[${item.index}]`)}
             key={`${item.value}-${item.index}`}
@@ -84,7 +84,7 @@ function PersonButtons({
           <Button
             asChild
             className={cn(
-              "h-12 w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 sm:w-auto",
+              "h-12 w-full rounded-[9px] px-7 transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 sm:w-auto",
               secondary
                 ? "border-[1.5px] border-[var(--phx-border-strong)] bg-[var(--surface-section-white)] text-foreground shadow-none hover:border-primary/30 hover:bg-card hover:text-foreground"
                 : "bg-primary text-primary-foreground hover:bg-accent-hover hover:text-primary-foreground",
@@ -161,7 +161,7 @@ export default function PersonCta({
         <div className="grid justify-items-start gap-5">
           {displayEyebrow ? (
             <p
-              className="text-xs font-semibold uppercase tracking-[0.26em] text-primary"
+              className="typo-eyebrow text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {eyebrow}
@@ -169,7 +169,7 @@ export default function PersonCta({
           ) : null}
           {displayTitle ? (
             <h2
-              className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-foreground"
+              className="text-balance typo-section-heading text-foreground"
               data-sanity={dataAttribute?.("title")}
               id={titleId}
             >
@@ -178,7 +178,7 @@ export default function PersonCta({
           ) : null}
           {richText?.length ? (
             <div
-              className="text-pretty text-[1.03125rem] leading-[1.75] text-muted-foreground [&_p]:!my-0"
+              className="text-pretty typo-body-editorial text-muted-foreground [&_p]:!my-0"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableTextRenderer value={richText} />
