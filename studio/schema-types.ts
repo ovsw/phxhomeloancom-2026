@@ -7,6 +7,7 @@ import faq from "./schemas/documents/faq";
 import testimonial from "./schemas/documents/testimonial";
 import navigation from "./schemas/documents/navigation";
 import settings from "./schemas/documents/settings";
+import teamMember from "./schemas/documents/team-member";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -14,8 +15,28 @@ import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
+import customUrl from "./schemas/blocks/shared/custom-url";
+import button from "./schemas/blocks/shared/button";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
+import homeHero from "./schemas/blocks/home-hero";
+import loanFeatureCards from "./schemas/blocks/loan-feature-cards";
+import videoFeature from "./schemas/blocks/video-feature";
+import phxEmbedSocialReviews from "./schemas/blocks/phx-embed-social-reviews";
+import latestArticles from "./schemas/blocks/latest-articles";
+import faqAccordion from "./schemas/blocks/faq-accordion";
+import awardCta from "./schemas/blocks/award-cta";
+import pageHeader from "./schemas/blocks/page-header";
+import storyFeature from "./schemas/blocks/story-feature";
+import bigVideoFeature from "./schemas/blocks/big-video-feature";
+import editorialChapter from "./schemas/blocks/editorial-chapter";
+import youtubeChannelFeature from "./schemas/blocks/youtube-channel-feature";
+import personCta from "./schemas/blocks/person-cta";
+import locationMap from "./schemas/blocks/location-map";
+import personContactCta from "./schemas/blocks/person-contact-cta";
+import contactForm from "./schemas/blocks/contact-form";
+import teamMembers from "./schemas/blocks/team-members";
+import richTextBlock from "./schemas/blocks/rich-text-block";
 
 export const schemaTypes = [
   // documents
@@ -27,12 +48,33 @@ export const schemaTypes = [
   testimonial,
   navigation,
   settings,
+  teamMember,
   // shared objects
   blockContent,
   link,
   colorVariant,
   buttonVariant,
   sectionPadding,
+  customUrl,
+  button,
   // blocks
   hero1,
+  homeHero,
+  loanFeatureCards,
+  videoFeature,
+  phxEmbedSocialReviews,
+  latestArticles,
+  faqAccordion,
+  awardCta,
+  pageHeader,
+  storyFeature,
+  bigVideoFeature,
+  editorialChapter,
+  youtubeChannelFeature,
+  personCta,
+  locationMap,
+  personContactCta,
+  contactForm,
+  teamMembers,
+  richTextBlock,
 ];

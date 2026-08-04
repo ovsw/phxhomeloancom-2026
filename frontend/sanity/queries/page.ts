@@ -1,11 +1,51 @@
 import { groq } from "next-sanity";
 import { metaQuery } from "./shared/meta";
-import { hero1Query } from "./hero/hero-1";
+import { homeHeroQuery } from "./home-hero";
+import { loanFeatureCardsQuery } from "./loan-feature-cards";
+import { videoFeatureQuery } from "./video-feature";
+import { phxEmbedSocialReviewsQuery } from "./phx-embed-social-reviews";
+import { latestArticlesQuery } from "./latest-articles";
+import { faqAccordionQuery } from "./faq-accordion";
+import { awardCtaQuery } from "./award-cta";
+import { pageHeaderQuery } from "./page-header";
+import { storyFeatureQuery } from "./story-feature";
+import { bigVideoFeatureQuery } from "./big-video-feature";
+import { editorialChapterQuery } from "./editorial-chapter";
+import { youtubeChannelFeatureQuery } from "./youtube-channel-feature";
+import { personCtaQuery } from "./person-cta";
+import { locationMapQuery } from "./location-map";
+import { personContactCtaQuery } from "./person-contact-cta";
+import { contactFormQuery } from "./contact-form";
+import { teamMembersQuery } from "./team-members";
+import { richTextBlockQuery } from "./rich-text-block";
 
 export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current == $slug][0]{
+  *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
+    _id,
+    _type,
+    title,
+    description,
     blocks[]{
-      ${hero1Query},
+      _key,
+      _type,
+      ${homeHeroQuery},
+      ${loanFeatureCardsQuery},
+      ${videoFeatureQuery},
+      ${phxEmbedSocialReviewsQuery},
+      ${latestArticlesQuery},
+      ${faqAccordionQuery},
+      ${awardCtaQuery},
+      ${pageHeaderQuery},
+      ${storyFeatureQuery},
+      ${bigVideoFeatureQuery},
+      ${editorialChapterQuery},
+      ${youtubeChannelFeatureQuery},
+      ${personCtaQuery},
+      ${locationMapQuery},
+      ${personContactCtaQuery},
+      ${contactFormQuery},
+      ${teamMembersQuery},
+      ${richTextBlockQuery}
     },
     ${metaQuery},
   }

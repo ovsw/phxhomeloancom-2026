@@ -1,38 +1,156 @@
 import { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { type LivePerspective } from "next-sanity/live";
-import Hero1 from "@/components/blocks/hero/hero-1";
+import { createDataAttribute } from "next-sanity";
+import HomeHero from "@/components/blocks/home-hero";
+import LoanFeatureCards from "@/components/blocks/loan-feature-cards";
+import VideoFeature from "@/components/blocks/video-feature";
+import PhxEmbedSocialReviews from "@/components/blocks/phx-embed-social-reviews";
+import LatestArticles from "@/components/blocks/latest-articles";
+import FaqAccordion from "@/components/blocks/faq-accordion";
+import AwardCta from "@/components/blocks/award-cta";
+import PageHeader from "@/components/blocks/page-header";
+import StoryFeature from "@/components/blocks/story-feature";
+import BigVideoFeature, {
+  type BigVideoDataAttributes,
+} from "@/components/blocks/big-video-feature";
+import EditorialChapter from "@/components/blocks/editorial-chapter";
+import YoutubeChannelFeature from "@/components/blocks/youtube-channel-feature";
+import PersonCta from "@/components/blocks/person-cta";
+import LocationMap from "@/components/blocks/location-map";
+import PersonContactCta from "@/components/blocks/person-contact-cta";
+import ContactForm from "@/components/blocks/contact-form";
+import TeamMembers from "@/components/blocks/team-members";
+import RichTextBlock from "@/components/blocks/rich-text-block";
+import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 
-const componentMap: {
+type BlockEditingProps = {
+  dataAttribute?: (path: string) => string | undefined;
+  dataAttributes?: BigVideoDataAttributes;
+  memberDataAttribute?: (
+    documentId: string,
+    path: string,
+  ) => string | undefined;
+};
+
+const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
+  "pageHeader",
+  "storyFeature",
+  "editorialChapter",
+  "youtubeChannelFeature",
+  "personCta",
+  "locationMap",
+  "personContactCta",
+  "contactForm",
+  "teamMembers",
+  "richTextBlock",
+]);
+
+const componentMap: Partial<{
   [K in Block["_type"]]: React.ComponentType<
-    Extract<Block, { _type: K }>
+    Extract<Block, { _type: K }> & BlockEditingProps
   >;
-} = {
-  "hero-1": Hero1,
+}> = {
+  homeHero: HomeHero,
+  loanFeatureCards: LoanFeatureCards,
+  videoFeature: VideoFeature,
+  phxEmbedSocialReviews: PhxEmbedSocialReviews,
+  latestArticles: LatestArticles,
+  faqAccordion: FaqAccordion,
+  awardCta: AwardCta,
+  pageHeader: PageHeader,
+  storyFeature: StoryFeature,
+  bigVideoFeature: BigVideoFeature,
+  editorialChapter: EditorialChapter,
+  youtubeChannelFeature: YoutubeChannelFeature,
+  personCta: PersonCta,
+  locationMap: LocationMap,
+  personContactCta: PersonContactCta,
+  contactForm: ContactForm,
+  teamMembers: TeamMembers,
+  richTextBlock: RichTextBlock,
 };
 
 export default function Blocks({
   blocks,
+  documentId,
+  stega,
 }: {
   blocks: Block[];
+  documentId: string;
   perspective: LivePerspective;
   stega: boolean;
 }) {
   return (
     <>
       {blocks?.map((block) => {
-        const Component = componentMap[
-          block._type
-        ] as React.ComponentType<Block>;
-        if (!Component) {
-          // Fallback for development/debugging of new component types
-          console.warn(
-            `No component implemented for block type: ${block._type}`,
-          );
-          return <div data-type={block._type} key={block._key} />;
-        }
-        return <Component {...block} key={block._key} />;
+        const Component = componentMap[block._type] as
+          | React.ComponentType<Block & BlockEditingProps>
+          | undefined;
+        if (!Component) return null;
+
+        const blockPath = `blocks[_key=="${block._key}"]`;
+        const dataSanity = stega
+          ? createDataAttribute({
+              baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+              dataset,
+              id: documentId,
+              path: blockPath,
+              projectId,
+              type: "page",
+            }).toString()
+          : undefined;
+        const dataAttribute = stega
+          ? (path: string) =>
+              createDataAttribute({
+                baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+                dataset,
+                id: documentId,
+                path: `${blockPath}.${path}`,
+                projectId,
+                type: "page",
+              }).toString()
+          : undefined;
+        const editingProps: BlockEditingProps =
+          block._type === "bigVideoFeature"
+            ? {
+                dataAttributes: dataAttribute
+                  ? {
+                      description: dataAttribute("description"),
+                      eyebrow: dataAttribute("eyebrow"),
+                      thumbnailImage: dataAttribute("thumbnailImage"),
+                      title: dataAttribute("title"),
+                      youtubeUrl: dataAttribute("youtubeUrl"),
+                    }
+                  : undefined,
+              }
+            : block._type === "teamMembers"
+              ? {
+                  dataAttribute,
+                  memberDataAttribute: stega
+                    ? (memberId: string, path: string) =>
+                        createDataAttribute({
+                          baseUrl:
+                            process.env.NEXT_PUBLIC_STUDIO_URL ||
+                            "http://localhost:3333",
+                          dataset,
+                          id: memberId,
+                          path,
+                          projectId,
+                          type: "teamMember",
+                        }).toString()
+                    : undefined,
+                }
+              : serverFieldEditingBlockTypes.has(block._type)
+              ? { dataAttribute }
+              : {};
+
+        return (
+          <div data-sanity={dataSanity} key={block._key}>
+            <Component {...block} {...editingProps} />
+          </div>
+        );
       })}
     </>
   );
