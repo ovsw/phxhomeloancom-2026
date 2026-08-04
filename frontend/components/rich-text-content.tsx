@@ -5,6 +5,7 @@ import {
   type PortableTextProps,
 } from "@portabletext/react";
 import { buttonVariants } from "@/components/ui/button";
+import { getSafeLinkHref } from "@/lib/safe-href";
 import { cn } from "@/lib/utils";
 import { stegaClean } from "next-sanity";
 import Image from "next/image";
@@ -106,11 +107,12 @@ export const richTextContentComponents: PortableTextProps["components"] = {
     ),
   },
   marks: {
-    customLink: ({ children, value }) =>
-      value?.href ? (
+    customLink: ({ children, value }) => {
+      const href = getSafeLinkHref(value?.href);
+      return href ? (
         <Link
           className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
-          href={value.href}
+          href={href}
           rel={value.openInNewTab ? "noopener noreferrer" : undefined}
           target={value.openInNewTab ? "_blank" : undefined}
         >
@@ -118,15 +120,17 @@ export const richTextContentComponents: PortableTextProps["components"] = {
         </Link>
       ) : (
         <span>{children}</span>
-      ),
-    buttonLink: ({ children, value }) =>
-      value?.href ? (
+      );
+    },
+    buttonLink: ({ children, value }) => {
+      const href = getSafeLinkHref(value?.href);
+      return href ? (
         <Link
           className={cn(
             buttonVariants({ variant: getButtonVariant(value.variant), size: "lg" }),
             "my-2 no-underline",
           )}
-          href={value.href}
+          href={href}
           rel={value.openInNewTab ? "noopener noreferrer" : undefined}
           target={value.openInNewTab ? "_blank" : undefined}
         >
@@ -134,7 +138,8 @@ export const richTextContentComponents: PortableTextProps["components"] = {
         </Link>
       ) : (
         <span>{children}</span>
-      ),
+      );
+    },
   },
   types: {
     image: ({ value }) => {
@@ -211,12 +216,13 @@ export const richTextContentComponents: PortableTextProps["components"] = {
     },
     youtube: ({ value }) => {
       const videoId = getYouTubeVideoId(value.url);
+      const fallbackHref = getSafeLinkHref(value.url);
       if (!videoId) {
-        return value.url ? (
+        return fallbackHref ? (
           <p className="mb-4">
             <a
               className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
-              href={value.url}
+              href={fallbackHref}
               rel="noopener noreferrer"
               target="_blank"
             >

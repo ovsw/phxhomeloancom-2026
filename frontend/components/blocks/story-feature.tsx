@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getSafeLinkHref } from "@/lib/safe-href";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -30,7 +31,7 @@ const storyRichTextComponents: Partial<PortableTextComponents> = {
   },
   marks: {
     link: ({ children, value }) => {
-      const href = stegaClean(value?.href);
+      const href = getSafeLinkHref(value?.href);
       if (!href) return <>{children}</>;
 
       const openInNewTab = stegaClean(value?.openInNewTab);
@@ -67,20 +68,10 @@ function StoryButtons({
       data-sanity={dataAttribute?.("buttons")}
     >
       {buttons.slice(0, 2).map((button, index) => {
-        const href = stegaClean(button.href);
+        const href = getSafeLinkHref(button.href);
         const label = button.text || "Continue";
 
-        if (!href) {
-          return (
-            <Button
-              className="h-12 rounded-[9px] px-7 text-[0.9375rem]"
-              disabled
-              key={button._key || `broken-button-${index}`}
-            >
-              Link Broken
-            </Button>
-          );
-        }
+        if (!href) return null;
 
         return (
           <Button
