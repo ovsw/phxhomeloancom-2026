@@ -1,7 +1,4 @@
-import Blocks from "@/components/blocks";
-import PostHero from "@/components/blocks/post-hero";
-import RichTextContent from "@/components/rich-text-content";
-import Breadcrumbs from "@/components/ui/breadcrumbs";
+import { RootContentView } from "@/components/root-content";
 import {
   fetchSanityPageBySlug,
   fetchSanityPostBySlug,
@@ -15,7 +12,7 @@ import {
   type DynamicFetchOptions,
 } from "@/sanity/lib/live";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
-import { dataset, projectId } from "@/sanity/lib/env";
+import { contentPath } from "@/lib/routes";
 import { PAGE_QUERY } from "@/sanity/queries/page";
 import { POST_QUERY } from "@/sanity/queries/post";
 import type {
@@ -24,16 +21,9 @@ import type {
   POST_QUERY_RESULT,
   POSTS_SLUGS_QUERY_RESULT,
 } from "@/sanity.types";
-import type { PortableTextProps } from "@portabletext/react";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
-import { createDataAttribute, stegaClean } from "next-sanity";
 import { Suspense } from "react";
-
-type BreadcrumbLink = {
-  label: string;
-  href: string;
-};
 
 function PageFallback() {
   return (
@@ -99,7 +89,7 @@ export async function generateMetadata(props: {
   const content = resolveRootContent(page, post, slugPath);
   if (!content) notFound();
 
-  return generatePageMetadata({ page: content, slug: slugPath });
+  return generatePageMetadata({ page: content, path: contentPath(slugPath) });
 }
 
 export default async function RootContentPage(props: {
@@ -156,108 +146,5 @@ async function CachedRootContent({
   const content = resolveRootContent(page, post, slug);
   if (!content) notFound();
 
-  return content._type === "post" ? (
-    <PostContent post={content} stega={stega} />
-  ) : (
-    <PageContent page={content} perspective={perspective} stega={stega} />
-  );
-}
-
-function PageContent({
-  page,
-  perspective,
-  stega,
-}: {
-  page: NonNullable<PAGE_QUERY_RESULT>;
-  perspective: DynamicFetchOptions["perspective"];
-  stega: boolean;
-}) {
-  const blocks = page.blocks ?? [];
-  const isRichTextOnlyPage =
-    blocks.length > 0 && blocks.every((block) => block._type === "richTextBlock");
-  const rootDataAttribute = stega
-    ? (path: "description" | "title") =>
-        createDataAttribute({
-          baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
-          dataset,
-          id: page._id,
-          path,
-          projectId,
-          type: "page",
-        }).toString()
-    : undefined;
-
-  return (
-    <>
-      {isRichTextOnlyPage && stegaClean(page.title)?.trim() ? (
-        <header className="border-b border-slate-200 bg-white py-14 md:py-20">
-          <div className="container">
-            <div className="max-w-4xl">
-              <h1
-                className="text-balance text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-slate-950"
-                data-sanity={rootDataAttribute?.("title")}
-              >
-                {page.title}
-              </h1>
-              {stegaClean(page.description)?.trim() ? (
-                <p
-                  className="mt-5 max-w-3xl text-pretty text-lg leading-8 text-slate-600 md:text-xl"
-                  data-sanity={rootDataAttribute?.("description")}
-                >
-                  {page.description}
-                </p>
-              ) : null}
-            </div>
-          </div>
-        </header>
-      ) : null}
-      <Blocks
-        blocks={blocks}
-        documentId={page._id}
-        perspective={perspective}
-        stega={stega}
-      />
-    </>
-  );
-}
-
-function PostContent({
-  post,
-  stega,
-}: {
-  post: NonNullable<POST_QUERY_RESULT>;
-  stega: boolean;
-}) {
-  const links: BreadcrumbLink[] = [
-    { label: "Home", href: "/" },
-    { label: "Blog", href: "/blog/" },
-    { label: post.title as string, href: "#" },
-  ];
-  const bodyDataAttribute = stega
-    ? createDataAttribute({
-        baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
-        dataset,
-        id: post._id,
-        path: "body",
-        projectId,
-        type: "post",
-      }).toString()
-    : undefined;
-
-  return (
-    <section>
-      <div className="container py-16 xl:py-20">
-        <article className="mx-auto max-w-3xl">
-          <Breadcrumbs links={links} />
-          <PostHero {...post} />
-          {post.body?.length ? (
-            <RichTextContent
-              dataSanity={bodyDataAttribute}
-              value={post.body as PortableTextProps["value"]}
-            />
-          ) : null}
-        </article>
-      </div>
-    </section>
-  );
+  return <RootContentView content={content} perspective={perspective} stega={stega} />;
 }

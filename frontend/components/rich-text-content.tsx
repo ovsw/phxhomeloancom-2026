@@ -1,10 +1,20 @@
 import { YouTubeEmbed } from "@next/third-parties/google";
-import { PortableText, type PortableTextProps } from "@portabletext/react";
+import {
+  PortableText,
+  type PortableTextBlockComponent,
+  type PortableTextProps,
+} from "@portabletext/react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { stegaClean } from "next-sanity";
 import Image from "next/image";
 import Link from "next/link";
+
+type GetHeadingId = (block: { _key?: string }) => string | undefined;
+type RichTextBlockComponents = Extract<
+  NonNullable<PortableTextProps["components"]>["block"],
+  Record<string, unknown>
+>;
 
 function getYouTubeVideoId(value: unknown) {
   if (typeof value !== "string") return null;
@@ -46,18 +56,47 @@ function getButtonVariant(value: unknown) {
     : "default";
 }
 
-export const richTextContentComponents: PortableTextProps["components"] = {
-  block: {
-    normal: ({ children }) => <p className="mb-4">{children}</p>,
-    h2: ({ children }) => <h2 className="mb-4 mt-12 first:mt-0">{children}</h2>,
-    h3: ({ children }) => <h3 className="mb-4 mt-10 first:mt-0">{children}</h3>,
-    h4: ({ children }) => <h4 className="mb-4 mt-8 first:mt-0">{children}</h4>,
-    h5: ({ children }) => <h5 className="mb-4 mt-8 first:mt-0">{children}</h5>,
-    h6: ({ children }) => (
-      <h6 className="mb-4 mt-8 text-base font-semibold first:mt-0">{children}</h6>
+type HeadingTag = "h2" | "h3" | "h4" | "h5" | "h6";
+
+function createHeadingComponent(
+  Tag: HeadingTag,
+  className: string,
+  getHeadingId?: GetHeadingId,
+): PortableTextBlockComponent {
+  return function RichTextHeading({ children, value }) {
+    return (
+      <Tag
+        className={cn(className, getHeadingId && "scroll-mt-28")}
+        id={getHeadingId?.(value)}
+      >
+        {children}
+      </Tag>
+    );
+  };
+}
+
+function createRichTextHeadingComponents(getHeadingId?: GetHeadingId) {
+  return {
+    h2: createHeadingComponent("h2", "mb-4 mt-12 first:mt-0", getHeadingId),
+    h3: createHeadingComponent("h3", "mb-4 mt-10 first:mt-0", getHeadingId),
+    h4: createHeadingComponent("h4", "mb-4 mt-8 first:mt-0", getHeadingId),
+    h5: createHeadingComponent("h5", "mb-4 mt-8 first:mt-0", getHeadingId),
+    h6: createHeadingComponent(
+      "h6",
+      "mb-4 mt-8 text-base font-semibold first:mt-0",
+      getHeadingId,
     ),
-    inline: ({ children }) => <span>{children}</span>,
-  },
+  };
+}
+
+const richTextBlockComponents = {
+  normal: ({ children }) => <p className="mb-4">{children}</p>,
+  ...createRichTextHeadingComponents(),
+  inline: ({ children }) => <span>{children}</span>,
+} satisfies RichTextBlockComponents;
+
+export const richTextContentComponents: PortableTextProps["components"] = {
+  block: richTextBlockComponents,
   list: {
     bullet: ({ children }) => (
       <ul className="mb-4 list-outside list-disc space-y-2 pl-6">{children}</ul>
@@ -70,7 +109,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
     customLink: ({ children, value }) =>
       value?.href ? (
         <Link
-          className="text-cyan-800 underline underline-offset-2"
+          className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
           href={value.href}
           rel={value.openInNewTab ? "noopener noreferrer" : undefined}
           target={value.openInNewTab ? "_blank" : undefined}
@@ -103,11 +142,11 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       if (!asset?.url) return null;
 
       return (
-        <figure className="my-8">
+        <figure className="my-4">
           <Image
             alt={value.alt || ""}
             blurDataURL={asset.metadata?.lqip || undefined}
-            className="h-auto w-full rounded-2xl"
+            className="h-auto w-full rounded-lg"
             height={asset.metadata?.dimensions?.height ?? 900}
             placeholder={asset.metadata?.lqip ? "blur" : undefined}
             quality={100}
@@ -116,7 +155,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
             width={asset.metadata?.dimensions?.width ?? 1600}
           />
           {value.caption ? (
-            <figcaption className="mt-2 text-center text-sm text-slate-500">
+            <figcaption className="mt-2 text-center text-sm text-muted-foreground">
               {value.caption}
             </figcaption>
           ) : null}
@@ -141,7 +180,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
               <tr>
                 {headerRow.cells.map((cell: string, index: number) => (
                   <th
-                    className="border border-slate-300 bg-slate-100 px-4 py-3 font-semibold text-slate-950"
+                    className="border border-border bg-muted px-4 py-3 font-semibold text-foreground"
                     key={`${headerRow._key ?? "header"}-${index}`}
                     scope="col"
                   >
@@ -156,7 +195,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
                   <tr key={row._key ?? `row-${rowIndex}`}>
                     {row.cells.map((cell, cellIndex) => (
                       <td
-                        className="border border-slate-300 px-4 py-3 align-top"
+                        className="border border-border px-4 py-3 align-top"
                         key={`${row._key ?? rowIndex}-${cellIndex}`}
                       >
                         {cell}
@@ -176,7 +215,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
         return value.url ? (
           <p className="mb-4">
             <a
-              className="text-cyan-800 underline underline-offset-2"
+              className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
               href={value.url}
               rel="noopener noreferrer"
               target="_blank"
@@ -198,7 +237,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
       if (!src) return null;
 
       return (
-        <div className="my-8 overflow-hidden rounded-xl bg-slate-100">
+        <div className="my-8 overflow-hidden rounded-lg bg-muted">
           <iframe
             allowFullScreen
             className="w-full"
@@ -215,24 +254,45 @@ export const richTextContentComponents: PortableTextProps["components"] = {
   },
 };
 
+function createPostRichTextComponents(
+  getHeadingId: GetHeadingId,
+): PortableTextProps["components"] {
+  return {
+    ...richTextContentComponents,
+    block: {
+      ...richTextBlockComponents,
+      ...createRichTextHeadingComponents(getHeadingId),
+    },
+  };
+}
+
 export default function RichTextContent({
   className,
   dataSanity,
+  getHeadingId,
   value,
 }: Readonly<{
   className?: string;
   dataSanity?: string;
+  getHeadingId?: GetHeadingId;
   value: PortableTextProps["value"];
 }>) {
   return (
     <div
       className={cn(
-        "text-[1.0625rem] leading-8 text-slate-700 [&_h2]:mt-12 [&_h3]:mt-10 [&_h4]:mt-8 [&_img]:my-8 [&_p]:text-pretty",
+        "max-w-none text-base leading-7 text-foreground/80 [&>:first-child]:mt-0 [&>:last-child]:mb-0 [&_a]:font-medium [&_blockquote]:border-l-4 [&_blockquote]:border-accent [&_blockquote]:bg-secondary/50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_blockquote]:text-foreground [&_figcaption]:text-muted-foreground [&_h2]:mt-12 [&_h2]:border-b [&_h2]:border-border [&_h2]:pb-3 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:tracking-normal [&_h3]:mt-10 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:tracking-normal [&_h4]:mt-8 [&_h4]:text-xl [&_h4]:font-semibold [&_li]:my-2 [&_ol]:my-6 [&_ol]:pl-6 [&_p]:my-5 [&_p]:text-pretty [&_strong]:font-semibold [&_strong]:text-foreground [&_ul]:my-6 [&_ul]:pl-6",
         className,
       )}
       data-sanity={dataSanity}
     >
-      <PortableText components={richTextContentComponents} value={value} />
+      <PortableText
+        components={
+          getHeadingId
+            ? createPostRichTextComponents(getHeadingId)
+            : richTextContentComponents
+        }
+        value={value}
+      />
     </div>
   );
 }

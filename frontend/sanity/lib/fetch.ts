@@ -2,6 +2,8 @@ import { sanityFetch, type DynamicFetchOptions } from "@/sanity/lib/live";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
 import { NAVIGATION_QUERY } from "@/sanity/queries/navigation";
 import { SETTINGS_QUERY } from "@/sanity/queries/settings";
+import { FOOTER_QUERY } from "@/sanity/queries/footer";
+import { HOME_PAGE_QUERY } from "@/sanity/queries/home-page";
 import {
   POST_QUERY,
   POSTS_QUERY,
@@ -13,6 +15,8 @@ import {
   POSTS_QUERY_RESULT,
   NAVIGATION_QUERY_RESULT,
   SETTINGS_QUERY_RESULT,
+  FOOTER_QUERY_RESULT,
+  HOME_PAGE_QUERY_RESULT,
 } from "@/sanity.types";
 import type {
   BLOG_INDEX_QUERY_RESULT,
@@ -42,6 +46,20 @@ export async function fetchSanityPageBySlug({
   });
 
   return data as PAGE_QUERY_RESULT;
+}
+
+export async function fetchHomePage({
+  perspective,
+  stega,
+}: DynamicFetchOptions): Promise<HOME_PAGE_QUERY_RESULT> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: HOME_PAGE_QUERY,
+    perspective,
+    stega,
+  });
+
+  return data as HOME_PAGE_QUERY_RESULT;
 }
 
 export async function fetchSanityPosts({
@@ -164,6 +182,20 @@ export async function fetchSanitySettings({
   });
 
   return data as SETTINGS_QUERY_RESULT;
+}
+
+export async function fetchSanityFooter({
+  perspective,
+  stega,
+}: DynamicFetchOptions): Promise<FOOTER_QUERY_RESULT> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: FOOTER_QUERY,
+    perspective,
+    stega,
+  });
+
+  return data as FOOTER_QUERY_RESULT;
 }
 
 export async function getCurrentYear(): Promise<number> {

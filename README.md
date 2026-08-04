@@ -1,14 +1,9 @@
-# Schema UI - Next.js Sanity Starter Template
+# PHXHomeLoan.com
 
-This starter is a part of [Schema UI](https://schemaui.com) project, a comprehensive page builder that provides production-ready React components with pre-built Sanity schemas and GROQ queries, enabling rapid development of content-driven websites with Sanity CMS and Next.js. **Content Agent & MCP ready**.
-
-**Monorepo:** The template now uses a **pnpm workspace** with a `frontend/` (Next.js) app and a `studio/` (Sanity Studio) app in one repository. Older guides referred to a single app folder; here, schemas and `sanity` CLI commands live under `studio/`, and the site lives under `frontend/`. Root scripts run both together (`pnpm dev`).
-
-![Screenshot of Sanity Studio using Content Agent](https://cdn.sanity.io/images/a03xrv11/schemaui-starter/2a4db6a79de3606c2669464dfee38a3dac7fdad1-1920x841.webp)
+**Monorepo:** The project uses a **pnpm workspace** with a `frontend/` (Next.js) app and a `studio/` (Sanity Studio) app in one repository. Older guides referred to a single app folder; here, schemas and `sanity` CLI commands live under `studio/`, and the site lives under `frontend/`. Root scripts run both together (`pnpm dev`).
 
 [![Next.js][next-js]][next-js-url] [![Sanity][sanity]][sanity-url] [![React][react]][react-url] [![Typescript][typescript]][typescript-url] [![Tailwind][tailwind]][tailwind-url] [![Shadcn][shadcn]][shadcn-url]
 
-[Docs](https://schemaui.com/docs) | [Components](https://schemaui.com/docs/components) | [Demo](https://starter.schemaui.com) | [i18n - multilingual starter](https://github.com/serge-0v/next-js-sanity-starter-i18n)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fserge-0v%2Fnext-js-sanity-starter&env=NEXT_PUBLIC_SITE_URL,NEXT_PUBLIC_SITE_ENV,NEXT_PUBLIC_SANITY_API_VERSION,NEXT_PUBLIC_SANITY_PROJECT_ID,NEXT_PUBLIC_SANITY_DATASET,SANITY_API_READ_TOKEN,RESEND_API_KEY,RESEND_AUDIENCE_ID&demo-title=Next.js%20Sanity%20Starter&demo-description=Next.js%20Sanity%20Starter%20by%20Schema%20UI&demo-url=https%3A%2F%2Fstarter.schemaui.com)
 
@@ -25,34 +20,15 @@ Install and dev commands are meant to be run from the **repository root** unless
 
 ## Getting Started
 
-### Installing the template
+### Installing the project
 
-#### 1. Initialize template with Sanity CLI
-
-Run the command in your Terminal to initialize this template on your local computer:
-
-```bash
-npm create sanity@latest -- --template serge-0v/next-js-sanity-starter
-```
-
-See the documentation if you are [having issues with the CLI](https://www.sanity.io/help/cli-errors).
-
-This command will:
-
-- Create a new Sanity project
-- Add API Read Token
-- Configure CORS origin for http://localhost:3000
-- Set up environment variables
-- Clone the repository
-- Install dependencies
-
-#### Alternative: clone the monorepo
+#### Clone the monorepo
 
 If you prefer not to use the CLI bootstrap:
 
 ```bash
-git clone https://github.com/serge-0v/next-js-sanity-starter.git
-cd next-js-sanity-starter
+git clone https://github.com/ovsw/phxhomeloancom-2026
+cd phxhomeloancom-2026
 pnpm install
 ```
 
@@ -71,7 +47,7 @@ pnpm install --global sanity@latest
 sanity login
 ```
 
-#### 2. Run the template locally
+#### 2. Run the project locally
 
 From the **repository root**:
 
@@ -95,32 +71,13 @@ Set `NEXT_PUBLIC_STUDIO_URL` in `frontend/.env.local` to `http://localhost:3333`
 
 ### Adding content with Sanity
 
-#### 1. Import Sample Data (Optional)
-
-Import the demo dataset to get started with sample content. In the monorepo the archive is `studio/sample-data.tar.gz`. From the `studio` directory:
-
-```bash
-cd studio
-sanity dataset import sample-data.tar.gz production --replace
-```
-
-Be careful with the `--replace` flag: it replaces existing data in the dataset.
-
-#### 2. Publish your first document
-
-The template comes pre-defined with a schema containing `Author`, `Category`, `FAQ`, `Page`, `Post`, and `Testimonial` document types (and additional types such as `Navigation` and `Settings` in the Studio).
-
-From the Studio, click "+ Create" and select the `Page` document type. Go ahead and create and publish the document.
-
-Your content should now appear in your Next.js app ([http://localhost:3000](http://localhost:3000))
-
-#### 3. Extending the Sanity schema
+#### 1. Extending the Sanity schema
 
 The schema for the `Page` document type lives at `studio/schemas/documents/page.ts` (legacy single-repo path: `sanity/schemas/document/page.ts`). You can [add more document types](https://www.sanity.io/docs/schema-types) to the schema to suit your needs.
 
-#### 4. Adding new components
+#### 2. Adding new components
 
-This template includes components aligned with the [Schema UI](https://schemaui.com/docs/components) library. Visit [Schema UI Docs](https://schemaui.com/docs/how-to-use) to learn how to add new components.
+This project includes components aligned with the [Schema UI](https://schemaui.com/docs/components) library. Visit [Schema UI Docs](https://schemaui.com/docs/how-to-use) to learn how to add new components.
 
 ### Deploying your application
 

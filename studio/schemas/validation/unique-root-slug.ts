@@ -3,7 +3,7 @@ import type { ValidationContext } from "sanity";
 type SlugValue = { current?: string };
 
 function normalizeSlug(value: string) {
-  return value.replace(/^\/+|\/+$/g, "");
+  return value.trim().replace(/^\/+|\/+$/g, "");
 }
 
 export async function uniqueRootSlug(
@@ -15,6 +15,9 @@ export async function uniqueRootSlug(
   if (!current || !documentId) return true;
 
   const normalized = normalizeSlug(current);
+  if (normalized.toLowerCase() === "index") {
+    return "The root/index route is reserved for the Home Page and its legacy redirect";
+  }
   const publishedId = documentId.replace(/^drafts\./, "");
   const draftId = `drafts.${publishedId}`;
   const client = context.getClient({ apiVersion: "2026-03-23" });

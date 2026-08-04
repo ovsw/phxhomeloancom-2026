@@ -43,11 +43,6 @@ export default defineType({
       description: "The name of your site",
       validation: (Rule) => Rule.required().error("Site name is required"),
     }),
-    defineField({
-      name: "copyright",
-      type: "block-content",
-      description: "The copyright text to display in the footer",
-    }),
   ],
   preview: {
     select: {

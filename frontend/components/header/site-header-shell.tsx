@@ -46,7 +46,7 @@ export function SiteHeaderShell({ children }: { children: ReactNode }) {
     <header
       className={cn(
         "sticky top-0 z-[60] w-full border-b border-border/80 bg-background/95 backdrop-blur-md",
-        "transition-transform duration-300 ease-out motion-reduce:transition-none",
+        "transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none",
         visible ? "translate-y-0" : "-translate-y-full",
       )}
       data-visible={visible}

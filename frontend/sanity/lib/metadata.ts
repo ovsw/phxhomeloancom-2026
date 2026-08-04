@@ -1,10 +1,10 @@
 import { urlFor } from "@/sanity/lib/image";
 import {
   BLOG_INDEX_QUERY_RESULT,
+  HOME_PAGE_QUERY_RESULT,
   PAGE_QUERY_RESULT,
   POST_QUERY_RESULT,
 } from "@/sanity.types";
-import { contentPath } from "@/lib/routes";
 import {
   getBlogCanonicalPath,
   getBlogPageDescription,
@@ -14,10 +14,10 @@ const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export function generatePageMetadata({
   page,
-  slug,
+  path,
 }: {
-  page: PAGE_QUERY_RESULT | POST_QUERY_RESULT;
-  slug: string;
+  page: HOME_PAGE_QUERY_RESULT | PAGE_QUERY_RESULT | POST_QUERY_RESULT;
+  path: string;
 }) {
   return {
     title: page?.meta?.title,
@@ -41,7 +41,7 @@ export function generatePageMetadata({
         ? "noindex"
         : "index, follow",
     alternates: {
-      canonical: process.env.NEXT_PUBLIC_SITE_URL + contentPath(slug),
+      canonical: process.env.NEXT_PUBLIC_SITE_URL + path,
     },
   };
 }

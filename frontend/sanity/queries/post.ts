@@ -10,6 +10,7 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
     title,
     slug,
     publishedAt,
+    "excerpt": pt::text(excerpt),
     image{
       ${imageQuery}
     },

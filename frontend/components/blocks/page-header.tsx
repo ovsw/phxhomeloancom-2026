@@ -1,3 +1,4 @@
+import ParticleField from "@/components/particle-field";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { stegaClean } from "next-sanity";
 import Link from "next/link";
@@ -28,7 +29,7 @@ export default function PageHeader({
   if (!cleanTitle) return null;
 
   return (
-    <section className="relative overflow-hidden bg-[#080d1e] py-[4.625rem] text-white md:py-[4.875rem]">
+    <section className="relative overflow-hidden bg-[var(--phx-navy-900)] py-[4.625rem] text-white md:py-[4.875rem]">
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -37,17 +38,7 @@ export default function PageHeader({
             "radial-gradient(760px 340px at 82% -10%, rgba(31,110,140,.28), transparent 68%), radial-gradient(680px 420px at 6% 118%, rgba(31,110,140,.14), transparent 70%)",
         }}
       />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,.38) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-          maskImage:
-            "linear-gradient(110deg, transparent 15%, black 60%, transparent 92%)",
-        }}
-      />
+      <ParticleField />
 
       <div className="container relative">
         {cleanEyebrow ? (
@@ -65,7 +56,7 @@ export default function PageHeader({
               /
             </span>
             <span
-              className="text-xs font-semibold uppercase leading-none tracking-[0.24em] text-[#feb77d]"
+              className="text-xs font-semibold uppercase leading-none tracking-[0.24em] text-label-on-dark"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {eyebrow}
@@ -91,7 +82,7 @@ export default function PageHeader({
         {visibleStatistics.length ? (
           <div className="mt-11 flex flex-wrap gap-x-[clamp(2rem,5vw,4.5rem)] gap-y-8 border-t border-white/15 pt-8">
             {visibleStatistics.map((statistic) => (
-              <div className="flex max-w-56 flex-col gap-1" key={statistic._key}>
+              <div className="flex flex-col gap-1" key={statistic._key}>
                 <p
                   className="text-[1.875rem] font-semibold leading-tight text-white"
                   data-sanity={dataAttribute?.(

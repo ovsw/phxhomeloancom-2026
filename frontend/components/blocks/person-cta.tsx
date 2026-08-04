@@ -17,11 +17,9 @@ type PersonCtaProps = PersonCtaBlock & {
 };
 
 function KeyDetails({
-  creamSurface,
   dataAttribute,
   details,
 }: Readonly<{
-  creamSurface: boolean;
   dataAttribute?: PersonCtaProps["dataAttribute"];
   details?: PersonCtaProps["keyDetails"];
 }>) {
@@ -39,7 +37,7 @@ function KeyDetails({
     <div className="mt-1">
       {title ? (
         <p
-          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
+          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
           data-sanity={dataAttribute?.("keyDetails.title")}
         >
           {title}
@@ -49,8 +47,7 @@ function KeyDetails({
         {items.map((item) => (
           <li
             className={cn(
-              "rounded-full border border-slate-200 px-[1.125rem] py-2 text-[0.90625rem] font-medium text-slate-600",
-              creamSurface ? "bg-white" : "bg-[#f7f4ed]",
+              "rounded-full border border-border bg-card px-[1.125rem] py-2 text-[0.90625rem] font-medium text-muted-foreground",
             )}
             data-sanity={dataAttribute?.(`keyDetails.items[${item.index}]`)}
             key={`${item.value}-${item.index}`}
@@ -99,8 +96,8 @@ function PersonButtons({
             className={cn(
               "h-12 w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 sm:w-auto",
               secondary
-                ? "border-[1.5px] border-slate-300 bg-white text-slate-950 shadow-none hover:border-cyan-700/30 hover:bg-white hover:text-slate-950"
-                : "bg-cyan-700 text-white hover:bg-cyan-600 hover:text-white",
+                ? "border-[1.5px] border-[var(--phx-border-strong)] bg-[var(--surface-section-white)] text-foreground shadow-none hover:border-primary/30 hover:bg-card hover:text-foreground"
+                : "bg-primary text-primary-foreground hover:bg-accent-hover hover:text-primary-foreground",
             )}
             key={button._key || `${href}-${index}`}
             size="lg"
@@ -142,8 +139,8 @@ export default function PersonCta({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "border-t border-slate-200 px-4 pb-20 pt-14 min-[700px]:px-8 min-[700px]:py-16 lg:px-10 lg:py-24",
-        creamSurface ? "bg-[#f7f4ed]" : "bg-white",
+        "px-4 pb-20 pt-14 min-[700px]:px-8 min-[700px]:py-16 lg:px-10 lg:py-24",
+        creamSurface ? "surface-cream" : "surface-white",
       )}
     >
       <div className="mx-auto grid w-full max-w-[70rem] items-center gap-10 min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] min-[700px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-[clamp(2.25rem,5vw,4.5rem)]">
@@ -152,7 +149,7 @@ export default function PersonCta({
             aria-hidden="true"
             className={cn(
               "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-[24px] rounded-t-[220px]",
-              creamSurface ? "bg-white" : "bg-[#fbf9f4]",
+              "bg-card",
             )}
           />
           {personImage?.asset?._id ? (
@@ -174,7 +171,7 @@ export default function PersonCta({
         <div className="grid justify-items-start gap-5">
           {displayEyebrow ? (
             <p
-              className="text-xs font-semibold uppercase tracking-[0.26em] text-cyan-800"
+              className="text-xs font-semibold uppercase tracking-[0.26em] text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {eyebrow}
@@ -182,7 +179,7 @@ export default function PersonCta({
           ) : null}
           {displayTitle ? (
             <h2
-              className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-slate-950"
+              className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-foreground"
               data-sanity={dataAttribute?.("title")}
               id={titleId}
             >
@@ -191,14 +188,13 @@ export default function PersonCta({
           ) : null}
           {richText?.length ? (
             <div
-              className="text-pretty text-[1.03125rem] leading-[1.75] text-slate-600 [&_p]:!my-0"
+              className="text-pretty text-[1.03125rem] leading-[1.75] text-muted-foreground [&_p]:!my-0"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
           <KeyDetails
-            creamSurface={creamSurface}
             dataAttribute={dataAttribute}
             details={keyDetails}
           />

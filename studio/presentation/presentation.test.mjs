@@ -7,8 +7,8 @@ import {
   resolveContentPath,
 } from "./routes.ts";
 
-test("resolves the homepage slug to the site root", () => {
-  assert.equal(resolveContentPath("index"), "/");
+test("does not treat an ordinary index slug as homepage identity", () => {
+  assert.equal(resolveContentPath("index"), "/index/");
 });
 
 test("normalizes leading and trailing slashes", () => {

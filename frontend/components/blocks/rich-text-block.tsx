@@ -30,14 +30,14 @@ export default function RichTextBlock({
   return (
     <section
       aria-labelledby={headingId}
-      className="border-t border-slate-200 bg-white py-16 md:py-24"
+      className="my-6 md:my-16"
     >
       <div className="container">
         {displayEyebrow || displayTitle ? (
-          <header className="mx-auto mb-10 max-w-4xl text-center">
+          <header className="mx-auto max-w-4xl text-center">
             {displayEyebrow ? (
               <p
-                className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-800"
+                className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-primary"
                 data-sanity={dataAttribute?.("eyebrow")}
               >
                 {eyebrow}
@@ -45,7 +45,7 @@ export default function RichTextBlock({
             ) : null}
             {displayTitle ? (
               <h2
-                className="text-balance text-3xl font-semibold leading-tight text-slate-950 md:text-5xl"
+                className="text-balance text-3xl font-semibold leading-tight text-foreground md:text-5xl"
                 data-sanity={dataAttribute?.("title")}
                 id={headingId}
               >
@@ -56,7 +56,7 @@ export default function RichTextBlock({
         ) : null}
         {richText?.length ? (
           <RichTextContent
-            className="mx-auto max-w-4xl"
+            className="mx-auto mt-8 max-w-4xl"
             dataSanity={dataAttribute?.("richText")}
             value={richText as PortableTextProps["value"]}
           />

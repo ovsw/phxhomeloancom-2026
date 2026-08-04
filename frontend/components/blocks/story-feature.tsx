@@ -36,7 +36,7 @@ const storyRichTextComponents: Partial<PortableTextComponents> = {
       const openInNewTab = stegaClean(value?.openInNewTab);
       return (
         <Link
-          className="font-medium text-cyan-800 underline underline-offset-4 hover:text-cyan-600"
+          className="font-medium text-primary underline underline-offset-4 hover:text-accent-hover"
           href={href}
           rel={openInNewTab ? "noopener noreferrer" : undefined}
           target={openInNewTab ? "_blank" : undefined}
@@ -123,7 +123,7 @@ function KeyDetails({
     <div className="mt-1">
       {title ? (
         <p
-          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
+          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
           data-sanity={dataAttribute?.("keyDetails.title")}
         >
           {title}
@@ -132,7 +132,7 @@ function KeyDetails({
       <ul className="flex list-none flex-wrap gap-2.5 p-0">
         {items.map((item) => (
           <li
-            className="rounded-full border border-slate-200 bg-slate-100 px-[1.125rem] py-2 text-[0.90625rem] font-medium text-slate-600"
+            className="rounded-full border border-border bg-card px-[1.125rem] py-2 text-[0.90625rem] font-medium text-muted-foreground"
             data-sanity={dataAttribute?.(`keyDetails.items[${item.index}]`)}
             key={`${item.value}-${item.index}`}
           >
@@ -165,15 +165,15 @@ export default function StoryFeature({
     <section
       aria-labelledby={displayTitle ? headingId : undefined}
       className={cn(
-        "border-t border-slate-200 py-20 md:py-24",
-        stegaClean(useCreamBackground) ? "bg-[#f7f4ed]" : "bg-white",
+        "py-20 md:py-24",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
       <div className="container">
         <header className="mb-10 max-w-3xl">
           {displayEyebrow ? (
             <p
-              className="mb-[1.125rem] text-xs font-semibold uppercase tracking-[0.26em] text-cyan-800"
+              className="mb-[1.125rem] text-xs font-semibold uppercase tracking-[0.26em] text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {displayEyebrow}
@@ -181,7 +181,7 @@ export default function StoryFeature({
           ) : null}
           {displayTitle ? (
             <h2
-              className="text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.01em] text-slate-950 md:text-[2.625rem]"
+              className="text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.01em] text-foreground md:text-[2.625rem]"
               data-sanity={dataAttribute?.("title")}
               id={headingId}
             >
@@ -210,7 +210,7 @@ export default function StoryFeature({
             ) : null}
             {displayCaption ? (
               <figcaption
-                className="mt-3 text-sm text-slate-500"
+                className="mt-3 text-sm text-muted-foreground"
                 data-sanity={dataAttribute?.("imageCaption")}
               >
                 {displayCaption}
@@ -221,7 +221,7 @@ export default function StoryFeature({
           <div className="flex min-w-0 flex-col gap-[1.125rem]">
             {richText?.length ? (
               <div
-                className="flex flex-col gap-[1.125rem] text-pretty text-[1.0625rem] leading-[1.75] text-slate-600 [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-[#b4552d] [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
+                className="flex flex-col gap-[1.125rem] text-pretty text-[1.0625rem] leading-[1.75] text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-copper-600 [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableText components={storyRichTextComponents} value={richText} />

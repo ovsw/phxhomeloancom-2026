@@ -1,19 +1,33 @@
 import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import {
   Files,
-  BookA,
+  BookMarked,
+  FileText,
   User,
   ListCollapse,
   Quote,
   Menu,
   Settings,
-  Newspaper,
+  Settings2,
+  PanelBottom,
+  Tag,
+  House,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
   S.list()
     .title("Content")
     .items([
+      S.listItem()
+        .title("Home Page")
+        .icon(House)
+        .child(
+          S.editor()
+            .id("homePage")
+            .schemaType("homePage")
+            .documentId("homePage")
+        ),
+      S.divider(),
       S.listItem()
         .title("Pages")
         .icon(Files)
@@ -24,36 +38,48 @@ export const structure = (S: any, context: any) =>
             .defaultOrdering([{ field: "title", direction: "asc" }])
         ),
       S.listItem()
-        .title("Posts")
-        .schemaType("post")
+        .title("Blog")
+        .icon(BookMarked)
         .child(
-          S.documentTypeList("post")
-            .title("Post")
-            .defaultOrdering([{ field: "_createdAt", direction: "desc" }]) // Default ordering
+          S.list()
+            .title("Blog")
+            .items([
+              S.listItem()
+                .title("Blog Index")
+                .icon(BookMarked)
+                .child(
+                  S.editor()
+                    .id("blogIndex")
+                    .schemaType("blogIndex")
+                    .documentId("blogIndex")
+                ),
+              S.listItem()
+                .title("Blog Posts")
+                .icon(FileText)
+                .schemaType("post")
+                .child(
+                  S.documentTypeList("post")
+                    .title("Blog Posts")
+                    .defaultOrdering([
+                      { field: "_createdAt", direction: "desc" },
+                    ])
+                ),
+              orderableDocumentListDeskItem({
+                type: "category",
+                title: "Categories",
+                icon: Tag,
+                S,
+                context,
+              }),
+              orderableDocumentListDeskItem({
+                type: "author",
+                title: "Authors",
+                icon: User,
+                S,
+                context,
+              }),
+            ])
         ),
-      S.listItem()
-        .title("Blog Index")
-        .icon(Newspaper)
-        .child(
-          S.editor()
-            .id("blogIndex")
-            .schemaType("blogIndex")
-            .documentId("blogIndex")
-        ),
-      orderableDocumentListDeskItem({
-        type: "category",
-        title: "Categories",
-        icon: BookA,
-        S,
-        context,
-      }),
-      orderableDocumentListDeskItem({
-        type: "author",
-        title: "Authors",
-        icon: User,
-        S,
-        context,
-      }),
       orderableDocumentListDeskItem({
         type: "faq",
         title: "FAQs",
@@ -68,23 +94,41 @@ export const structure = (S: any, context: any) =>
         S,
         context,
       }),
-      S.divider({ title: "Global" }),
+      S.divider(),
       S.listItem()
-        .title("Navigation")
-        .icon(Menu)
+        .title("Site Configuration")
+        .icon(Settings2)
         .child(
-          S.editor()
-            .id("navigation")
-            .schemaType("navigation")
-            .documentId("navigation")
-        ),
-      S.listItem()
-        .title("Settings")
-        .icon(Settings)
-        .child(
-          S.editor()
-            .id("settings")
-            .schemaType("settings")
-            .documentId("settings")
+          S.list()
+            .title("Site Configuration")
+            .items([
+              S.listItem()
+                .title("Navigation")
+                .icon(Menu)
+                .child(
+                  S.editor()
+                    .id("navigation")
+                    .schemaType("navigation")
+                    .documentId("navigation")
+                ),
+              S.listItem()
+                .title("Footer")
+                .icon(PanelBottom)
+                .child(
+                  S.editor()
+                    .id("footer")
+                    .schemaType("footer")
+                    .documentId("footer")
+                ),
+              S.listItem()
+                .title("Global Settings")
+                .icon(Settings)
+                .child(
+                  S.editor()
+                    .id("settings")
+                    .schemaType("settings")
+                    .documentId("settings")
+                ),
+            ])
         ),
     ]);

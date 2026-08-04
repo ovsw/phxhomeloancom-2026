@@ -1,7 +1,6 @@
 import { defineField } from "sanity";
 
-export const pageBuilderBlockTypes = [
-  "homeHero",
+export const generalPageBuilderBlockTypes = [
   "loanFeatureCards",
   "videoFeature",
   "phxEmbedSocialReviews",
@@ -22,30 +21,50 @@ export const pageBuilderBlockTypes = [
   "advisorCta",
 ] as const;
 
-const heroBlockTypes = ["homeHero", "pageHeader"] as const;
-const contentBlockTypes = pageBuilderBlockTypes.filter(
-  (type) => !heroBlockTypes.includes(type as (typeof heroBlockTypes)[number]),
-);
+// Retain the established export for existing consumers of the general inventory.
+export const pageBuilderBlockTypes = generalPageBuilderBlockTypes;
 
-export const blocksField = defineField({
-  name: "blocks",
-  type: "array",
-  group: "content",
-  of: pageBuilderBlockTypes.map((type) => ({ type })),
-  options: {
-    insertMenu: {
-      groups: [
-        { name: "hero", title: "Hero", of: [...heroBlockTypes] },
-        { name: "content", title: "Content", of: contentBlockTypes },
-      ],
-      views: [
-        {
-          name: "grid",
-          previewImageUrl: (block: string) =>
-            `/static/images/preview/${block}.jpg`,
-        },
-        { name: "list" },
-      ],
+const heroBlockTypes = ["homeHero", "pageHeader"] as const;
+export const homePagePageBuilderBlockTypes = [
+  "homeHero",
+  ...generalPageBuilderBlockTypes,
+] as const;
+
+type PageBuilderBlockType = (typeof homePagePageBuilderBlockTypes)[number];
+
+function createBlocksField(blockTypes: readonly PageBuilderBlockType[]) {
+  const heroTypes = blockTypes.filter((type) =>
+    heroBlockTypes.includes(type as (typeof heroBlockTypes)[number]),
+  );
+  const contentTypes = blockTypes.filter(
+    (type) => !heroBlockTypes.includes(type as (typeof heroBlockTypes)[number]),
+  );
+
+  return defineField({
+    name: "blocks",
+    type: "array",
+    group: "content",
+    of: blockTypes.map((type) => ({ type })),
+    options: {
+      insertMenu: {
+        groups: [
+          { name: "hero", title: "Hero", of: heroTypes },
+          { name: "content", title: "Content", of: contentTypes },
+        ],
+        views: [
+          {
+            name: "grid",
+            previewImageUrl: (block: string) =>
+              `/static/images/preview/${block}.jpg`,
+          },
+          { name: "list" },
+        ],
+      },
     },
-  },
-});
+  });
+}
+
+export const blocksField = createBlocksField(generalPageBuilderBlockTypes);
+export const homePageBlocksField = createBlocksField(
+  homePagePageBuilderBlockTypes,
+);

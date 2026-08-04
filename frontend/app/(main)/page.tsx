@@ -1,5 +1,5 @@
 import Blocks from "@/components/blocks";
-import { fetchSanityPageBySlug } from "@/sanity/lib/fetch";
+import { fetchHomePage } from "@/sanity/lib/fetch";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
 import {
@@ -7,8 +7,8 @@ import {
   sanityFetchMetadata,
   type DynamicFetchOptions,
 } from "@/sanity/lib/live";
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { PAGE_QUERY } from "@/sanity/queries/page";
+import { HOME_PAGE_QUERY_RESULT } from "@/sanity.types";
+import { HOME_PAGE_QUERY } from "@/sanity/queries/home-page";
 import { draftMode } from "next/headers";
 import { Suspense } from "react";
 
@@ -23,12 +23,11 @@ function PageFallback() {
 export async function generateMetadata() {
   const { perspective } = await getDynamicFetchOptions();
   const { data: page } = (await sanityFetchMetadata({
-    query: PAGE_QUERY,
-    params: { slug: "index" },
+    query: HOME_PAGE_QUERY,
     perspective,
-  })) as { data: PAGE_QUERY_RESULT };
+  })) as { data: HOME_PAGE_QUERY_RESULT };
 
-  return generatePageMetadata({ page, slug: "index" });
+  return generatePageMetadata({ page, path: "/" });
 }
 
 export default async function IndexPage() {
@@ -51,20 +50,17 @@ async function DynamicIndexPage() {
 }
 
 async function CachedIndexPage({ perspective, stega }: DynamicFetchOptions) {
-  const page = await fetchSanityPageBySlug({
-    slug: "index",
-    perspective,
-    stega,
-  });
+  const page = await fetchHomePage({ perspective, stega });
 
   if (!page) {
-    return MissingSanityPage({ document: "page", slug: "index" });
+    return MissingSanityPage({ document: "homePage", documentId: "homePage" });
   }
 
   return (
     <Blocks
       blocks={page?.blocks ?? []}
       documentId={page._id}
+      documentType="homePage"
       perspective={perspective}
       stega={stega}
     />

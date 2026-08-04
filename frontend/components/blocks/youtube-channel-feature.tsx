@@ -62,7 +62,7 @@ export default function YoutubeChannelFeature({
   return (
     <section
       aria-labelledby={stegaClean(title)?.trim() ? titleId : undefined}
-      className="relative overflow-hidden border-t border-white/5 bg-[#080d1e] px-4 py-[6.25rem] md:px-10"
+      className="relative overflow-hidden bg-[var(--phx-navy-900)] px-4 py-[6.25rem] md:px-10"
     >
       <div
         aria-hidden="true"
@@ -71,7 +71,7 @@ export default function YoutubeChannelFeature({
       <div className="relative mx-auto w-full max-w-7xl">
         <div className="grid max-w-[35rem] justify-items-start gap-[1.375rem] max-[900px]:max-w-none min-[901px]:max-w-[min(35rem,52%)]">
           <p
-            className="text-[0.8125rem] font-semibold uppercase tracking-[0.26em] text-white/55"
+            className="text-[0.8125rem] font-semibold uppercase tracking-[0.26em] text-label-on-dark/90"
             data-sanity={dataAttribute?.("eyebrow")}
           >
             {eyebrow}
@@ -95,7 +95,7 @@ export default function YoutubeChannelFeature({
             {facts?.map((fact) => (
               <div className="grid min-w-0 gap-1" key={fact._key}>
                 <dt
-                  className="order-2 whitespace-nowrap text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-white/55 min-[901px]:text-xs min-[901px]:tracking-[0.14em]"
+                  className="order-2 whitespace-nowrap text-[0.625rem] font-semibold uppercase tracking-[0.1em] text-label-on-dark/90 min-[901px]:text-xs min-[901px]:tracking-[0.14em]"
                   data-sanity={dataAttribute?.(`facts[_key=="${fact._key}"].label`)}
                 >
                   {fact.label}
@@ -135,7 +135,7 @@ export default function YoutubeChannelFeature({
             >
               <Button
                 asChild
-                className="h-[3.125rem] w-full rounded-[9px] bg-[#b4552d] px-7 text-[0.9375rem] font-semibold text-white shadow-[0_14px_40px_-12px_rgba(180,85,45,0.7)] transition-[filter,transform] hover:-translate-y-0.5 hover:bg-[#b4552d] hover:text-white hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
+                className="h-[3.125rem] w-full rounded-[9px] bg-copper-600 px-7 text-[0.9375rem] font-semibold text-white shadow-[0_14px_40px_-12px_var(--phx-copper-shadow)] transition-[filter,transform] hover:-translate-y-0.5 hover:bg-copper-600 hover:text-white hover:brightness-110 min-[901px]:w-auto min-[901px]:min-w-[13.1875rem]"
               >
                 <Link href={youtubeUrl} prefetch={false}>
                   <Play aria-hidden="true" className="size-[1.125rem] fill-current" />

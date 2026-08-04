@@ -1,4 +1,4 @@
-import { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { HOME_PAGE_QUERY_RESULT, PAGE_QUERY_RESULT } from "@/sanity.types";
 import { type LivePerspective } from "next-sanity/live";
 import { createDataAttribute } from "next-sanity";
 import HomeHero from "@/components/blocks/home-hero";
@@ -24,7 +24,9 @@ import RichTextBlock from "@/components/blocks/rich-text-block";
 import AdvisorCta from "@/components/blocks/advisor-cta";
 import { dataset, projectId } from "@/sanity/lib/env";
 
-type Block = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
+type Block =
+  | NonNullable<NonNullable<HOME_PAGE_QUERY_RESULT>["blocks"]>[number]
+  | NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
 
 type BlockEditingProps = {
   dataAttribute?: (path: string) => string | undefined;
@@ -83,7 +85,7 @@ export default function Blocks({
 }: {
   blocks: Block[];
   documentId: string;
-  documentType?: "blogIndex" | "page";
+  documentType?: "blogIndex" | "homePage" | "page";
   perspective: LivePerspective;
   stega: boolean;
 }) {
