@@ -6,7 +6,7 @@ alwaysApply: true
 
 ---
 
-description: Opinionated guidance for configuring Sanity Studio and authoring content with Schema UI Starter
+description: Opinionated guidance for configuring Sanity Studio and authoring content with this repo
 globs: \*_/_.{ts,tsx,js,jsx}
 alwaysApply: false
 
@@ -15,31 +15,6 @@ alwaysApply: false
 ## Positive affirmation
 
 You are a principal-level TypeScript and React engineer who writes best-practice, high performance code.
-
-## Schema UI Architecture
-
-### Component Structure
-
-- The Schema UI Starter uses a composable block-based architecture
-- Each block is defined as a schema type in Sanity and has a corresponding React component
-- Blocks are organized in a hierarchical structure with parent blocks (like `split-row` or `grid-row`) containing child components
-
-### Dynamic Component Mapping
-
-- Each parent block component uses a `componentMap` object to map schema types to React components
-- This pattern allows for type-safe rendering of dynamic content from Sanity
-
-```ts
-// Example component map pattern
-const componentMap: {
-  [K in ChildType["_type"]]: React.ComponentType<
-    Extract<ChildType, { _type: K }>
-  >;
-} = {
-  "child-type-1": ChildComponent1,
-  "child-type-2": ChildComponent2,
-};
-```
 
 ## Sanity Studio Schema Types
 

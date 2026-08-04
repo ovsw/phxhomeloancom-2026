@@ -26,7 +26,7 @@ const SANITY_STUDIO_PREVIEW_URL =
   process.env.SANITY_STUDIO_PREVIEW_URL || "http://localhost:3000";
 
 export default defineConfig({
-  title: "Schema UI: Starter",
+  title: "PHX Home Loan",
   projectId,
   dataset,
   // Add and edit the content schema in the './sanity/schema' folder
