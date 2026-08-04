@@ -69,7 +69,7 @@ function ArticleCard({
           </div>
         ) : null}
       </div>
-      <div className="flex flex-1 flex-col gap-3 px-6 py-6 md:px-7 md:py-[1.875rem]">
+      <div className="flex flex-1 flex-col gap-3 p-(--space-card)">
         {publishedDate ? (
           <time
             className="typo-meta-label text-muted-foreground"
@@ -124,13 +124,13 @@ export default function LatestArticles({
   return (
     <section
       className={cn(
-        "scroll-mt-24 py-20 md:py-24 lg:py-[6.875rem]",
+        "scroll-mt-24 section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       id="educational-content"
     >
-      <div className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-8 md:mb-[3.25rem] lg:gap-12">
+      <div className="container">
+        <div className="flex flex-wrap items-end justify-between gap-8 section-header-gap lg:gap-12">
           <div className="max-w-3xl">
             {eyebrow ? (
               <p className="mb-3.5 typo-eyebrow text-primary">
@@ -143,7 +143,7 @@ export default function LatestArticles({
               </h2>
             ) : null}
             {description ? (
-              <p className="mt-4 max-w-2xl typo-body-editorial text-muted-foreground">
+              <p className="mt-5 max-w-2xl typo-body-editorial text-muted-foreground">
                 {description}
               </p>
             ) : null}

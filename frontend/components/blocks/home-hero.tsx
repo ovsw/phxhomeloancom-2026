@@ -58,7 +58,7 @@ export default function HomeHero({
 }: HomeHeroProps) {
   return (
     <section
-      className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-[var(--phx-navy-900)] text-white md:min-h-[min(860px,92svh)]"
+      className="relative isolate min-h-[calc(100svh-var(--header-height))] overflow-hidden bg-[var(--phx-navy-900)] text-white md:min-h-[min(860px,92svh)]"
       id="home-hero"
     >
       <div className="absolute inset-0 -z-20">
@@ -80,7 +80,7 @@ export default function HomeHero({
           />
         </div>
       ) : null}
-      <div className="relative z-20 mx-auto flex min-h-[calc(100svh-4.5rem)] w-full max-w-7xl items-center px-4 py-20 sm:px-6 md:min-h-[min(860px,92svh)] md:px-8 md:py-24 lg:px-10">
+      <div className="container relative z-20 flex min-h-[calc(100svh-var(--header-height))] items-center section-pad md:min-h-[min(860px,92svh)]">
         <div className="flex w-full max-w-[37.5rem] flex-col gap-6">
           {marketPositioning ? <p className="sr-only">{marketPositioning}</p> : null}
           {servicePromise ? (

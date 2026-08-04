@@ -169,13 +169,18 @@ rounded:
   feature: "24px"
   pill: "999px"
 spacing:
-  xs: "4px"
-  sm: "8px"
-  md: "16px"
-  lg: "24px"
-  xl: "40px"
-  section-mobile: "80px"
-  section-desktop: "96px"
+  section: "clamp(5rem, 2.5vw + 4rem, 6rem)"
+  section-lg: "clamp(6rem, 3.75vw + 4.5rem, 7.5rem)"
+  section-sm: "clamp(4.5rem, 1.25vw + 4rem, 5rem)"
+  header-gap: "clamp(2.5rem, 1.875vw + 1.75rem, 3.25rem)"
+  split: "clamp(2rem, 5vw, 4.5rem)"
+  stack: "1.125rem"
+  card: "1.75rem"
+  inset: "clamp(1.75rem, 3.125vw + 0.5rem, 3rem)"
+  container-max: "80rem"
+  container-narrow: "70rem"
+  container-inline: "clamp(1rem, 4vw, 2.5rem)"
+  header-height: "5.375rem"
 components:
   button-primary:
     backgroundColor: "{colors.advisor-teal}"
@@ -366,13 +371,57 @@ same complete `typo-*` recipe — size, responsive behavior, weight, line
 height, and tracking. New typography variants require a new documented role,
 not an inline override.
 
-## Layout
+## Layout & Spacing
 
-The default content wrapper is `80rem` (`max-w-7xl`) with responsive inline
-padding. Reading-focused content narrows to `48rem` (`max-w-3xl`). Canonical
-sections normally use `80px` vertical padding on smaller screens and `96px` on
-larger screens; major fixed features may extend to approximately `110–120px`
-when the composition needs more presence.
+Every spacing decision at layout level is one of the roles below, implemented
+as a token in `globals.css` (`--space-*`, `--container-*`, `--header-height`)
+with a matching utility. Components must use the role, never re-declare the
+value inline. Responsive spacing always uses `clamp()`; fixed steps stay on
+the 4px grid.
+
+### Containers
+
+- **container** (`80rem` max, fluid `clamp(1rem, 4vw, 2.5rem)` inline gutter):
+  the one page wrapper for sections, header, and footer. There are no stepped
+  breakpoint widths.
+- **container-narrow** (`70rem`): centered CTA compositions (award, person
+  CTA, person contact CTA).
+- Reading-focused content narrows to `48rem` (`max-w-3xl`) inside a container.
+- **header-height** (`5.375rem` / 86px): the sticky header constant. The hero
+  sizes itself against this token; `scroll-mt-24` on anchored sections
+  accounts for it.
+
+### Section rhythm
+
+- **section-pad** (`80→96px`): the standard section. Sections meet at
+  padding, so adjacent sections breathe equally.
+- **section-pad-lg** (`96→120px`): showpiece sections only — award CTA, team
+  members, loan feature cards, YouTube channel feature.
+- **section-pad-sm** (`72→80px`): the dark page banner (`pageHeader`).
+- The homepage hero is min-height driven (`100svh − header-height`, capped)
+  with `section-pad` inside.
+
+### Within a section
+
+- **section-header-gap** (`40→52px`): section header → content, whether as
+  `margin-bottom` on the header or the grid gap of a stacked wrapper.
+- **gap-split** (`clamp(2rem, 5vw, 4.5rem)`): the single two-column feature
+  gutter — person/image/map/video beside explanatory content. Also the
+  column gap of full-width stat rows (`gap-x-split`).
+- **Eyebrow → heading:** `14px` (`mb-3.5`). **Heading → lead/body:** `20px`
+  (`mt-5` or a `gap-5` stack with eyebrow+heading grouped). **Action rows:**
+  sit one extra small step below copy (`mt-1`–`mt-3` inside a `gap-5` stack).
+- **stack** (`18px`): editorial paragraph and contact-list stacks
+  (`gap-(--space-stack)`).
+- **Card grids:** `24px` (`gap-6`). Team member profiles separate by `64px`
+  (`gap-16`); stat clusters inside a column use `40px` column gaps.
+
+### Card & panel padding
+
+- **card** (`28px`): standard content cards (loan cards, article cards).
+- **inset** (`28→48px`): feature inset panels (contact form card, editorial
+  impact statement).
+- Larger showpiece panels may use documented exceptions only (below).
 
 Grid is the default layout model. Two-column sections pair a person, image, map,
 video, or proof artifact with explanatory content; card collections use
@@ -384,6 +433,27 @@ Page Builder sections that expose the background setting receive their surface
 from that explicit Sanity value. The section must use the resolved `surface`
 value and switch its card tone with the surface. Sections without the setting
 own their intentional background.
+
+### Documented Exceptions
+
+Three spacing one-offs are deliberate and must not be normalized or copied:
+
+- **EmbedSocial reviews section:** full-bleed with zero padding — the iframe
+  owns its internal spacing.
+- **Person contact CTA text panel:** `clamp(2.5rem, 5vw, 4.25rem)` padding —
+  the one luxury inset, matched to its oversized portrait composition.
+- **Person contact CTA card on mobile:** goes full-bleed (no container
+  gutter, no radius) below `640px`; the section applies the gutter only from
+  `641px` up.
+
+### Named Rules
+
+**The One Rhythm Rule.** Section vertical padding is one of exactly three
+roles — standard, showpiece, banner. A section that seems to need a fourth
+value is either mis-tiered or a documented exception.
+
+**The One Gutter Rule.** All two-column feature splits share `gap-split`.
+Widening or narrowing a single section's split is drift, not composition.
 
 ## Elevation & Depth
 

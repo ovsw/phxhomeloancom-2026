@@ -156,15 +156,15 @@ export default function StoryFeature({
     <section
       aria-labelledby={displayTitle ? headingId : undefined}
       className={cn(
-        "py-20 md:py-24",
+        "section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
       <div className="container">
-        <header className="mb-10 max-w-3xl">
+        <header className="max-w-3xl section-header-gap">
           {displayEyebrow ? (
             <p
-              className="mb-[1.125rem] typo-eyebrow text-primary"
+              className="mb-3.5 typo-eyebrow text-primary"
               data-sanity={dataAttribute?.("eyebrow")}
             >
               {displayEyebrow}
@@ -181,11 +181,11 @@ export default function StoryFeature({
           ) : null}
         </header>
 
-        <div className="grid items-stretch gap-8 lg:grid-cols-[0.9fr_1.4fr] lg:gap-[clamp(2rem,5vw,5rem)]">
+        <div className="grid items-stretch gap-split lg:grid-cols-[0.9fr_1.4fr]">
           <figure className="flex min-w-0 flex-col">
             {image?.asset?._id ? (
               <div
-                className="relative min-h-[21.25rem] w-full flex-1 overflow-hidden rounded-2xl shadow-[0_24px_60px_-24px_rgba(19,28,59,0.4)]"
+                className="relative min-h-[21.25rem] w-full flex-1 overflow-hidden rounded-2xl shadow-ambient-feature"
                 data-sanity={dataAttribute?.("image")}
               >
                 <Image
@@ -209,10 +209,10 @@ export default function StoryFeature({
             ) : null}
           </figure>
 
-          <div className="flex min-w-0 flex-col gap-[1.125rem]">
+          <div className="flex min-w-0 flex-col gap-(--space-stack)">
             {richText?.length ? (
               <div
-                className="flex flex-col gap-[1.125rem] text-pretty typo-body-editorial text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-copper-600 [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
+                className="flex flex-col gap-(--space-stack) text-pretty typo-body-editorial text-muted-foreground [&_blockquote]:my-0.5 [&_blockquote]:border-l-[3px] [&_blockquote]:border-copper-600 [&_blockquote]:bg-transparent [&_blockquote]:py-0 [&_blockquote]:pl-[1.375rem] [&_blockquote]:pr-0 [&_blockquote]:text-xl [&_blockquote]:font-semibold [&_blockquote]:leading-[1.5]"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableText components={storyRichTextComponents} value={richText} />

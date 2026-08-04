@@ -76,6 +76,32 @@
   --surface-card-on-white: var(--phx-cream-050);
   --surface-card-default: var(--surface-card-on-cream);
 
+  /* -------------------------------------------------------------------------
+     Spacing system — one fluid recipe per rhythm role.
+     Responsive steps always use clamp(); fixed steps stay on the 4px grid.
+  ------------------------------------------------------------------------- */
+  --header-height: 5.375rem; /* 86px sticky header */
+  --space-section: clamp(5rem, 2.5vw + 4rem, 6rem); /* 80→96px standard section */
+  --space-section-lg: clamp(6rem, 3.75vw + 4.5rem, 7.5rem); /* 96→120px showpiece section */
+  --space-section-sm: clamp(4.5rem, 1.25vw + 4rem, 5rem); /* 72→80px page banner */
+  --space-header-gap: clamp(2.5rem, 1.875vw + 1.75rem, 3.25rem); /* 40→52px section header → content */
+  --space-split: clamp(2rem, 5vw, 4.5rem); /* 32→72px two-column feature gutter */
+  --space-stack: 1.125rem; /* 18px editorial paragraph stack */
+  --space-card: 1.75rem; /* 28px standard card padding */
+  --space-inset: clamp(1.75rem, 3.125vw + 0.5rem, 3rem); /* 28→48px feature inset panel */
+  --container-max: 80rem;
+  --container-narrow: 70rem;
+  --container-inline: clamp(1rem, 4vw, 2.5rem); /* 16→40px page gutter */
+
+  /* -------------------------------------------------------------------------
+     Shadow system — four named roles, per DESIGN.md Elevation & Depth.
+     Depth is ambient by default; these are the only shadow values in use.
+  ------------------------------------------------------------------------- */
+  --shadow-ambient-feature: 0 24px 64px rgba(19, 28, 59, 0.08); /* large inset panels, photos, feature figures */
+  --shadow-interactive-lift: 0 22px 48px rgba(19, 28, 59, 0.14); /* card hover, paired with ≤4px upward movement */
+  --shadow-menu-layer: 0 18px 44px rgba(19, 28, 59, 0.16); /* dropdowns, popovers, temporary overlays */
+  --shadow-teal-action: 0 14px 40px -12px rgba(31, 110, 140, 0.72); /* rare, emphasized primary actions on dark/feature surfaces */
+
   --radius: 0.5rem;
   --card: var(--surface-card-default);
   --card-foreground: var(--phx-text-heading);
@@ -204,28 +230,75 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ---------------------------------------------------------------------------
+   Containers — one page wrapper, one narrow feature wrapper.
+   Width and gutter are fluid; no stepped breakpoint widths.
+--------------------------------------------------------------------------- */
+
 @utility container {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  @media (width >= theme(--breakpoint-sm)) {
-    max-width: 640px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  @media (width >= theme(--breakpoint-md)) {
-    max-width: 768px;
-  }
-  @media (width >= theme(--breakpoint-lg)) {
-    max-width: 1024px;
-  }
-  @media (width >= theme(--breakpoint-xl)) {
-    max-width: 1280px;
-    padding-left: 4rem;
-    padding-right: 4rem;
-  }
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-inline);
+}
+
+@utility container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--container-inline);
+}
+
+/* ---------------------------------------------------------------------------
+   Section rhythm roles — one fluid recipe per role, mirroring typo-*.
+   section-pad: standard section. section-pad-lg: showpiece (award, team,
+   loan cards, YouTube). section-pad-sm: page banner. section-header-gap:
+   section header → content. gap-split: two-column feature gutter.
+--------------------------------------------------------------------------- */
+
+@utility section-pad {
+  padding-block: var(--space-section);
+}
+
+@utility section-pad-lg {
+  padding-block: var(--space-section-lg);
+}
+
+@utility section-pad-sm {
+  padding-block: var(--space-section-sm);
+}
+
+@utility section-header-gap {
+  margin-bottom: var(--space-header-gap);
+}
+
+@utility gap-split {
+  gap: var(--space-split);
+}
+
+@utility gap-x-split {
+  column-gap: var(--space-split);
+}
+
+/* ---------------------------------------------------------------------------
+   Shadow roles — the only four shadow values in the system. See DESIGN.md
+   Elevation & Depth. Do not introduce a fifth without documenting it there.
+--------------------------------------------------------------------------- */
+
+@utility shadow-ambient-feature {
+  box-shadow: var(--shadow-ambient-feature);
+}
+
+@utility shadow-interactive-lift {
+  box-shadow: var(--shadow-interactive-lift);
+}
+
+@utility shadow-menu-layer {
+  box-shadow: var(--shadow-menu-layer);
+}
+
+@utility shadow-teal-action {
+  box-shadow: var(--shadow-teal-action);
 }
 
 /* ---------------------------------------------------------------------------

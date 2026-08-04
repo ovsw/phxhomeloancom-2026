@@ -28,27 +28,25 @@ export default function FaqAccordion({
   const href = stegaClean(link?.href);
 
   return (
-    <section className="my-8" id="faq">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex w-full flex-col items-center">
-          <div className="flex flex-col items-center space-y-4 text-center sm:space-y-6">
-            {stegaClean(eyebrow)?.trim() ? (
-              <Badge variant="secondary">{eyebrow}</Badge>
-            ) : null}
-            {stegaClean(title)?.trim() ? (
-              <h2 className="text-balance typo-section-heading">
-                {title}
-              </h2>
-            ) : null}
-            {stegaClean(subtitle)?.trim() ? (
-              <h3 className="text-balance typo-lead text-muted-foreground">
-                {subtitle}
-              </h3>
-            ) : null}
-          </div>
+    <section className="scroll-mt-24 section-pad" id="faq">
+      <div className="container">
+        <div className="flex flex-col items-center text-center section-header-gap">
+          {stegaClean(eyebrow)?.trim() ? (
+            <Badge className="mb-3.5" variant="secondary">{eyebrow}</Badge>
+          ) : null}
+          {stegaClean(title)?.trim() ? (
+            <h2 className="text-balance typo-section-heading">
+              {title}
+            </h2>
+          ) : null}
+          {stegaClean(subtitle)?.trim() ? (
+            <h3 className="mt-5 text-balance typo-lead text-muted-foreground">
+              {subtitle}
+            </h3>
+          ) : null}
         </div>
 
-        <div className="mx-auto my-16 max-w-xl">
+        <div className="mx-auto max-w-xl">
           {visibleFaqs.length ? (
             <Accordion
               className="w-full"

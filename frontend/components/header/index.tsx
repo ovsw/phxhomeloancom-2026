@@ -6,7 +6,7 @@ export { Header } from "./site-header";
 
 export function HeaderFallback() {
   return (
-    <header aria-busy className="sticky top-0 z-[60] h-[86px] w-full border-b border-border/80 bg-background/95" />
+    <header aria-busy className="sticky top-0 z-[60] h-(--header-height) w-full border-b border-border/80 bg-background/95" />
   );
 }
 

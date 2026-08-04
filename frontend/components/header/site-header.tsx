@@ -13,7 +13,7 @@ export function Header({ model }: { model: HeaderModel }) {
 
   return (
     <SiteHeaderShell>
-      <div className="mx-auto flex h-[86px] w-full max-w-7xl items-center justify-between gap-4 px-5 md:px-8 lg:px-5 xl:gap-8 xl:px-10">
+      <div className="container flex h-(--header-height) items-center justify-between gap-4 xl:gap-8">
         <Link aria-label="Home page" className="flex h-14 shrink-0 items-center" href="/">
           {brand}
         </Link>

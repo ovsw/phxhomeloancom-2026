@@ -118,13 +118,13 @@ export default function LocationMap({
     <section
       aria-labelledby={displayTitle ? headingId : undefined}
       className={cn(
-        "px-4 py-20 md:px-6 md:py-24 lg:px-10 lg:py-[6.875rem]",
+        "section-pad",
         creamSurface ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
-      <div className="mx-auto w-full max-w-7xl">
-        <header className="mb-11 grid items-end gap-6 md:grid-cols-[minmax(0,35rem)_auto] md:justify-between md:gap-12">
+      <div className="container">
+        <header className="grid items-end gap-6 section-header-gap md:grid-cols-[minmax(0,35rem)_auto] md:justify-between md:gap-12">
           <div>
             {displayEyebrow ? (
               <p
@@ -158,7 +158,7 @@ export default function LocationMap({
         </header>
 
         <div className="grid items-stretch gap-6 min-[641px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-2xl border border-border bg-[var(--phx-navy-900)] shadow-[0_24px_56px_rgba(19,28,59,0.12)] md:min-h-[30rem]">
+          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-2xl border border-border bg-[var(--phx-navy-900)] shadow-ambient-feature md:min-h-[30rem]">
             {image?.asset?._id ? (
               <Image
                 alt={stegaClean(image.alt) || ""}
@@ -196,7 +196,7 @@ export default function LocationMap({
           </figure>
 
           <div
-            className="relative min-h-[30rem] overflow-hidden rounded-2xl border border-border bg-muted shadow-[0_24px_56px_rgba(19,28,59,0.12)]"
+            className="relative min-h-[30rem] overflow-hidden rounded-2xl border border-border bg-muted shadow-ambient-feature"
             data-sanity={dataAttribute?.("mapEmbedUrl")}
           >
             {cleanMapEmbedUrl && cleanMapTitle ? (
@@ -210,7 +210,7 @@ export default function LocationMap({
                 title={cleanMapTitle}
               />
             ) : null}
-            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-xl border border-border bg-white/95 px-6 py-5 shadow-[0_14px_36px_rgba(19,28,59,0.18)] backdrop-blur-sm md:top-6 md:right-auto md:left-6">
+            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-xl border border-border bg-white/95 px-6 py-5 shadow-menu-layer backdrop-blur-sm md:top-6 md:right-auto md:left-6">
               {displayBusinessName ? (
                 <p
                   className="typo-button text-[#131c3b]"

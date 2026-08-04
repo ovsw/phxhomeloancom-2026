@@ -101,16 +101,16 @@ export default function ContactFormClient({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "py-20 md:py-[5.5rem] lg:pb-[6.875rem]",
+        "section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
-      <div className="container grid gap-12 min-[901px]:grid-cols-[0.9fr_1.25fr] min-[901px]:items-start min-[901px]:gap-[clamp(2rem,5vw,5rem)]">
-        <div className="grid gap-11">
-          <div className="grid gap-4">
+      <div className="container grid gap-(--space-header-gap) min-[901px]:grid-cols-[0.9fr_1.25fr] min-[901px]:items-start min-[901px]:gap-split">
+        <div className="grid gap-10">
+          <div>
             {displayEyebrow ? (
               <p
-                className="typo-eyebrow text-primary"
+                className="mb-3.5 typo-eyebrow text-primary"
                 data-sanity={dataAttributes?.eyebrow}
               >
                 {eyebrow}
@@ -127,7 +127,7 @@ export default function ContactFormClient({
             ) : null}
             {displayDescription ? (
               <p
-                className="max-w-xl text-pretty typo-lead text-muted-foreground"
+                className="mt-5 max-w-xl text-pretty typo-lead text-muted-foreground"
                 data-sanity={dataAttributes?.description}
               >
                 {description}
@@ -146,7 +146,7 @@ export default function ContactFormClient({
               <dl className="border-t border-border typo-body-sm text-foreground/75">
                 {visibleOfficeHours.map(({ index, row }) => (
                   <div
-                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border py-[13px]"
+                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border py-3"
                     key={row._key}
                   >
                     <dt data-sanity={dataAttributes?.officeHours?.[index]?.days}>
@@ -165,12 +165,12 @@ export default function ContactFormClient({
           ) : null}
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-7 shadow-[0_20px_48px_rgba(19,28,59,0.07)] md:p-12">
+        <div className="rounded-2xl border border-border bg-card p-(--space-inset) shadow-ambient-feature">
           {/* Keep controls unnamed and non-submitting until server-side delivery exists. */}
           <form
             aria-describedby={availabilityId}
             aria-labelledby={formTitleId}
-            className="grid gap-[22px]"
+            className="grid gap-5"
             ref={formRef}
             onSubmit={(event) => {
               event.preventDefault();
@@ -254,7 +254,7 @@ export default function ContactFormClient({
               />
             </label>
 
-            <div className="flex flex-wrap items-center gap-[18px]">
+            <div className="flex flex-wrap items-center gap-5">
               <Button
                 className="h-12 rounded-[9px] px-8"
                 size="lg"

@@ -121,7 +121,7 @@ function ImpactStatement({
   }
 
   return (
-    <aside className="grid min-w-0 gap-7 rounded-lg bg-[var(--phx-navy-900)] px-7 py-9 text-white md:px-10 md:py-10 lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
+    <aside className="grid min-w-0 gap-7 rounded-lg bg-[var(--phx-navy-900)] p-(--space-inset) text-white lg:col-span-2 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] lg:items-center lg:gap-12">
       <div className="min-w-0">
         <p
           className="break-words typo-stat-lg"
@@ -187,16 +187,16 @@ export default function EditorialChapter({
     <section
       aria-labelledby={hasTitle ? headingId : undefined}
       className={cn(
-        "py-20 md:py-24",
+        "section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
       <div className="container">
-        <div className="grid items-start gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-x-[clamp(3rem,8vw,8rem)] lg:gap-y-12">
+        <div className="grid items-start gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-x-split lg:gap-y-12">
           <header>
             {hasText(eyebrow) ? (
               <p
-                className="mb-[18px] typo-eyebrow text-primary"
+                className="mb-3.5 typo-eyebrow text-primary"
                 data-sanity={dataAttribute?.("eyebrow")}
               >
                 {eyebrow}
@@ -216,7 +216,7 @@ export default function EditorialChapter({
           <div className="grid min-w-0 gap-9">
             {richText?.length ? (
               <div
-                className="grid gap-4 text-pretty typo-body-editorial text-muted-foreground [&_p]:!mb-0"
+                className="grid gap-(--space-stack) text-pretty typo-body-editorial text-muted-foreground [&_p]:!mb-0"
                 data-sanity={dataAttribute?.("richText")}
               >
                 <PortableTextRenderer value={richText} />

@@ -124,13 +124,13 @@ function TeamMemberProfile({
 
   return (
     <article
-      className="grid items-center gap-[clamp(2rem,5vw,4.5rem)] md:grid-cols-[0.82fr_1.18fr]"
+      className="grid items-center gap-split md:grid-cols-[0.82fr_1.18fr]"
       data-sanity={referenceDataAttribute}
     >
       {hasImage && member.image ? (
         <div
           className={cn(
-            "aspect-[4/5] w-full max-w-[26.25rem] overflow-hidden rounded-2xl bg-[var(--phx-navy-900)] shadow-[0_30px_66px_rgba(19,28,59,0.24)]",
+            "aspect-[4/5] w-full max-w-[26.25rem] overflow-hidden rounded-2xl bg-[var(--phx-navy-900)] shadow-ambient-feature",
             reverse && "md:order-2 md:justify-self-end",
           )}
         >
@@ -148,7 +148,7 @@ function TeamMemberProfile({
           />
         </div>
       ) : null}
-      <div className={cn("grid gap-[1.125rem]", reverse && "md:order-1")}>
+      <div className={cn("grid gap-(--space-stack)", reverse && "md:order-1")}>
         {hasName ? (
           <h3
             className="text-balance typo-feature-heading text-foreground"
@@ -208,30 +208,34 @@ export default function TeamMembers({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "px-4 py-[6.875rem] md:px-6 md:py-[7.375rem] lg:px-10",
+        "section-pad-lg",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
       id="team"
     >
-      <div className="mx-auto grid w-full max-w-7xl gap-[4.75rem]">
-        <header className="mx-auto grid max-w-[47.5rem] justify-items-center gap-3.5 text-center">
-          {displayEyebrow ? (
-            <p
-              className="typo-eyebrow text-primary"
-              data-sanity={dataAttribute?.("eyebrow")}
-            >
-              {eyebrow}
-            </p>
-          ) : null}
-          {displayTitle ? (
-            <h2
-              className="text-balance typo-section-heading text-foreground"
-              data-sanity={dataAttribute?.("title")}
-              id={titleId}
-            >
-              {title}
-            </h2>
+      <div className="container grid gap-(--space-header-gap)">
+        <header className="mx-auto grid max-w-[47.5rem] justify-items-center gap-5 text-center">
+          {displayEyebrow || displayTitle ? (
+            <div>
+              {displayEyebrow ? (
+                <p
+                  className="mb-3.5 typo-eyebrow text-primary"
+                  data-sanity={dataAttribute?.("eyebrow")}
+                >
+                  {eyebrow}
+                </p>
+              ) : null}
+              {displayTitle ? (
+                <h2
+                  className="text-balance typo-section-heading text-foreground"
+                  data-sanity={dataAttribute?.("title")}
+                  id={titleId}
+                >
+                  {title}
+                </h2>
+              ) : null}
+            </div>
           ) : null}
           {richText?.length ? (
             <div

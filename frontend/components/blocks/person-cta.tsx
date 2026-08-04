@@ -129,11 +129,11 @@ export default function PersonCta({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "px-4 pb-20 pt-14 min-[700px]:px-8 min-[700px]:py-16 lg:px-10 lg:py-24",
+        "section-pad",
         creamSurface ? "surface-cream" : "surface-white",
       )}
     >
-      <div className="mx-auto grid w-full max-w-[70rem] items-center gap-10 min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] min-[700px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-[clamp(2.25rem,5vw,4.5rem)]">
+      <div className="container-narrow grid items-center gap-split min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <div className="relative mx-auto flex w-full max-w-[18.75rem] items-end justify-center overflow-hidden sm:max-w-[20rem] lg:max-w-none">
           <div
             aria-hidden="true"
@@ -159,22 +159,26 @@ export default function PersonCta({
         </div>
 
         <div className="grid justify-items-start gap-5">
-          {displayEyebrow ? (
-            <p
-              className="typo-eyebrow text-primary"
-              data-sanity={dataAttribute?.("eyebrow")}
-            >
-              {eyebrow}
-            </p>
-          ) : null}
-          {displayTitle ? (
-            <h2
-              className="text-balance typo-section-heading text-foreground"
-              data-sanity={dataAttribute?.("title")}
-              id={titleId}
-            >
-              {title}
-            </h2>
+          {displayEyebrow || displayTitle ? (
+            <div>
+              {displayEyebrow ? (
+                <p
+                  className="mb-3.5 typo-eyebrow text-primary"
+                  data-sanity={dataAttribute?.("eyebrow")}
+                >
+                  {eyebrow}
+                </p>
+              ) : null}
+              {displayTitle ? (
+                <h2
+                  className="text-balance typo-section-heading text-foreground"
+                  data-sanity={dataAttribute?.("title")}
+                  id={titleId}
+                >
+                  {title}
+                </h2>
+              ) : null}
+            </div>
           ) : null}
           {richText?.length ? (
             <div

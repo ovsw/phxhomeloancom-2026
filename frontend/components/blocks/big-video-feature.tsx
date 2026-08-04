@@ -148,7 +148,7 @@ export default function BigVideoFeature({
   return (
     <section
       aria-labelledby={displayTitle ? headingId : undefined}
-      className="relative overflow-hidden bg-[var(--phx-navy-800)] py-[4.5rem] md:py-[5.5rem]"
+      className="relative overflow-hidden bg-[var(--phx-navy-800)] section-pad"
     >
       <div
         aria-hidden="true"
@@ -174,13 +174,13 @@ export default function BigVideoFeature({
         ) : null}
         {displayDescription ? (
           <p
-            className="mb-[1.875rem] mt-5 max-w-[38.75rem] text-pretty typo-body-editorial text-white/70"
+            className="mb-8 mt-5 max-w-[38.75rem] text-pretty typo-body-editorial text-white/70"
             data-sanity={dataAttributes?.description}
           >
             {description}
           </p>
         ) : (
-          <div className="h-[1.875rem]" />
+          <div className="h-8" />
         )}
 
         <button

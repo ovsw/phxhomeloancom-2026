@@ -62,36 +62,38 @@ export default function YoutubeChannelFeature({
   return (
     <section
       aria-labelledby={stegaClean(title)?.trim() ? titleId : undefined}
-      className="relative overflow-hidden bg-[var(--phx-navy-900)] px-4 py-[6.25rem] md:px-10"
+      className="relative overflow-hidden bg-[var(--phx-navy-900)] section-pad-lg"
     >
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-[radial-gradient(760px_380px_at_12%_-14%,rgba(180,85,45,0.24),transparent_68%),radial-gradient(620px_360px_at_96%_110%,rgba(180,85,45,0.12),transparent_70%)]"
       />
-      <div className="relative mx-auto w-full max-w-7xl">
-        <div className="grid max-w-[35rem] justify-items-start gap-[1.375rem] max-[900px]:max-w-none min-[901px]:max-w-[min(35rem,52%)]">
-          <p
-            className="typo-eyebrow text-label-on-dark/90"
-            data-sanity={dataAttribute?.("eyebrow")}
-          >
-            {eyebrow}
-          </p>
-          <h2
-            className="text-balance typo-section-heading text-white"
-            data-sanity={dataAttribute?.("title")}
-            id={titleId}
-          >
-            {title}
-          </h2>
+      <div className="container relative">
+        <div className="grid max-w-[35rem] justify-items-start gap-5 max-[900px]:max-w-none min-[901px]:max-w-[min(35rem,52%)]">
+          <div>
+            <p
+              className="mb-3.5 typo-eyebrow text-label-on-dark/90"
+              data-sanity={dataAttribute?.("eyebrow")}
+            >
+              {eyebrow}
+            </p>
+            <h2
+              className="text-balance typo-section-heading text-white"
+              data-sanity={dataAttribute?.("title")}
+              id={titleId}
+            >
+              {title}
+            </h2>
+          </div>
           {richText?.length ? (
             <div
-              className="grid gap-[1.125rem] text-pretty typo-body-editorial text-white/70"
+              className="grid gap-(--space-stack) text-pretty typo-body-editorial text-white/70"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableText components={richTextComponents} value={richText} />
             </div>
           ) : null}
-          <dl className="grid w-full grid-cols-3 gap-x-2 pt-1.5 min-[901px]:flex min-[901px]:w-auto min-[901px]:flex-wrap min-[901px]:gap-x-[clamp(1.75rem,4vw,3.5rem)] min-[901px]:gap-y-5">
+          <dl className="grid w-full grid-cols-3 gap-x-2 pt-1.5 min-[901px]:flex min-[901px]:w-auto min-[901px]:flex-wrap min-[901px]:gap-x-10 min-[901px]:gap-y-5">
             {facts?.map((fact) => (
               <div className="grid min-w-0 gap-1" key={fact._key}>
                 <dt

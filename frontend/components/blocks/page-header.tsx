@@ -29,7 +29,7 @@ export default function PageHeader({
   if (!cleanTitle) return null;
 
   return (
-    <section className="relative overflow-hidden bg-[var(--phx-navy-900)] py-[4.625rem] text-white md:py-[4.875rem]">
+    <section className="relative overflow-hidden bg-[var(--phx-navy-900)] text-white section-pad-sm">
       <div
         aria-hidden="true"
         className="absolute inset-0"
@@ -44,7 +44,7 @@ export default function PageHeader({
         {cleanEyebrow ? (
           <nav
             aria-label="Breadcrumb"
-            className="mb-[1.375rem] flex items-center gap-2.5 typo-fine-print font-medium text-white/55"
+            className="mb-5 flex items-center gap-2.5 typo-fine-print font-medium text-white/55"
           >
             <Link
               className="text-white/65 no-underline transition-colors hover:text-white"
@@ -80,7 +80,7 @@ export default function PageHeader({
         ) : null}
 
         {visibleStatistics.length ? (
-          <div className="mt-11 flex flex-wrap gap-x-[clamp(2rem,5vw,4.5rem)] gap-y-8 border-t border-white/15 pt-8">
+          <div className="mt-10 flex flex-wrap gap-x-split gap-y-8 border-t border-white/15 pt-8">
             {visibleStatistics.map((statistic) => (
               <div className="flex flex-col gap-1" key={statistic._key}>
                 <p

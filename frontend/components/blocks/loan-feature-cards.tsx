@@ -160,7 +160,7 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
   const href = stegaClean(card.link?.href);
   const title = getLoanDisplayTitle(card);
   const content = (
-    <article className="group flex h-full min-h-[255px] flex-col rounded-xl border border-border bg-card p-7 text-card-foreground transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(19,28,59,0.1)] md:p-[1.875rem]">
+    <article className="group flex h-full min-h-[255px] flex-col rounded-xl border border-border bg-card p-(--space-card) text-card-foreground transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-interactive-lift">
       <div className="mb-6 flex size-[46px] items-center justify-center rounded-[11px] bg-secondary text-primary">
         <LoanIcon icon={card.icon} />
       </div>
@@ -198,7 +198,7 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
 
 function LoanHelpCard() {
   return (
-    <article className="flex h-full min-h-[255px] flex-col justify-center rounded-xl bg-primary p-7 text-primary-foreground md:p-[1.875rem]">
+    <article className="flex h-full min-h-[255px] flex-col justify-center rounded-xl bg-primary p-(--space-card) text-primary-foreground">
       <div className="mb-5 flex size-[46px] items-center justify-center rounded-[11px] bg-white/15 text-white">
         <HelpIcon />
       </div>
@@ -226,13 +226,13 @@ export default function LoanFeatureCards({
   return (
     <section
       className={cn(
-        "scroll-mt-24 py-24 md:py-[6.875rem]",
+        "scroll-mt-24 section-pad-lg",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       id="loan-options"
     >
-      <div className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
-        <div className="mb-11 flex flex-wrap items-end justify-between gap-10 md:mb-[3.25rem] md:gap-12">
+      <div className="container">
+        <div className="flex flex-wrap items-end justify-between gap-10 section-header-gap md:gap-12">
           <div className="max-w-xl">
             <p className="mb-3.5 typo-eyebrow text-primary">
               {getSectionEyebrow(eyebrow)}
@@ -243,7 +243,7 @@ export default function LoanFeatureCards({
           </div>
           <p className="max-w-[25rem] typo-body-editorial text-muted-foreground">{introCopy}</p>
         </div>
-        <div className={cn("grid gap-5 sm:grid-cols-2", cards.length > 2 ? "lg:grid-cols-3" : "lg:grid-cols-2")}>
+        <div className={cn("grid gap-6 sm:grid-cols-2", cards.length > 2 ? "lg:grid-cols-3" : "lg:grid-cols-2")}>
           {cards.map((card) => (
             <LoanCard card={card} key={card._key} />
           ))}

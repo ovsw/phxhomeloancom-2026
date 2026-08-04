@@ -58,7 +58,7 @@ export default function AwardCta({
 }: AwardCtaProps) {
   return (
     <section
-      className="relative isolate overflow-hidden bg-[var(--phx-navy-800)] py-20 text-white md:py-28 lg:py-[7.5rem]"
+      className="relative isolate overflow-hidden bg-[var(--phx-navy-800)] text-white section-pad-lg"
       id="award-cta"
     >
       <div
@@ -67,7 +67,7 @@ export default function AwardCta({
       />
       <ParticleField />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[70rem] flex-col items-center justify-center gap-10 px-4 text-center md:px-6 lg:flex-row lg:gap-20 lg:px-0 lg:text-left xl:gap-[5.25rem]">
+      <div className="container-narrow relative z-10 flex flex-col items-center justify-center gap-split text-center lg:flex-row lg:text-left">
         <div className="flex shrink-0 justify-center">
           <div className="relative aspect-[900/1256] h-[17rem] md:h-[22rem] lg:h-[28.75rem]">
             <Image

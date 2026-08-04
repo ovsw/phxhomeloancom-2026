@@ -89,12 +89,12 @@ export default function VideoFeature({
     <section
       aria-labelledby={cleanTitle ? headingId : undefined}
       className={cn(
-        "py-20 md:py-24 lg:py-28",
+        "section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       id="video-feature"
     >
-      <div className="mx-auto grid w-full max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-[72px] lg:px-8">
+      <div className="container grid gap-split lg:grid-cols-[1.05fr_1fr] lg:items-center">
         <div className="flex flex-col gap-3.5">
           <div className="overflow-hidden rounded-[14px] bg-[#0c1329] shadow-[0_28px_64px_rgba(19,28,59,0.22)]">
             <button
@@ -142,18 +142,22 @@ export default function VideoFeature({
         </div>
 
         <div className="flex max-w-2xl flex-col gap-5">
-          {cleanEyebrow ? (
-            <p className="typo-eyebrow text-primary">
-              {eyebrow}
-            </p>
-          ) : null}
-          {cleanTitle ? (
-            <h2
-              className="text-balance typo-section-heading text-foreground"
-              id={headingId}
-            >
-              {title}
-            </h2>
+          {cleanEyebrow || cleanTitle ? (
+            <div>
+              {cleanEyebrow ? (
+                <p className="mb-3.5 typo-eyebrow text-primary">
+                  {eyebrow}
+                </p>
+              ) : null}
+              {cleanTitle ? (
+                <h2
+                  className="text-balance typo-section-heading text-foreground"
+                  id={headingId}
+                >
+                  {title}
+                </h2>
+              ) : null}
+            </div>
           ) : null}
           {richText?.length ? (
             <div className="text-pretty typo-body text-muted-foreground [&_p]:my-0">
