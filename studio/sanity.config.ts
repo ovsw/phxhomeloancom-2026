@@ -3,6 +3,7 @@ import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
 import { presentationTool } from "sanity/presentation";
 import { media } from "sanity-plugin-media";
+import { requireStudioDataset } from "./environment";
 import { schemaTypes } from "./schema-types";
 import { resolve } from "./presentation/resolve";
 import { structure } from "./structure";
@@ -22,7 +23,7 @@ const singletonTypes = new Set(["settings", "navigation"]);
 const nonCreatableTypes = singletonTypes;
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "your-project-id";
-const dataset = process.env.SANITY_STUDIO_DATASET || "production";
+const dataset = requireStudioDataset(process.env.SANITY_STUDIO_DATASET);
 const apiVersion = process.env.SANITY_STUDIO_API_VERSION || "2026-03-23";
 
 const SANITY_STUDIO_PREVIEW_URL =
