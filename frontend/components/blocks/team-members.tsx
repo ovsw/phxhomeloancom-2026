@@ -87,7 +87,7 @@ function ProfileContact({
       ) : null}
       {phone && phoneHref ? (
         <a
-          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] typo-button text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] typo-button text-primary no-underline transition-opacity hover:opacity-75 focus-underline"
           data-sanity={memberDataAttribute?.(member._id, "phone")}
           href={`tel:${phoneHref}`}
         >

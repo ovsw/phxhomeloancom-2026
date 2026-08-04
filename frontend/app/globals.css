@@ -245,6 +245,19 @@
      shape, so it is exempt from the scale; its base still uses the frame role. */
   --radius-arch: 13.75rem;
 
+  /* Focus roles — one ring, two surfaces. See DESIGN.md Focus.
+     The ring is solid, never faded: it is an accessibility affordance, and
+     dropping it to 20–40% opacity puts it under the 3:1 contrast floor. */
+  --focus-ring-width: 3px;
+  --focus-ring-color: var(--ring); /* accent — 4.6:1 on cream */
+  --focus-ring-offset: 2px;
+
+  /* Dark sections: the accent disappears on navy, so the ring switches to the
+     on-dark label colour and takes a wider gap to separate from the backdrop. */
+  --focus-ring-color-on-dark: var(--phx-label-on-dark); /* 8.5:1 on navy-900 */
+  --focus-ring-offset-on-dark: 4px;
+  --focus-ring-offset-color-on-dark: var(--phx-navy-900);
+
   /* Control geometry — the two button/control sizes. See DESIGN.md
      Components → Buttons. Interactive controls are rounded-lg (8px);
      call sites must not override height, padding, or radius. */
@@ -349,6 +362,62 @@
 
 @utility rounded-frame-inner {
   border-radius: var(--radius-frame-inner);
+}
+
+/* ---------------------------------------------------------------------------
+   Focus roles — see DESIGN.md Focus. Every focusable element wears exactly one
+   of these; no call site writes its own ring colour, width, or offset.
+
+   focus-ring         anything with its own box: buttons, inputs, nav items,
+                      cards, media posters, icon buttons.
+   focus-ring-on-dark the same, on a navy section where the accent would vanish.
+   focus-underline    inline text links that can wrap. An outline follows the
+                      text shape across line breaks; a ring would draw one
+                      rectangle around the whole line box.
+
+   All three key off :focus-visible, never :focus — a plain :focus fires on
+   mouse click and shows the indicator to people who did not ask for it.
+
+   The ring is a box-shadow, and box-shadow replaces rather than stacks — a
+   hover:shadow-* utility on the same element would otherwise erase it. Two
+   things keep that from happening:
+
+   1. These rules live in `@layer focus`, which Tailwind never declares. An
+      undeclared layer sorts after every declared one, so the ring outranks
+      any shadow utility regardless of source order. This is also why they
+      are plain classes rather than @utility — a utility would land back in
+      the `utilities` layer and lose to hover:shadow-* again.
+   2. An element whose drop shadow should survive while focused hands it to
+      --focus-ring-keep, which the ring appends to its own shadow list:
+        hover:[--focus-ring-keep:var(--shadow-interactive-lift)]
+--------------------------------------------------------------------------- */
+
+@layer focus {
+  .focus-ring:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 var(--focus-ring-offset) var(--background),
+      0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width))
+        var(--focus-ring-color),
+      var(--focus-ring-keep, 0 0 transparent);
+  }
+
+  .focus-ring-on-dark:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 var(--focus-ring-offset-on-dark)
+        var(--focus-ring-offset-color-on-dark),
+      0 0 0
+        calc(var(--focus-ring-offset-on-dark) + var(--focus-ring-width))
+        var(--focus-ring-color-on-dark),
+      var(--focus-ring-keep, 0 0 transparent);
+  }
+
+  .focus-underline:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -530,7 +599,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;

@@ -99,7 +99,7 @@ export default function VideoFeature({
           <div className="overflow-hidden rounded-frame bg-[#0c1329] shadow-media-frame">
             <button
               aria-label={playLabel}
-              className="group relative block aspect-video w-full overflow-hidden rounded-frame bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="group relative block aspect-video w-full overflow-hidden rounded-frame bg-[#0c1329] text-left focus-ring-on-dark"
               disabled={!embedUrl}
               onClick={() => {
                 if (embedUrl) setIsLightboxOpen(true);
@@ -214,7 +214,7 @@ export default function VideoFeature({
             </h3>
             <button
               aria-label="Close video"
-              className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-white/70"
+              className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20 focus-ring-on-dark"
               onClick={closeLightbox}
               ref={closeRef}
               type="button"

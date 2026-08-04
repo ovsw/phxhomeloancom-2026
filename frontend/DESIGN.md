@@ -165,6 +165,13 @@ rounded:
   frame-inner: "12px"
   arch: "13.75rem"
   pill: "999px"
+focus:
+  width: "3px"
+  color: "var(--ring)"
+  offset: "2px"
+  color-on-dark: "var(--phx-label-on-dark)"
+  offset-on-dark: "4px"
+  offset-color-on-dark: "var(--phx-navy-900)"
 spacing:
   section: "clamp(5rem, 2.5vw + 4rem, 6rem)"
   section-lg: "clamp(6rem, 3.75vw + 4.5rem, 7.5rem)"
@@ -567,6 +574,69 @@ the three it is.
 inner radius is the outer radius minus the gap between them. Corners that are
 not concentric read as a bulge, however small the difference.
 
+## Focus
+
+Focus is the one state a keyboard user navigates by, so it is a system role
+rather than a per-component decision. Every focusable element wears exactly one
+of three utilities, and no call site writes its own ring colour, width, or
+offset.
+
+| Role | Utility | Applies to |
+| --- | --- | --- |
+| Ring | `focus-ring` | Anything with its own box: buttons, inputs, nav items, cards, media posters, icon buttons |
+| Ring on dark | `focus-ring-on-dark` | The same, on a navy section where the accent would disappear |
+| Underline | `focus-underline` | Inline text links that can wrap |
+
+The ring is `3px` of the accent colour, separated from the element by a `2px`
+gap in the page background so it reads as a ring rather than a thickened
+border. On navy sections the accent falls below the contrast floor, so the ring
+switches to the on-dark label colour and takes a `4px` gap — at `2px` the warm
+ring and the dark backdrop fuse into a halo.
+
+Both ring colours clear the 3:1 non-text contrast threshold at full strength:
+the accent measures roughly 4.6:1 on cream, the on-dark label roughly 8.5:1 on
+navy. This is why the ring is never faded — the softened `20–40%` variants that
+preceded this system fell to about 1.9:1, below the floor.
+
+Inline links use an outline instead of a ring because an outline follows the
+text across a line break. A ring on a wrapping link draws one rectangle around
+the whole line box, which reads as a layout bug.
+
+All three key off `:focus-visible`, never `:focus`. A plain `:focus` fires on
+mouse click and shows the indicator to people who did not ask for it.
+
+### Documented Exceptions
+
+The ring is a `box-shadow`, and `box-shadow` replaces rather than stacks. Two
+mechanisms keep a `hover:shadow-*` utility from erasing it:
+
+1. The focus rules live in `@layer focus`, which Tailwind never declares. An
+   undeclared layer sorts after every declared one, so the ring outranks any
+   shadow utility regardless of source order. This is also why they are plain
+   classes rather than `@utility` — a utility would land back in the
+   `utilities` layer and lose.
+2. An element whose drop shadow should survive while focused hands it to
+   `--focus-ring-keep`, which the ring appends to its own shadow list:
+   `hover:[--focus-ring-keep:var(--shadow-interactive-lift)]`.
+
+Radix-driven menus keep `focus:bg-accent` for their roving highlight. That is a
+selection affordance the library manages by keyboard, not a focus indicator, so
+it sits outside these roles.
+
+### Named Rules
+
+**The One Ring Rule.** A focusable element wears one of the three focus roles
+and nothing else. A component that appears to need a custom ring is a component
+on a surface the system has not yet named.
+
+**The Ring Is Not Decoration Rule.** The focus ring is an accessibility
+affordance before it is a visual one. It is never faded, never softened to fit
+a composition, and never removed to tidy up a hover state.
+
+**The Indicator Follows the Shape Rule.** Boxes get rings; wrapping text gets
+outlines. Match the indicator to what the element actually is, not to whichever
+mechanism the surrounding component happened to use.
+
 ## Components
 
 Components should feel refined and reassuring, with tactile confidence. Shared
@@ -597,7 +667,8 @@ treated as drift.
 - **Ghost / Link:** Use only when hierarchy clearly calls for low emphasis.
 - **Hover:** Every solid and outline button lifts `2px` and takes the
   interactive-lift shadow. Ghost and link buttons do not lift.
-- **Focus:** Visible `3px` teal ring at `40%` opacity, plus a `1px` outline.
+- **Focus:** The `focus-ring` role. A button that lifts on hover also hands its
+  lift shadow to `--focus-ring-keep` so the shadow survives while focused.
 - **Emphasis:** An opt-in flag that adds the teal action shadow (or the copper
   equivalent) at rest. Reserved for the single action a page is built around.
 
@@ -631,9 +702,12 @@ explicit `emphasis` opt-in, never a default, and never more than one per screen.
 
 - **Style:** Soft Ivory background, `1.5px` Input Sand border, `8px` corners
   matching every other control, and comfortable `14px 16px` padding.
-- **Focus:** Advisor Teal border plus a visible translucent `3px` ring.
-- **Error / Disabled:** Error color and ring remain explicit; disabled fields
-  reduce opacity without removing labels or context.
+- **Focus:** Advisor Teal border plus the `focus-ring` role. The border shift
+  and the ring are complementary — the border marks the field, the ring marks
+  the keyboard position.
+- **Error / Disabled:** The error border stays explicit and the focus ring is
+  unchanged — an invalid field is still the field you are standing on. Disabled
+  fields reduce opacity without removing labels or context.
 
 ### Navigation
 

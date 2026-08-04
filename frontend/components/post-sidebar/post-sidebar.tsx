@@ -69,7 +69,7 @@ function HeadingLinks({ headings }: { headings: PostHeading[] }) {
       {headings.map((heading) => (
         <li key={heading.id}>
           <a
-            className="block rounded-sm py-1 text-sm leading-5 text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-ring"
+            className="block rounded-sm py-1 text-sm leading-5 text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-underline"
             href={`#${heading.id}`}
           >
             {heading.text}
@@ -90,7 +90,7 @@ function TableOfContents({ headings }: { headings: PostHeading[] }) {
     <div className="hidden lg:sticky lg:top-24 lg:block">
       <Card className="p-5">
         <details className="group" open>
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-sm text-sm font-semibold uppercase tracking-wide focus-visible:outline-[3px] focus-visible:outline-offset-4 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-sm text-sm font-semibold uppercase tracking-wide focus-underline [&::-webkit-details-marker]:hidden">
             <span>Table of Contents</span>
             <ChevronDown
               aria-hidden="true"

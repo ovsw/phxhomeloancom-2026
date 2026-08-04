@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T14:25:31Z",
+  "generatedAt": "2026-08-04T18:31:00Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -581,6 +581,43 @@
         "pill": "999px, reserved for compact labels, categories, and capsule controls."
       },
       "note": "Images carry no radius; the container that clips them owns the corner."
+    },
+    "focusMeta": {
+      "roles": [
+        {
+          "name": "focus-ring",
+          "width": "3px",
+          "color": "var(--ring)",
+          "offset": "2px",
+          "appliesTo": "Anything with its own box: buttons, inputs, nav items, cards, media posters, icon buttons.",
+          "contrast": "~4.6:1 accent on cream — clears the 3:1 non-text floor."
+        },
+        {
+          "name": "focus-ring-on-dark",
+          "width": "3px",
+          "color": "var(--phx-label-on-dark)",
+          "offset": "4px",
+          "offsetColor": "var(--phx-navy-900)",
+          "appliesTo": "The same, on a navy section where the accent would disappear. The wider gap keeps the warm ring from fusing with the dark backdrop.",
+          "contrast": "~8.5:1 on navy-900."
+        },
+        {
+          "name": "focus-underline",
+          "width": "3px",
+          "color": "var(--ring)",
+          "offset": "2px",
+          "appliesTo": "Inline text links that can wrap. An outline follows the text across a line break; a ring would draw one rectangle around the whole line box."
+        }
+      ],
+      "mechanism": {
+        "trigger": ":focus-visible only, never :focus — a plain :focus fires on mouse click and shows the indicator to people who did not ask for it.",
+        "layer": "Rules live in @layer focus, which Tailwind never declares. An undeclared layer sorts after every declared one, so the ring outranks any hover:shadow-* utility regardless of source order. This is also why they are plain classes rather than @utility.",
+        "--focus-ring-keep": "box-shadow replaces rather than stacks. An element whose drop shadow should survive while focused hands it to this custom property, which the ring appends to its own shadow list."
+      },
+      "exceptions": {
+        "radix-menus": "Radix-driven menus keep focus:bg-accent for their roving highlight. That is a selection affordance the library manages by keyboard, not a focus indicator, so it sits outside these roles."
+      },
+      "note": "The ring is never faded. The 20-40% opacity variants this system replaced measured about 1.9:1, below the 3:1 non-text contrast floor."
     }
   },
   "components": [
@@ -714,6 +751,21 @@
         "name": "The Concentric Inset Rule",
         "body": "When one rounded box sits inside another, the inner radius is the outer radius minus the gap between them. Corners that are not concentric read as a bulge, however small the difference.",
         "section": "shapes"
+      },
+      {
+        "name": "The One Ring Rule",
+        "body": "A focusable element wears one of the three focus roles and nothing else. A component that appears to need a custom ring is a component on a surface the system has not yet named.",
+        "section": "focus"
+      },
+      {
+        "name": "The Ring Is Not Decoration Rule",
+        "body": "The focus ring is an accessibility affordance before it is a visual one. It is never faded, never softened to fit a composition, and never removed to tidy up a hover state.",
+        "section": "focus"
+      },
+      {
+        "name": "The Indicator Follows the Shape Rule",
+        "body": "Boxes get rings; wrapping text gets outlines. Match the indicator to what the element actually is, not to whichever mechanism the surrounding component happened to use.",
+        "section": "focus"
       }
     ],
     "dos": [

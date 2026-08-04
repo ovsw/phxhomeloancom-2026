@@ -15,7 +15,7 @@ export function Header({ model }: { model: HeaderModel }) {
   return (
     <SiteHeaderShell>
       <div className="container flex h-(--header-height) items-center justify-between gap-4 xl:gap-8">
-        <Link aria-label="Home page" className="flex h-14 shrink-0 items-center" href="/">
+        <Link aria-label="Home page" className="flex h-14 shrink-0 items-center rounded-control focus-ring" href="/">
           {brand}
         </Link>
         <DesktopNav navigation={navigation} />

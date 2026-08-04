@@ -129,7 +129,7 @@ export default function PersonContactCta({
                     <li data-sanity={dataAttribute?.(path)} key={method._key}>
                       <a
                         className={cn(
-                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-visible:rounded-control focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/30",
+                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-ring",
                           methodType === "address"
                             ? "items-start"
                             : "items-center",

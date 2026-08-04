@@ -48,7 +48,7 @@ function ArticleCard({
   return (
     <Link
       aria-label={`Read post: ${stegaClean(title)}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(19,28,59,0.14)]"
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
       href={getArticleHref(article.slug)}
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -100,7 +100,7 @@ function SectionLink({ button }: Readonly<{ button?: NonNullable<LatestArticlesP
 
   return (
     <Link
-      className="typo-button text-primary transition-colors hover:text-accent-hover"
+      className="typo-button text-primary transition-colors hover:text-accent-hover focus-underline"
       href={href}
       rel={stegaClean(button.openInNewTab) ? "noopener noreferrer" : undefined}
       target={stegaClean(button.openInNewTab) ? "_blank" : undefined}

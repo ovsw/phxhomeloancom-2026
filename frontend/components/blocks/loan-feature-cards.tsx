@@ -186,7 +186,7 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
 
   return (
     <Link
-      className="group block h-full text-foreground no-underline"
+      className="group block h-full rounded-card text-foreground no-underline focus-ring"
       href={href}
       rel={card.link?.openInNewTab ? "noopener noreferrer" : undefined}
       target={card.link?.openInNewTab ? "_blank" : undefined}
@@ -205,7 +205,7 @@ function LoanHelpCard() {
       <h3 className="mb-4 typo-showcase-title">Not sure which fits?</h3>
       <p className="mb-6 typo-body-sm text-white/90">{helpCopy}</p>
       <Link
-        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-control bg-white px-6 typo-button text-primary no-underline transition-transform hover:-translate-y-0.5 hover:text-accent-hover"
+        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-control bg-white px-6 typo-button text-primary no-underline transition-transform hover:-translate-y-0.5 hover:text-accent-hover focus-ring-on-dark"
         href="#contact"
       >
         Ask us
