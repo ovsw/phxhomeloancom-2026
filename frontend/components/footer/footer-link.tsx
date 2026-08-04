@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import type { FooterLinkModel } from "./model";
 
 const baseClassName =
-  "break-words typo-body-sm text-white/80 transition-colors [overflow-wrap:anywhere] hover:text-white focus-ring-on-dark";
+  "break-words typo-body-sm text-white/80 transition-colors motion-fast [overflow-wrap:anywhere] hover:text-white focus-ring-on-dark";
 
 export function FooterLink({
   children,

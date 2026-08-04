@@ -127,7 +127,7 @@ export default function VideoFeature({
               )}
               <span className="absolute inset-0 bg-gradient-to-t from-[#080d1e]/50 to-[#080d1e]/5" />
               <span className="absolute inset-0 flex items-center justify-center">
-                <span className="flex size-[76px] items-center justify-center rounded-full bg-cyan-700 text-white shadow-[0_12px_32px_rgba(8,13,30,0.4)] transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105">
+                <span className="flex size-[76px] items-center justify-center rounded-full bg-cyan-700 text-white shadow-[0_12px_32px_rgba(8,13,30,0.4)] transition-transform motion-base group-hover:scale-105 group-focus-visible:scale-105">
                   <span
                     aria-hidden="true"
                     className="ml-1 h-0 w-0 border-y-[13px] border-y-transparent border-l-[21px] border-l-current"
@@ -214,7 +214,7 @@ export default function VideoFeature({
             </h3>
             <button
               aria-label="Close video"
-              className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20 focus-ring-on-dark"
+              className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors motion-fast hover:bg-white/20 focus-ring-on-dark"
               onClick={closeLightbox}
               ref={closeRef}
               type="button"

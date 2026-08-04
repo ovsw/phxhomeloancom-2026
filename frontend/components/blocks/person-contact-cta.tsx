@@ -129,7 +129,7 @@ export default function PersonContactCta({
                     <li data-sanity={dataAttribute?.(path)} key={method._key}>
                       <a
                         className={cn(
-                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-ring",
+                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity motion-fast hover:opacity-80 focus-ring",
                           methodType === "address"
                             ? "items-start"
                             : "items-center",
@@ -143,7 +143,7 @@ export default function PersonContactCta({
                           className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground"
                           data-sanity={dataAttribute?.(`${path}.type`)}
                         >
-                          <Icon aria-hidden="true" className="size-[1.125rem]" />
+                          <Icon aria-hidden="true" className="size-4" />
                         </span>
                         {methodType === "address" ? (
                           <address

@@ -71,7 +71,7 @@ function BigVideoLightbox({
         </h3>
         <button
           aria-label="Close video"
-          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20 focus-ring-on-dark"
+          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors motion-fast hover:bg-white/20 focus-ring-on-dark"
           onClick={onClose}
           ref={closeRef}
           type="button"
@@ -185,7 +185,7 @@ export default function BigVideoFeature({
 
         <button
           aria-label={displayTitle ? `Play: ${displayTitle}` : "Play video"}
-          className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-frame bg-[var(--phx-navy-900)] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] [--focus-ring-keep:0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-ring-on-dark disabled:cursor-not-allowed"
+          className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-frame bg-[var(--phx-navy-900)] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] [--focus-ring-keep:0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform motion-base hover:-translate-y-0.5 focus-ring-on-dark disabled:cursor-not-allowed"
           data-sanity={dataAttributes?.youtubeUrl}
           disabled={!embedUrl}
           onClick={() => setIsOpen(Boolean(embedUrl))}
@@ -211,7 +211,7 @@ export default function BigVideoFeature({
           ) : null}
           <span className="absolute inset-0 bg-gradient-to-b from-[var(--phx-navy-900)]/5 to-[var(--phx-navy-900)]/40" />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex size-16 items-center justify-center rounded-full bg-copper-600/95 text-white shadow-[0_12px_40px_var(--phx-copper-shadow)] transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 md:size-[5.5rem]">
+            <span className="flex size-16 items-center justify-center rounded-full bg-copper-600/95 text-white shadow-[0_12px_40px_var(--phx-copper-shadow)] transition-transform motion-base group-hover:scale-105 group-focus-visible:scale-105 md:size-[5.5rem]">
               <span
                 aria-hidden="true"
                 className="ml-1 h-0 w-0 border-y-[11px] border-y-transparent border-l-[18px] border-l-current md:border-y-[15px] md:border-l-[24px]"

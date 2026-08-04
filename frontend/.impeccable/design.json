@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T18:31:00Z",
+  "generatedAt": "2026-08-04T19:20:00Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -439,19 +439,19 @@
     ],
     "motion": [
       {
-        "name": "state-fast",
-        "value": "150ms ease-out",
-        "purpose": "Color, border, and focus feedback."
+        "name": "motion-fast",
+        "value": "150ms",
+        "purpose": "In-place paint: colour, opacity, a chevron rotating."
       },
       {
-        "name": "interactive-standard",
-        "value": "200ms ease-out",
-        "purpose": "Card lift and small spatial transitions."
+        "name": "motion-base",
+        "value": "200ms",
+        "purpose": "The default: hover lifts, card raises, focus."
       },
       {
-        "name": "navigation",
-        "value": "300ms ease-out",
-        "purpose": "Sticky navigation and menu movement; disabled for reduced motion."
+        "name": "motion-slow",
+        "value": "300ms",
+        "purpose": "Travel across the viewport: sticky header, drawers."
       }
     ],
     "breakpoints": [
@@ -618,6 +618,54 @@
         "radix-menus": "Radix-driven menus keep focus:bg-accent for their roving highlight. That is a selection affordance the library manages by keyboard, not a focus indicator, so it sits outside these roles."
       },
       "note": "The ring is never faded. The 20-40% opacity variants this system replaced measured about 1.9:1, below the 3:1 non-text contrast floor."
+    },
+    "motionMeta": {
+      "ease": "cubic-bezier(0.22, 0.61, 0.36, 1)",
+      "easeNote": "One decelerating curve for everything. Motion that decelerates arrives settled instead of stopping dead. Nothing eases in — an element that starts slowly feels unresponsive to the click that triggered it.",
+      "scale": "Speed follows travel distance, not importance. The further a thing moves, the longer it needs to stay believable.",
+      "split": "The roles set duration and timing-function only. The call site declares what animates (transition-colors, transition-transform), because the property list is a per-component decision and the speed is a system one.",
+      "entrance": {
+        "token": "--animate-fade-up",
+        "value": "700ms",
+        "why": "The one speed outside the scale. A scroll-in entrance reads as sluggish below 700ms; it is content arriving, not an interaction responding."
+      },
+      "reducedMotion": {
+        "strategy": "global",
+        "why": "A blanket guard rather than per-component motion-reduce: variants. Honouring the preference only where a developer remembered to opt in means it gets missed, and the misses are invisible to anyone not testing with the setting on.",
+        "transitions": "Collapse to 1ms, not 0, so transitionend still fires and any JS waiting on it does not hang.",
+        "travel": "Hover lifts and scale echoes are zeroed at the source. Tailwind v4 drives these through the standalone translate and scale properties rather than transform, so the guard resets --tw-translate-* and --tw-scale-*. A transform: none override silently does nothing.",
+        "kept": "Opacity and colour still change. A cross-fade carries no travel and is what most reduced-motion users expect to keep."
+      },
+      "exceptions": {
+        "transition-all": "Banned. It animates properties nobody intended, including layout ones, and is the usual cause of a mysteriously janky hover.",
+        "transform": "Left untouched by the reduced-motion guard. The theme toggle rotates its sun/moon icons through it, and that is a state indicator rather than decorative travel."
+      }
+    },
+    "iconMeta": {
+      "library": "lucide-react",
+      "strokeWidth": "1.5-1.7",
+      "scale": [
+        {
+          "name": "size-3.5",
+          "value": "14px",
+          "purpose": "Dense meta rows, inline hints."
+        },
+        {
+          "name": "size-4",
+          "value": "16px",
+          "purpose": "The default: inside buttons, links, list items."
+        },
+        {
+          "name": "size-5",
+          "value": "20px",
+          "purpose": "Standalone controls, section markers."
+        }
+      ],
+      "buttonDefault": "size-4 is applied automatically by the button's [&_svg:not([class*='size-'])]:size-4. An icon inside a button needs no size class at all.",
+      "exceptions": {
+        "circular-containers": "size-10 / size-[46px] / size-16 are surfaces, not icons — a filled disc holding an icon. They follow the shape and spacing scales; the icon inside them still comes from the scale above.",
+        "play-discs": "size-[76px] and md:size-[5.5rem] on media posters are scaled to the poster rather than to a UI scale — single-purpose decorative affordances, sized by composition."
+      }
     }
   },
   "components": [
@@ -766,6 +814,31 @@
         "name": "The Indicator Follows the Shape Rule",
         "body": "Boxes get rings; wrapping text gets outlines. Match the indicator to what the element actually is, not to whichever mechanism the surrounding component happened to use.",
         "section": "focus"
+      },
+      {
+        "name": "The Distance Sets the Duration Rule",
+        "body": "Pick a speed by how far the element travels, not by how important it is. A prominent button that moves 2px still uses motion-base; a modest drawer that crosses the screen still uses motion-slow.",
+        "section": "motion"
+      },
+      {
+        "name": "The One Curve Rule",
+        "body": "Everything decelerates on the same ease-out. A component that appears to need its own curve is nearly always a component that needs a different duration.",
+        "section": "motion"
+      },
+      {
+        "name": "The Opt-Out Is Not Optional Rule",
+        "body": "Reduced motion is handled globally, so new components inherit it. Never re-add movement in a way the guard cannot reach — if a new pattern needs a bespoke transform, it belongs in the guard too.",
+        "section": "motion"
+      },
+      {
+        "name": "The Three Sizes Rule",
+        "body": "An icon is size-3.5, size-4, or size-5. A value between them is drift — 17px and 18px are both a size-4 that someone nudged.",
+        "section": "icons"
+      },
+      {
+        "name": "The Icon Follows the Text Rule",
+        "body": "An icon beside a label matches that label's optical weight rather than being sized independently. When in doubt inside a control, add no size class and inherit the button default.",
+        "section": "icons"
       }
     ],
     "dos": [

@@ -15,7 +15,7 @@ type ContactFormClientProps = ContactFormBlock & {
 };
 
 const inputClassName =
-  "min-h-12 w-full rounded-control border-[1.5px] border-input bg-background px-4 py-3.5 text-base text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus-visible:border-primary focus-ring";
+  "min-h-12 w-full rounded-control border-[1.5px] border-input bg-background px-4 py-3.5 text-base text-foreground outline-none transition-[border-color,box-shadow] motion-fast placeholder:text-muted-foreground focus-visible:border-primary focus-ring";
 
 function inputCopy(
   field: ContactFormInputCopy | null,

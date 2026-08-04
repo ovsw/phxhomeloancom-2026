@@ -48,7 +48,7 @@ function ArticleCard({
   return (
     <Link
       aria-label={`Read post: ${stegaClean(title)}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,transform] motion-base hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
       href={getArticleHref(article.slug)}
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -56,7 +56,7 @@ function ArticleCard({
           <Image
             alt={image.alt || stegaClean(title)}
             blurDataURL={image.asset.metadata?.lqip || undefined}
-            className="rounded-none object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className="rounded-none object-cover transition-transform motion-slow group-hover:scale-[1.02]"
             fill
             placeholder={image.asset.metadata?.lqip ? "blur" : undefined}
             sizes="(min-width: 1024px) 30vw, (min-width: 768px) 50vw, 100vw"
@@ -86,7 +86,7 @@ function ArticleCard({
             {article.description}
           </p>
         ) : null}
-        <span className="mt-1 typo-button text-primary transition-colors group-hover:text-accent-hover">
+        <span className="mt-1 typo-button text-primary transition-colors motion-fast group-hover:text-accent-hover">
           Read post <span aria-hidden="true">&rarr;</span>
         </span>
       </div>
@@ -100,7 +100,7 @@ function SectionLink({ button }: Readonly<{ button?: NonNullable<LatestArticlesP
 
   return (
     <Link
-      className="typo-button text-primary transition-colors hover:text-accent-hover focus-underline"
+      className="typo-button text-primary transition-colors motion-fast hover:text-accent-hover focus-underline"
       href={href}
       rel={stegaClean(button.openInNewTab) ? "noopener noreferrer" : undefined}
       target={stegaClean(button.openInNewTab) ? "_blank" : undefined}

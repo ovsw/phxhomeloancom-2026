@@ -81,17 +81,17 @@ function ProfileContact({
           data-sanity={memberDataAttribute?.(member._id, "email")}
           href={`mailto:${email}`}
         >
-          <Mail aria-hidden="true" className="size-[1.0625rem]" strokeWidth={1.7} />
+          <Mail aria-hidden="true" className="size-4" strokeWidth={1.7} />
           Email {firstName}
         </a>
       ) : null}
       {phone && phoneHref ? (
         <a
-          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] typo-button text-primary no-underline transition-opacity hover:opacity-75 focus-underline"
+          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] typo-button text-primary no-underline transition-opacity motion-fast hover:opacity-75 focus-underline"
           data-sanity={memberDataAttribute?.(member._id, "phone")}
           href={`tel:${phoneHref}`}
         >
-          <Phone aria-hidden="true" className="size-[1.0625rem]" strokeWidth={1.7} />
+          <Phone aria-hidden="true" className="size-4" strokeWidth={1.7} />
           {member.phone}
         </a>
       ) : null}

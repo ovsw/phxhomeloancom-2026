@@ -272,7 +272,7 @@ function CarouselDots({
           key={index}
           onClick={() => goToSlide(index)}
           className={cn(
-            "rounded-full transition-colors p-2",
+            "rounded-full transition-colors motion-fast p-2",
             {
               "w-8 h-8 flex items-center justify-center": true,
             },

@@ -47,7 +47,7 @@ export default function PageHeader({
             className="mb-5 flex items-center gap-2.5 typo-fine-print font-medium text-white/55"
           >
             <Link
-              className="rounded-control text-white/65 no-underline transition-colors hover:text-white focus-ring-on-dark"
+              className="rounded-control text-white/65 no-underline transition-colors motion-fast hover:text-white focus-ring-on-dark"
               href="/"
             >
               Home

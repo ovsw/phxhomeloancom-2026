@@ -5,10 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Custom animations */
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-fade-up: fade-up 0.7s ease-out forwards;
+  /* Keyframe animations. These reuse the motion speeds and curve declared with
+     the other role tokens below, so a change there moves everything at once.
+     fade-up is the one deliberate exception: a scroll-in entrance reads as
+     sluggish under 700ms, which is longer than any interaction speed. */
+  --animate-accordion-down: accordion-down var(--motion-base) var(--motion-ease);
+  --animate-accordion-up: accordion-up var(--motion-base) var(--motion-ease);
+  --animate-fade-up: fade-up 700ms var(--motion-ease) forwards;
 }
 
 @keyframes accordion-down {
@@ -265,6 +268,15 @@
   --control-inline: 1.75rem;
   --control-height-compact: 2.5rem; /* compact: header, nav, dense UI */
   --control-inline-compact: 1.25rem;
+
+  /* Motion roles — three speeds and one curve. See DESIGN.md Motion.
+     Speed follows travel distance, not importance: the further a thing moves,
+     the longer it needs to stay believable. Everything decelerates — motion
+     that eases out arrives settled instead of stopping dead. */
+  --motion-fast: 150ms; /* in-place paint: colour, opacity, small icon spins */
+  --motion-base: 200ms; /* the default: hovers, lifts, focus, chevrons */
+  --motion-slow: 300ms; /* travel across the viewport: drawers, headers */
+  --motion-ease: cubic-bezier(0.22, 0.61, 0.36, 1); /* decelerating */
 }
 
 /* ---------------------------------------------------------------------------
@@ -340,6 +352,35 @@
 
 @utility shadow-media-frame {
   box-shadow: var(--shadow-media-frame);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion roles — see DESIGN.md Motion. Each pairs a speed with the house
+   curve, so a call site picks one class instead of a duration and an easing
+   that can drift apart.
+
+   motion-fast   in-place paint: colour, opacity, a chevron rotating.
+   motion-base   the default: hover lifts, focus, card raises.
+   motion-slow   travel across the viewport: the sticky header, drawers.
+
+   These set duration and timing-function only. The call site still declares
+   WHAT animates (transition-colors, transition-transform), because narrowing
+   the property list is per-component and transition-all is banned.
+--------------------------------------------------------------------------- */
+
+@utility motion-fast {
+  transition-duration: var(--motion-fast);
+  transition-timing-function: var(--motion-ease);
+}
+
+@utility motion-base {
+  transition-duration: var(--motion-base);
+  transition-timing-function: var(--motion-ease);
+}
+
+@utility motion-slow {
+  transition-duration: var(--motion-slow);
+  transition-timing-function: var(--motion-ease);
 }
 
 /* ---------------------------------------------------------------------------
@@ -652,9 +693,60 @@
   will-change: opacity, transform;
 }
 
+/* ---------------------------------------------------------------------------
+   Reduced motion — see DESIGN.md Motion.
+
+   A blanket guard, not a per-component opt-in. Someone who sets this at the OS
+   level is telling us that movement makes the site harder or more unpleasant to
+   use; honouring that only where a developer remembered to add motion-reduce:
+   means it gets missed, and the misses are invisible to anyone not testing with
+   the setting on.
+
+   Transitions collapse to 1ms rather than 0 so transitionend still fires and
+   any JS waiting on it does not hang. Movement and looping animation stop
+   outright; opacity and colour still change, because a cross-fade carries no
+   travel and is what most reduced-motion users expect to keep.
+--------------------------------------------------------------------------- */
+
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Looping ambience has no end state worth landing on — stop it entirely. */
   .particle-dot {
-    animation: none;
+    animation: none !important;
+  }
+
+  /* Entrance animations must not leave content stuck at their `from` state:
+     fade-up starts at opacity 0, so it has to resolve, not vanish. */
+  .animate-fade-up {
+    animation-fill-mode: forwards !important;
+  }
+
+  /* Hover lifts and scale echoes are pure travel — cancel the displacement
+     rather than merely making it fast.
+
+     Tailwind v4 drives these through the standalone `translate` and `scale`
+     properties, not `transform`, so zeroing the variables at the source kills
+     every lift and scale echo at once. Chasing the utility selectors instead
+     would miss any new one, and `transform: none` would miss all of them.
+
+     `transform` itself is left alone: menu-toggle rotates its sun/moon icons
+     through it, and that is a state indicator, not decorative travel. */
+  *,
+  *::before,
+  *::after {
+    --tw-translate-x: 0 !important;
+    --tw-translate-y: 0 !important;
+    --tw-scale-x: 100% !important;
+    --tw-scale-y: 100% !important;
+    --tw-scale-z: 100% !important;
   }
 }
 

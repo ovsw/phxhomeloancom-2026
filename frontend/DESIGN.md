@@ -172,6 +172,16 @@ focus:
   color-on-dark: "var(--phx-label-on-dark)"
   offset-on-dark: "4px"
   offset-color-on-dark: "var(--phx-navy-900)"
+motion:
+  fast: "150ms"
+  base: "200ms"
+  slow: "300ms"
+  entrance: "700ms"
+  ease: "cubic-bezier(0.22, 0.61, 0.36, 1)"
+icon:
+  sm: "0.875rem"
+  base: "1rem"
+  lg: "1.25rem"
 spacing:
   section: "clamp(5rem, 2.5vw + 4rem, 6rem)"
   section-lg: "clamp(6rem, 3.75vw + 4.5rem, 7.5rem)"
@@ -637,6 +647,124 @@ a composition, and never removed to tidy up a hover state.
 outlines. Match the indicator to what the element actually is, not to whichever
 mechanism the surrounding component happened to use.
 
+## Motion
+
+Motion here is confirmation, not entertainment. A hover lift says "this is
+clickable," a chevron rotation says "this is open." Nothing moves to be noticed.
+
+Three speeds, one curve. Speed follows **travel distance**, not importance: the
+further something moves, the longer it needs to stay believable. A colour change
+covers no distance and should be nearly instant; a drawer crossing the viewport
+needs time or it reads as a glitch.
+
+| Role | Duration | Use for |
+| --- | --- | --- |
+| `motion-fast` | `150ms` | In-place paint: colour, opacity, a chevron rotating |
+| `motion-base` | `200ms` | The default: hover lifts, card raises, focus |
+| `motion-slow` | `300ms` | Travel across the viewport: sticky header, drawers |
+
+Everything uses one easing curve, `cubic-bezier(0.22, 0.61, 0.36, 1)` — a
+decelerating ease-out. Motion that decelerates arrives settled instead of
+stopping dead. Nothing in this system eases *in*: an element that starts slowly
+is an element that feels unresponsive to the click that triggered it.
+
+The roles set duration and easing only. The call site still declares *what*
+animates:
+
+```
+transition-colors motion-fast
+transition-[box-shadow,transform] motion-base
+```
+
+This split is deliberate. Which properties animate is a per-component decision;
+how fast is a system decision.
+
+Entrance animation is the one speed outside the scale. `animate-fade-up` runs
+`700ms` because a scroll-in entrance reads as sluggish below that — it is
+content arriving, not an interaction responding.
+
+### Reduced Motion
+
+`prefers-reduced-motion: reduce` is honoured by a **global guard**, not by
+per-component `motion-reduce:` variants. Someone who sets this at the OS level
+is saying movement makes the site harder or more unpleasant to use. Honouring
+that only where a developer remembered to opt in means it gets missed, and the
+misses are invisible to anyone not testing with the setting on.
+
+Under the guard:
+
+- Transitions and animations collapse to `1ms` — not `0`, so `transitionend`
+  still fires and any JS waiting on it does not hang.
+- Looping ambience (`.particle-dot`) stops outright; it has no end state worth
+  landing on.
+- Hover lifts and scale echoes are zeroed at the source. Tailwind v4 drives
+  these through the standalone `translate` and `scale` properties rather than
+  `transform`, so the guard resets `--tw-translate-*` and `--tw-scale-*`. A
+  `transform: none` override would silently do nothing.
+- Opacity and colour still change. A cross-fade carries no travel, and it is
+  what most reduced-motion users expect to keep.
+
+### Documented Exceptions
+
+`transition-all` is banned. It animates properties nobody intended, including
+layout ones, and is the usual cause of a mysteriously janky hover. Name the
+properties.
+
+`transform` is left untouched by the reduced-motion guard. The theme toggle
+rotates its sun/moon icons through it, and that is a state indicator rather than
+decorative travel.
+
+### Named Rules
+
+**The Distance Sets the Duration Rule.** Pick a speed by how far the element
+travels, not by how important it is. A prominent button that moves 2px still
+uses `motion-base`; a modest drawer that crosses the screen still uses
+`motion-slow`.
+
+**The One Curve Rule.** Everything decelerates on the same ease-out. A component
+that appears to need its own curve is nearly always a component that needs a
+different duration.
+
+**The Opt-Out Is Not Optional Rule.** Reduced motion is handled globally, so new
+components inherit it. Never re-add movement in a way the guard cannot reach —
+if a new pattern needs a bespoke transform, it belongs in the guard too.
+
+## Icons
+
+Icons are drawn from `lucide-react` at a `1.5`–`1.7` stroke weight, sized on a
+three-step scale. They are supporting marks, not illustrations: an icon labels
+or reinforces adjacent text and never carries meaning alone.
+
+| Token | Size | Use for |
+| --- | --- | --- |
+| `size-3.5` | `14px` | Dense meta rows, inline hints |
+| `size-4` | `16px` | The default: inside buttons, links, list items |
+| `size-5` | `20px` | Standalone controls, section markers |
+
+`size-4` is the button default, applied automatically by the button's
+`[&_svg:not([class*='size-'])]:size-4`. An icon inside a button needs no size
+class at all.
+
+### Documented Exceptions
+
+Circular containers (`size-10`, `size-[46px]`, `size-16`) are **surfaces, not
+icons** — a filled disc holding an icon. They follow the shape and spacing
+scales; the icon inside them still comes from the table above.
+
+Play-button discs on media posters (`size-[76px]`, `md:size-[5.5rem]`) are
+scaled to the poster rather than to a UI scale. They are single-purpose
+decorative affordances, sized by composition.
+
+### Named Rules
+
+**The Three Sizes Rule.** An icon is `size-3.5`, `size-4`, or `size-5`. A value
+between them is drift — `17px` and `18px` are both a `size-4` that someone
+nudged.
+
+**The Icon Follows the Text Rule.** An icon beside a label matches that label's
+optical weight rather than being sized independently. When in doubt inside a
+control, add no size class and inherit the button default.
+
 ## Components
 
 Components should feel refined and reassuring, with tactile confidence. Shared
@@ -666,7 +794,7 @@ treated as drift.
   action group.
 - **Ghost / Link:** Use only when hierarchy clearly calls for low emphasis.
 - **Hover:** Every solid and outline button lifts `2px` and takes the
-  interactive-lift shadow. Ghost and link buttons do not lift.
+  interactive-lift shadow, at `motion-base`. Ghost and link buttons do not lift.
 - **Focus:** The `focus-ring` role. A button that lifts on hover also hands its
   lift shadow to `--focus-ring-keep` so the shadow survives while focused.
 - **Emphasis:** An opt-in flag that adds the teal action shadow (or the copper

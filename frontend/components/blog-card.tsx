@@ -128,7 +128,7 @@ export function RegularPostCard({ post, stega }: { post: BlogPost; stega: boolea
     ? documentDataAttribute({ id: firstCategory._id, stega, type: "category" })
     : undefined;
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-border bg-card transition-[box-shadow,transform] duration-200 ease-out hover:-translate-y-1 hover:shadow-interactive-lift dark:hover:shadow-[0_22px_48px_rgba(0,0,0,0.28)]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-border bg-card transition-[box-shadow,transform] motion-base hover:-translate-y-1 hover:shadow-interactive-lift dark:hover:shadow-[0_22px_48px_rgba(0,0,0,0.28)]">
       <div className="relative bg-muted">
         <BlogImage dataAttribute={dataAttribute} post={post} />
         {category ? (

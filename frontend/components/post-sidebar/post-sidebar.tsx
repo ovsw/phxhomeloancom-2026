@@ -69,7 +69,7 @@ function HeadingLinks({ headings }: { headings: PostHeading[] }) {
       {headings.map((heading) => (
         <li key={heading.id}>
           <a
-            className="block rounded-sm py-1 text-sm leading-5 text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-underline"
+            className="block rounded-sm py-1 text-sm leading-5 text-muted-foreground underline-offset-4 transition-colors motion-fast hover:text-foreground hover:underline focus-underline"
             href={`#${heading.id}`}
           >
             {heading.text}
@@ -94,7 +94,7 @@ function TableOfContents({ headings }: { headings: PostHeading[] }) {
             <span>Table of Contents</span>
             <ChevronDown
               aria-hidden="true"
-              className="size-5 shrink-0 transition-transform group-open:rotate-180"
+              className="size-5 shrink-0 transition-transform motion-fast group-open:rotate-180"
             />
           </summary>
           <nav aria-label="Table of Contents" className="mt-4">

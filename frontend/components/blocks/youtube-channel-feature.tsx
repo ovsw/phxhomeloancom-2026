@@ -142,7 +142,7 @@ export default function YoutubeChannelFeature({
                 variant="copper"
               >
                 <Link href={youtubeUrl} prefetch={false}>
-                  <Play aria-hidden="true" className="size-[1.125rem] fill-current" />
+                  <Play aria-hidden="true" className="size-4 fill-current" />
                   {youtubeButton?.label}
                 </Link>
               </Button>
