@@ -42,15 +42,15 @@ export function SiteFooter({
   const remainingColumns = model.columns.slice(1);
 
   return (
-    <footer className="bg-[#0c1329] pt-16 text-white md:pt-[5.5rem]" data-footer-state="ready">
+    <footer className="bg-[#0c1329] pt-(--space-section) text-white" data-footer-state="ready">
       <section
         aria-labelledby="site-footer-heading"
-        className="mx-auto w-full max-w-7xl px-4 md:px-10"
+        className="container"
       >
         <h2 className="sr-only" id="site-footer-heading">
           Site footer
         </h2>
-        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-14">
+        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <section aria-labelledby="footer-brand-heading" className="flex flex-col gap-5">
             <h3 className="sr-only" id="footer-brand-heading">
               {model.brand.label}
@@ -134,7 +134,7 @@ export function SiteFooter({
               >
                 <Image
                   alt={model.compliance.nmlsConsumerAccess.label}
-                  className="h-14 w-auto object-contain invert"
+                  className="h-10 w-auto object-contain invert"
                   height={512}
                   src="/images/footer/nmls-consumer-access.png"
                   width={703}
@@ -143,13 +143,15 @@ export function SiteFooter({
                   <span className="sr-only"> (opens in a new tab)</span>
                 ) : null}
               </FooterLink>
-              <Image
-                alt=""
-                className="h-14 w-auto object-contain invert"
-                height={2400}
-                src="/images/footer/equal-housing-lender.png"
-                width={2400}
-              />
+              <span className="inline-flex min-h-11 items-center">
+                <Image
+                  alt=""
+                  className="h-10 w-auto object-contain invert"
+                  height={2400}
+                  src="/images/footer/equal-housing-lender.png"
+                  width={2400}
+                />
+              </span>
             </div>
           </div>
           <div className="mt-8 border-t border-white/15 pt-6">
