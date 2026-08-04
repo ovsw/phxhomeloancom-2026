@@ -1,15 +1,7 @@
 ---
-description:
-globs:
-alwaysApply: true
----
-
----
-
 description: Opinionated guidance for configuring Sanity Studio and authoring content with this repo
-globs: \*_/_.{ts,tsx,js,jsx}
+globs: "**/*.{ts,tsx,js,jsx}"
 alwaysApply: false
-
 ---
 
 ## Positive affirmation

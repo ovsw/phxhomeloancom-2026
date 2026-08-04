@@ -160,7 +160,7 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
   const href = stegaClean(card.link?.href);
   const title = getLoanDisplayTitle(card);
   const content = (
-    <article className="group flex h-full min-h-[255px] flex-col rounded-card border border-border bg-card p-(--space-card) text-card-foreground transition-[box-shadow,transform] motion-base hover:-translate-y-1 hover:shadow-interactive-lift">
+    <article className="group flex h-full min-h-[255px] flex-col rounded-card border border-border bg-card p-(--space-card) text-card-foreground transition-[box-shadow,translate] motion-base hover:-translate-y-1 hover:shadow-interactive-lift">
       <div className="mb-6 flex size-[46px] items-center justify-center rounded-control bg-secondary text-primary">
         <LoanIcon icon={card.icon} />
       </div>

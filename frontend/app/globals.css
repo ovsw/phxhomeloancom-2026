@@ -98,7 +98,7 @@
   --container-inline: clamp(1rem, 4vw, 2.5rem); /* 16→40px page gutter */
 
   /* -------------------------------------------------------------------------
-     Shadow system — four named roles, per DESIGN.md Elevation & Depth.
+     Shadow system — five named roles, per DESIGN.md Elevation & Depth.
      Depth is ambient by default; these are the only shadow values in use.
   ------------------------------------------------------------------------- */
   --shadow-ambient-feature: 0 24px 64px rgba(19, 28, 59, 0.08); /* large inset panels, photos, feature figures */
@@ -346,8 +346,8 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Shadow roles — the only four shadow values in the system. See DESIGN.md
-   Elevation & Depth. Do not introduce a fifth without documenting it there.
+   Shadow roles — the only five shadow values in the system. See DESIGN.md
+   Elevation & Depth. Do not introduce a sixth without documenting it there.
 --------------------------------------------------------------------------- */
 
 @utility shadow-ambient-feature {
@@ -384,19 +384,29 @@
    the property list is per-component and transition-all is banned.
 --------------------------------------------------------------------------- */
 
+/* Each role sets the animation pair as well as the transition pair. A speed is
+   a speed regardless of which mechanism moves the element — the sheet slides
+   via `animate-in`, and without this it would silently run at the animate
+   plugin's own default instead of the role it is labelled with. */
 @utility motion-fast {
   transition-duration: var(--motion-fast);
   transition-timing-function: var(--motion-ease);
+  animation-duration: var(--motion-fast);
+  animation-timing-function: var(--motion-ease);
 }
 
 @utility motion-base {
   transition-duration: var(--motion-base);
   transition-timing-function: var(--motion-ease);
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--motion-ease);
 }
 
 @utility motion-slow {
   transition-duration: var(--motion-slow);
   transition-timing-function: var(--motion-ease);
+  animation-duration: var(--motion-slow);
+  animation-timing-function: var(--motion-ease);
 }
 
 /* ---------------------------------------------------------------------------
@@ -764,16 +774,27 @@
      rather than merely making it fast.
 
      Tailwind v4 drives these through the standalone `translate` and `scale`
-     properties, not `transform`, so zeroing the variables at the source kills
-     every lift and scale echo at once. Chasing the utility selectors instead
-     would miss any new one, and `transform: none` would miss all of them.
+     properties, not `transform`, so the variables have to be zeroed at the
+     source; `transform: none` would miss all of them.
+
+     Targeted at the lift and scale utilities by name rather than blanket-reset,
+     because the same variables also carry static positioning:
+     `-translate-x-1/2` centres the nav dropdown, the person-contact-cta
+     backdrop, and every particle dot. Zeroing them broadly relocates that
+     layout instead of stilling it — and hover-scoping is not enough either,
+     since the dropdown is itself hoverable. Displacement that is never
+     animated is not motion, and reduced motion must not move it.
+
+     Adding a new lift utility means adding it here. That is the cost of not
+     breaking layout; the list is short because the lift vocabulary is small.
 
      `transform` itself is left alone: menu-toggle rotates its sun/moon icons
      through it, and that is a state indicator, not decorative travel. */
-  *,
-  *::before,
-  *::after {
-    --tw-translate-x: 0 !important;
+  .hover\:-translate-y-0\.5:hover,
+  .hover\:-translate-y-1:hover,
+  .hover\:translate-y-0:hover,
+  :is(:where(.group):hover .group-hover\:scale-105),
+  .hover\:scale-105:hover {
     --tw-translate-y: 0 !important;
     --tw-scale-x: 100% !important;
     --tw-scale-y: 100% !important;

@@ -748,16 +748,24 @@ decelerating ease-out. Motion that decelerates arrives settled instead of
 stopping dead. Nothing in this system eases *in*: an element that starts slowly
 is an element that feels unresponsive to the click that triggered it.
 
-The roles set duration and easing only. The call site still declares *what*
-animates:
+The roles set duration and easing only — for animations as well as transitions,
+so a role means the same speed whichever mechanism moves the element. The call
+site still declares *what* animates:
 
 ```
 transition-colors motion-fast
-transition-[box-shadow,transform] motion-base
+transition-[box-shadow,translate] motion-base
 ```
 
 This split is deliberate. Which properties animate is a per-component decision;
 how fast is a system decision.
+
+**Name `translate`, not `transform`.** Tailwind v4 compiles `-translate-y-1`
+and `scale-105` to the standalone `translate` and `scale` CSS properties, so a
+hand-written `transition-[…,transform]` never matches them and the movement
+snaps instead of easing. The shorthand `transition-transform` is safe — v4
+expands it to `transform, translate, scale, rotate` — but an explicit property
+list must name `translate` or `scale` directly.
 
 Entrance animation is the one speed outside the scale. `animate-fade-up` runs
 `700ms` because a scroll-in entrance reads as sluggish below that — it is
@@ -777,10 +785,17 @@ Under the guard:
   still fires and any JS waiting on it does not hang.
 - Looping ambience (`.particle-dot`) stops outright; it has no end state worth
   landing on.
-- Hover lifts and scale echoes are zeroed at the source. Tailwind v4 drives
-  these through the standalone `translate` and `scale` properties rather than
-  `transform`, so the guard resets `--tw-translate-*` and `--tw-scale-*`. A
-  `transform: none` override would silently do nothing.
+- Hover lifts and scale echoes are zeroed. Tailwind v4 drives these through the
+  standalone `translate` and `scale` properties rather than `transform`, so the
+  guard resets `--tw-translate-*` and `--tw-scale-*`; a `transform: none`
+  override would silently do nothing.
+- That reset names the lift utilities individually rather than applying to `*`.
+  The same variables also carry **static positioning** — `-translate-x-1/2`
+  centres the nav dropdown, the person-contact-cta backdrop, and every particle
+  dot — and a blanket reset moves that layout instead of stilling it. Reduced
+  motion must not relocate anything. Hover-scoping is not sufficient either,
+  since a centred element can itself be hovered. Adding a new lift utility means
+  adding it to that list.
 - Opacity and colour still change. A cross-fade carries no travel, and it is
   what most reduced-motion users expect to keep.
 
@@ -916,8 +931,8 @@ explicit `emphasis` opt-in, never a default, and never more than one per screen.
 
 ### Cards / Containers
 
-- **Corner Style:** `16px` for standard editorial cards; up to `24px` for major
-  feature containers.
+- **Corner Style:** `rounded-card` (`14px`) for standard editorial cards;
+  `rounded-frame` (`20px`) for major feature containers and dark media chrome.
 - **Background:** White cards on Warm Paper; Paper Light cards on white.
 - **Shadow Strategy:** Border and tonal contrast at rest; ambient lift for
   interactive or emphasized cards.
@@ -940,7 +955,8 @@ explicit `emphasis` opt-in, never a default, and never more than one per screen.
 The main navigation is an `86px` sticky, lightly translucent surface with a
 bottom border and backdrop blur. Links use medium Archivo at approximately
 `14.5px`; hover and keyboard focus move toward Advisor Teal. Dropdowns use
-layered white or navy surfaces, `12px` corners, and the menu-layer shadow.
+layered white or navy surfaces, `rounded-card` corners, and the menu-layer
+shadow.
 Mobile navigation preserves the same hierarchy and exposes a clear close path.
 
 ### Page Builder Surfaces

@@ -48,7 +48,7 @@ function ArticleCard({
   return (
     <Link
       aria-label={`Read post: ${stegaClean(title)}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,transform] motion-base hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,translate] motion-base hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
       href={getArticleHref(article.slug)}
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
