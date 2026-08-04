@@ -60,10 +60,11 @@
   --phx-cream-100: #f7f4ee;
   --phx-cream-000: #fdfcf9;
   --phx-cream-050: #fbf9f4;
-  --phx-border: #e7e1d6;
-  --phx-border-strong: #c9c2b4;
-  --phx-border-input: #d8d1c3;
-  --phx-border-divider: #ddd5c4;
+  /* Border palette. Three weights, all at 1px — emphasis comes from colour,
+     never from width. See DESIGN.md Borders. */
+  --phx-border: #e7e1d6; /* default: cards, panels, dividers */
+  --phx-border-strong: #c9c2b4; /* emphasis: outline controls */
+  --phx-border-input: #d8d1c3; /* form fields at rest */
   --phx-text-heading: #131c3b;
   --phx-text-body: #3d4356;
   --phx-text-body-alt: #454b5e;
@@ -122,6 +123,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: var(--phx-border);
+  --border-strong: var(--phx-border-strong);
   --input: var(--phx-border-input);
   --ring: var(--phx-accent);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -165,6 +167,7 @@
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: rgb(255 255 255 / 14%);
+  --border-strong: rgb(255 255 255 / 28%);
   --input: rgb(255 255 255 / 18%);
   --ring: var(--phx-accent);
   --chart-1: oklch(0.488 0.243 264.376);
@@ -206,6 +209,7 @@
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);

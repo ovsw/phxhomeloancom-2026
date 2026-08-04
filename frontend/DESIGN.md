@@ -172,6 +172,11 @@ focus:
   color-on-dark: "var(--phx-label-on-dark)"
   offset-on-dark: "4px"
   offset-color-on-dark: "var(--phx-navy-900)"
+border:
+  width: "1px"
+  default: "var(--border)"
+  strong: "var(--border-strong)"
+  input: "var(--input)"
 motion:
   fast: "150ms"
   base: "200ms"
@@ -313,6 +318,8 @@ copper is a supporting detail, not an alternate primary.
 - **Faintest Ink** (`#9aa0ae`): Low-emphasis metadata on light surfaces; use
   only where its contrast remains sufficient for the text size.
 - **Border Sand** (`#e7e1d6`): Default borders and dividers.
+- **Strong Border Sand** (`#c9c2b4`): Emphasis borders on outline controls. See
+  Borders — this is how a bordered element gains weight, since width is fixed.
 
 ### Supporting
 
@@ -647,6 +654,57 @@ a composition, and never removed to tidy up a hover state.
 outlines. Match the indicator to what the element actually is, not to whichever
 mechanism the surrounding component happened to use.
 
+## Borders
+
+**One width: `1px`.** Emphasis comes from colour, never from thickness. Three
+colour roles carry the whole system:
+
+| Role | Token | Use for |
+| --- | --- | --- |
+| `border-border` | `#e7e1d6` | The default: cards, panels, dividers, table rules |
+| `border-border-strong` | `#c9c2b4` | Emphasis: outline controls that must hold their own beside a solid button |
+| `border-input` | `#d8d1c3` | Form fields at rest, before focus takes over |
+
+A border marks an edge. When something needs more separation than the default
+gives, reach for the next colour up, a surface change, or a shadow — not a
+thicker line.
+
+### Why not 1.5px
+
+Four call sites previously used `border-[1.5px]` to signal emphasis. It does not
+survive contact with real displays: at `devicePixelRatio: 1` the browser rounds
+it down and it computes to exactly `1px`, identical to the default. The emphasis
+appeared only on retina screens, so the same component read as two different
+weights depending on the monitor. Verified in the browser, not assumed.
+
+Colour-based emphasis has no such split. `border-border-strong` renders the same
+everywhere.
+
+### Documented Exceptions
+
+The play buttons on media posters use `border-y-[11px] border-l-[18px]` and
+similar on a `h-0 w-0` element. These are **not borders** — it is the CSS
+triangle trick, where borders construct an arrow shape. The values are geometry
+scaled to their disc, and tokenizing them as border widths would be a category
+error. A future audit should skip them.
+
+`border-l-4` and `border-l-[3px]` on blockquotes are decorative accent rules
+rather than edges. These currently disagree across `rich-text-content`,
+`story-feature`, and `editorial-chapter` — a known divergence, not yet resolved.
+
+Dark sections hand-pick white alphas (`border-white/10`, `/15`, `/20`) rather
+than using the roles above. The values are consistent enough to read as an
+informal scale, but they are not yet tokenized.
+
+### Named Rules
+
+**The One Width Rule.** Every border in the system is `1px`. A design that seems
+to need a thicker line needs a different colour, a surface change, or a shadow.
+
+**The Emphasis Is Colour Rule.** When a bordered element must feel heavier than
+its neighbours, darken the border. Thickness is not an available axis, because
+sub-pixel widths do not render consistently across displays.
+
 ## Motion
 
 Motion here is confirmation, not entertainment. A hover lift says "this is
@@ -786,7 +844,7 @@ treated as drift.
   icon shed `4px` of inline padding to keep the optical weight even.
 - **Primary:** Advisor Teal with white text, semibold Archivo. Hover moves to
   Deep Advisor Teal.
-- **Outline:** Transparent, Trust Navy text, `1.5px` Strong Border Sand edge.
+- **Outline:** Transparent, Trust Navy text, `1px` Strong Border Sand edge.
   Hover shifts to the card surface with a teal-tinted border. On dark or
   photographic surfaces it switches to a translucent white edge and white text.
 - **Copper:** Mesa Copper with white text, reserved for subordinate media and
@@ -828,7 +886,7 @@ explicit `emphasis` opt-in, never a default, and never more than one per screen.
 
 ### Inputs / Fields
 
-- **Style:** Soft Ivory background, `1.5px` Input Sand border, `8px` corners
+- **Style:** Soft Ivory background, `1px` Input Sand border, `8px` corners
   matching every other control, and comfortable `14px 16px` padding.
 - **Focus:** Advisor Teal border plus the `focus-ring` role. The border shift
   and the ring are complementary — the border marks the field, the ring marks

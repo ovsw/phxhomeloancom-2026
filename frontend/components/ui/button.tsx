@@ -25,9 +25,9 @@ const buttonVariants = cva(
           "bg-primary text-primary-foreground hover:bg-accent-hover hover:text-primary-foreground",
         /* `secondary` is the CMS's name for the outline role. */
         secondary:
-          "border-[1.5px] border-[var(--phx-border-strong)] bg-transparent text-foreground hover:border-primary/30 hover:bg-card hover:text-foreground",
+          "border border-border-strong bg-transparent text-foreground hover:border-primary/30 hover:bg-card hover:text-foreground",
         outline:
-          "border-[1.5px] border-[var(--phx-border-strong)] bg-transparent text-foreground hover:border-primary/30 hover:bg-card hover:text-foreground",
+          "border border-border-strong bg-transparent text-foreground hover:border-primary/30 hover:bg-card hover:text-foreground",
         copper: "bg-copper-600 text-white hover:brightness-110",
         ghost: "hover:bg-secondary hover:text-secondary-foreground hover:shadow-none",
         link: "text-primary underline-offset-4 hover:underline hover:shadow-none hover:translate-y-0",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T19:20:00Z",
+  "generatedAt": "2026-08-04T19:58:00Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -666,6 +666,36 @@
         "circular-containers": "size-10 / size-[46px] / size-16 are surfaces, not icons — a filled disc holding an icon. They follow the shape and spacing scales; the icon inside them still comes from the scale above.",
         "play-discs": "size-[76px] and md:size-[5.5rem] on media posters are scaled to the poster rather than to a UI scale — single-purpose decorative affordances, sized by composition."
       }
+    },
+    "borderMeta": {
+      "width": "1px",
+      "widthNote": "One width for the whole system. Emphasis comes from colour, never from thickness.",
+      "roles": [
+        {
+          "name": "border-border",
+          "value": "#e7e1d6",
+          "purpose": "The default: cards, panels, dividers, table rules."
+        },
+        {
+          "name": "border-border-strong",
+          "value": "#c9c2b4",
+          "purpose": "Emphasis: outline controls that must hold their own beside a solid button."
+        },
+        {
+          "name": "border-input",
+          "value": "#d8d1c3",
+          "purpose": "Form fields at rest, before focus takes over."
+        }
+      ],
+      "rejected": {
+        "value": "1.5px",
+        "why": "Used at four call sites to signal emphasis. At devicePixelRatio 1 the browser rounds it down and it computes to exactly 1px — identical to the default — so the emphasis appeared only on retina screens and the same component read as two different weights depending on the monitor. Verified in the browser, not assumed. Colour-based emphasis renders the same everywhere."
+      },
+      "exceptions": {
+        "css-triangles": "Play buttons on media posters use border-y-[11px] / border-l-[18px] on an h-0 w-0 element. That is the CSS triangle trick — borders constructing an arrow shape, not edges. The values are geometry scaled to their disc; tokenizing them as border widths would be a category error.",
+        "blockquote-accents": "border-l-4 and border-l-[3px] on blockquotes are decorative accent rules rather than edges. They currently disagree across rich-text-content, story-feature and editorial-chapter — a known divergence, not yet resolved.",
+        "dark-surfaces": "Dark sections hand-pick white alphas (border-white/10, /15, /20) rather than using the roles above. Consistent enough to read as an informal scale, but not yet tokenized."
+      }
     }
   },
   "components": [
@@ -839,6 +869,16 @@
         "name": "The Icon Follows the Text Rule",
         "body": "An icon beside a label matches that label's optical weight rather than being sized independently. When in doubt inside a control, add no size class and inherit the button default.",
         "section": "icons"
+      },
+      {
+        "name": "The One Width Rule",
+        "body": "Every border in the system is 1px. A design that seems to need a thicker line needs a different colour, a surface change, or a shadow.",
+        "section": "borders"
+      },
+      {
+        "name": "The Emphasis Is Colour Rule",
+        "body": "When a bordered element must feel heavier than its neighbours, darken the border. Thickness is not an available axis, because sub-pixel widths do not render consistently across displays.",
+        "section": "borders"
       }
     ],
     "dos": [
