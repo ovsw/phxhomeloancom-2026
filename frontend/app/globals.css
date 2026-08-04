@@ -273,13 +273,17 @@
   --focus-ring-offset-on-dark: 4px;
   --focus-ring-offset-color-on-dark: var(--phx-navy-900);
 
-  /* Control geometry — the two button/control sizes. See DESIGN.md
+  /* Control geometry — the three button/control sizes. See DESIGN.md
      Components → Buttons. Interactive controls are rounded-lg (8px);
      call sites must not override height, padding, or radius. */
   --control-height: 3rem; /* default: page-builder CTAs, form submits */
   --control-inline: 1.75rem;
   --control-height-compact: 2.5rem; /* compact: header, nav, dense UI */
   --control-inline-compact: 1.25rem;
+  /* hero: the one action in a section built around a single monumental
+     headline. Rare by design — see the Hero Is Earned rule in DESIGN.md. */
+  --control-height-hero: 3.5rem;
+  --control-inline-hero: 2rem;
 
   /* Motion roles — three speeds and one curve. See DESIGN.md Motion.
      Speed follows travel distance, not importance: the further a thing moves,

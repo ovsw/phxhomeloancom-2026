@@ -203,6 +203,8 @@ spacing:
   control-inline: "1.75rem"
   control-height-compact: "2.5rem"
   control-inline-compact: "1.25rem"
+  control-height-hero: "3.5rem"
+  control-inline-hero: "2rem"
   container-max: "80rem"
   container-narrow: "70rem"
   container-inline: "clamp(1rem, 4vw, 2.5rem)"
@@ -226,6 +228,13 @@ components:
     rounded: "{rounded.control}"
     padding: "0 20px"
     height: "40px"
+  button-primary-hero:
+    backgroundColor: "{colors.advisor-teal}"
+    textColor: "{colors.clear-white}"
+    typography: "{typography.button-lg}"
+    rounded: "{rounded.control}"
+    padding: "0 32px"
+    height: "56px"
   button-outline:
     backgroundColor: "transparent"
     textColor: "{colors.trust-navy}"
@@ -844,7 +853,7 @@ without changing the color, type, focus, or state logic.
 
 ### Buttons
 
-Four variants and two sizes. Everything else is a call-site override and is
+Four variants and three sizes. Everything else is a call-site override and is
 treated as drift.
 
 - **Shape:** `8px` corners (`--radius-control`), shared with inputs and every
@@ -853,8 +862,11 @@ treated as drift.
   (`--control-height` / `--control-inline`). The page-builder CTA, the form
   submit, the in-article button. **Compact** — `40px` tall, `20px` inline
   padding (`--control-height-compact` / `--control-inline-compact`). The header
-  CTA, team contact links, dense or repeating UI. Buttons carrying a leading
-  icon shed `4px` of inline padding to keep the optical weight even.
+  CTA, team contact links, dense or repeating UI. **Hero** — `56px` tall, `32px`
+  inline padding, and the only size that takes the larger `button-lg` label
+  (`--control-height-hero` / `--control-inline-hero`). Rare; see the Hero Is
+  Earned rule. Buttons carrying a leading icon shed `4px` of inline padding to
+  keep the optical weight even.
 - **Primary:** Advisor Teal with white text, semibold Archivo. Hover moves to
   Deep Advisor Teal.
 - **Outline:** Transparent, Trust Navy text, `1px` Strong Border Sand edge.
@@ -874,7 +886,22 @@ treated as drift.
 ### Named Rules
 
 **The Two Sizes Rule.** A button is default or compact. If a design seems to
-need a third height, the surrounding spacing is wrong, not the button.
+need a different height, the surrounding spacing is usually wrong, not the
+button — the one exception is a hero action, below.
+
+**The Hero Is Earned Rule.** The hero size is available only where both are
+true: the section headline is the largest type on the page, and the button is
+the sole action in that section. Both conditions, not either. A section with two
+buttons has them carry each other and stays at default; a large button in a
+section with ordinary headings is just a large button.
+
+The trigger is deliberately testable rather than a matter of taste, because a
+third size is exactly how the sizes sprawled before they were collapsed. Today
+this resolves to the award CTA and nothing else: `66px` display type, one
+"Learn More", and a `460px` trophy beside it. At the default `48px` with a
+`14.5px` label, the button read as an afterthought against that pairing — and
+the small label was the larger part of the problem, which is why hero is also
+the only size that changes the type scale.
 
 **The Earned Shadow Rule.** Buttons are flat at rest. A resting shadow is an
 explicit `emphasis` opt-in, never a default, and never more than one per screen.

@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 /*
  * Button roles — see DESIGN.md § Components → Buttons.
  *
- * Four variants (primary, outline, copper, ghost/link) and two sizes
- * (default, compact). Buttons are flat at rest and lift on hover; the
+ * Four variants (primary, outline, copper, ghost/link) and three sizes
+ * (default, compact, hero). Buttons are flat at rest and lift on hover; the
  * teal action shadow is an opt-in emphasis flag, not a default.
  * Call sites should not override height, padding, or radius.
  */
@@ -34,6 +34,12 @@ const buttonVariants = cva(
         destructive: "bg-destructive text-primary-foreground hover:brightness-110",
       },
       size: {
+        /* Rare. The one action in a section built around a monumental
+           headline — see the Hero Is Earned rule in DESIGN.md. The larger
+           label matters more than the taller box: at the default 14.5px a
+           button reads as an afterthought beside 66px display type. */
+        hero:
+          "typo-button-lg h-(--control-height-hero) px-(--control-inline-hero) has-[>svg]:px-7",
         default:
           "typo-button h-(--control-height) px-(--control-inline) has-[>svg]:px-6",
         compact:

@@ -102,6 +102,7 @@ export default function AwardCta({
                     className="w-full sm:w-auto"
                     emphasis
                     key={button._key || `${href}-${index}`}
+                    size="hero"
                   >
                     <Link
                       href={href}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T20:10:00Z",
+  "generatedAt": "2026-08-04T21:30:00Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -730,6 +730,14 @@
       "css": ".ds-btn-primary-compact { min-height: 40px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary-compact:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-compact:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.4); }"
     },
     {
+      "name": "Primary Button (Hero)",
+      "kind": "button",
+      "refersTo": "button-primary-hero",
+      "description": "56px action with the larger 16px label. Reserved for the sole action in a section whose headline is the largest type on the page — today, the award CTA only.",
+      "html": "<button class=\"ds-btn-primary-hero\">Learn More</button>",
+      "css": ".ds-btn-primary-hero { min-height: 56px; padding: 0 32px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 16px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary-hero:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-hero:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.4); }"
+    },
+    {
       "name": "Outline Button",
       "kind": "button",
       "refersTo": "button-outline",
@@ -826,7 +834,7 @@
       },
       {
         "name": "The Two Sizes Rule",
-        "body": "A button is default (48px) or compact (40px). If a design seems to need a third height, the surrounding spacing is wrong, not the button.",
+        "body": "A button is default or compact. If a design seems to need a different height, the surrounding spacing is usually wrong, not the button. The one exception is a hero action, which must meet the Hero Is Earned test.",
         "section": "components"
       },
       {
@@ -893,6 +901,11 @@
         "name": "The Emphasis Is Colour Rule",
         "body": "When a bordered element must feel heavier than its neighbours, darken the border. Thickness is not an available axis, because sub-pixel widths do not render consistently across displays.",
         "section": "borders"
+      },
+      {
+        "name": "The Hero Is Earned Rule",
+        "body": "The hero button size is available only where the section headline is the largest type on the page AND the button is the sole action in that section. Both conditions, not either — two buttons carry each other and stay at default. The trigger is testable rather than a matter of taste, because a third size is how the sizes sprawled before they were collapsed. It also raises the label to 16px: against 66px display type the 14.5px default label, more than the 48px height, is what makes a button read as an afterthought.",
+        "section": "components"
       }
     ],
     "dos": [
