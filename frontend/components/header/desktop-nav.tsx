@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   useCallback,
@@ -21,7 +21,12 @@ import { NavigationIcon } from "./navigation-icon";
 const primaryLinkClassName =
   "flex min-h-11 items-center whitespace-nowrap rounded-control px-1 typo-nav text-foreground transition-colors motion-fast hover:text-primary focus-ring";
 
-const PANEL_WIDTH = 288;
+// Wide enough that the longest description we ship ("Learn when Private
+// Mortgage Insurance (PMI) may apply.") wraps to two lines instead of being
+// clipped. Deliberately a fixed width rather than navbar14's content-sizing:
+// the panel animates its width between groups, so a per-group width would make
+// the follow-along resize on every hover.
+const PANEL_WIDTH = 380;
 const CLOSE_DELAY_MS = 120;
 
 /** Panel geometry, measured relative to the nav element. */
@@ -38,26 +43,55 @@ type ActiveGroup = {
   animate: boolean;
 };
 
-function GroupPanelContent({ links }: { links: HeaderChildLinkModel[] }) {
+function GroupPanelContent({ label, links }: { label: string; links: HeaderChildLinkModel[] }) {
   return (
-    <div className="grid gap-1 p-2">
-      {links.map((child) => (
-        <HeaderLink
-          className="group/nav-link flex items-center gap-3 rounded-control px-4 py-3 transition-colors motion-fast hover:bg-secondary focus-ring"
-          key={child.key}
-          link={child.link}
-        >
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-control bg-secondary text-primary">
-            <NavigationIcon name={child.icon} />
-          </span>
-          <span className="grid gap-0.5">
-            <span className="typo-nav font-semibold text-popover-foreground">{child.label}</span>
-            <span className="line-clamp-2 typo-fine-print text-muted-foreground">
-              {child.description}
+    <div className="p-3">
+      {/*
+        Eyebrow naming the open group. The trigger it belongs to is already
+        highlighted above, but once the panel slides away from that trigger the
+        label is what keeps the panel self-identifying.
+      */}
+      <p className="mb-2 px-2 typo-fine-print uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <div className="grid gap-1">
+        {links.map((child) => (
+          <HeaderLink
+            className="group/nav-link flex items-start gap-3 rounded-control px-2 py-2.5 transition-colors motion-fast hover:bg-secondary focus-ring"
+            key={child.key}
+            link={child.link}
+          >
+            {/*
+              Outlined rather than filled: against the popover a cream-filled
+              chip reads as another surface layer, and with five of them stacked
+              the panel turns into a column of blocks. The border carries the
+              same shape at a fraction of the visual weight.
+            */}
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
+              <NavigationIcon className="size-5" name={child.icon} />
             </span>
-          </span>
-        </HeaderLink>
-      ))}
+            <span className="grid gap-1">
+              <span className="flex items-center gap-0.5 typo-nav font-semibold text-popover-foreground">
+                {child.label}
+                <ChevronRight
+                  aria-hidden="true"
+                  className="size-4 shrink-0 text-primary opacity-0 transition-all motion-fast group-hover/nav-link:translate-x-0.5 group-hover/nav-link:opacity-100"
+                />
+              </span>
+              {/*
+                leading-tight overrides typo-fine-print's 1.6. At 13px that token
+                leaves ~7.8px between wrapped lines — more than the gap to the
+                label above — so a two-line description reads as two separate
+                rows. Tightening it keeps the description a single visual block
+                sitting under its label.
+              */}
+              <span className="typo-fine-print leading-tight text-muted-foreground">
+                {child.description}
+              </span>
+            </span>
+          </HeaderLink>
+        ))}
+      </div>
     </div>
   );
 }
@@ -258,7 +292,13 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
               x: placement?.x ?? 0,
               y: 0,
             }}
-            className="absolute left-0 top-full z-[70] pt-0.5"
+            /*
+              The gap to the trigger is padding on the positioned wrapper, not a
+              margin, so it stays inside the panel's hover target: the pointer
+              travelling from trigger to panel never crosses dead space that
+              would schedule a close.
+            */
+            className="absolute left-0 top-full z-[70] pt-1.5"
             exit={{ opacity: 0, transition: fade, y: -4 }}
             id={panelIdBase}
             initial={{ opacity: 0, x: placement?.x ?? 0, y: -4 }}
@@ -269,7 +309,12 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
           >
             <motion.div
               animate={{ height: placement?.height ?? "auto" }}
-              className="relative overflow-hidden rounded-card border border-border bg-popover text-popover-foreground shadow-menu-layer dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]"
+              /*
+                rounded-control, not rounded-card: at 14px the card radius reads
+                as a soft tile rather than a menu, and it dwarfs the 8px chips
+                inside it. 8px keeps the panel and its contents on one radius.
+              */
+              className="relative overflow-hidden rounded-control border border-border bg-popover text-popover-foreground shadow-menu-layer dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]"
               initial={false}
               transition={morph}
             >
@@ -282,7 +327,7 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
                   ref={contentRef}
                   transition={{ duration: prefersReducedMotion || !animated ? 0 : 0.16 }}
                 >
-                  <GroupPanelContent links={activeItem.links} />
+                  <GroupPanelContent label={activeItem.label} links={activeItem.links} />
                 </motion.div>
               </AnimatePresence>
             </motion.div>
