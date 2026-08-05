@@ -193,7 +193,28 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
           <button
             aria-controls={isActive ? panelIdBase : undefined}
             aria-expanded={isActive}
-            className={cn(primaryLinkClassName, "gap-1")}
+            className={cn(
+              primaryLinkClassName,
+              // Wider than the shared px-1 so the active background reads as a
+              // deliberate pill rather than a tight smudge around the label.
+              "gap-1 px-2.5",
+              // The open group is denoted by background rather than a caret, in the
+              // panel's own surface colour so the trigger and the panel below it
+              // read as one continuous shape. bg-popover is deliberately the same
+              // token the panel uses, not a matching literal, so the two cannot
+              // drift apart across themes.
+              //
+              // Not bg-secondary: that token is cream, and so is the header, so the
+              // pill measured 1.04:1 against its own backdrop and disappeared. The
+              // panel's links get away with it only because they sit on the popover.
+              //
+              // hover:text-primary has to be overridden rather than merely followed:
+              // an open trigger is by definition the hovered one, and the teal label
+              // is what the closed triggers use, so leaving it would blur the very
+              // distinction this background exists to draw.
+              isActive &&
+                "bg-popover text-popover-foreground shadow-menu-layer hover:text-popover-foreground",
+            )}
             key={item.key}
             onClick={(event) => {
               // event.detail === 0 means keyboard activation (Enter/Space).
