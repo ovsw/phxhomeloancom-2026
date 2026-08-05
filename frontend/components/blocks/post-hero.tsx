@@ -24,7 +24,7 @@ export default function PostHero({
         ) : null}
       </header>
       {image && image.asset?._id && (
-        <div className="mb-12 overflow-hidden rounded-lg border border-border/80 shadow-sm">
+        <div className="mb-12 overflow-hidden rounded-card border border-border/80 shadow-sm">
           <Image
             src={urlFor(image).quality(100).url()}
             alt={image.alt || ""}

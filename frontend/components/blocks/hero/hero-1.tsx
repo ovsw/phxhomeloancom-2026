@@ -72,7 +72,7 @@ export default function Hero1({
         <div className="flex flex-col justify-center">
           {image && image.asset?._id && (
             <Image
-              className="rounded-xl animate-fade-up [animation-delay:500ms] opacity-0"
+              className="rounded-card animate-fade-up [animation-delay:500ms] opacity-0"
               src={urlFor(image).url()}
               alt={image.alt || ""}
               width={image.asset?.metadata?.dimensions?.width || 800}

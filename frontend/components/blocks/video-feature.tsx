@@ -89,17 +89,17 @@ export default function VideoFeature({
     <section
       aria-labelledby={cleanTitle ? headingId : undefined}
       className={cn(
-        "py-20 md:py-24 lg:py-28",
+        "section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       id="video-feature"
     >
-      <div className="mx-auto grid w-full max-w-7xl gap-12 px-4 md:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-[72px] lg:px-8">
+      <div className="container grid gap-split lg:grid-cols-[1.05fr_1fr] lg:items-center">
         <div className="flex flex-col gap-3.5">
-          <div className="overflow-hidden rounded-[14px] bg-[#0c1329] shadow-[0_28px_64px_rgba(19,28,59,0.22)]">
+          <div className="overflow-hidden rounded-frame bg-[#0c1329] shadow-media-frame">
             <button
               aria-label={playLabel}
-              className="group relative block aspect-video w-full overflow-hidden rounded-[10px] bg-[#0c1329] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="group relative block aspect-video w-full overflow-hidden rounded-frame bg-[#0c1329] text-left focus-ring-on-dark"
               disabled={!embedUrl}
               onClick={() => {
                 if (embedUrl) setIsLightboxOpen(true);
@@ -127,7 +127,7 @@ export default function VideoFeature({
               )}
               <span className="absolute inset-0 bg-gradient-to-t from-[#080d1e]/50 to-[#080d1e]/5" />
               <span className="absolute inset-0 flex items-center justify-center">
-                <span className="flex size-[76px] items-center justify-center rounded-full bg-cyan-700 text-white shadow-[0_12px_32px_rgba(8,13,30,0.4)] transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105">
+                <span className="flex size-[76px] items-center justify-center rounded-full bg-cyan-700 text-white shadow-[0_12px_32px_rgba(8,13,30,0.4)] transition-transform motion-base group-hover:scale-105 group-focus-visible:scale-105">
                   <span
                     aria-hidden="true"
                     className="ml-1 h-0 w-0 border-y-[13px] border-y-transparent border-l-[21px] border-l-current"
@@ -136,27 +136,31 @@ export default function VideoFeature({
               </span>
             </button>
           </div>
-          <p className="pl-6 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+          <p className="pl-6 typo-meta-label text-muted-foreground">
             ▶ {cleanTitle ? title : "Video"} · 2 min
           </p>
         </div>
 
         <div className="flex max-w-2xl flex-col gap-5">
-          {cleanEyebrow ? (
-            <p className="text-xs font-semibold uppercase leading-none tracking-[0.22em] text-primary">
-              {eyebrow}
-            </p>
-          ) : null}
-          {cleanTitle ? (
-            <h2
-              className="text-balance font-display text-3xl font-semibold leading-tight tracking-normal text-foreground md:text-[42px]"
-              id={headingId}
-            >
-              {title}
-            </h2>
+          {cleanEyebrow || cleanTitle ? (
+            <div>
+              {cleanEyebrow ? (
+                <p className="mb-3.5 typo-eyebrow text-primary">
+                  {eyebrow}
+                </p>
+              ) : null}
+              {cleanTitle ? (
+                <h2
+                  className="text-balance typo-section-heading text-foreground"
+                  id={headingId}
+                >
+                  {title}
+                </h2>
+              ) : null}
+            </div>
           ) : null}
           {richText?.length ? (
-            <div className="text-pretty text-base leading-7 text-muted-foreground [&_p]:my-0">
+            <div className="text-pretty typo-body text-muted-foreground [&_p]:my-0">
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
@@ -173,13 +177,7 @@ export default function VideoFeature({
                 return (
                   <Button
                     asChild
-                    className={cn(
-                      "h-12 rounded-[9px] px-7 text-[15px]",
-                      secondary &&
-                        "border-[var(--phx-border-strong)] bg-transparent text-foreground shadow-none hover:border-foreground hover:bg-transparent hover:text-foreground",
-                    )}
                     key={button._key}
-                    size="lg"
                     variant={secondary ? "outline" : "default"}
                   >
                     <Link
@@ -210,20 +208,20 @@ export default function VideoFeature({
           }}
           role="dialog"
         >
-          <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-2xl">
+          <div className="relative w-full max-w-5xl rounded-frame border border-edge-on-dark bg-[#0c1329] p-2 shadow-media-frame">
             <h3 className="sr-only" id={dialogTitleId}>
               {cleanTitle ? `${title} video` : "Video"}
             </h3>
             <button
               aria-label="Close video"
-              className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-edge-on-dark-strong bg-white/10 text-white transition-colors motion-fast hover:bg-white/20 focus-ring-on-dark"
               onClick={closeLightbox}
               ref={closeRef}
               type="button"
             >
               <XIcon aria-hidden="true" className="size-5" />
             </button>
-            <div className="aspect-video overflow-hidden rounded-[10px] bg-black">
+            <div className="aspect-video overflow-hidden rounded-frame-inner bg-black">
               <iframe
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen

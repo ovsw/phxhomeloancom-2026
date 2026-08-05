@@ -14,7 +14,7 @@ import type { HeaderNavigationItem, HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const primaryLinkClassName =
-  "flex min-h-11 items-center whitespace-nowrap rounded-md px-1 font-medium text-[14.5px] leading-none tracking-[0.01em] text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40";
+  "flex min-h-11 items-center whitespace-nowrap rounded-control px-1 typo-nav text-foreground transition-colors motion-fast hover:text-primary focus-ring";
 
 function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "group" }> }) {
   const [open, setOpen] = useState(false);
@@ -72,7 +72,7 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
         {item.label}
         <ChevronDown
           aria-hidden="true"
-          className={cn("size-3 transition-transform", open && "rotate-180")}
+          className={cn("size-3 transition-transform motion-fast", open && "rotate-180")}
         />
       </button>
       {open ? (
@@ -80,21 +80,21 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
           className="absolute left-1/2 top-full z-[70] w-72 -translate-x-1/2 pt-0.5"
           id={panelId}
         >
-          <div className="grid gap-1 rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-[0_18px_44px_rgba(19,28,59,0.16)] dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
+          <div className="grid gap-1 rounded-card border border-border bg-popover p-2 text-popover-foreground shadow-menu-layer dark:shadow-[0_18px_44px_rgba(0,0,0,0.28)]">
             {item.links.map((child) => (
               <HeaderLink
-                className="group/nav-link flex items-center gap-3 rounded-lg px-4 py-[11px] transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="group/nav-link flex items-center gap-3 rounded-control px-4 py-3 transition-colors motion-fast hover:bg-secondary focus-ring"
                 key={child.key}
                 link={child.link}
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-secondary text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-control bg-secondary text-primary">
                   <NavigationIcon name={child.icon} />
                 </span>
                 <span className="grid gap-0.5">
-                  <span className="font-semibold text-sm leading-none text-popover-foreground">
+                  <span className="typo-nav font-semibold text-popover-foreground">
                     {child.label}
                   </span>
-                  <span className="line-clamp-2 text-xs font-normal leading-5 text-muted-foreground">
+                  <span className="line-clamp-2 typo-fine-print text-muted-foreground">
                     {child.description}
                   </span>
                 </span>
@@ -109,7 +109,7 @@ function DesktopGroup({ item }: { item: Extract<HeaderNavigationItem, { kind: "g
 
 export default function DesktopNav({ navigation }: { navigation: HeaderNavigationModel }) {
   return (
-    <nav aria-label="Main navigation" className="hidden items-center gap-3 lg:flex xl:gap-[34px]">
+    <nav aria-label="Main navigation" className="hidden items-center gap-3 lg:flex xl:gap-8">
       {navigation.items.map((item) =>
         item.kind === "group" ? (
           <DesktopGroup item={item} key={item.key} />

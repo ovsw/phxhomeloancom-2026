@@ -16,7 +16,7 @@ export function FooterFallback() {
     >
       <div className="mx-auto grid max-w-[75rem] gap-12 sm:grid-cols-2 lg:grid-cols-4">
         {[0, 1, 2, 3].map((item) => (
-          <div className="h-40 animate-pulse rounded-lg bg-white/10" key={item} />
+          <div className="h-40 animate-pulse rounded-control bg-white/10" key={item} />
         ))}
       </div>
     </footer>

@@ -59,7 +59,7 @@ function Address({
   const country = stegaClean(address?.country)?.trim();
 
   return (
-    <address className="grid text-sm leading-[1.55] text-[#454b5e] not-italic">
+    <address className="grid typo-body-sm text-[#454b5e] not-italic">
       {street ? (
         <span data-sanity={dataAttribute?.("address.street")}>{address?.street}</span>
       ) : null}
@@ -118,17 +118,17 @@ export default function LocationMap({
     <section
       aria-labelledby={displayTitle ? headingId : undefined}
       className={cn(
-        "px-4 py-20 md:px-6 md:py-24 lg:px-10 lg:py-[6.875rem]",
+        "section-pad",
         creamSurface ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
-      <div className="mx-auto w-full max-w-7xl">
-        <header className="mb-11 grid items-end gap-6 md:grid-cols-[minmax(0,35rem)_auto] md:justify-between md:gap-12">
+      <div className="container">
+        <header className="grid items-end gap-6 section-header-gap md:grid-cols-[minmax(0,35rem)_auto] md:justify-between md:gap-12">
           <div>
             {displayEyebrow ? (
               <p
-                className="mb-3.5 text-[0.8125rem] font-semibold uppercase tracking-[0.22em] text-primary"
+                className="mb-3.5 typo-eyebrow text-primary"
                 data-sanity={dataAttribute?.("eyebrow")}
               >
                 {eyebrow}
@@ -136,7 +136,7 @@ export default function LocationMap({
             ) : null}
             {displayTitle ? (
               <h2
-                className="text-balance text-[2rem] font-semibold leading-[1.15] tracking-[-0.01em] text-foreground md:text-[2.625rem]"
+                className="text-balance typo-section-heading text-foreground"
                 data-sanity={dataAttribute?.("title")}
                 id={headingId}
               >
@@ -147,7 +147,7 @@ export default function LocationMap({
 
           {cleanDirectionsUrl && displayDirectionsLabel ? (
             <a
-              className="w-fit whitespace-nowrap text-[0.9375rem] font-semibold text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
+              className="w-fit whitespace-nowrap typo-button text-primary underline-offset-4 hover:underline focus-underline"
               data-sanity={dataAttribute?.("directionsUrl")}
               href={cleanDirectionsUrl}
             >
@@ -158,7 +158,7 @@ export default function LocationMap({
         </header>
 
         <div className="grid items-stretch gap-6 min-[641px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-2xl border border-border bg-[var(--phx-navy-900)] shadow-[0_24px_56px_rgba(19,28,59,0.12)] md:min-h-[30rem]">
+          <figure className="relative min-h-[23.75rem] overflow-hidden rounded-card border border-border bg-[var(--phx-navy-900)] shadow-ambient-feature md:min-h-[30rem]">
             {image?.asset?._id ? (
               <Image
                 alt={stegaClean(image.alt) || ""}
@@ -178,7 +178,7 @@ export default function LocationMap({
             <figcaption className="absolute right-6 bottom-6 left-6">
               {displayImageEyebrow ? (
                 <p
-                  className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#f2c4a9]"
+                  className="mb-2 typo-eyebrow text-[#f2c4a9]"
                   data-sanity={dataAttribute?.("imageEyebrow")}
                 >
                   {imageEyebrow}
@@ -196,7 +196,7 @@ export default function LocationMap({
           </figure>
 
           <div
-            className="relative min-h-[30rem] overflow-hidden rounded-2xl border border-border bg-muted shadow-[0_24px_56px_rgba(19,28,59,0.12)]"
+            className="relative min-h-[30rem] overflow-hidden rounded-card border border-border bg-muted shadow-ambient-feature"
             data-sanity={dataAttribute?.("mapEmbedUrl")}
           >
             {cleanMapEmbedUrl && cleanMapTitle ? (
@@ -210,10 +210,10 @@ export default function LocationMap({
                 title={cleanMapTitle}
               />
             ) : null}
-            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-xl border border-border bg-white/95 px-6 py-5 shadow-[0_14px_36px_rgba(19,28,59,0.18)] backdrop-blur-sm md:top-6 md:right-auto md:left-6">
+            <div className="absolute top-4 right-4 left-4 max-w-[18.75rem] rounded-card border border-border bg-white/95 px-6 py-5 shadow-menu-layer backdrop-blur-sm md:top-6 md:right-auto md:left-6">
               {displayBusinessName ? (
                 <p
-                  className="text-[0.9375rem] font-semibold text-[#131c3b]"
+                  className="typo-button text-[#131c3b]"
                   data-sanity={dataAttribute?.("businessName")}
                 >
                   {businessName}
@@ -221,7 +221,7 @@ export default function LocationMap({
               ) : null}
               {displayCredentialLine ? (
                 <p
-                  className="mt-0.5 mb-2 text-[0.78125rem] text-[#9aa0ae]"
+                  className="mt-0.5 mb-2 typo-fine-print text-[#9aa0ae]"
                   data-sanity={dataAttribute?.("credentialLine")}
                 >
                   {credentialLine}

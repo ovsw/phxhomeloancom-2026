@@ -1,4 +1,5 @@
 import PortableTextRenderer from "@/components/portable-text-renderer";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
@@ -38,7 +39,7 @@ function ProfileMeta({
     <div className="flex flex-wrap items-center gap-2.5">
       {role ? (
         <span
-          className="rounded-full bg-primary px-3 py-1.5 text-[0.71875rem] font-semibold uppercase leading-none tracking-[0.1em] text-primary-foreground"
+          className="rounded-full bg-primary px-3 py-1.5 typo-meta-label text-primary-foreground"
           data-sanity={memberDataAttribute?.(member._id, "role")}
         >
           {member.role}
@@ -46,7 +47,7 @@ function ProfileMeta({
       ) : null}
       {nmlsId ? (
         <span
-          className="text-[0.78125rem] font-medium tracking-[0.02em] text-muted-foreground"
+          className="typo-fine-print font-medium text-muted-foreground"
           data-sanity={memberDataAttribute?.(member._id, "nmlsId")}
         >
           NMLS #{member.nmlsId}
@@ -76,21 +77,21 @@ function ProfileContact({
     <div className="mt-1.5 flex flex-wrap items-center gap-3.5">
       {email ? (
         <a
-          className="inline-flex items-center gap-2.5 rounded-[0.5625rem] border-[1.5px] border-[var(--phx-border-strong)] px-[1.125rem] py-[0.6875rem] text-[0.90625rem] font-semibold text-foreground no-underline transition-colors hover:border-foreground hover:bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className={cn(buttonVariants({ size: "compact", variant: "outline" }), "no-underline")}
           data-sanity={memberDataAttribute?.(member._id, "email")}
           href={`mailto:${email}`}
         >
-          <Mail aria-hidden="true" className="size-[1.0625rem]" strokeWidth={1.7} />
+          <Mail aria-hidden="true" className="size-4" strokeWidth={1.7} />
           Email {firstName}
         </a>
       ) : null}
       {phone && phoneHref ? (
         <a
-          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] text-[0.90625rem] font-semibold text-primary no-underline transition-opacity hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          className="inline-flex items-center gap-2.5 px-1 py-[0.6875rem] typo-button text-primary no-underline transition-opacity motion-fast hover:opacity-75 focus-underline"
           data-sanity={memberDataAttribute?.(member._id, "phone")}
           href={`tel:${phoneHref}`}
         >
-          <Phone aria-hidden="true" className="size-[1.0625rem]" strokeWidth={1.7} />
+          <Phone aria-hidden="true" className="size-4" strokeWidth={1.7} />
           {member.phone}
         </a>
       ) : null}
@@ -124,13 +125,13 @@ function TeamMemberProfile({
 
   return (
     <article
-      className="grid items-center gap-[clamp(2rem,5vw,4.5rem)] md:grid-cols-[0.82fr_1.18fr]"
+      className="grid items-center gap-split md:grid-cols-[0.82fr_1.18fr]"
       data-sanity={referenceDataAttribute}
     >
       {hasImage && member.image ? (
         <div
           className={cn(
-            "aspect-[4/5] w-full max-w-[26.25rem] overflow-hidden rounded-2xl bg-[var(--phx-navy-900)] shadow-[0_30px_66px_rgba(19,28,59,0.24)]",
+            "aspect-[4/5] w-full max-w-[26.25rem] overflow-hidden rounded-card bg-[var(--phx-navy-900)] shadow-ambient-feature",
             reverse && "md:order-2 md:justify-self-end",
           )}
         >
@@ -148,10 +149,10 @@ function TeamMemberProfile({
           />
         </div>
       ) : null}
-      <div className={cn("grid gap-[1.125rem]", reverse && "md:order-1")}>
+      <div className={cn("grid gap-(--space-stack)", reverse && "md:order-1")}>
         {hasName ? (
           <h3
-            className="text-balance text-[clamp(1.875rem,3vw,2.5rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
+            className="text-balance typo-feature-heading text-foreground"
             data-sanity={memberDataAttribute?.(member._id, "name")}
           >
             {member.name}
@@ -163,7 +164,7 @@ function TeamMemberProfile({
         />
         {hasBio ? (
           <div
-            className="max-w-[35rem] text-pretty text-[1.03125rem] leading-[1.72] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.72]"
+            className="max-w-[35rem] text-pretty typo-body-editorial text-muted-foreground [&_p]:!my-0"
             data-sanity={memberDataAttribute?.(member._id, "bio")}
           >
             <PortableTextRenderer value={member.bio ?? []} />
@@ -208,34 +209,38 @@ export default function TeamMembers({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "px-4 py-[6.875rem] md:px-6 md:py-[7.375rem] lg:px-10",
+        "section-pad-lg",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
       id="team"
     >
-      <div className="mx-auto grid w-full max-w-7xl gap-[4.75rem]">
-        <header className="mx-auto grid max-w-[47.5rem] justify-items-center gap-3.5 text-center">
-          {displayEyebrow ? (
-            <p
-              className="text-[0.8125rem] font-semibold uppercase leading-none tracking-[0.22em] text-primary"
-              data-sanity={dataAttribute?.("eyebrow")}
-            >
-              {eyebrow}
-            </p>
-          ) : null}
-          {displayTitle ? (
-            <h2
-              className="text-balance text-[clamp(2.125rem,3.4vw,3rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-foreground"
-              data-sanity={dataAttribute?.("title")}
-              id={titleId}
-            >
-              {title}
-            </h2>
+      <div className="container grid gap-(--space-header-gap)">
+        <header className="mx-auto grid max-w-[47.5rem] justify-items-center gap-5 text-center">
+          {displayEyebrow || displayTitle ? (
+            <div>
+              {displayEyebrow ? (
+                <p
+                  className="mb-3.5 typo-eyebrow text-primary"
+                  data-sanity={dataAttribute?.("eyebrow")}
+                >
+                  {eyebrow}
+                </p>
+              ) : null}
+              {displayTitle ? (
+                <h2
+                  className="text-balance typo-section-heading text-foreground"
+                  data-sanity={dataAttribute?.("title")}
+                  id={titleId}
+                >
+                  {title}
+                </h2>
+              ) : null}
+            </div>
           ) : null}
           {richText?.length ? (
             <div
-              className="text-pretty text-[1.0625rem] leading-[1.7] text-muted-foreground [&_p]:!my-0 [&_p]:!leading-[1.7]"
+              className="text-pretty typo-body-editorial text-muted-foreground [&_p]:!my-0"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableTextRenderer value={richText} />

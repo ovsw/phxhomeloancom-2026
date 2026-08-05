@@ -99,7 +99,7 @@ describe("Site Header", () => {
     render(<Header model={model} />);
     const banner = screen.getByRole("banner");
     expect(document.documentElement.style.getPropertyValue(SITE_HEADER_OFFSET_PROPERTY)).toBe(
-      "86px",
+      "var(--header-height)",
     );
     Object.defineProperty(window, "scrollY", { configurable: true, value: 200 });
     fireEvent.scroll(window);

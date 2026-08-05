@@ -5,10 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Custom animations */
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-fade-up: fade-up 0.7s ease-out forwards;
+  /* Keyframe animations. These reuse the motion speeds and curve declared with
+     the other role tokens below, so a change there moves everything at once.
+     fade-up is the one deliberate exception: a scroll-in entrance reads as
+     sluggish under 700ms, which is longer than any interaction speed. */
+  --animate-accordion-down: accordion-down var(--motion-base) var(--motion-ease);
+  --animate-accordion-up: accordion-up var(--motion-base) var(--motion-ease);
+  --animate-fade-up: fade-up 700ms var(--motion-ease) forwards;
 }
 
 @keyframes accordion-down {
@@ -57,10 +60,11 @@
   --phx-cream-100: #f7f4ee;
   --phx-cream-000: #fdfcf9;
   --phx-cream-050: #fbf9f4;
-  --phx-border: #e7e1d6;
-  --phx-border-strong: #c9c2b4;
-  --phx-border-input: #d8d1c3;
-  --phx-border-divider: #ddd5c4;
+  /* Border palette. Three weights, all at 1px — emphasis comes from colour,
+     never from width. See DESIGN.md Borders. */
+  --phx-border: #e7e1d6; /* default: cards, panels, dividers */
+  --phx-border-strong: #c9c2b4; /* emphasis: outline controls */
+  --phx-border-input: #d8d1c3; /* form fields at rest */
   --phx-text-heading: #131c3b;
   --phx-text-body: #3d4356;
   --phx-text-body-alt: #454b5e;
@@ -75,6 +79,33 @@
   --surface-card-on-cream: #ffffff;
   --surface-card-on-white: var(--phx-cream-050);
   --surface-card-default: var(--surface-card-on-cream);
+
+  /* -------------------------------------------------------------------------
+     Spacing system — one fluid recipe per rhythm role.
+     Responsive steps always use clamp(); fixed steps stay on the 4px grid.
+  ------------------------------------------------------------------------- */
+  --header-height: 5.375rem; /* 86px sticky header */
+  --space-section: clamp(5rem, 2.5vw + 4rem, 6rem); /* 80→96px standard section */
+  --space-section-lg: clamp(6rem, 3.75vw + 4.5rem, 7.5rem); /* 96→120px showpiece section */
+  --space-section-sm: clamp(4.5rem, 1.25vw + 4rem, 5rem); /* 72→80px page banner */
+  --space-header-gap: clamp(2.5rem, 1.875vw + 1.75rem, 3.25rem); /* 40→52px section header → content */
+  --space-split: clamp(2rem, 5vw, 4.5rem); /* 32→72px two-column feature gutter */
+  --space-stack: 1.125rem; /* 18px editorial paragraph stack */
+  --space-card: 1.75rem; /* 28px standard card padding */
+  --space-inset: clamp(1.75rem, 3.125vw + 0.5rem, 3rem); /* 28→48px feature inset panel */
+  --container-max: 80rem;
+  --container-narrow: 70rem;
+  --container-inline: clamp(1rem, 4vw, 2.5rem); /* 16→40px page gutter */
+
+  /* -------------------------------------------------------------------------
+     Shadow system — five named roles, per DESIGN.md Elevation & Depth.
+     Depth is ambient by default; these are the only shadow values in use.
+  ------------------------------------------------------------------------- */
+  --shadow-ambient-feature: 0 24px 64px rgba(19, 28, 59, 0.08); /* large inset panels, photos, feature figures */
+  --shadow-interactive-lift: 0 22px 48px rgba(19, 28, 59, 0.14); /* card hover, paired with ≤4px upward movement */
+  --shadow-menu-layer: 0 18px 44px rgba(19, 28, 59, 0.16); /* dropdowns, popovers, temporary overlays */
+  --shadow-teal-action: 0 14px 40px -12px rgba(31, 110, 140, 0.72); /* rare, emphasized primary actions on dark/feature surfaces */
+  --shadow-media-frame: 0 28px 64px rgba(19, 28, 59, 0.22); /* dark video chrome — inline embeds and lightboxes */
 
   --radius: 0.5rem;
   --card: var(--surface-card-default);
@@ -92,8 +123,15 @@
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: var(--phx-border);
+  --border-strong: var(--phx-border-strong);
   --input: var(--phx-border-input);
   --ring: var(--phx-accent);
+
+  /* On-dark borders. Navy sections are always dark regardless of theme, so
+     they cannot use --border, which follows the light/dark switch. These
+     mirror the two roles above at alphas that read against navy. */
+  --border-on-dark: rgb(255 255 255 / 12%); /* structural: frames, dividers */
+  --border-on-dark-strong: rgb(255 255 255 / 24%); /* controls on dark */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -135,6 +173,7 @@
   --destructive: oklch(0.396 0.141 25.723);
   --destructive-foreground: oklch(0.637 0.237 25.331);
   --border: rgb(255 255 255 / 14%);
+  --border-strong: rgb(255 255 255 / 28%);
   --input: rgb(255 255 255 / 18%);
   --ring: var(--phx-accent);
   --chart-1: oklch(0.488 0.243 264.376);
@@ -176,6 +215,9 @@
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-edge-on-dark: var(--border-on-dark);
+  --color-edge-on-dark-strong: var(--border-on-dark-strong);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-accent-foreground: var(--accent-foreground);
@@ -202,35 +244,444 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Radius roles — three steps, 6px apart. See DESIGN.md Shapes.
+     Anything with a corner picks one of these; nothing invents a value. */
+  --radius-control: var(--radius); /* 8px  — buttons, inputs, nav items, tiles inside cards */
+  --radius-card: 0.875rem; /* 14px — cards, panels, figures, form containers */
+  --radius-frame: 1.25rem; /* 20px — dark media chrome and full-bleed feature panels */
+
+  /* A screen inset inside a padded frame is concentric with it:
+     inner radius = outer radius − the inset. Keeps the corners parallel. */
+  --radius-frame-inset: 0.5rem; /* the p-2 padding on media frames */
+  --radius-frame-inner: calc(var(--radius-frame) - var(--radius-frame-inset));
+
+  /* Not a radius role — the arch silhouette behind portrait CTAs. Its top is a
+     shape, so it is exempt from the scale; its base still uses the frame role. */
+  --radius-arch: 13.75rem;
+
+  /* Focus roles — one ring, two surfaces. See DESIGN.md Focus.
+     The ring is solid, never faded: it is an accessibility affordance, and
+     dropping it to 20–40% opacity puts it under the 3:1 contrast floor. */
+  --focus-ring-width: 3px;
+  --focus-ring-color: var(--ring); /* accent — 4.6:1 on cream */
+  --focus-ring-offset: 2px;
+
+  /* Dark sections: the accent disappears on navy, so the ring switches to the
+     on-dark label colour and takes a wider gap to separate from the backdrop. */
+  --focus-ring-color-on-dark: var(--phx-label-on-dark); /* 8.5:1 on navy-900 */
+  --focus-ring-offset-on-dark: 4px;
+  --focus-ring-offset-color-on-dark: var(--phx-navy-900);
+
+  /* Control geometry — the three button/control sizes. See DESIGN.md
+     Components → Buttons. Interactive controls are rounded-lg (8px);
+     call sites must not override height, padding, or radius. */
+  --control-height: 3rem; /* default: page-builder CTAs, form submits */
+  --control-inline: 1.75rem;
+  --control-height-compact: 2.5rem; /* compact: header, nav, dense UI */
+  --control-inline-compact: 1.25rem;
+  /* hero: the one action in a section built around a single monumental
+     headline. Rare by design — see the Hero Is Earned rule in DESIGN.md. */
+  --control-height-hero: 3.5rem;
+  --control-inline-hero: 2rem;
+
+  /* Motion roles — three speeds and one curve. See DESIGN.md Motion.
+     Speed follows travel distance, not importance: the further a thing moves,
+     the longer it needs to stay believable. Everything decelerates — motion
+     that eases out arrives settled instead of stopping dead. */
+  --motion-fast: 150ms; /* in-place paint: colour, opacity, small icon spins */
+  --motion-base: 200ms; /* the default: hovers, lifts, focus, chevrons */
+  --motion-slow: 300ms; /* travel across the viewport: drawers, headers */
+  --motion-ease: cubic-bezier(0.22, 0.61, 0.36, 1); /* decelerating */
 }
+
+/* ---------------------------------------------------------------------------
+   Containers — one page wrapper, one narrow feature wrapper.
+   Width and gutter are fluid; no stepped breakpoint widths.
+--------------------------------------------------------------------------- */
 
 @utility container {
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  @media (width >= theme(--breakpoint-sm)) {
-    max-width: 640px;
-    padding-left: 2rem;
-    padding-right: 2rem;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-inline);
+}
+
+@utility container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--container-inline);
+}
+
+/* ---------------------------------------------------------------------------
+   Section rhythm roles — one fluid recipe per role, mirroring typo-*.
+   section-pad: standard section. section-pad-lg: showpiece (award, team,
+   loan cards, YouTube). section-pad-sm: page banner. section-header-gap:
+   section header → content. gap-split: two-column feature gutter.
+--------------------------------------------------------------------------- */
+
+@utility section-pad {
+  padding-block: var(--space-section);
+}
+
+@utility section-pad-lg {
+  padding-block: var(--space-section-lg);
+}
+
+@utility section-pad-sm {
+  padding-block: var(--space-section-sm);
+}
+
+@utility section-header-gap {
+  margin-bottom: var(--space-header-gap);
+}
+
+@utility gap-split {
+  gap: var(--space-split);
+}
+
+@utility gap-x-split {
+  column-gap: var(--space-split);
+}
+
+/* ---------------------------------------------------------------------------
+   Shadow roles — the only five shadow values in the system. See DESIGN.md
+   Elevation & Depth. Do not introduce a sixth without documenting it there.
+--------------------------------------------------------------------------- */
+
+@utility shadow-ambient-feature {
+  box-shadow: var(--shadow-ambient-feature);
+}
+
+@utility shadow-interactive-lift {
+  box-shadow: var(--shadow-interactive-lift);
+}
+
+@utility shadow-menu-layer {
+  box-shadow: var(--shadow-menu-layer);
+}
+
+@utility shadow-teal-action {
+  box-shadow: var(--shadow-teal-action);
+}
+
+@utility shadow-media-frame {
+  box-shadow: var(--shadow-media-frame);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion roles — see DESIGN.md Motion. Each pairs a speed with the house
+   curve, so a call site picks one class instead of a duration and an easing
+   that can drift apart.
+
+   motion-fast   in-place paint: colour, opacity, a chevron rotating.
+   motion-base   the default: hover lifts, focus, card raises.
+   motion-slow   travel across the viewport: the sticky header, drawers.
+
+   These set duration and timing-function only. The call site still declares
+   WHAT animates (transition-colors, transition-transform), because narrowing
+   the property list is per-component and transition-all is banned.
+--------------------------------------------------------------------------- */
+
+/* Each role sets the animation pair as well as the transition pair. A speed is
+   a speed regardless of which mechanism moves the element — the sheet slides
+   via `animate-in`, and without this it would silently run at the animate
+   plugin's own default instead of the role it is labelled with. */
+@utility motion-fast {
+  transition-duration: var(--motion-fast);
+  transition-timing-function: var(--motion-ease);
+  animation-duration: var(--motion-fast);
+  animation-timing-function: var(--motion-ease);
+}
+
+@utility motion-base {
+  transition-duration: var(--motion-base);
+  transition-timing-function: var(--motion-ease);
+  animation-duration: var(--motion-base);
+  animation-timing-function: var(--motion-ease);
+}
+
+@utility motion-slow {
+  transition-duration: var(--motion-slow);
+  transition-timing-function: var(--motion-ease);
+  animation-duration: var(--motion-slow);
+  animation-timing-function: var(--motion-ease);
+}
+
+/* ---------------------------------------------------------------------------
+   Radius roles — control (8px), card (14px), frame (20px). See DESIGN.md
+   Shapes. rounded-frame-inner is concentric with rounded-frame; use it only
+   on a screen inset inside a padded frame.
+--------------------------------------------------------------------------- */
+
+@utility rounded-control {
+  border-radius: var(--radius-control);
+}
+
+@utility rounded-card {
+  border-radius: var(--radius-card);
+}
+
+@utility rounded-frame {
+  border-radius: var(--radius-frame);
+}
+
+@utility rounded-frame-inner {
+  border-radius: var(--radius-frame-inner);
+}
+
+/* ---------------------------------------------------------------------------
+   Blockquote accent — see DESIGN.md Borders. One rule for every quote on the
+   site: a 3px Mesa Copper left rule, no tinted background.
+
+   This is an accent, not an edge, which is why it is a named role rather than
+   one of the border colour tokens. Size and padding stay with the call site —
+   a pull-quote in a story feature is legitimately larger than one in article
+   body copy — but the mark that identifies it as a quote does not vary.
+--------------------------------------------------------------------------- */
+
+@utility blockquote-accent {
+  border-left: 3px solid var(--phx-copper-600);
+  background-color: transparent;
+}
+
+/* ---------------------------------------------------------------------------
+   Focus roles — see DESIGN.md Focus. Every focusable element wears exactly one
+   of these; no call site writes its own ring colour, width, or offset.
+
+   focus-ring         anything with its own box: buttons, inputs, nav items,
+                      cards, media posters, icon buttons.
+   focus-ring-on-dark the same, on a navy section where the accent would vanish.
+   focus-underline    inline text links that can wrap. An outline follows the
+                      text shape across line breaks; a ring would draw one
+                      rectangle around the whole line box.
+
+   All three key off :focus-visible, never :focus — a plain :focus fires on
+   mouse click and shows the indicator to people who did not ask for it.
+
+   The ring is a box-shadow, and box-shadow replaces rather than stacks — a
+   hover:shadow-* utility on the same element would otherwise erase it. Two
+   things keep that from happening:
+
+   1. These rules live in `@layer focus`, which Tailwind never declares. An
+      undeclared layer sorts after every declared one, so the ring outranks
+      any shadow utility regardless of source order. This is also why they
+      are plain classes rather than @utility — a utility would land back in
+      the `utilities` layer and lose to hover:shadow-* again.
+   2. An element whose drop shadow should survive while focused hands it to
+      --focus-ring-keep, which the ring appends to its own shadow list:
+        hover:[--focus-ring-keep:var(--shadow-interactive-lift)]
+--------------------------------------------------------------------------- */
+
+@layer focus {
+  .focus-ring:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 var(--focus-ring-offset) var(--background),
+      0 0 0 calc(var(--focus-ring-offset) + var(--focus-ring-width))
+        var(--focus-ring-color),
+      var(--focus-ring-keep, 0 0 transparent);
   }
-  @media (width >= theme(--breakpoint-md)) {
-    max-width: 768px;
+
+  .focus-ring-on-dark:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 var(--focus-ring-offset-on-dark)
+        var(--focus-ring-offset-color-on-dark),
+      0 0 0
+        calc(var(--focus-ring-offset-on-dark) + var(--focus-ring-width))
+        var(--focus-ring-color-on-dark),
+      var(--focus-ring-keep, 0 0 transparent);
   }
-  @media (width >= theme(--breakpoint-lg)) {
-    max-width: 1024px;
+
+  .focus-underline:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-sm);
   }
-  @media (width >= theme(--breakpoint-xl)) {
-    max-width: 1280px;
-    padding-left: 4rem;
-    padding-right: 4rem;
-  }
+}
+
+/* ---------------------------------------------------------------------------
+   Typography roles — one complete recipe per semantic role.
+   Responsive sizes always use clamp(); fixed sizes never carry breakpoints.
+   Families are fixed: headings = Source Serif 4, everything else = Archivo.
+--------------------------------------------------------------------------- */
+
+@utility typo-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 4.6vw, 4.125rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: normal;
+}
+
+@utility typo-page-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 4.7vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: normal;
+}
+
+@utility typo-section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 3.2vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+@utility typo-feature-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.875rem, 3vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+@utility typo-subsection-heading {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+
+@utility typo-card-title {
+  font-family: var(--font-display);
+  font-size: 1.3125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: normal;
+}
+
+/* Loan showcase cards: deliberately lighter, airier than typo-card-title. */
+@utility typo-showcase-title {
+  font-family: var(--font-display);
+  font-size: 1.4375rem;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: normal;
+}
+
+/* Small serif title for dense interactive rows (FAQ questions). */
+@utility typo-title-minor {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
+@utility typo-lead {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+@utility typo-body-editorial {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+@utility typo-body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+@utility typo-body-sm {
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility typo-fine-print {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility typo-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+@utility typo-meta-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@utility typo-nav {
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-button {
+  font-family: var(--font-body);
+  font-size: 0.90625rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@utility typo-button-lg {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@utility typo-stat-lg {
+  font-family: var(--font-body);
+  font-size: clamp(2.75rem, 5vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+@utility typo-stat-md {
+  font-family: var(--font-body);
+  font-size: clamp(1.875rem, 2.7vw, 2.125rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: normal;
+}
+
+@utility typo-pull-quote {
+  font-family: var(--font-body);
+  font-size: clamp(1.5rem, 2.2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+@utility typo-blockquote {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
@@ -283,19 +734,83 @@
   will-change: opacity, transform;
 }
 
+/* ---------------------------------------------------------------------------
+   Reduced motion — see DESIGN.md Motion.
+
+   A blanket guard, not a per-component opt-in. Someone who sets this at the OS
+   level is telling us that movement makes the site harder or more unpleasant to
+   use; honouring that only where a developer remembered to add motion-reduce:
+   means it gets missed, and the misses are invisible to anyone not testing with
+   the setting on.
+
+   Transitions collapse to 1ms rather than 0 so transitionend still fires and
+   any JS waiting on it does not hang. Movement and looping animation stop
+   outright; opacity and colour still change, because a cross-fade carries no
+   travel and is what most reduced-motion users expect to keep.
+--------------------------------------------------------------------------- */
+
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Looping ambience has no end state worth landing on — stop it entirely. */
   .particle-dot {
-    animation: none;
+    animation: none !important;
+  }
+
+  /* Entrance animations must not leave content stuck at their `from` state:
+     fade-up starts at opacity 0, so it has to resolve, not vanish. */
+  .animate-fade-up {
+    animation-fill-mode: forwards !important;
+  }
+
+  /* Hover lifts and scale echoes are pure travel — cancel the displacement
+     rather than merely making it fast.
+
+     Tailwind v4 drives these through the standalone `translate` and `scale`
+     properties, not `transform`, so the variables have to be zeroed at the
+     source; `transform: none` would miss all of them.
+
+     Targeted at the lift and scale utilities by name rather than blanket-reset,
+     because the same variables also carry static positioning:
+     `-translate-x-1/2` centres the nav dropdown, the person-contact-cta
+     backdrop, and every particle dot. Zeroing them broadly relocates that
+     layout instead of stilling it — and hover-scoping is not enough either,
+     since the dropdown is itself hoverable. Displacement that is never
+     animated is not motion, and reduced motion must not move it.
+
+     Adding a new lift utility means adding it here. That is the cost of not
+     breaking layout; the list is short because the lift vocabulary is small.
+
+     `transform` itself is left alone: menu-toggle rotates its sun/moon icons
+     through it, and that is a state indicator, not decorative travel. */
+  .hover\:-translate-y-0\.5:hover,
+  .hover\:-translate-y-1:hover,
+  .hover\:translate-y-0:hover,
+  :is(:where(.group):hover .group-hover\:scale-105),
+  .hover\:scale-105:hover {
+    --tw-translate-y: 0 !important;
+    --tw-scale-x: 100% !important;
+    --tw-scale-y: 100% !important;
+    --tw-scale-z: 100% !important;
   }
 }
 
 @layer base {
+  /* Images carry no radius of their own — a logo, icon, or diagram must stay
+     square. Rounding belongs to the container that clips the image, which
+     already picks a radius role (card or frame). */
   img {
     display: block;
     max-width: 100%;
     width: 100%;
     height: auto;
     object-fit: cover;
-    border-radius: var(--radius-md);
   }
 }

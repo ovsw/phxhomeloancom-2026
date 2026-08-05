@@ -58,7 +58,7 @@ export default function HomeHero({
 }: HomeHeroProps) {
   return (
     <section
-      className="relative isolate min-h-[calc(100svh-4.5rem)] overflow-hidden bg-[var(--phx-navy-900)] text-white md:min-h-[min(860px,92svh)]"
+      className="relative isolate min-h-[calc(100svh-var(--header-height))] overflow-hidden bg-[var(--phx-navy-900)] text-white md:min-h-[min(860px,92svh)]"
       id="home-hero"
     >
       <div className="absolute inset-0 -z-20">
@@ -80,16 +80,16 @@ export default function HomeHero({
           />
         </div>
       ) : null}
-      <div className="relative z-20 mx-auto flex min-h-[calc(100svh-4.5rem)] w-full max-w-7xl items-center px-4 py-20 sm:px-6 md:min-h-[min(860px,92svh)] md:px-8 md:py-24 lg:px-10">
+      <div className="container relative z-20 flex min-h-[calc(100svh-var(--header-height))] items-center section-pad md:min-h-[min(860px,92svh)]">
         <div className="flex w-full max-w-[37.5rem] flex-col gap-6">
           {marketPositioning ? <p className="sr-only">{marketPositioning}</p> : null}
           {servicePromise ? (
-            <h1 className="text-balance font-display text-[clamp(2.75rem,4.6vw,4.125rem)] font-semibold leading-[1.08] tracking-normal text-white">
+            <h1 className="text-balance typo-display text-white">
               {servicePromise}
             </h1>
           ) : null}
           {richText ? (
-            <div className="max-w-[34rem] text-base leading-8 text-white/80 sm:text-lg [&_a]:!text-white [&_p]:!my-0">
+            <div className="max-w-[34rem] typo-lead text-white/80 [&_a]:!text-white [&_p]:!my-0">
               <PortableTextRenderer value={richText} />
             </div>
           ) : null}
@@ -103,11 +103,10 @@ export default function HomeHero({
                 return (
                   <Button
                     asChild
-                    className={secondary
-                      ? "h-12 w-full rounded-[9px] border-white/35 bg-transparent px-6 text-base font-semibold text-white shadow-none hover:border-white/50 hover:bg-white/10 hover:text-white sm:w-auto md:h-[3.25rem] md:px-7"
-                      : "h-12 w-full rounded-[9px] bg-primary px-6 text-base font-semibold text-primary-foreground shadow-[0_12px_28px_rgba(31,110,140,.28)] hover:bg-accent-hover sm:w-auto md:h-[3.25rem] md:px-7"}
+                    className="w-full sm:w-auto"
+                    emphasis={!secondary}
                     key={button._key || `${button.href}-${index}`}
-                    size="lg"
+                    onDark={secondary}
                     variant={secondary ? "outline" : "default"}
                   >
                     <Link

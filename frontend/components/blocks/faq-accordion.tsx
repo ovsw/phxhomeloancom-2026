@@ -28,27 +28,25 @@ export default function FaqAccordion({
   const href = stegaClean(link?.href);
 
   return (
-    <section className="my-8" id="faq">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex w-full flex-col items-center">
-          <div className="flex flex-col items-center space-y-4 text-center sm:space-y-6">
-            {stegaClean(eyebrow)?.trim() ? (
-              <Badge variant="secondary">{eyebrow}</Badge>
-            ) : null}
-            {stegaClean(title)?.trim() ? (
-              <h2 className="font-display text-3xl font-semibold md:text-5xl">
-                {title}
-              </h2>
-            ) : null}
-            {stegaClean(subtitle)?.trim() ? (
-              <h3 className="text-balance text-lg font-normal text-muted-foreground">
-                {subtitle}
-              </h3>
-            ) : null}
-          </div>
+    <section className="scroll-mt-24 section-pad" id="faq">
+      <div className="container">
+        <div className="flex flex-col items-center text-center section-header-gap">
+          {stegaClean(eyebrow)?.trim() ? (
+            <Badge className="mb-3.5" variant="secondary">{eyebrow}</Badge>
+          ) : null}
+          {stegaClean(title)?.trim() ? (
+            <h2 className="text-balance typo-section-heading">
+              {title}
+            </h2>
+          ) : null}
+          {stegaClean(subtitle)?.trim() ? (
+            <h3 className="mt-5 text-balance typo-lead text-muted-foreground">
+              {subtitle}
+            </h3>
+          ) : null}
         </div>
 
-        <div className="mx-auto my-16 max-w-xl">
+        <div className="mx-auto max-w-xl">
           {visibleFaqs.length ? (
             <Accordion
               className="w-full"
@@ -61,12 +59,12 @@ export default function FaqAccordion({
 
                 return (
                   <AccordionItem className="py-2" key={value} value={value}>
-                    <AccordionTrigger className="group py-2 text-[15px] leading-6 hover:no-underline">
+                    <AccordionTrigger className="group py-2 typo-title-minor hover:no-underline">
                       {faq.title}
                     </AccordionTrigger>
                     {faq.answer?.length ? (
                       <AccordionContent className="pb-2 text-muted-foreground">
-                        <div className="text-sm md:text-base">
+                        <div className="typo-body">
                           <PortableTextRenderer value={faq.answer} />
                         </div>
                       </AccordionContent>
@@ -80,7 +78,7 @@ export default function FaqAccordion({
           {href && (link?.description || link?.title) ? (
             <div className="w-full py-6">
               {link.title ? (
-                <p className="mb-1 text-xs">
+                <p className="mb-1 typo-fine-print">
                   {link.title}
                 </p>
               ) : null}
@@ -94,7 +92,7 @@ export default function FaqAccordion({
                 target={link.openInNewTab ? "_blank" : undefined}
               >
                 {link.description ? (
-                  <p className="text-[15px] font-medium leading-6">
+                  <p className="typo-button">
                     {link.description}
                   </p>
                 ) : null}

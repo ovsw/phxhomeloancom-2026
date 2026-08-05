@@ -53,12 +53,12 @@ export default function PersonContactCta({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "pb-14 pt-8 min-[641px]:px-10 min-[641px]:py-24",
+        "section-pad min-[641px]:px-(--container-inline)",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
-      <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_24px_64px_rgba(19,28,59,0.08)] max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
+      <div className="mx-auto grid w-full max-w-[70rem] grid-cols-[minmax(0,1.03fr)_minmax(0,0.97fr)] items-stretch overflow-hidden rounded-frame border border-border bg-card shadow-ambient-feature max-[1100px]:grid-cols-1 max-[640px]:max-w-none max-[640px]:rounded-none max-[640px]:border-0 max-[640px]:bg-transparent max-[640px]:shadow-none">
         <div className="relative isolate flex items-end justify-center overflow-hidden bg-transparent min-[641px]:bg-muted min-[641px]:pt-10 min-[1101px]:min-h-[35.5rem] min-[1101px]:pt-12">
           <div className="relative flex h-[clamp(20rem,88vw,25rem)] w-full items-end justify-center min-[641px]:h-[clamp(24.375rem,52vw,31.25rem)] min-[1101px]:h-[32.5rem]">
             <div
@@ -86,12 +86,12 @@ export default function PersonContactCta({
           </div>
         </div>
 
-        <div className="relative z-20 flex flex-col items-start justify-center p-[clamp(2.5rem,5vw,4.25rem)] max-[1100px]:px-7 max-[1100px]:pb-[2.625rem] max-[1100px]:pt-9 max-[640px]:px-6 max-[640px]:pb-10 max-[640px]:pt-8">
+        <div className="relative z-20 flex flex-col items-start justify-center p-[clamp(2.5rem,5vw,4.25rem)] max-[1100px]:px-7 max-[1100px]:py-9 max-[640px]:px-6 max-[640px]:py-8">
           <div className="grid w-full min-w-0 justify-items-start gap-5">
-            <div className="grid gap-3">
+            <div>
               {displayEyebrow ? (
                 <p
-                  className="text-xs font-semibold uppercase tracking-[0.26em] text-primary"
+                  className="mb-3.5 typo-eyebrow text-primary"
                   data-sanity={dataAttribute?.("eyebrow")}
                 >
                   {eyebrow}
@@ -99,7 +99,7 @@ export default function PersonContactCta({
               ) : null}
               {displayTitle ? (
                 <h2
-                  className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-card-foreground"
+                  className="text-balance typo-section-heading text-card-foreground"
                   data-sanity={dataAttribute?.("title")}
                   id={titleId}
                 >
@@ -109,7 +109,7 @@ export default function PersonContactCta({
             </div>
 
             {contactMethods?.length ? (
-              <ul className="grid w-full list-none gap-[1.125rem] border-t border-border p-0 pt-[1.375rem]">
+              <ul className="grid w-full list-none gap-(--space-stack) border-t border-border p-0 pt-5">
                 {contactMethods.map((method, index) => {
                   const methodType = stegaClean(method.type);
                   if (!isContactMethodType(methodType)) return null;
@@ -129,7 +129,7 @@ export default function PersonContactCta({
                     <li data-sanity={dataAttribute?.(path)} key={method._key}>
                       <a
                         className={cn(
-                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity hover:opacity-80 focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-primary/30",
+                          "grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3.5 font-semibold text-card-foreground no-underline transition-opacity motion-fast hover:opacity-80 focus-ring",
                           methodType === "address"
                             ? "items-start"
                             : "items-center",
@@ -143,11 +143,11 @@ export default function PersonContactCta({
                           className="grid size-10 place-items-center rounded-full bg-primary text-primary-foreground"
                           data-sanity={dataAttribute?.(`${path}.type`)}
                         >
-                          <Icon aria-hidden="true" className="size-[1.125rem]" />
+                          <Icon aria-hidden="true" className="size-4" />
                         </span>
                         {methodType === "address" ? (
                           <address
-                            className="whitespace-pre-line text-base not-italic leading-[1.4] min-[1101px]:text-[1.0625rem]"
+                            className="whitespace-pre-line typo-button-lg not-italic leading-[1.4]"
                             data-sanity={dataAttribute?.(`${path}.label`)}
                           >
                             {method.label}
@@ -155,7 +155,7 @@ export default function PersonContactCta({
                         ) : (
                           <span
                             className={cn(
-                              "whitespace-pre-line text-base leading-[1.4] min-[1101px]:text-[1.0625rem]",
+                              "whitespace-pre-line typo-button-lg leading-[1.4]",
                               methodType === "email" && "break-all",
                             )}
                             data-sanity={dataAttribute?.(`${path}.label`)}
@@ -172,7 +172,7 @@ export default function PersonContactCta({
 
             {displayCredential ? (
               <p
-                className="mt-1.5 text-pretty text-[0.8125rem] leading-normal tracking-[0.01em] text-muted-foreground"
+                className="mt-1.5 text-pretty typo-fine-print text-muted-foreground"
                 data-sanity={dataAttribute?.("credentialLine")}
               >
                 {credentialLine}

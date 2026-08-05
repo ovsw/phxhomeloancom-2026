@@ -15,7 +15,7 @@ type ContactFormClientProps = ContactFormBlock & {
 };
 
 const inputClassName =
-  "min-h-12 w-full rounded-[9px] border-[1.5px] border-input bg-background px-4 py-3.5 text-[15px] text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/20";
+  "min-h-12 w-full rounded-control border border-input bg-background px-4 py-3.5 text-base text-foreground outline-none transition-[border-color,box-shadow] motion-fast placeholder:text-muted-foreground focus-visible:border-primary focus-ring";
 
 function inputCopy(
   field: ContactFormInputCopy | null,
@@ -101,16 +101,16 @@ export default function ContactFormClient({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "py-20 md:py-[5.5rem] lg:pb-[6.875rem]",
+        "section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
     >
-      <div className="container grid gap-12 min-[901px]:grid-cols-[0.9fr_1.25fr] min-[901px]:items-start min-[901px]:gap-[clamp(2rem,5vw,5rem)]">
-        <div className="grid gap-11">
-          <div className="grid gap-4">
+      <div className="container grid gap-(--space-header-gap) min-[901px]:grid-cols-[0.9fr_1.25fr] min-[901px]:items-start min-[901px]:gap-split">
+        <div className="grid gap-10">
+          <div>
             {displayEyebrow ? (
               <p
-                className="text-[13px] font-semibold uppercase tracking-[0.22em] text-primary"
+                className="mb-3.5 typo-eyebrow text-primary"
                 data-sanity={dataAttributes?.eyebrow}
               >
                 {eyebrow}
@@ -118,7 +118,7 @@ export default function ContactFormClient({
             ) : null}
             {displayTitle ? (
               <h1
-                className="max-w-2xl text-balance text-[clamp(2.5rem,4vw,3.5rem)] font-semibold leading-[1.1] tracking-[-0.015em] text-foreground"
+                className="max-w-2xl text-balance typo-page-heading text-foreground"
                 data-sanity={dataAttributes?.title}
                 id={titleId}
               >
@@ -127,7 +127,7 @@ export default function ContactFormClient({
             ) : null}
             {displayDescription ? (
               <p
-                className="max-w-xl text-pretty text-lg leading-[1.65] text-muted-foreground"
+                className="mt-5 max-w-xl text-pretty typo-lead text-muted-foreground"
                 data-sanity={dataAttributes?.description}
               >
                 {description}
@@ -138,15 +138,15 @@ export default function ContactFormClient({
           {displayOfficeHoursTitle && visibleOfficeHours.length ? (
             <div>
               <h2
-                className="mb-4 text-lg font-semibold text-foreground"
+                className="mb-4 typo-card-title text-foreground"
                 data-sanity={dataAttributes?.officeHoursTitle}
               >
                 {officeHoursTitle}
               </h2>
-              <dl className="border-t border-border text-[14.5px] text-foreground/75">
+              <dl className="border-t border-border typo-body-sm text-foreground/75">
                 {visibleOfficeHours.map(({ index, row }) => (
                   <div
-                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border py-[13px]"
+                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 border-b border-border py-3"
                     key={row._key}
                   >
                     <dt data-sanity={dataAttributes?.officeHours?.[index]?.days}>
@@ -165,19 +165,19 @@ export default function ContactFormClient({
           ) : null}
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-7 shadow-[0_20px_48px_rgba(19,28,59,0.07)] md:p-12">
+        <div className="rounded-card border border-border bg-card p-(--space-inset) shadow-ambient-feature">
           {/* Keep controls unnamed and non-submitting until server-side delivery exists. */}
           <form
             aria-describedby={availabilityId}
             aria-labelledby={formTitleId}
-            className="grid gap-[22px]"
+            className="grid gap-5"
             ref={formRef}
             onSubmit={(event) => {
               event.preventDefault();
             }}
           >
             <h2
-              className="text-[26px] font-semibold text-card-foreground"
+              className="typo-subsection-heading text-card-foreground"
               data-sanity={dataAttributes?.formTitle}
               id={formTitleId}
             >
@@ -187,7 +187,7 @@ export default function ContactFormClient({
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="grid gap-2" htmlFor={`${idPrefix}-name`}>
                 <span
-                  className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
+                  className="typo-fine-print font-semibold text-foreground"
                   data-sanity={dataAttributes?.nameField?.label}
                 >
                   {nameCopy.label}
@@ -204,7 +204,7 @@ export default function ContactFormClient({
               </label>
               <label className="grid gap-2" htmlFor={`${idPrefix}-email`}>
                 <span
-                  className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
+                  className="typo-fine-print font-semibold text-foreground"
                   data-sanity={dataAttributes?.emailField?.label}
                 >
                   {emailCopy.label}
@@ -223,7 +223,7 @@ export default function ContactFormClient({
 
             <label className="grid gap-2" htmlFor={`${idPrefix}-phone`}>
               <span
-                className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
+                className="typo-fine-print font-semibold text-foreground"
                 data-sanity={dataAttributes?.phoneField?.label}
               >
                 {phoneCopy.label}
@@ -240,7 +240,7 @@ export default function ContactFormClient({
 
             <label className="grid gap-2" htmlFor={`${idPrefix}-message`}>
               <span
-                className="text-[13px] font-semibold tracking-[0.02em] text-foreground"
+                className="typo-fine-print font-semibold text-foreground"
                 data-sanity={dataAttributes?.messageField?.label}
               >
                 {messageCopy.label}
@@ -254,9 +254,8 @@ export default function ContactFormClient({
               />
             </label>
 
-            <div className="flex flex-wrap items-center gap-[18px]">
+            <div className="flex flex-wrap items-center gap-5">
               <Button
-                className="h-12 rounded-[9px] px-8 text-[15.5px]"
                 data-sanity={dataAttributes?.submitLabel}
                 aria-controls={statusId}
                 aria-describedby={availabilityId}
@@ -272,7 +271,7 @@ export default function ContactFormClient({
               </Button>
               {stegaClean(privacyNote)?.trim() ? (
                 <p
-                  className="text-[13px] text-muted-foreground"
+                  className="typo-fine-print text-muted-foreground"
                   data-sanity={dataAttributes?.privacyNote}
                 >
                   {privacyNote}
@@ -285,7 +284,7 @@ export default function ContactFormClient({
             </p>
             <noscript>
               <p
-                className="text-sm text-primary"
+                className="typo-body-sm text-primary"
                 data-sanity={dataAttributes?.unavailableMessage}
               >
                 {displayUnavailableMessage}

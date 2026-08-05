@@ -42,22 +42,22 @@ export function SiteFooter({
   const remainingColumns = model.columns.slice(1);
 
   return (
-    <footer className="bg-[#0c1329] pt-16 text-white md:pt-[5.5rem]" data-footer-state="ready">
+    <footer className="bg-[#0c1329] pt-(--space-section) text-white" data-footer-state="ready">
       <section
         aria-labelledby="site-footer-heading"
-        className="mx-auto w-full max-w-7xl px-4 md:px-10"
+        className="container"
       >
         <h2 className="sr-only" id="site-footer-heading">
           Site footer
         </h2>
-        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-14">
+        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <section aria-labelledby="footer-brand-heading" className="flex flex-col gap-5">
             <h3 className="sr-only" id="footer-brand-heading">
               {model.brand.label}
             </h3>
             <Link
               aria-label="Home page"
-              className="w-fit rounded-[10px] bg-white px-[18px] py-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#feb77d] focus-visible:ring-offset-4 focus-visible:ring-offset-[#0c1329]"
+              className="w-fit rounded-control bg-white px-[18px] py-3.5 focus-ring-on-dark"
               href="/"
             >
               {model.brand.image ? (
@@ -74,7 +74,7 @@ export function SiteFooter({
                 <span className="text-lg font-semibold text-[#0c1329]">{model.brand.label}</span>
               )}
             </Link>
-            <div className="text-[14.5px] leading-[1.7] text-white/75">
+            <div className="typo-body-sm text-white/75">
               <p>NMLS ID {model.brand.organizationNmlsId}</p>
               <p>
                 Call: <FooterLink className="inline text-white/90" link={model.brand.phone} />
@@ -95,11 +95,11 @@ export function SiteFooter({
             <h3 className={headingClassName} id="footer-contact-heading">
               {model.contact.heading}
             </h3>
-            <div className="flex flex-col gap-3 text-[14.5px] leading-[1.5] text-white/80">
+            <div className="flex flex-col gap-3 typo-body-sm text-white/80">
               <p className="font-semibold text-white">
                 {model.contact.fullName}
                 <br />
-                <span className="text-[13px] font-normal text-white/70">
+                <span className="typo-fine-print text-white/70">
                   NMLS# {model.contact.nmlsId}
                 </span>
               </p>
@@ -116,14 +116,14 @@ export function SiteFooter({
 
         <section
           aria-labelledby="footer-compliance-heading"
-          className="border-t border-white/15 py-8 text-[12.5px] text-white/75"
+          className="border-t border-edge-on-dark py-8 typo-fine-print text-white/75"
         >
           <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-start">
             <div>
               <h3 className="sr-only" id="footer-compliance-heading">
                 {model.compliance.headline}
               </h3>
-              <p className="max-w-[53.75rem] leading-[1.7] text-white/70">
+              <p className="max-w-[53.75rem] text-white/70">
                 {model.compliance.disclaimer}
               </p>
             </div>
@@ -134,7 +134,7 @@ export function SiteFooter({
               >
                 <Image
                   alt={model.compliance.nmlsConsumerAccess.label}
-                  className="h-14 w-auto object-contain invert"
+                  className="h-10 w-auto object-contain invert"
                   height={512}
                   src="/images/footer/nmls-consumer-access.png"
                   width={703}
@@ -143,17 +143,19 @@ export function SiteFooter({
                   <span className="sr-only"> (opens in a new tab)</span>
                 ) : null}
               </FooterLink>
-              <Image
-                alt=""
-                className="h-14 w-auto object-contain invert"
-                height={2400}
-                src="/images/footer/equal-housing-lender.png"
-                width={2400}
-              />
+              <span className="inline-flex min-h-11 items-center">
+                <Image
+                  alt=""
+                  className="h-10 w-auto object-contain invert"
+                  height={2400}
+                  src="/images/footer/equal-housing-lender.png"
+                  width={2400}
+                />
+              </span>
             </div>
           </div>
-          <div className="mt-8 border-t border-white/15 pt-6">
-            <p className="leading-[1.6] text-white/65">
+          <div className="mt-8 border-t border-edge-on-dark pt-6">
+            <p className="text-white/65">
               ©{" "}
               <span data-sanity={dataAttribute?.("compliance.copyrightStartYear")}>
                 {model.compliance.copyrightYears}
@@ -167,7 +169,7 @@ export function SiteFooter({
               </span>
               . Call:{" "}
               <FooterLink
-                className="inline text-[12.5px] leading-[1.6] text-white/75"
+                className="inline text-white/75"
                 dataSanity={dataAttribute?.("compliance.organizationPhone")}
                 link={model.compliance.organizationPhone}
               />
@@ -181,7 +183,7 @@ export function SiteFooter({
             <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
               {model.compliance.legalLinks.map((link) => (
                 <li key={link.key}>
-                  <FooterLink className="text-[12.5px] leading-[1.6] text-white/65" link={link} />
+                  <FooterLink className="typo-fine-print text-white/65" link={link} />
                 </li>
               ))}
             </ul>

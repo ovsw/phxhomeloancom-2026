@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 
 /** Sticky page-level navigation should use `top: var(--site-header-offset)`. */
 export const SITE_HEADER_OFFSET_PROPERTY = "--site-header-offset";
-export const SITE_HEADER_HEIGHT = "86px";
+/* Must stay in sync with the --header-height token in globals.css. */
+export const SITE_HEADER_HEIGHT = "var(--header-height)";
 
 export function SiteHeaderShell({ children }: { children: ReactNode }) {
   const [visible, setVisible] = useState(true);
@@ -46,7 +47,7 @@ export function SiteHeaderShell({ children }: { children: ReactNode }) {
     <header
       className={cn(
         "sticky top-0 z-[60] w-full border-b border-border/80 bg-background/95 backdrop-blur-md",
-        "transition-transform duration-300 ease-out will-change-transform motion-reduce:transition-none",
+        "transition-transform motion-slow will-change-transform motion-reduce:transition-none",
         visible ? "translate-y-0" : "-translate-y-full",
       )}
       data-visible={visible}

@@ -34,7 +34,7 @@ export default function AdvisorCta({
       aria-labelledby={titleId}
       className={cn(
         "px-4 py-20 md:px-10 md:py-24",
-        creamSurface ? "bg-[#f7f4ed]" : "bg-white",
+        creamSurface ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
@@ -43,8 +43,8 @@ export default function AdvisorCta({
           <div
             aria-hidden="true"
             className={cn(
-              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-3xl rounded-t-[13.75rem]",
-              creamSurface ? "bg-white" : "bg-[#fbf9f4]",
+              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-frame rounded-t-(--radius-arch)",
+              "bg-card",
             )}
           />
           {portraitImage?.asset?._id ? (
@@ -100,14 +100,8 @@ export default function AdvisorCta({
                 return (
                   <Button
                     asChild
-                    className={cn(
-                      "h-12 w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold sm:w-auto",
-                      secondary
-                        ? "border-[1.5px] border-slate-300 bg-white text-slate-950 hover:bg-white"
-                        : "bg-cyan-700 text-white hover:bg-cyan-600",
-                    )}
+                    className="w-full sm:w-auto"
                     key={button._key}
-                    size="lg"
                     variant={secondary ? "outline" : "default"}
                   >
                     <Link

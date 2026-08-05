@@ -8,7 +8,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetClose,
@@ -24,7 +25,7 @@ import type { HeaderNavigationModel } from "./model";
 import { NavigationIcon } from "./navigation-icon";
 
 const mobileLinkClassName =
-  "flex min-h-11 items-center rounded-md px-3 text-sm font-medium transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40";
+  "flex min-h-11 items-center rounded-control px-3 typo-nav transition-colors motion-fast hover:bg-secondary hover:text-foreground focus-ring";
 
 export default function MobileNav({
   brand,
@@ -39,7 +40,7 @@ export default function MobileNav({
   return (
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
-        <Button aria-label="Open menu" className="min-h-11 min-w-11" size="icon" variant="ghost">
+        <Button aria-label="Open menu" size="icon" variant="ghost">
           <Menu aria-hidden="true" className="size-5" />
         </Button>
       </SheetTrigger>
@@ -54,7 +55,7 @@ export default function MobileNav({
           <SheetDescription className="sr-only">
             Browse primary destinations and mortgage resources.
           </SheetDescription>
-          <SheetClose className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          <SheetClose className="rounded-control p-2 text-muted-foreground transition-colors motion-fast hover:bg-secondary hover:text-foreground focus-ring">
             <X aria-hidden="true" className="size-5" />
             <span className="sr-only">Close</span>
           </SheetClose>
@@ -66,14 +67,14 @@ export default function MobileNav({
                 <HeaderLink className={mobileLinkClassName} key={item.key} link={item.link} onClick={close} />
               ) : (
                 <AccordionItem className="border-b-0" key={item.key} value={item.key}>
-                  <AccordionTrigger className="min-h-11 rounded-md px-3 py-2 text-sm font-medium hover:bg-secondary hover:no-underline">
+                  <AccordionTrigger className="min-h-11 rounded-control px-3 py-2 typo-nav hover:bg-secondary hover:no-underline">
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent>
                     <div className="ml-4 grid gap-1 border-l border-border pl-3">
                       {item.links.map((child) => (
                         <HeaderLink
-                          className="flex min-h-11 items-start gap-3 rounded-md p-3 transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+                          className="flex min-h-11 items-start gap-3 rounded-control p-3 transition-colors motion-fast hover:bg-secondary focus-ring"
                           key={child.key}
                           link={child.link}
                           onClick={close}
@@ -83,7 +84,7 @@ export default function MobileNav({
                           </span>
                           <span className="grid gap-1">
                             <span className="font-medium text-foreground">{child.label}</span>
-                            <span className="text-xs leading-5 text-muted-foreground">{child.description}</span>
+                            <span className="typo-fine-print text-muted-foreground">{child.description}</span>
                           </span>
                         </HeaderLink>
                       ))}
@@ -98,7 +99,7 @@ export default function MobileNav({
           <SheetFooter className="border-t border-border/80 p-4">
             {navigation.actions.map((action) => (
               <HeaderLink
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                className={cn(buttonVariants({ size: "compact" }), "w-full")}
                 key={action.key}
                 link={action.link}
                 onClick={close}

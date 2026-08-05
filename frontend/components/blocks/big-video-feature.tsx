@@ -65,20 +65,20 @@ function BigVideoLightbox({
         onFocus={() => iframeRef.current?.focus()}
         type="button"
       />
-      <div className="relative w-full max-w-5xl rounded-[14px] border border-white/10 bg-[#0c1329] p-2 shadow-2xl">
+      <div className="relative w-full max-w-5xl rounded-frame border border-edge-on-dark bg-[#0c1329] p-2 shadow-media-frame">
         <h3 className="sr-only" id={titleId}>
           {title ? `${title} video` : "Featured video"}
         </h3>
         <button
           aria-label="Close video"
-          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          className="absolute -top-12 right-0 flex size-10 items-center justify-center rounded-full border border-edge-on-dark-strong bg-white/10 text-white transition-colors motion-fast hover:bg-white/20 focus-ring-on-dark"
           onClick={onClose}
           ref={closeRef}
           type="button"
         >
           <XIcon aria-hidden="true" className="size-5" />
         </button>
-        <div className="aspect-video overflow-hidden rounded-[10px] bg-black">
+        <div className="aspect-video overflow-hidden rounded-frame-inner bg-black">
           <iframe
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
@@ -148,7 +148,7 @@ export default function BigVideoFeature({
   return (
     <section
       aria-labelledby={displayTitle ? headingId : undefined}
-      className="relative overflow-hidden bg-[var(--phx-navy-800)] py-[4.5rem] md:py-[5.5rem]"
+      className="relative overflow-hidden bg-[var(--phx-navy-800)] section-pad"
     >
       <div
         aria-hidden="true"
@@ -157,7 +157,7 @@ export default function BigVideoFeature({
       <div className="container relative grid justify-items-center text-center">
         {displayEyebrow ? (
           <p
-            className="text-xs font-semibold uppercase tracking-[0.26em] text-label-on-dark/90"
+            className="typo-eyebrow text-label-on-dark/90"
             data-sanity={dataAttributes?.eyebrow}
           >
             {eyebrow}
@@ -165,7 +165,7 @@ export default function BigVideoFeature({
         ) : null}
         {displayTitle ? (
           <h2
-            className="mt-3.5 max-w-[47.5rem] text-balance text-3xl font-semibold leading-[1.12] tracking-[-0.015em] text-white md:text-[2.875rem]"
+            className="mt-3.5 max-w-[47.5rem] text-balance typo-section-heading text-white"
             data-sanity={dataAttributes?.title}
             id={headingId}
           >
@@ -174,18 +174,18 @@ export default function BigVideoFeature({
         ) : null}
         {displayDescription ? (
           <p
-            className="mb-[1.875rem] mt-5 max-w-[38.75rem] text-pretty text-[1.0625rem] leading-[1.7] text-white/70"
+            className="mb-8 mt-5 max-w-[38.75rem] text-pretty typo-body-editorial text-white/70"
             data-sanity={dataAttributes?.description}
           >
             {description}
           </p>
         ) : (
-          <div className="h-[1.875rem]" />
+          <div className="h-8" />
         )}
 
         <button
           aria-label={displayTitle ? `Play: ${displayTitle}` : "Play video"}
-          className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-[18px] bg-[var(--phx-navy-900)] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-label-on-dark focus-visible:ring-offset-4 focus-visible:ring-offset-[var(--phx-navy-800)] disabled:cursor-not-allowed"
+          className="group relative block aspect-video w-full max-w-[57.5rem] cursor-pointer overflow-hidden rounded-frame bg-[var(--phx-navy-900)] shadow-[0_30px_70px_-24px_rgba(0,0,0,0.7)] [--focus-ring-keep:0_30px_70px_-24px_rgba(0,0,0,0.7)] transition-transform motion-base hover:-translate-y-0.5 focus-ring-on-dark disabled:cursor-not-allowed"
           data-sanity={dataAttributes?.youtubeUrl}
           disabled={!embedUrl}
           onClick={() => setIsOpen(Boolean(embedUrl))}
@@ -211,7 +211,7 @@ export default function BigVideoFeature({
           ) : null}
           <span className="absolute inset-0 bg-gradient-to-b from-[var(--phx-navy-900)]/5 to-[var(--phx-navy-900)]/40" />
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex size-16 items-center justify-center rounded-full bg-copper-600/95 text-white shadow-[0_12px_40px_var(--phx-copper-shadow)] transition-transform duration-200 group-hover:scale-105 group-focus-visible:scale-105 md:size-[5.5rem]">
+            <span className="flex size-16 items-center justify-center rounded-full bg-copper-600/95 text-white shadow-[0_12px_40px_var(--phx-copper-shadow)] transition-transform motion-base group-hover:scale-105 group-focus-visible:scale-105 md:size-[5.5rem]">
               <span
                 aria-hidden="true"
                 className="ml-1 h-0 w-0 border-y-[11px] border-y-transparent border-l-[18px] border-l-current md:border-y-[15px] md:border-l-[24px]"

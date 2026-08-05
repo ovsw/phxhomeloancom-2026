@@ -48,7 +48,7 @@ function ArticleCard({
   return (
     <Link
       aria-label={`Read post: ${stegaClean(title)}`}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,transform] duration-200 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(19,28,59,0.14)]"
+      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,translate] motion-base hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
       href={getArticleHref(article.slug)}
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
@@ -56,7 +56,7 @@ function ArticleCard({
           <Image
             alt={image.alt || stegaClean(title)}
             blurDataURL={image.asset.metadata?.lqip || undefined}
-            className="rounded-none object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            className="rounded-none object-cover transition-transform motion-slow group-hover:scale-[1.02]"
             fill
             placeholder={image.asset.metadata?.lqip ? "blur" : undefined}
             sizes="(min-width: 1024px) 30vw, (min-width: 768px) 50vw, 100vw"
@@ -64,29 +64,29 @@ function ArticleCard({
           />
         ) : null}
         {categoryLabel ? (
-          <div className="absolute left-3.5 top-3.5 rounded-full bg-foreground/80 px-2.5 py-1.5 text-[0.65625rem] font-semibold uppercase leading-none tracking-[0.12em] text-white backdrop-blur-sm">
+          <div className="absolute left-3.5 top-3.5 rounded-full bg-foreground/80 px-2.5 py-1.5 typo-meta-label text-white backdrop-blur-sm">
             {categoryLabel}
           </div>
         ) : null}
       </div>
-      <div className="flex flex-1 flex-col gap-3 px-6 py-6 md:px-7 md:py-[1.875rem]">
+      <div className="flex flex-1 flex-col gap-3 p-(--space-card)">
         {publishedDate ? (
           <time
-            className="text-xs font-semibold uppercase leading-none tracking-[0.08em] text-muted-foreground"
+            className="typo-meta-label text-muted-foreground"
             dateTime={stegaClean(article.publishedAt) || undefined}
           >
             {publishedDate}
           </time>
         ) : null}
-        <h3 className="text-balance font-display text-[1.3125rem] font-semibold leading-[1.25] tracking-normal text-card-foreground">
+        <h3 className="text-balance typo-card-title text-card-foreground">
           {title}
         </h3>
         {article.description ? (
-          <p className="line-clamp-3 flex-1 text-[0.90625rem] leading-[1.6] text-muted-foreground">
+          <p className="line-clamp-3 flex-1 typo-body-sm text-muted-foreground">
             {article.description}
           </p>
         ) : null}
-        <span className="mt-1 text-sm font-semibold leading-none text-primary transition-colors group-hover:text-accent-hover">
+        <span className="mt-1 typo-button text-primary transition-colors motion-fast group-hover:text-accent-hover">
           Read post <span aria-hidden="true">&rarr;</span>
         </span>
       </div>
@@ -100,7 +100,7 @@ function SectionLink({ button }: Readonly<{ button?: NonNullable<LatestArticlesP
 
   return (
     <Link
-      className="text-[0.9375rem] font-semibold leading-none text-primary transition-colors hover:text-accent-hover"
+      className="typo-button text-primary transition-colors motion-fast hover:text-accent-hover focus-underline"
       href={href}
       rel={stegaClean(button.openInNewTab) ? "noopener noreferrer" : undefined}
       target={stegaClean(button.openInNewTab) ? "_blank" : undefined}
@@ -124,26 +124,26 @@ export default function LatestArticles({
   return (
     <section
       className={cn(
-        "scroll-mt-24 py-20 md:py-24 lg:py-[6.875rem]",
+        "scroll-mt-24 section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       id="educational-content"
     >
-      <div className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-8 md:mb-[3.25rem] lg:gap-12">
+      <div className="container">
+        <div className="flex flex-wrap items-end justify-between gap-8 section-header-gap lg:gap-12">
           <div className="max-w-3xl">
             {eyebrow ? (
-              <p className="mb-3.5 text-xs font-semibold uppercase leading-none tracking-[0.22em] text-primary">
+              <p className="mb-3.5 typo-eyebrow text-primary">
                 {eyebrow}
               </p>
             ) : null}
             {title ? (
-              <h2 className="text-balance font-display text-[2.125rem] font-semibold leading-[1.12] tracking-normal text-foreground md:text-[2.75rem]">
+              <h2 className="text-balance typo-section-heading text-foreground">
                 {title}
               </h2>
             ) : null}
             {description ? (
-              <p className="mt-4 max-w-2xl text-[1.03125rem] leading-relaxed text-muted-foreground">
+              <p className="mt-5 max-w-2xl typo-body-editorial text-muted-foreground">
                 {description}
               </p>
             ) : null}

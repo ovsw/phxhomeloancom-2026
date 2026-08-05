@@ -38,7 +38,7 @@ function KeyDetails({
     <div className="mt-1">
       {title ? (
         <p
-          className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+          className="mb-4 typo-eyebrow text-muted-foreground"
           data-sanity={dataAttribute?.("keyDetails.title")}
         >
           {title}
@@ -48,7 +48,7 @@ function KeyDetails({
         {items.map((item) => (
           <li
             className={cn(
-              "rounded-full border border-border bg-card px-[1.125rem] py-2 text-[0.90625rem] font-medium text-muted-foreground",
+              "rounded-full border border-border bg-card px-[1.125rem] py-2 typo-body-sm font-medium text-muted-foreground",
             )}
             data-sanity={dataAttribute?.(`keyDetails.items[${item.index}]`)}
             key={`${item.value}-${item.index}`}
@@ -83,14 +83,8 @@ function PersonButtons({
         return (
           <Button
             asChild
-            className={cn(
-              "h-12 w-full rounded-[9px] px-7 text-[0.9375rem] font-semibold transition-[background-color,border-color,box-shadow,transform] hover:-translate-y-0.5 sm:w-auto",
-              secondary
-                ? "border-[1.5px] border-[var(--phx-border-strong)] bg-[var(--surface-section-white)] text-foreground shadow-none hover:border-primary/30 hover:bg-card hover:text-foreground"
-                : "bg-primary text-primary-foreground hover:bg-accent-hover hover:text-primary-foreground",
-            )}
+            className="w-full sm:w-auto"
             key={button._key || `${href}-${index}`}
-            size="lg"
             variant={secondary ? "outline" : "default"}
           >
             <Link
@@ -129,16 +123,16 @@ export default function PersonCta({
     <section
       aria-labelledby={displayTitle ? titleId : undefined}
       className={cn(
-        "px-4 pb-20 pt-14 min-[700px]:px-8 min-[700px]:py-16 lg:px-10 lg:py-24",
+        "section-pad",
         creamSurface ? "surface-cream" : "surface-white",
       )}
     >
-      <div className="mx-auto grid w-full max-w-[70rem] items-center gap-10 min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] min-[700px]:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-[clamp(2.25rem,5vw,4.5rem)]">
+      <div className="container-narrow grid items-center gap-split min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <div className="relative mx-auto flex w-full max-w-[18.75rem] items-end justify-center overflow-hidden sm:max-w-[20rem] lg:max-w-none">
           <div
             aria-hidden="true"
             className={cn(
-              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-[24px] rounded-t-[220px]",
+              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-frame rounded-t-(--radius-arch)",
               "bg-card",
             )}
           />
@@ -159,26 +153,30 @@ export default function PersonCta({
         </div>
 
         <div className="grid justify-items-start gap-5">
-          {displayEyebrow ? (
-            <p
-              className="text-xs font-semibold uppercase tracking-[0.26em] text-primary"
-              data-sanity={dataAttribute?.("eyebrow")}
-            >
-              {eyebrow}
-            </p>
-          ) : null}
-          {displayTitle ? (
-            <h2
-              className="text-balance text-[clamp(1.875rem,3.2vw,2.75rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-foreground"
-              data-sanity={dataAttribute?.("title")}
-              id={titleId}
-            >
-              {title}
-            </h2>
+          {displayEyebrow || displayTitle ? (
+            <div>
+              {displayEyebrow ? (
+                <p
+                  className="mb-3.5 typo-eyebrow text-primary"
+                  data-sanity={dataAttribute?.("eyebrow")}
+                >
+                  {eyebrow}
+                </p>
+              ) : null}
+              {displayTitle ? (
+                <h2
+                  className="text-balance typo-section-heading text-foreground"
+                  data-sanity={dataAttribute?.("title")}
+                  id={titleId}
+                >
+                  {title}
+                </h2>
+              ) : null}
+            </div>
           ) : null}
           {richText?.length ? (
             <div
-              className="text-pretty text-[1.03125rem] leading-[1.75] text-muted-foreground [&_p]:!my-0"
+              className="text-pretty typo-body-editorial text-muted-foreground [&_p]:!my-0"
               data-sanity={dataAttribute?.("richText")}
             >
               <PortableTextRenderer value={richText} />
