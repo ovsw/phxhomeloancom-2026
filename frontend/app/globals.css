@@ -5,6 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  /* Below this width the header's two brand marks stack instead of sitting side
+     by side. Measured, not guessed: at the compact tier's logo heights the
+     side-by-side row needs 281px, which with the gutter, gap, toggle and
+     hamburger puts the true cutoff at ~417px. Rounded up to 432px so the
+     narrowest side-by-side case still has a few px of slack rather than
+     sitting exactly on the limit. Retune if either logo's aspect ratio or the
+     compact heights in brand.tsx change. */
+  --breakpoint-xs: 27rem; /* 432px */
+
   /* Keyframe animations. These reuse the motion speeds and curve declared with
      the other role tokens below, so a change there moves everything at once.
      fade-up is the one deliberate exception: a scroll-in entrance reads as
@@ -95,6 +104,7 @@
   --space-inset: clamp(1.75rem, 3.125vw + 0.5rem, 3rem); /* 28→48px feature inset panel */
   --container-max: 80rem;
   --container-narrow: 70rem;
+  --container-wide: 90rem; /* 1440px — header only; buys room for two logos plus nav */
   --container-inline: clamp(1rem, 4vw, 2.5rem); /* 16→40px page gutter */
 
   /* -------------------------------------------------------------------------
@@ -310,6 +320,18 @@
 @utility container-narrow {
   width: 100%;
   max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--container-inline);
+}
+
+/*
+  Header only. Wider than `container` so the two brand marks and the nav stop
+  competing for the same row, but still capped — full-bleed would leave the
+  header visibly unmoored from the container-width sections below it.
+*/
+@utility container-wide {
+  width: 100%;
+  max-width: var(--container-wide);
   margin-inline: auto;
   padding-inline: var(--container-inline);
 }

@@ -63,20 +63,77 @@ export type RawHeaderNavigation = {
   actions?: RawAction[] | null;
 } | null;
 
+/** Fallback box, used only when Sanity reports no intrinsic dimensions. */
+const FALLBACK_LOGO_WIDTH = 216;
+const FALLBACK_LOGO_HEIGHT = 28;
+
+type RawLogoGroup =
+  | {
+      light?: unknown;
+      dark?: unknown;
+      width?: number | null;
+      height?: number | null;
+    }
+  | null
+  | undefined;
+
+type RawAsset = {
+  asset?: { metadata?: { dimensions?: { width?: number; height?: number } } };
+};
+
+/**
+ * Turn one Sanity image into a next/image source.
+ *
+ * Dimensions come from the asset's own metadata first, and only fall back to
+ * the editable width/height fields. Those fields are a legacy of the single
+ * combined lockup: they are easy to leave stale after an asset swap, and a
+ * stale pair silently distorts the logo because next/image derives the aspect
+ * ratio from them. The intrinsic size is always right for the file in the slot.
+ */
+function toLogoModel(source: unknown): HeaderLogoModel | null {
+  if (!source) return null;
+
+  const dimensions = (source as RawAsset)?.asset?.metadata?.dimensions;
+  const width = dimensions?.width ?? FALLBACK_LOGO_WIDTH;
+  const height = dimensions?.height ?? FALLBACK_LOGO_HEIGHT;
+
+  return {
+    src: urlFor(source as Parameters<typeof urlFor>[0]).url(),
+    width,
+    height,
+  };
+}
+
+function createLogoPair(group: RawLogoGroup) {
+  return {
+    light: toLogoModel(group?.light),
+    dark: toLogoModel(group?.dark),
+  };
+}
+
 export function createHeaderBrandModel(
   settings: SETTINGS_QUERY_RESULT,
 ): HeaderBrandModel {
-  const light = settings?.logo?.light;
-  const dark = settings?.logo?.dark;
-  const width = (settings?.logo?.width as number | undefined) ?? 160;
-  const height = (settings?.logo?.height as number | undefined) ?? 56;
-  const image = (source: NonNullable<typeof light> | null | undefined) =>
-    source ? { src: urlFor(source).url(), width, height } : null;
+  const main = createLogoPair(settings?.logo as RawLogoGroup);
+  const secondary = createLogoPair(
+    (settings as { secondaryLogo?: RawLogoGroup })?.secondaryLogo,
+  );
 
   return {
     label: settings?.siteName?.trim() || "PHX Home Loan",
-    light: image(light),
-    dark: image(dark),
+    light: main.light,
+    dark: main.dark,
+    secondary: {
+      /*
+       * Not the site name: this mark is a separate legal entity, and reusing
+       * the site name would have a screen reader announce the same brand twice
+       * for two different logos. Kept generic so it survives a change of
+       * parent bank, matching the schema field's own naming.
+       */
+      label: "Parent company",
+      light: secondary.light,
+      dark: secondary.dark,
+    },
   };
 }
 
@@ -152,8 +209,24 @@ import { stegaClean } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
 import type { SETTINGS_QUERY_RESULT } from "@/sanity.types";
 
+export type HeaderLogoModel = {
+  src: string;
+  width: number;
+  height: number;
+};
+
 export type HeaderBrandModel = {
   label: string;
-  light: { src: string; width: number; height: number } | null;
-  dark: { src: string; width: number; height: number } | null;
+  light: HeaderLogoModel | null;
+  dark: HeaderLogoModel | null;
+  /**
+   * Parent-brand attribution, kept as its own asset rather than baked into the
+   * main lockup so the two can be sized independently and can stack on narrow
+   * viewports.
+   */
+  secondary: {
+    label: string;
+    light: HeaderLogoModel | null;
+    dark: HeaderLogoModel | null;
+  };
 };

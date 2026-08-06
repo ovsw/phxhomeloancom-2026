@@ -63,7 +63,12 @@ const navigation: HeaderNavigationModel = {
 };
 
 const model: HeaderModel = {
-  brand: { dark: null, label: "PHX Home Loan", light: null },
+  brand: {
+    dark: null,
+    label: "PHX Home Loan",
+    light: null,
+    secondary: { dark: null, label: "Parent company", light: null },
+  },
   navigation,
 };
 

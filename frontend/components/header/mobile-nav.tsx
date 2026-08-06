@@ -70,7 +70,13 @@ export default function MobileNav({
         style={{ width: "100%" }}
       >
         <SheetHeader className="flex-row items-center justify-between border-b border-border/80 px-6 py-6">
-          <div className="flex max-w-40 items-center">{brand}</div>
+          {/*
+            No max-width: the brand is now two marks in a row, and a 160px cap
+            squeezed them well below their intended size. The close button is
+            the only thing sharing this row, so min-w-0 plus the row's own gap
+            is enough to keep them from colliding.
+          */}
+          <div className="flex min-w-0 items-center">{brand}</div>
           <SheetTitle className="sr-only">Main navigation</SheetTitle>
           <SheetDescription className="sr-only">
             Browse primary destinations and mortgage resources.
