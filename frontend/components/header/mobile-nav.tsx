@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import {
   Accordion,
@@ -27,6 +27,26 @@ import { NavigationIcon } from "./navigation-icon";
 const mobileLinkClassName =
   "flex min-h-11 items-center rounded-control px-3 typo-nav transition-colors motion-fast hover:bg-secondary hover:text-foreground focus-ring";
 
+/**
+ * Three bars that morph into an X while the sheet is open.
+ *
+ * The sheet's overlay covers this button, so the open-state X is mostly hidden
+ * behind it — the visible payoff is the transition itself on open and on close,
+ * plus the fallback if the overlay ever goes transparent. The bars are spans
+ * rather than swapped lucide icons so the strokes travel between the two states
+ * instead of one icon popping out and another popping in.
+ */
+function HamburgerIcon({ open }: { open: boolean }) {
+  const bar = "h-[1.5px] w-full origin-center rounded-full bg-foreground transition-all motion-base";
+  return (
+    <span aria-hidden="true" className="flex w-3.5 flex-col gap-1">
+      <span className={cn(bar, open && "translate-y-[5.5px] rotate-45")} />
+      <span className={cn(bar, open && "scale-x-0 opacity-0")} />
+      <span className={cn(bar, open && "-translate-y-[5.5px] -rotate-45")} />
+    </span>
+  );
+}
+
 export default function MobileNav({
   brand,
   navigation,
@@ -40,8 +60,8 @@ export default function MobileNav({
   return (
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
-        <Button aria-label="Open menu" size="icon" variant="ghost">
-          <Menu aria-hidden="true" className="size-5" />
+        <Button aria-label={open ? "Close menu" : "Open menu"} size="icon" variant="ghost">
+          <HamburgerIcon open={open} />
         </Button>
       </SheetTrigger>
       <SheetContent
@@ -71,7 +91,14 @@ export default function MobileNav({
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="ml-4 grid gap-1 border-l border-border pl-3">
+                    {/*
+                      No rail and no indent: the chips already mark these as
+                      child items, so a border-l plus an indent on top of them
+                      states the same hierarchy three times. Flush with the
+                      trigger also keeps the chip column aligned with the group
+                      labels rather than floating at its own offset.
+                    */}
+                    <div className="grid gap-1">
                       {item.links.map((child) => (
                         <HeaderLink
                           className="flex min-h-11 items-start gap-3 rounded-control p-3 transition-colors motion-fast hover:bg-secondary focus-ring"
@@ -79,12 +106,30 @@ export default function MobileNav({
                           link={child.link}
                           onClick={close}
                         >
-                          <span className="mt-0.5 text-primary">
+                          {/*
+                            Outlined chip, matching the desktop panel. One size
+                            down from desktop's size-10/size-5: the sheet is
+                            narrower than the panel and the rows already carry
+                            p-3, so a full-size chip would crowd the text it
+                            sits beside.
+                          */}
+                          <span className="flex size-8 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
                             <NavigationIcon name={child.icon} />
                           </span>
                           <span className="grid gap-1">
-                            <span className="font-medium text-foreground">{child.label}</span>
-                            <span className="typo-fine-print text-muted-foreground">{child.description}</span>
+                            <span className="typo-nav font-semibold leading-tight text-foreground">
+                              {child.label}
+                            </span>
+                            {/*
+                              leading-tight for the same reason as the desktop
+                              panel: typo-fine-print's 1.6 line-height leaves
+                              more space between two wrapped description lines
+                              than between the description and its own label,
+                              which reads as two unrelated rows.
+                            */}
+                            <span className="typo-fine-print leading-tight text-muted-foreground">
+                              {child.description}
+                            </span>
                           </span>
                         </HeaderLink>
                       ))}
