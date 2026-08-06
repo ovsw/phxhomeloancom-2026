@@ -8,8 +8,12 @@
 
 set -uo pipefail
 
+# Both studio names are listed: the README documents studio/.env.local, but
+# this checkout actually has studio/.env. Missing entries are skipped, so
+# listing both costs nothing and covers either layout.
 FILES=(
   "frontend/.env.local"
+  "studio/.env.local"
   "studio/.env"
 )
 
@@ -35,7 +39,14 @@ for rel in "${FILES[@]}"; do
   [ -f "$src/$rel" ] || continue
   [ -e "$dest/$rel" ] && continue          # never clobber an existing file
   mkdir -p "$dest/$(dirname "$rel")"
-  cp "$src/$rel" "$dest/$rel" 2>/dev/null && copied+=("$rel")
+  # A failed copy is reported rather than swallowed: silently skipping it
+  # leaves a worktree that looks set up but has no env, which surfaces much
+  # later as a confusing runtime error.
+  if cp "$src/$rel" "$dest/$rel" 2>/dev/null; then
+    copied+=("$rel")
+  else
+    printf 'copy-local-env: failed to copy %s into worktree\n' "$rel" >&2
+  fi
 done
 
 [ ${#copied[@]} -eq 0 ] && exit 0

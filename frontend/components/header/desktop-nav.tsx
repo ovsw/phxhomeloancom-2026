@@ -34,7 +34,8 @@ type PanelPlacement = {
   /** Left edge of the panel, in px from the nav's left edge. */
   x: number;
   width: number;
-  height: number;
+  /** null until the content has been measured; the panel falls back to "auto". */
+  height: number | null;
 };
 
 type ActiveGroup = {
@@ -104,7 +105,12 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
 
   const navRef = useRef<HTMLElement>(null);
   const triggerRefs = useRef(new Map<string, HTMLButtonElement>());
-  const contentRef = useRef<HTMLDivElement>(null);
+  // A state-backed callback ref, not useRef: under AnimatePresence mode="wait"
+  // the incoming content mounts *after* the effect runs, so a useRef would have
+  // the measure effect observing the outgoing node — every group would then
+  // inherit the first group's height. Storing the node in state re-runs the
+  // effect when it actually changes.
+  const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = useReducedMotion();
   const panelIdBase = useId();
@@ -163,7 +169,12 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
       const navBox = nav.getBoundingClientRect();
       const triggerBox = trigger.getBoundingClientRect();
       const width = PANEL_WIDTH;
-      const height = contentRef.current?.offsetHeight ?? 0;
+      // 0 means unmeasured, not "no content": jsdom reports zeros, and so does a
+      // backgrounded tab. Animating the panel to height 0 collapses it to an
+      // invisible strip with its links spilling out over the page, so an
+      // unmeasured panel falls back to "auto" instead.
+      const measured = contentNode?.offsetHeight ?? 0;
+      const height = measured > 0 ? measured : null;
 
       const triggerCenter = triggerBox.left - navBox.left + triggerBox.width / 2;
       const maxX = Math.max(0, navBox.width - width);
@@ -181,10 +192,10 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
 
     if (typeof ResizeObserver === "undefined") return;
     const observer = new ResizeObserver(measure);
-    if (contentRef.current) observer.observe(contentRef.current);
+    if (contentNode) observer.observe(contentNode);
     observer.observe(nav);
     return () => observer.disconnect();
-  }, [active]);
+  }, [active, contentNode]);
 
   const onBlur = (event: FocusEvent<HTMLElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget)) closeGroup();
@@ -251,13 +262,23 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
             )}
             key={item.key}
             onClick={(event) => {
-              // event.detail === 0 means keyboard activation (Enter/Space).
-              if (event.detail === 0) {
-                if (isActive) closeGroup();
-                else openGroup(item.key, false);
-              } else {
-                openGroup(item.key, false);
-              }
+              // Who opened the panel decides whether a click may close it.
+              //
+              // On mouse, hover already opened it, so a click that toggles
+              // would close the panel the moment the user reaches for it.
+              // On touch and keyboard there is no hover, so the click is the
+              // only way in — and therefore has to be the way out too.
+              //
+              // pointerType is read per event rather than from a (hover: hover)
+              // media query: a touchscreen laptop answers yes to that query and
+              // still sends taps. event.detail === 0 means keyboard activation
+              // (Enter/Space), which reports no pointerType at all.
+              const pointerType = (event.nativeEvent as PointerEvent).pointerType;
+              const canToggle =
+                event.detail === 0 || pointerType === "touch" || pointerType === "pen";
+
+              if (canToggle && isActive) closeGroup();
+              else openGroup(item.key, false);
             }}
             onMouseEnter={() => openGroup(item.key, true)}
             ref={(node) => {
@@ -324,7 +345,7 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
                   exit={{ opacity: 0 }}
                   initial={{ opacity: animated ? 0 : 1 }}
                   key={activeItem.key}
-                  ref={contentRef}
+                  ref={setContentNode}
                   transition={{ duration: prefersReducedMotion || !animated ? 0 : 0.16 }}
                 >
                   <GroupPanelContent label={activeItem.label} links={activeItem.links} />
