@@ -29,10 +29,11 @@ const LOGO_HEIGHTS = {
  * Not an exact match. The secondary asset carries a tall dot mark beside its
  * wordmark, so at equal total widths its type renders larger than the main
  * lockup's — which reinstates the inverted hierarchy this split existed to fix.
- * Holding it slightly narrower keeps the two edges reading as a set while
- * leaving the main mark the larger type.
+ * Holding it somewhat narrower keeps the main mark the larger type while the
+ * two still read as a set — the marks are centred on each other, so the widths
+ * do not need to match exactly to look aligned.
  */
-const STACKED_WIDTHS = { main: 168, secondary: 132 } as const;
+const STACKED_WIDTHS = { main: 168, secondary: 145 } as const;
 
 type BrandVariant = keyof typeof LOGO_HEIGHTS | "stacked";
 
@@ -163,12 +164,13 @@ export function HeaderBrand({
       className={cn(
         "flex min-w-0",
         /*
-         * Stacked keeps the two marks left-aligned rather than centred: the
-         * header row is left-anchored, and centring would leave the shorter
-         * mark floating off the shared left edge.
+         * Stacked centres the two marks on each other. They are deliberately
+         * different widths, so aligning their left edges leaves the narrower
+         * one visibly offset against a ragged right edge; centring reads as one
+         * lockup rather than two things that failed to line up.
          */
         isStacked
-          ? "flex-col items-start gap-1.5"
+          ? "flex-col items-center gap-1.5"
           : variant === "compact"
             ? "flex-row items-center gap-2"
             : "flex-row items-center gap-3 xl:gap-4",
