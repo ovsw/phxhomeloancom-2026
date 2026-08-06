@@ -9,22 +9,47 @@ import { ModeToggle } from "@/components/menu-toggle";
 import { buttonVariants } from "@/components/ui/button";
 
 /**
- * Three brand tiers, each rendered once and toggled by CSS so the header has no
- * layout-shifting client-side width check:
+ * The brand at whichever tier the viewport calls for. Three tiers, each
+ * rendered once and toggled by CSS so there is no layout-shifting client-side
+ * width check:
  *
  *  - stacked   — narrowest phones. The two marks sit one above the other, which
  *                is the only arrangement that leaves the main lockup a legible
  *                size once the toggle and hamburger have taken their space.
- *  - compact   — phones and tablets wide enough for the marks side by side,
- *                still on the hamburger.
+ *  - compact   — wide enough for the marks side by side, still on the hamburger.
  *  - desktop   — side by side with the full inline nav.
  *
  * The stacked→compact switch is the `xs:` breakpoint (see globals.css); it was
  * set by measuring the real marks rather than picking a device width, since the
  * assets are what determine when the row stops fitting.
+ *
+ * Shared by the header row and the mobile sheet so the two cannot drift apart.
+ * The sheet deliberately follows the viewport rather than its own available
+ * width: it is wider than the header row's brand slot and would often have room
+ * for the side-by-side lockup, but taking it would mean the marks rearranged
+ * themselves purely from opening the menu. Worse, at widths just under the
+ * breakpoint that lockup runs into the sheet's close button.
  */
+function ResponsiveBrand({ brand }: { brand: HeaderModel["brand"] }) {
+  return (
+    <>
+      <span className="flex xs:hidden">
+        <HeaderBrand brand={brand} variant="stacked" />
+      </span>
+      <span className="hidden xs:flex xl:hidden">
+        <HeaderBrand brand={brand} variant="compact" />
+      </span>
+      <span className="hidden xl:flex">
+        <HeaderBrand brand={brand} variant="desktop" />
+      </span>
+    </>
+  );
+}
+
 export function Header({ model }: { model: HeaderModel }) {
   const { brand: brandModel, navigation } = model;
+
+  const brand = <ResponsiveBrand brand={brandModel} />;
 
   return (
     <SiteHeaderShell>
@@ -34,15 +59,7 @@ export function Header({ model }: { model: HeaderModel }) {
           className="flex shrink-0 items-center rounded-control focus-ring"
           href="/"
         >
-          <span className="flex xs:hidden">
-            <HeaderBrand brand={brandModel} variant="stacked" />
-          </span>
-          <span className="hidden xs:flex xl:hidden">
-            <HeaderBrand brand={brandModel} variant="compact" />
-          </span>
-          <span className="hidden xl:flex">
-            <HeaderBrand brand={brandModel} variant="desktop" />
-          </span>
+          {brand}
         </Link>
         <DesktopNav navigation={navigation} />
         <div className="hidden items-center gap-2 xl:flex xl:gap-3">
@@ -57,10 +74,7 @@ export function Header({ model }: { model: HeaderModel }) {
         </div>
         <div className="flex shrink-0 items-center gap-1 xl:hidden">
           <ModeToggle />
-          <MobileNav
-            brand={<HeaderBrand brand={brandModel} variant="compact" />}
-            navigation={navigation}
-          />
+          <MobileNav brand={brand} navigation={navigation} />
         </div>
       </div>
     </SiteHeaderShell>
