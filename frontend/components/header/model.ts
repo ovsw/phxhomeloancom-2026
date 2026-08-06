@@ -125,7 +125,12 @@ export function createHeaderNavigationModel(
         const childKey = child._key?.trim();
         const childLabel = child.label?.trim();
         const description = child.description?.trim();
-        const icon = child.icon?.trim();
+        // stegaClean, not just trim: in draft mode Sanity injects invisible
+        // stega characters into every string, and this value is a lookup key
+        // into the icon map — the encoded form matches nothing. Visible text
+        // (label, description) deliberately keeps its encoding so it stays
+        // click-to-edit in Presentation.
+        const icon = stegaClean(child.icon)?.trim();
         const link = normalizeLink(childLabel, child.destination);
         if (childKey && childLabel && description && icon && link) {
           links.push({ key: childKey, label: childLabel, description, icon, link });
@@ -143,6 +148,7 @@ export function createHeaderNavigationModel(
 
   return { items, actions };
 }
+import { stegaClean } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
 import type { SETTINGS_QUERY_RESULT } from "@/sanity.types";
 

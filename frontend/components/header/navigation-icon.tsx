@@ -11,6 +11,7 @@ import {
   UsersRound,
   type LucideIcon,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const icons: Record<string, LucideIcon> = {
   award: Award,
@@ -27,7 +28,7 @@ const icons: Record<string, LucideIcon> = {
   "users-2": UsersRound,
 };
 
-export function NavigationIcon({ name }: { name: string }) {
+export function NavigationIcon({ className, name }: { className?: string; name: string }) {
   const Icon = icons[name];
-  return Icon ? <Icon aria-hidden="true" className="size-4" /> : null;
+  return Icon ? <Icon aria-hidden="true" className={cn("size-4", className)} /> : null;
 }

@@ -29,7 +29,25 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
+// Defer rather than invoke inline: animation loops reschedule themselves every
+// frame, and a synchronous callback recurses until the stack blows.
+let rafHandle = 0;
+const rafTimers = new Map<number, ReturnType<typeof setTimeout>>();
+
 window.requestAnimationFrame = (callback) => {
-  callback(performance.now());
-  return 1;
+  const handle = ++rafHandle;
+  rafTimers.set(
+    handle,
+    setTimeout(() => {
+      rafTimers.delete(handle);
+      callback(performance.now());
+    }, 0),
+  );
+  return handle;
+};
+
+window.cancelAnimationFrame = (handle) => {
+  const timer = rafTimers.get(handle);
+  if (timer) clearTimeout(timer);
+  rafTimers.delete(handle);
 };
