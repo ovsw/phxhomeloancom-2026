@@ -11,6 +11,16 @@
 - Prefer focused functional/accessibility checks and one-time visual inspection;
 - DO NOT create or maintain screenshot baselines unless explicitly requested.
 
+## Commits
+
+Use [Conventional Commits](https://www.conventionalcommits.org/): `type(scope): summary`.
+
+- Common types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `style`, `perf`, `build`, `ci`.
+- Scope is optional but preferred when the change is confined to one area — e.g. `feat(header):`, `fix(studio):`.
+- Summary is imperative and lowercase: "add", not "added" or "Adds".
+- Keep explaining *why* in the body. The prefix classifies the change; it does not replace the reasoning.
+- Note that commits predating this rule use plain imperative subjects with no prefix. Follow the convention above, not the older style.
+
 ### Issue tracker
 
 Issues and PRDs are tracked in this repository's GitHub Issues. See `docs/agents/issue-tracker.md`.
