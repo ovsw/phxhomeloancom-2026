@@ -23,13 +23,14 @@ import type { HeaderBrandModel, HeaderLogoModel } from "./model";
 const LOGO_HEIGHTS = {
   desktop: { main: 27, secondary: 23 },
   /*
-   * The secondary is pinned taller than a strict hierarchy would suggest. Its
-   * wordmark sits below a cap-height dot mark, so a good deal of its box is
-   * symbol rather than type — matching the main mark's height would leave the
-   * words "Luminate Bank" too small to read at arm's length. The main mark
-   * still leads because its own type fills nearly its whole box.
+   * The secondary is pinned slightly taller than the main mark here, which
+   * looks wrong written down and is correct on screen. Its wordmark sits below
+   * a cap-height dot mark, so a good part of that box is symbol rather than
+   * type; the main mark's type fills nearly all of its own. Equal box heights
+   * therefore render "Luminate Bank" markedly smaller than "VERCELLINO TEAM",
+   * and the main mark keeps the larger type even at these numbers.
    */
-  compact: { main: 22, secondary: 20.5 },
+  compact: { main: 22, secondary: 22.5 },
 } as const;
 
 /*
