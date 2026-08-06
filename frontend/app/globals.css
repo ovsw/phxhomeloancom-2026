@@ -7,12 +7,12 @@
 @theme {
   /* Below this width the header's two brand marks stack instead of sitting side
      by side. Measured, not guessed: at the compact tier's logo heights the
-     side-by-side row needs 281px, which with the gutter, gap, toggle and
-     hamburger puts the true cutoff at ~417px. Rounded up to 432px so the
-     narrowest side-by-side case still has a few px of slack rather than
-     sitting exactly on the limit. Retune if either logo's aspect ratio or the
-     compact heights in brand.tsx change. */
-  --breakpoint-xs: 27rem; /* 432px */
+     side-by-side row needs 300px, which with the gutter, gap, toggle and
+     hamburger puts the true cutoff at ~439px. Rounded up to 464px so the
+     narrowest side-by-side case keeps a usable margin rather than sitting on
+     the limit. Retune if either logo's aspect ratio or the compact heights in
+     brand.tsx change — the secondary's height drives this most. */
+  --breakpoint-xs: 29rem; /* 464px */
 
   /* Keyframe animations. These reuse the motion speeds and curve declared with
      the other role tokens below, so a change there moves everything at once.
