@@ -64,8 +64,17 @@ export default function MobileNav({
           <HamburgerIcon open={open} />
         </Button>
       </SheetTrigger>
+      {/*
+        The panel has to clear the side-by-side brand, which needs ~311px plus
+        the close button and this row's padding. SheetContent ships its own
+        `sm:max-w-sm`, which capped the panel at 384px from 640px up and left
+        the lockup running under the close button; `!max-w-md` overrides it,
+        since both are single-class selectors and the later-sorted `sm:` would
+        otherwise win. max-w-none below `xs` keeps the full-width panel the
+        stacked tier already relies on.
+      */}
       <SheetContent
-        className="!w-full gap-0 border-l border-border/80 bg-background px-0 sm:max-w-sm"
+        className="!w-full !max-w-none xs:!max-w-md gap-0 border-l border-border/80 bg-background px-0"
         showCloseButton={false}
         style={{ width: "100%" }}
       >
