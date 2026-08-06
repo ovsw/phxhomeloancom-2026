@@ -222,7 +222,7 @@ export default function DesktopNav({ navigation }: { navigation: HeaderNavigatio
   return (
     <nav
       aria-label="Main navigation"
-      className="relative hidden items-center gap-3 lg:flex xl:gap-8"
+      className="relative hidden items-center gap-3 xl:flex 2xl:gap-6"
       onBlur={onBlur}
       onKeyDown={onKeyDown}
       onMouseLeave={scheduleClose}
