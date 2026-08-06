@@ -9,13 +9,6 @@
       "autoPort": false
     },
     {
-      "name": "frontend-prototype",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--dir", "frontend", "run", "dev", "--port", "3100"],
-      "port": 3100,
-      "autoPort": false
-    },
-    {
       "name": "dev (root, all workspaces)",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["dev"],
