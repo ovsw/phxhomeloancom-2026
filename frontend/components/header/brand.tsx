@@ -3,45 +3,69 @@ import { cn } from "@/lib/utils";
 import type { HeaderBrandModel, HeaderLogoModel } from "./model";
 
 /**
- * Rendered heights, in px, for the two marks.
+ * Sizing for the two marks, by tier.
  *
- * Both assets are wide and short (roughly 7.7:1 and 5.5:1), so height is the
- * dimension that has to be controlled — matching their widths instead would
- * leave them at visibly different sizes. The secondary sits deliberately
- * smaller: it is attribution, not the site's identity, and the previous
- * combined lockup read the wrong way round precisely because the parent brand
- * carried the larger type.
+ * Which dimension is pinned depends on how the marks are arranged, because the
+ * assets have quite different aspect ratios (roughly 7.7:1 and 5.5:1):
+ *
+ *  - Side by side, height is pinned. The two sit on one baseline, so matching
+ *    heights is what makes them look like a set; their widths differ, but that
+ *    reads as two logos of the same size rather than a mismatch.
+ *  - Stacked, width is pinned. One sits above the other, so the eye compares
+ *    their left and right edges directly. Equal heights there produced a
+ *    185px main against a 105px secondary — the secondary looked like an
+ *    afterthought rather than an attribution.
+ *
+ * The stacked widths meet in the middle of those two numbers instead of
+ * shrinking one to match the other, which keeps the main mark from losing more
+ * size than it has to on the narrowest screens.
  */
 const LOGO_HEIGHTS = {
   desktop: { main: 27, secondary: 23 },
   compact: { main: 22, secondary: 17 },
-  stacked: { main: 24, secondary: 19 },
 } as const;
 
-type BrandVariant = keyof typeof LOGO_HEIGHTS;
+/*
+ * Not an exact match. The secondary asset carries a tall dot mark beside its
+ * wordmark, so at equal total widths its type renders larger than the main
+ * lockup's — which reinstates the inverted hierarchy this split existed to fix.
+ * Holding it slightly narrower keeps the two edges reading as a set while
+ * leaving the main mark the larger type.
+ */
+const STACKED_WIDTHS = { main: 168, secondary: 132 } as const;
+
+type BrandVariant = keyof typeof LOGO_HEIGHTS | "stacked";
+
+/** Which dimension the caller pins; the other is derived from the asset. */
+type LogoSize = { axis: "height" | "width"; px: number };
 
 function LogoImage({
   className,
-  height,
+  size,
   logo,
   alt,
   priority,
 }: {
   className?: string;
-  height: number;
+  size: LogoSize;
   logo: HeaderLogoModel;
   alt: string;
   priority?: boolean;
 }) {
+  const style =
+    size.axis === "height"
+      ? { height: `${size.px}px`, width: "auto" as const }
+      : { height: "auto" as const, width: `${size.px}px` };
+
   return (
     <Image
       alt={alt}
-      className={cn("w-auto object-contain", className)}
+      className={cn("object-contain", className)}
       height={logo.height}
       priority={priority}
       quality={100}
       src={logo.src}
-      style={{ height: `${height}px`, width: "auto" }}
+      style={style}
       width={logo.width}
     />
   );
@@ -58,13 +82,13 @@ function LogoImage({
 function ThemedLogo({
   alt,
   dark,
-  height,
+  size,
   light,
   priority,
 }: {
   alt: string;
   dark: HeaderLogoModel | null;
-  height: number;
+  size: LogoSize;
   light: HeaderLogoModel | null;
   priority?: boolean;
 }) {
@@ -75,9 +99,9 @@ function ThemedLogo({
       <LogoImage
         alt={alt}
         className="dark:invert"
-        height={height}
         logo={light!}
         priority={priority}
+        size={size}
       />
     );
   }
@@ -88,17 +112,17 @@ function ThemedLogo({
         <LogoImage
           alt={alt}
           className="dark:hidden"
-          height={height}
           logo={light}
           priority={priority}
+          size={size}
         />
       ) : null}
       <LogoImage
         alt={light ? "" : alt}
         className={light ? "hidden dark:block" : undefined}
-        height={height}
         logo={dark}
         priority={priority}
+        size={size}
       />
     </>
   );
@@ -112,7 +136,11 @@ export function HeaderBrand({
   variant?: BrandVariant;
 }) {
   const { dark, label, light, secondary } = brand;
-  const heights = LOGO_HEIGHTS[variant];
+  const isStacked = variant === "stacked";
+  const sizeFor = (mark: "main" | "secondary"): LogoSize =>
+    isStacked
+      ? { axis: "width", px: STACKED_WIDTHS[mark] }
+      : { axis: "height", px: LOGO_HEIGHTS[variant as keyof typeof LOGO_HEIGHTS][mark] };
   const hasMain = Boolean(light || dark);
   const hasSecondary = Boolean(secondary.light || secondary.dark);
 
@@ -120,9 +148,9 @@ export function HeaderBrand({
     <ThemedLogo
       alt={label}
       dark={dark}
-      height={heights.main}
       light={light}
       priority
+      size={sizeFor("main")}
     />
   ) : (
     <span className="text-lg font-semibold tracking-tight">{label}</span>
@@ -139,7 +167,7 @@ export function HeaderBrand({
          * header row is left-anchored, and centring would leave the shorter
          * mark floating off the shared left edge.
          */
-        variant === "stacked"
+        isStacked
           ? "flex-col items-start gap-1.5"
           : variant === "compact"
             ? "flex-row items-center gap-2"
@@ -152,7 +180,7 @@ export function HeaderBrand({
         two marks along the axis they are read in, so a rule there would be
         stating the same break twice.
       */}
-      {variant !== "stacked" ? (
+      {!isStacked ? (
         <span
           aria-hidden="true"
           className={cn(
@@ -164,8 +192,8 @@ export function HeaderBrand({
       <ThemedLogo
         alt={secondary.label}
         dark={secondary.dark}
-        height={heights.secondary}
         light={secondary.light}
+        size={sizeFor("secondary")}
       />
     </span>
   );
