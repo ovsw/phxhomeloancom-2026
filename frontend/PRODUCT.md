@@ -8,11 +8,10 @@ web
 
 ## Users
 
-The primary audience is prospective PHX Home Loan customers in the Phoenix
-market who are exploring a home purchase, refinance, or mortgage options.
-People elsewhere in the United States may also be served; the brand has no hard
-geographic service boundary, but nationwide reach is not its primary
-positioning.
+The audience is prospective PHX Home Loan customers exploring a home purchase,
+refinance, or mortgage options. Phoenix is the brand's home market and a
+meaningful share of that audience, but the brand serves borrowers throughout the
+United States and says so directly. There is no geographic service boundary.
 
 ## Product Purpose
 
@@ -27,14 +26,21 @@ underwriting, servicing, or the formal mortgage application.
 
 ## Positioning
 
-PHX Home Loan is Jimmy Vercellino's secondary, locally oriented mortgage brand.
-It combines his personal guidance and mortgage education with help comparing
-loan options before a visitor decides to make contact. Phoenix is the brand
-anchor, while service remains available nationwide.
+PHX Home Loan is Jimmy Vercellino's Phoenix-named mortgage brand, operating as a
+division of Luminate Bank. It combines his personal guidance and mortgage
+education with help comparing loan options before a visitor decides to make
+contact.
 
-Jimmy's primary brand, focused on VA loans for a clearly national audience, is
-outside this website's bounded context. PHX Home Loan should not inherit that
-brand's national or veteran-first positioning by default.
+Phoenix is the brand's name and home market; service is genuinely nationwide,
+and site copy states this plainly. Both are true at once and neither is hedged:
+the brand is from Phoenix and serves the country. Copy asserting nationwide
+service is canonical and must not be treated as drift from a local-only
+positioning.
+
+Jimmy's primary brand, focused on VA loans, is outside this website's bounded
+context. PHX Home Loan should not inherit that brand's veteran-first positioning
+by default. The national-reach distinction no longer applies — both brands serve
+a national audience, and that is expected.
 
 ## Operating Context
 
@@ -54,21 +60,22 @@ Presentation, live preview, and visual editing to manage the public experience.
   decisions.
 - Publish structured pages, articles, FAQs, videos, reviews, and trust signals.
 - Route interested visitors to calls, forms, or external application flows.
-- Present Phoenix as the primary market without implying an exclusive service
-  boundary.
+- Present Phoenix as the brand's home market and nationwide service as equally
+  real; neither is a hedge against the other.
 - Keep PHX Home Loan, Jimmy Vercellino's personal brand, and the supporting
   team conceptually distinct.
 - Use verified licensing, compliance, review, award, and service-area claims
   only.
-- Do not make PHX Home Loan veteran-first or nationally positioned merely
-  because related material exists in the repository or Jimmy's wider brand
-  portfolio.
+- Do not make PHX Home Loan veteran-first merely because related material exists
+  in the repository or Jimmy's wider brand portfolio. Nationwide service is
+  canonical and needs no such guard.
 
 ## Brand Commitments
 
 The public business identity is PHX Home Loan. Jimmy Vercellino is the personal
 brand whose credibility, education, and guidance reinforce it. PHX Home Loan is
-the more local, secondary brand within Jimmy's wider business presence.
+Phoenix-named and Luminate-affiliated; it is a distinct brand within Jimmy's
+wider business presence, not a regional subset of it.
 
 Preserve the existing brand names, approved logo assets, legitimate award
 claims, verified customer reviews, and required mortgage licensing and Equal
@@ -97,7 +104,8 @@ remain traceable to approved content or source evidence.
 2. Make complex mortgage choices understandable without implying qualification
    or guarantees.
 3. Build trust with verifiable people, credentials, reviews, and evidence.
-4. Lead with Phoenix relevance while keeping nationwide service possible.
+4. Treat Phoenix relevance and nationwide service as both true; state each
+   plainly rather than hedging one against the other.
 5. Keep PHX Home Loan distinct from Jimmy's national VA-focused brand.
 
 ## Accessibility & Inclusion
