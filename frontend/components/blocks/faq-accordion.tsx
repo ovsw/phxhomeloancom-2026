@@ -5,52 +5,83 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Plus } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import Link from "next/link";
 
 type FaqAccordionProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
   { _type: "faqAccordion" }
->;
+> & {
+  dataAttribute?: (path: string) => string | undefined;
+};
 
 export default function FaqAccordion({
+  _key,
+  dataAttribute,
   eyebrow,
   faqs,
   link,
   subtitle,
   title,
+  useCreamBackground,
 }: FaqAccordionProps) {
   const visibleFaqs = faqs?.filter((faq) => stegaClean(faq.title)?.trim()) ?? [];
   const defaultValue = visibleFaqs[0]?._key || visibleFaqs[0]?._id || undefined;
   const href = stegaClean(link?.href);
+  const displayEyebrow = stegaClean(eyebrow)?.trim();
+  const displaySubtitle = stegaClean(subtitle)?.trim();
+  const displayTitle = stegaClean(title)?.trim();
+  const headingId = `faq-accordion-${stegaClean(_key)}`;
+  const sectionId = `faq-${stegaClean(_key)}`;
 
   return (
-    <section className="scroll-mt-24 section-pad" id="faq">
+    <section
+      aria-labelledby={displayTitle ? headingId : undefined}
+      className={cn(
+        "scroll-mt-24 section-pad",
+        stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
+      )}
+      data-sanity={dataAttribute?.("useCreamBackground")}
+      id={sectionId}
+    >
       <div className="container">
-        <div className="flex flex-col items-center text-center section-header-gap">
-          {stegaClean(eyebrow)?.trim() ? (
-            <Badge className="mb-3.5" variant="secondary">{eyebrow}</Badge>
-          ) : null}
-          {stegaClean(title)?.trim() ? (
-            <h2 className="text-balance typo-section-heading">
-              {title}
-            </h2>
-          ) : null}
-          {stegaClean(subtitle)?.trim() ? (
-            <h3 className="mt-5 text-balance typo-lead text-muted-foreground">
-              {subtitle}
-            </h3>
-          ) : null}
-        </div>
+        <div className="mx-auto max-w-3xl">
+          <header className="text-center section-header-gap">
+            {displayEyebrow ? (
+              <p
+                className="mb-3.5 typo-eyebrow text-primary"
+                data-sanity={dataAttribute?.("eyebrow")}
+              >
+                {displayEyebrow}
+              </p>
+            ) : null}
+            {displayTitle ? (
+              <h2
+                className="text-balance typo-section-heading text-foreground"
+                data-sanity={dataAttribute?.("title")}
+                id={headingId}
+              >
+                {displayTitle}
+              </h2>
+            ) : null}
+            {displaySubtitle ? (
+              <p
+                className="mx-auto mt-5 max-w-2xl text-balance typo-lead text-muted-foreground"
+                data-sanity={dataAttribute?.("subtitle")}
+              >
+                {displaySubtitle}
+              </p>
+            ) : null}
+          </header>
 
-        <div className="mx-auto max-w-xl">
           {visibleFaqs.length ? (
             <Accordion
-              className="w-full"
+              className="w-full border-t border-border"
               collapsible
+              data-sanity={dataAttribute?.("faqs")}
               defaultValue={defaultValue}
               type="single"
             >
@@ -58,13 +89,20 @@ export default function FaqAccordion({
                 const value = faq._key || faq._id;
 
                 return (
-                  <AccordionItem className="py-2" key={value} value={value}>
-                    <AccordionTrigger className="group py-2 typo-title-minor hover:no-underline">
-                      {faq.title}
+                  <AccordionItem
+                    className="border-border last:border-b"
+                    key={value}
+                    value={value}
+                  >
+                    <AccordionTrigger className="group items-center py-6 typo-title-minor hover:no-underline [&>svg]:hidden">
+                      <span>{faq.title}</span>
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border-strong bg-card text-foreground transition-transform motion-fast group-data-[state=open]:rotate-45">
+                        <Plus aria-hidden="true" className="size-4" strokeWidth={1.5} />
+                      </span>
                     </AccordionTrigger>
                     {faq.answer?.length ? (
-                      <AccordionContent className="pb-2 text-muted-foreground">
-                        <div className="typo-body">
+                      <AccordionContent className="pb-6 text-muted-foreground">
+                        <div className="max-w-3xl typo-body">
                           <PortableTextRenderer value={faq.answer} />
                         </div>
                       </AccordionContent>
@@ -76,7 +114,7 @@ export default function FaqAccordion({
           ) : null}
 
           {href && (link?.description || link?.title) ? (
-            <div className="w-full py-6">
+            <div className="w-full py-6" data-sanity={dataAttribute?.("link")}>
               {link.title ? (
                 <p className="mb-1 typo-fine-print">
                   {link.title}

@@ -68,9 +68,9 @@ typography:
     letterSpacing: "normal"
   title-minor:
     fontFamily: "Source Serif 4, Georgia, serif"
-    fontSize: "1.0625rem"
-    fontWeight: 500
-    lineHeight: 1.5
+    fontSize: "1.3125rem"
+    fontWeight: 600
+    lineHeight: 1.25
     letterSpacing: "normal"
   lead:
     fontFamily: "Archivo, Helvetica, Arial, sans-serif"
@@ -379,8 +379,8 @@ Serif roles (Source Serif 4, 600 unless noted):
 - **card-title** (`1.3125rem`, 1.25): Blog cards and compact content groups.
 - **showcase-title** (400, `1.4375rem`, 1.25): Loan showcase cards only — a
   deliberately lighter, airier treatment than card-title.
-- **title-minor** (500, `1.0625rem`, 1.5): Dense interactive rows (FAQ
-  questions).
+- **title-minor** (600, `1.3125rem`, 1.25): FAQ questions, with enough weight
+  and presence to anchor spacious accordion rows.
 
 Sans roles (Archivo):
 
