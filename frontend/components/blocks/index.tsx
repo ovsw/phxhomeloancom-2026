@@ -169,14 +169,15 @@ export default function Blocks({
               : {};
 
         const anchorId = anchorIds?.[block._key];
+        // Reserve both bars because an upward anchor jump reveals the site
+        // header after the browser calculates the target offset.
+        const anchorClassName = anchorId
+          ? "scroll-mt-[calc(var(--header-height)+3.5rem)]"
+          : undefined;
 
         return (
           <div
-            className={
-              anchorId
-                ? "scroll-mt-[calc(var(--header-height)+3.5rem)]"
-                : undefined
-            }
+            className={anchorClassName}
             data-sanity={dataSanity}
             id={anchorId}
             key={block._key}
