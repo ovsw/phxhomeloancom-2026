@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createQuickNavModel } from "./quick-nav";
+import { createQuickNavModel, type QuickNavSourceBlock } from "./quick-nav";
 
 function block(
   key: string,
-  type: string,
-  sectionNav?: { navLabel?: string | null },
+  type: QuickNavSourceBlock["_type"],
+  sectionNav: { navLabel: string | null } | null = null,
 ) {
   return { _key: key, _type: type, sectionNav };
 }

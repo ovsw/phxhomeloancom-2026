@@ -1,15 +1,17 @@
 import { stegaClean } from "next-sanity";
+import type { PAGE_QUERY_RESULT } from "@/sanity.types";
 
 /* Must stay in sync with the hero group in studio/schemas/blocks/page-builder.ts. */
 const HERO_BLOCK_TYPES = new Set(["homeHero", "pageHeader"]);
 
-type QuickNavSourceBlock = {
-  _key: string;
-  _type: string;
-  sectionNav?: {
-    navLabel?: string | null;
-  } | null;
-};
+type PageBlock = NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number];
+
+/* Derived from the generated page query so this input shape can't drift from
+   what the GROQ projection actually returns. */
+export type QuickNavSourceBlock = Pick<
+  PageBlock,
+  "_key" | "_type" | "sectionNav"
+>;
 
 export type QuickNavItem = {
   id: string;
