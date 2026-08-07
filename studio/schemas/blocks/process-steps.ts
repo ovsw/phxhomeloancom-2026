@@ -73,7 +73,7 @@ export default defineType({
       description:
         "The steps in the process. They are numbered automatically in the order listed here.",
       of: [processStep],
-      validation: (rule) => rule.min(1),
+      validation: (rule) => rule.required().min(1),
     }),
   ],
   preview: {

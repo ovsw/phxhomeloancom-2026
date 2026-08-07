@@ -39,6 +39,32 @@ describe("NavigationIcon", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it("omits SVG markup carrying event handlers", () => {
+    const { container } = render(
+      <NavigationIcon
+        icon={{
+          name: "landmark",
+          svg: '<svg viewBox="0 0 24 24" onload="alert(1)"><path d="M3 22h18"></path></svg>',
+        }}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("omits SVG markup with unsafe elements", () => {
+    const { container } = render(
+      <NavigationIcon
+        icon={{
+          name: "landmark",
+          svg: "<svg><script>alert(1)</script></svg>",
+        }}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it.each(loanIcons)("renders the $title custom icon", ({ value }) => {
     const { container } = render(
       <NavigationIcon className="size-5" icon={{ name: value, svg: null }} />,

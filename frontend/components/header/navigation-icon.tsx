@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { isLoanIconName } from "../../../shared/loan-icons";
 import { LoanIcon } from "../icons/loan-icon";
+import { isSafeIconSvg } from "./safe-icon-svg";
 
 export type NavigationIconModel = {
   name: string;
@@ -23,7 +24,7 @@ export function NavigationIcon({
   if (isLoanIconName(icon.name)) {
     return <LoanIcon className={cn("size-4", className)} name={icon.name} />;
   }
-  if (!icon.svg?.startsWith("<svg")) return null;
+  if (!icon.svg || !isSafeIconSvg(icon.svg)) return null;
 
   return (
     <span

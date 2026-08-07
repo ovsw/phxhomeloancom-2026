@@ -47,7 +47,7 @@ export default function ProcessSteps({
         "scroll-mt-24 section-pad",
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
-      id="process"
+      id={`process-${stegaClean(_key)}`}
     >
       <div className="container">
         <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.4fr] lg:gap-x-split">

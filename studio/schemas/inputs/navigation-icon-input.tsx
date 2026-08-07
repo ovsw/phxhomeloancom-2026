@@ -16,6 +16,7 @@ import {
   Stack,
   Text,
   TextInput,
+  useToast,
 } from "@sanity/ui";
 import { set, type ObjectInputProps } from "sanity";
 import {
@@ -117,6 +118,7 @@ async function renderLucideIconSvg(name: string): Promise<string | undefined> {
 
 export default function NavigationIconInput(props: ObjectInputProps) {
   const dialogId = useId();
+  const toast = useToast();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [limit, setLimit] = useState(PAGE_SIZE);
@@ -142,8 +144,25 @@ export default function NavigationIconInput(props: ObjectInputProps) {
   const selectIcon = async (name: string) => {
     // Loan icons are shipped with the frontend, so only the name is stored;
     // Lucide icons carry their SVG markup so the frontend never imports Lucide.
-    const svg = isLoanIconName(name) ? undefined : await renderLucideIconSvg(name);
-    props.onChange(set(svg ? { name, svg } : { name }));
+    if (isLoanIconName(name)) {
+      props.onChange(set({ name }));
+      close();
+      return;
+    }
+
+    const svg = await renderLucideIconSvg(name);
+    if (!svg) {
+      // Saving a Lucide icon without its artwork would fail validation and
+      // render nothing on the site, so keep the picker open instead.
+      toast.push({
+        status: "error",
+        title: `Could not load the "${name}" icon`,
+        description: "Check your connection and pick the icon again.",
+      });
+      return;
+    }
+
+    props.onChange(set({ name, svg }));
     close();
   };
 
