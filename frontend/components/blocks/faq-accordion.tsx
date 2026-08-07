@@ -35,6 +35,7 @@ export default function FaqAccordion({
   const displaySubtitle = stegaClean(subtitle)?.trim();
   const displayTitle = stegaClean(title)?.trim();
   const headingId = `faq-accordion-${stegaClean(_key)}`;
+  const sectionId = `faq-${stegaClean(_key)}`;
 
   return (
     <section
@@ -44,7 +45,7 @@ export default function FaqAccordion({
         stegaClean(useCreamBackground) ? "surface-cream" : "surface-white",
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
-      id="faq"
+      id={sectionId}
     >
       <div className="container">
         <div className="mx-auto max-w-3xl">
