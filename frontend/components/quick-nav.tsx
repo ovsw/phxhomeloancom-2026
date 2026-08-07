@@ -1,6 +1,63 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { QuickNavItem } from "@/lib/quick-nav";
+import { cn } from "@/lib/utils";
+
+const READING_LINE_RATIO = 0.35;
+const PAGE_BOTTOM_TOLERANCE = 2;
 
 export default function QuickNav({ items }: { items: QuickNavItem[] }) {
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let frame: number | null = null;
+    const updateActiveItem = () => {
+      frame = null;
+      const readingLine = window.innerHeight * READING_LINE_RATIO;
+      let nextActiveId: string | null = null;
+
+      for (const item of items) {
+        const section = document.getElementById(item.id);
+        if (section && section.getBoundingClientRect().top <= readingLine) {
+          nextActiveId = item.id;
+        }
+      }
+
+      const lastItem = items.at(-1);
+      const isAtPageBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - PAGE_BOTTOM_TOLERANCE;
+      if (
+        nextActiveId &&
+        lastItem &&
+        document.getElementById(lastItem.id) &&
+        isAtPageBottom
+      ) {
+        nextActiveId = lastItem.id;
+      }
+
+      setActiveId(nextActiveId);
+    };
+    const scheduleUpdate = () => {
+      if (frame === null) {
+        frame = window.requestAnimationFrame(updateActiveItem);
+      }
+    };
+
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("hashchange", scheduleUpdate);
+    scheduleUpdate();
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("hashchange", scheduleUpdate);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
+  }, [items]);
+
   return (
     <nav
       aria-label="On this page"
@@ -12,7 +69,13 @@ export default function QuickNav({ items }: { items: QuickNavItem[] }) {
         </span>
         {items.map((item) => (
           <a
-            className="inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium text-accent-foreground transition-colors hover:bg-white/15 focus-ring-on-dark"
+            aria-current={activeId === item.id ? "location" : undefined}
+            className={cn(
+              "inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium transition-colors motion-fast focus-ring-on-dark",
+              activeId === item.id
+                ? "bg-white font-semibold text-accent hover:bg-white"
+                : "text-accent-foreground hover:bg-white/15",
+            )}
             href={`#${item.id}`}
             key={item.key}
           >
