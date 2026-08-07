@@ -19,6 +19,7 @@ export const generalPageBuilderBlockTypes = [
   "teamMembers",
   "richTextBlock",
   "advisorCta",
+  "processSteps",
 ] as const;
 
 // Retain the established export for existing consumers of the general inventory.
