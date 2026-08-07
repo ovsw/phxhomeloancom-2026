@@ -1,0 +1,18 @@
+import { groq } from "next-sanity";
+
+// @sanity-typegen-ignore
+export const benefitCardsQuery = groq`
+  _type == "benefitCards" => {
+    useCreamBackground,
+    eyebrow,
+    title,
+    intro,
+    "cards": array::compact(cards[]{
+      _key,
+      _type,
+      "icon": icon{ name, svg },
+      title,
+      body
+    })
+  }
+`;

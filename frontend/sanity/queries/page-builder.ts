@@ -1,5 +1,6 @@
 import { advisorCtaQuery } from "./advisor-cta";
 import { awardCtaQuery } from "./award-cta";
+import { benefitCardsQuery } from "./benefit-cards";
 import { bigVideoFeatureQuery } from "./big-video-feature";
 import { contactFormQuery } from "./contact-form";
 import { ctaBannerQuery } from "./cta-banner";
@@ -44,6 +45,7 @@ export const pageBuilderQuery = `
     ${richTextBlockQuery},
     ${advisorCtaQuery},
     ${processStepsQuery},
-    ${ctaBannerQuery}
+    ${ctaBannerQuery},
+    ${benefitCardsQuery}
   }
 `;
