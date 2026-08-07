@@ -1,5 +1,6 @@
 import { PlayCircle } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 export default defineType({
   name: "videoFeature",
@@ -61,6 +62,7 @@ export default defineType({
         }),
       ],
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: {

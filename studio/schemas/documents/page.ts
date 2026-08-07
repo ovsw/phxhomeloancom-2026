@@ -81,6 +81,15 @@ export default defineType({
       },
       validation: (Rule) => Rule.required().custom(uniqueRootSlug),
     }),
+    defineField({
+      name: "showQuickNav",
+      title: "Show quick nav",
+      type: "boolean",
+      group: "settings",
+      initialValue: true,
+      description:
+        "Show a sticky “On this page” quick nav below the hero. It only appears when at least two sections have a quick nav label.",
+    }),
     blocksField,
     meta,
   ],

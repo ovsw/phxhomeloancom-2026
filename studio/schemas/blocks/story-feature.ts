@@ -1,5 +1,6 @@
 import { BookOpenText, Link as LinkIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 const storyRichTextField = defineField({
   name: "richText",
@@ -134,6 +135,7 @@ export default defineType({
       of: [defineArrayMember({ type: "button" })],
       validation: (rule) => rule.max(2),
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: { title: "title", media: "image" },

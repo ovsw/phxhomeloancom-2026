@@ -1,5 +1,6 @@
 import { ContactRound } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 type PersonContactMethodValue = {
   href?: string;
@@ -136,6 +137,7 @@ export default defineType({
       ],
       validation: (rule) => rule.required(),
     }),
+    sectionNavField({ defaultOn: false }),
   ],
   preview: {
     select: { media: "personImage", title: "title" },

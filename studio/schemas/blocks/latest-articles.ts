@@ -1,5 +1,6 @@
 import { Newspaper } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 export default defineType({
   name: "latestArticles",
@@ -51,6 +52,7 @@ export default defineType({
         }),
       ],
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: { title: "title", media: "fallbackImage" },

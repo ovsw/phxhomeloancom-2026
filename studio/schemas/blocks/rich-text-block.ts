@@ -1,5 +1,6 @@
 import { TextIcon } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 export default defineType({
   name: "richTextBlock",
@@ -22,6 +23,7 @@ export default defineType({
       title: "Content",
       type: "richTextContent",
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: { title: "title" },

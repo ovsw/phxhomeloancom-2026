@@ -1,5 +1,6 @@
 import { ListOrdered } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 const processStep = defineArrayMember({
   name: "phxProcessStep",
@@ -75,6 +76,7 @@ export default defineType({
       of: [processStep],
       validation: (rule) => rule.required().min(1),
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: { title: "title", steps: "steps" },

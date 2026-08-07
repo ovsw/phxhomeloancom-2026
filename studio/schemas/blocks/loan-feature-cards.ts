@@ -1,5 +1,6 @@
 import { BadgeDollarSign } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav";
 
 const loanIconOptions = [
   { title: "Conventional Loan", value: "conventional-loan" },
@@ -166,6 +167,7 @@ export default defineType({
           return validateHelpCard(value as HelpCardValue | undefined, block?.showHelpCard);
         }),
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: { title: "title" },

@@ -1,6 +1,7 @@
 import { Table2 } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
 import ComparisonTableInput from "../inputs/comparison-table-input";
+import { sectionNavField } from "./shared/section-nav";
 
 type TableValue = {
   rows?: { cells?: string[] }[];
@@ -149,6 +150,7 @@ export default defineType({
       description:
         "Optional short note under the section, e.g. pointing readers to an advisor. Supports inline links.",
     }),
+    sectionNavField({ defaultOn: true }),
   ],
   preview: {
     select: { title: "title", rows: "table.rows" },
