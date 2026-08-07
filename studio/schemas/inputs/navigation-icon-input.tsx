@@ -1,9 +1,11 @@
 import { Search } from "lucide-react";
 import {
   DynamicIcon,
+  dynamicIconImports,
   type IconName,
 } from "lucide-react/dynamic.mjs";
-import { useId, useMemo, useState } from "react";
+import { createElement, useId, useMemo, useState } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import {
   Box,
   Button,
@@ -14,8 +16,9 @@ import {
   Stack,
   Text,
   TextInput,
+  useToast,
 } from "@sanity/ui";
-import { set, type StringInputProps } from "sanity";
+import { set, type ObjectInputProps } from "sanity";
 import {
   getLoanIcon,
   isLoanIconName,
@@ -87,12 +90,41 @@ function PickerOption({
   );
 }
 
-export default function NavigationIconInput(props: StringInputProps) {
+export type NavigationIconValue = {
+  name?: string;
+  svg?: string;
+};
+
+/**
+ * Render a canonical Lucide icon to standalone SVG markup. Stored in the
+ * document at pick time so the frontend can inline the artwork without
+ * bundling the Lucide icon set (which made the Next dev server compile
+ * ~2,000 icon modules per graph).
+ */
+async function renderLucideIconSvg(name: string): Promise<string | undefined> {
+  const loadIcon = dynamicIconImports[name as IconName];
+  if (!loadIcon) return undefined;
+
+  try {
+    const iconModule = await loadIcon();
+    return renderToStaticMarkup(
+      createElement(iconModule.default, { "aria-hidden": true }),
+    );
+  } catch (error) {
+    console.error(`Could not render SVG markup for Lucide icon "${name}"`, error);
+    return undefined;
+  }
+}
+
+export default function NavigationIconInput(props: ObjectInputProps) {
   const dialogId = useId();
+  const toast = useToast();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const selectedLoanIcon = getLoanIcon(props.value);
+  const value = props.value as NavigationIconValue | undefined;
+  const selectedName = value?.name;
+  const selectedLoanIcon = getLoanIcon(selectedName);
 
   const normalizedQuery = query.trim().toLowerCase().replaceAll(" ", "-");
   const filteredLoanIcons = useMemo(() => searchLoanIcons(query), [query]);
@@ -109,8 +141,28 @@ export default function NavigationIconInput(props: StringInputProps) {
     setLimit(PAGE_SIZE);
     setOpen(true);
   };
-  const selectIcon = (name: string) => {
-    props.onChange(set(name));
+  const selectIcon = async (name: string) => {
+    // Loan icons are shipped with the frontend, so only the name is stored;
+    // Lucide icons carry their SVG markup so the frontend never imports Lucide.
+    if (isLoanIconName(name)) {
+      props.onChange(set({ name }));
+      close();
+      return;
+    }
+
+    const svg = await renderLucideIconSvg(name);
+    if (!svg) {
+      // Saving a Lucide icon without its artwork would fail validation and
+      // render nothing on the site, so keep the picker open instead.
+      toast.push({
+        status: "error",
+        title: `Could not load the "${name}" icon`,
+        description: "Check your connection and pick the icon again.",
+      });
+      return;
+    }
+
+    props.onChange(set({ name, svg }));
     close();
   };
 
@@ -118,13 +170,13 @@ export default function NavigationIconInput(props: StringInputProps) {
     <>
       <Button
         disabled={props.readOnly}
-        icon={props.value ? <IconGlyph name={props.value} /> : undefined}
+        icon={selectedName ? <IconGlyph name={selectedName} /> : undefined}
         id={props.elementProps.id}
         mode="ghost"
         onBlur={props.elementProps.onBlur}
         onClick={openPicker}
         onFocus={props.elementProps.onFocus}
-        text={selectedLoanIcon?.title || props.value || "Choose an icon"}
+        text={selectedLoanIcon?.title || selectedName || "Choose an icon"}
         type="button"
         width="fill"
       />
@@ -165,7 +217,7 @@ export default function NavigationIconInput(props: StringInputProps) {
                         label={title}
                         name={value}
                         onSelect={selectIcon}
-                        selected={value === props.value}
+                        selected={value === selectedName}
                       />
                     ))}
                   </Grid>
@@ -184,7 +236,7 @@ export default function NavigationIconInput(props: StringInputProps) {
                         label={name}
                         name={name}
                         onSelect={selectIcon}
-                        selected={name === props.value}
+                        selected={name === selectedName}
                       />
                     ))}
                   </Grid>

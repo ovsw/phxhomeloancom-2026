@@ -4,6 +4,7 @@ import NavigationIconInput, {
   createNavigationIconPreview,
 } from "../inputs/navigation-icon-input";
 import { isNavigationIconName } from "../inputs/lucide-icon-catalog";
+import { isLoanIconName } from "../../../shared/loan-icons";
 
 const destination = defineType({
   name: "navigationDestination",
@@ -88,22 +89,34 @@ const childLink = defineType({
     defineField({
       name: "icon",
       title: "Icon",
-      type: "string",
+      type: "object",
       description: "Choose a custom loan icon or any canonical Lucide icon.",
       components: {
         input: NavigationIconInput,
       },
+      fields: [
+        defineField({ name: "name", title: "Name", type: "string" }),
+        // The icon's SVG markup, captured at pick time so the frontend can
+        // render it without bundling the full Lucide icon set.
+        defineField({ name: "svg", title: "SVG markup", type: "string", hidden: true }),
+      ],
       validation: (rule) =>
-        rule.required().custom((value) =>
-          !value || isNavigationIconName(value)
-            ? true
-            : "Choose an icon from the navigation icon picker",
-        ),
+        rule.required().custom((value) => {
+          const icon = value as { name?: string; svg?: string } | undefined;
+          if (!icon?.name) return "Choose an icon from the navigation icon picker";
+          if (!isNavigationIconName(icon.name)) {
+            return "Choose an icon from the navigation icon picker";
+          }
+          if (!isLoanIconName(icon.name) && !icon.svg) {
+            return "Re-pick this icon so its artwork is stored with the document";
+          }
+          return true;
+        }),
     }),
     defineField({ name: "destination", type: "navigationDestination" }),
   ],
   preview: {
-    select: { icon: "icon", title: "label", subtitle: "description" },
+    select: { icon: "icon.name", title: "label", subtitle: "description" },
     prepare: ({ icon, title, subtitle }) => ({
       title,
       subtitle,

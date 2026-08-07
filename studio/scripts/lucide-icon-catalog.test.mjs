@@ -5,7 +5,6 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { dynamicIconImports } from "lucide-react/dynamic.mjs";
 import {
-  buildLucideIconAliasCatalog,
   buildLucideIconCatalog,
   getCanonicalLucideIconNames,
   getLucideIconAliases,
@@ -16,17 +15,9 @@ const catalogPath = path.resolve(
   scriptDirectory,
   "../schemas/inputs/lucide-icon-names.ts",
 );
-const aliasesPath = path.resolve(
-  scriptDirectory,
-  "../../frontend/components/header/lucide-icon-aliases.ts",
-);
 
 test("generated Lucide icon catalog matches the installed package", async () => {
   assert.equal(await readFile(catalogPath, "utf8"), await buildLucideIconCatalog());
-  assert.equal(
-    await readFile(aliasesPath, "utf8"),
-    await buildLucideIconAliasCatalog(),
-  );
 });
 
 test("canonical Lucide icon catalog excludes legacy aliases", async () => {

@@ -22,6 +22,7 @@ import ContactForm from "@/components/blocks/contact-form";
 import TeamMembers from "@/components/blocks/team-members";
 import RichTextBlock from "@/components/blocks/rich-text-block";
 import AdvisorCta from "@/components/blocks/advisor-cta";
+import ProcessSteps from "@/components/blocks/process-steps";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block =
@@ -50,6 +51,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "teamMembers",
   "richTextBlock",
   "advisorCta",
+  "processSteps",
 ]);
 
 const componentMap: Partial<{
@@ -76,6 +78,7 @@ const componentMap: Partial<{
   teamMembers: TeamMembers,
   richTextBlock: RichTextBlock,
   advisorCta: AdvisorCta,
+  processSteps: ProcessSteps,
 };
 
 export default function Blocks({

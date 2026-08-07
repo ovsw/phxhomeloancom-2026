@@ -12,6 +12,7 @@ import { pageHeaderQuery } from "./page-header";
 import { personContactCtaQuery } from "./person-contact-cta";
 import { personCtaQuery } from "./person-cta";
 import { phxEmbedSocialReviewsQuery } from "./phx-embed-social-reviews";
+import { processStepsQuery } from "./process-steps";
 import { richTextBlockQuery } from "./rich-text-block";
 import { storyFeatureQuery } from "./story-feature";
 import { teamMembersQuery } from "./team-members";
@@ -40,6 +41,7 @@ export const pageBuilderQuery = `
     ${contactFormQuery},
     ${teamMembersQuery},
     ${richTextBlockQuery},
-    ${advisorCtaQuery}
+    ${advisorCtaQuery},
+    ${processStepsQuery}
   }
 `;

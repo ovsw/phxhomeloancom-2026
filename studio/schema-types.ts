@@ -23,6 +23,7 @@ import sectionPadding from "./schemas/blocks/shared/section-padding";
 import customUrl from "./schemas/blocks/shared/custom-url";
 import button from "./schemas/blocks/shared/button";
 import richTextContent from "./schemas/blocks/shared/rich-text-content";
+import simpleRichText from "./schemas/blocks/shared/simple-rich-text";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import homeHero from "./schemas/blocks/home-hero";
@@ -44,6 +45,7 @@ import contactForm from "./schemas/blocks/contact-form";
 import teamMembers from "./schemas/blocks/team-members";
 import richTextBlock from "./schemas/blocks/rich-text-block";
 import advisorCta from "./schemas/blocks/advisor-cta";
+import processSteps from "./schemas/blocks/process-steps";
 
 export const schemaTypes = [
   // documents
@@ -70,6 +72,7 @@ export const schemaTypes = [
   customUrl,
   button,
   richTextContent,
+  simpleRichText,
   // blocks
   hero1,
   homeHero,
@@ -91,4 +94,5 @@ export const schemaTypes = [
   teamMembers,
   richTextBlock,
   advisorCta,
+  processSteps,
 ];

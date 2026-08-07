@@ -1,26 +1,36 @@
-import {
-  DynamicIcon,
-  dynamicIconImports,
-  type IconName,
-} from "lucide-react/dynamic.mjs";
 import { cn } from "@/lib/utils";
 import { isLoanIconName } from "../../../shared/loan-icons";
 import { LoanIcon } from "../icons/loan-icon";
-import { lucideIconAliases } from "./lucide-icon-aliases";
+import { isSafeIconSvg } from "./safe-icon-svg";
 
-const iconAliasSet = new Set<string>(lucideIconAliases);
+export type NavigationIconModel = {
+  name: string;
+  /** Lucide artwork captured by the Studio picker; loan icons ship with the app. */
+  svg: string | null;
+};
 
-export function NavigationIcon({ className, name }: { className?: string; name: string }) {
-  if (isLoanIconName(name)) {
-    return <LoanIcon className={cn("size-4", className)} name={name} />;
+/**
+ * Renders the SVG markup stored in Sanity instead of importing from
+ * lucide-react: bundling any dynamic Lucide lookup forces the dev server to
+ * compile ~2,000 icon modules into both the server and client graphs.
+ */
+export function NavigationIcon({
+  className,
+  icon,
+}: {
+  className?: string;
+  icon: NavigationIconModel;
+}) {
+  if (isLoanIconName(icon.name)) {
+    return <LoanIcon className={cn("size-4", className)} name={icon.name} />;
   }
-  if (!(name in dynamicIconImports) || iconAliasSet.has(name)) return null;
+  if (!icon.svg || !isSafeIconSvg(icon.svg)) return null;
 
   return (
-    <DynamicIcon
+    <span
       aria-hidden="true"
-      className={cn("size-4", className)}
-      name={name as IconName}
+      className={cn("inline-block size-4 *:size-full", className)}
+      dangerouslySetInnerHTML={{ __html: icon.svg }}
     />
   );
 }

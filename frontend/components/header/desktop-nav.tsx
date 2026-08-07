@@ -69,7 +69,7 @@ function GroupPanelContent({ label, links }: { label: string; links: HeaderChild
               same shape at a fraction of the visual weight.
             */}
             <span className="flex size-10 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
-              <NavigationIcon className="size-5" name={child.icon} />
+              <NavigationIcon className="size-5" icon={child.icon} />
             </span>
             <span className="grid gap-1">
               <span className="flex items-center gap-0.5 typo-nav font-semibold text-popover-foreground">
