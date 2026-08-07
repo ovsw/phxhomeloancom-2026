@@ -8,7 +8,7 @@ export type HeaderChildLinkModel = {
   key: string;
   label: string;
   description: string;
-  icon: string;
+  icon: NavigationIconModel;
   link: HeaderLinkModel;
 };
 
@@ -41,7 +41,9 @@ type RawChildLink = {
   _key?: string | null;
   label?: string | null;
   description?: string | null;
-  icon?: string | null;
+  // name is unknown because the legacy-string GROQ fallback keeps typegen
+  // from narrowing it; the mapper only accepts string values at runtime.
+  icon?: { name?: unknown; svg?: string | null } | null;
   destination?: RawDestination | null;
 };
 type RawItem = {
@@ -183,14 +185,23 @@ export function createHeaderNavigationModel(
         const childLabel = child.label?.trim();
         const description = child.description?.trim();
         // stegaClean, not just trim: in draft mode Sanity injects invisible
-        // stega characters into every string, and this value is a lookup key
-        // into the icon map — the encoded form matches nothing. Visible text
-        // (label, description) deliberately keeps its encoding so it stays
-        // click-to-edit in Presentation.
-        const icon = stegaClean(child.icon)?.trim();
+        // stega characters into every string. The name is a lookup key into
+        // the loan-icon map and the svg is injected as markup — the encoded
+        // form breaks both. Visible text (label, description) deliberately
+        // keeps its encoding so it stays click-to-edit in Presentation.
+        const rawIconName = child.icon?.name;
+        const iconName =
+          typeof rawIconName === "string" ? stegaClean(rawIconName)?.trim() : undefined;
+        const iconSvg = stegaClean(child.icon?.svg)?.trim() || null;
         const link = normalizeLink(childLabel, child.destination);
-        if (childKey && childLabel && description && icon && link) {
-          links.push({ key: childKey, label: childLabel, description, icon, link });
+        if (childKey && childLabel && description && iconName && link) {
+          links.push({
+            key: childKey,
+            label: childLabel,
+            description,
+            icon: { name: iconName, svg: iconSvg },
+            link,
+          });
         }
       }
       if (links.length > 0) items.push({ key, kind: "group", label, links });
@@ -207,6 +218,7 @@ export function createHeaderNavigationModel(
 }
 import { stegaClean } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
+import type { NavigationIconModel } from "./navigation-icon";
 import type { SETTINGS_QUERY_RESULT } from "@/sanity.types";
 
 export type HeaderLogoModel = {

@@ -129,7 +129,7 @@ export default function MobileNav({
                             sits beside.
                           */}
                           <span className="flex size-8 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
-                            <NavigationIcon name={child.icon} />
+                            <NavigationIcon icon={child.icon} />
                           </span>
                           <span className="grid gap-1">
                             <span className="typo-nav font-semibold leading-tight text-foreground">

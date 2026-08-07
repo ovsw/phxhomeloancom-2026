@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { createHeaderNavigationModel } from "./model";
 
+const testSvg =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 22h18"></path></svg>';
+
 describe("createHeaderNavigationModel", () => {
   it("maps direct links, rich groups, actions, and normalized destinations", () => {
     const model = createHeaderNavigationModel({
@@ -21,7 +24,7 @@ describe("createHeaderNavigationModel", () => {
               _key: "va",
               label: "VA Loan",
               description: "Benefits for eligible service members.",
-              icon: "shield-check",
+              icon: { name: "shield-check", svg: testSvg },
               destination: { href: "/phoenix-va-loan", openInNewTab: false },
             },
           ],
@@ -56,7 +59,7 @@ describe("createHeaderNavigationModel", () => {
               key: "va",
               label: "VA Loan",
               description: "Benefits for eligible service members.",
-              icon: "shield-check",
+              icon: { name: "shield-check", svg: testSvg },
               link: {
                 href: "/phoenix-va-loan",
                 label: "VA Loan",

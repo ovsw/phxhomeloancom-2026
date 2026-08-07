@@ -396,6 +396,29 @@
     }
   },
   {
+    "type": "type",
+    "name": "icon",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "name": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "svg": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "processSteps",
     "type": "type",
     "value": {
@@ -6775,7 +6798,8 @@
         "icon": {
           "type": "objectAttribute",
           "value": {
-            "type": "string"
+            "type": "inline",
+            "name": "icon"
           },
           "optional": true
         },

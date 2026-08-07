@@ -5,6 +5,9 @@ import { Header } from "./site-header";
 import type { HeaderModel, HeaderNavigationModel } from "./model";
 import { SITE_HEADER_OFFSET_PROPERTY } from "./site-header-shell";
 
+const testSvg =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 22h18"></path></svg>';
+
 const navigation: HeaderNavigationModel = {
   items: [
     {
@@ -22,7 +25,7 @@ const navigation: HeaderNavigationModel = {
           key: "va",
           label: "VA Loan",
           description: "Benefits for eligible service members.",
-          icon: "shield-check",
+          icon: { name: "shield-check", svg: testSvg },
           link: {
             href: "/phoenix-va-loan",
             label: "VA Loan",
@@ -40,7 +43,7 @@ const navigation: HeaderNavigationModel = {
           key: "calculator",
           label: "Payment Calculator",
           description: "Estimate a monthly payment.",
-          icon: "home",
+          icon: { name: "home", svg: testSvg },
           link: {
             href: "/calculator",
             label: "Payment Calculator",

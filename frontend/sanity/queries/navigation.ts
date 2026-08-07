@@ -29,7 +29,12 @@ export const NAVIGATION_QUERY = defineQuery(`
           _key,
           label,
           description,
-          icon,
+          // Legacy documents store the icon as a bare string name; surface it
+          // as {name, svg: null} so the link survives until the doc is re-saved.
+          "icon": select(
+            defined(icon.name) => icon{ name, svg },
+            defined(icon) => { "name": icon, "svg": null }
+          ),
           destination${destinationProjection}
         }
       }
