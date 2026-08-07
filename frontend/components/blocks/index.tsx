@@ -38,6 +38,7 @@ type BlockEditingProps = {
 };
 
 const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
+  "faqAccordion",
   "pageHeader",
   "storyFeature",
   "editorialChapter",

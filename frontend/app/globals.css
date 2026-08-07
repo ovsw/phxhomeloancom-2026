@@ -587,12 +587,12 @@
   letter-spacing: normal;
 }
 
-/* Small serif title for dense interactive rows (FAQ questions). */
+/* Serif title for FAQ questions. */
 @utility typo-title-minor {
   font-family: var(--font-display);
-  font-size: 1.0625rem;
-  font-weight: 500;
-  line-height: 1.5;
+  font-size: 1.3125rem;
+  font-weight: 600;
+  line-height: 1.25;
   letter-spacing: normal;
 }
 

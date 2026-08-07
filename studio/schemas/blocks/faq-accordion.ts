@@ -8,6 +8,13 @@ export default defineType({
   icon: MessageCircle,
   fields: [
     defineField({
+      name: "useCreamBackground",
+      title: "Use Cream Background",
+      type: "boolean",
+      description: "Turn on to use a cream background for this section. Leave off for white.",
+      initialValue: false,
+    }),
+    defineField({
       name: "eyebrow",
       type: "string",
       title: "Eyebrow",
