@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { QuickNavItem } from "@/lib/quick-nav";
 import { cn } from "@/lib/utils";
 
@@ -9,12 +9,20 @@ const PAGE_BOTTOM_TOLERANCE = 2;
 
 export default function QuickNav({ items }: { items: QuickNavItem[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let frame: number | null = null;
     const updateActiveItem = () => {
       frame = null;
-      const readingLine = window.innerHeight * READING_LINE_RATIO;
+      /* The nav is the bottom edge of the sticky chrome (site header + this
+         bar), so the reading line sits 35% into the content area actually
+         visible below it. Measuring from the raw viewport top would put the
+         line behind the chrome on short viewports, leaving a just-clicked
+         section's pill inactive even though the section is at the top. */
+      const chromeBottom = navRef.current?.getBoundingClientRect().bottom ?? 0;
+      const readingLine =
+        chromeBottom + (window.innerHeight - chromeBottom) * READING_LINE_RATIO;
       let nextActiveId: string | null = null;
 
       for (const item of items) {
@@ -61,6 +69,7 @@ export default function QuickNav({ items }: { items: QuickNavItem[] }) {
   return (
     <nav
       aria-label="On this page"
+      ref={navRef}
       className="sticky top-[var(--site-header-offset,var(--header-height))] z-50 bg-accent transition-[top] motion-slow motion-reduce:transition-none"
     >
       <div className="container flex h-14 items-center gap-2 overflow-x-auto">

@@ -124,4 +124,37 @@ describe("QuickNav", () => {
     act(() => vi.runOnlyPendingTimers());
     expect(optionsLink).toHaveAttribute("aria-current", "location");
   });
+
+  it("measures the reading line below the sticky chrome, not the viewport top", () => {
+    vi.useFakeTimers();
+    vi.spyOn(window, "innerHeight", "get").mockReturnValue(400);
+    vi.spyOn(window, "scrollY", "get").mockReturnValue(0);
+    vi.spyOn(document.documentElement, "scrollHeight", "get").mockReturnValue(1000);
+    render(
+      <>
+        <QuickNav items={items} />
+        <section id="why-refinance" />
+        <section id="loan-options" />
+      </>,
+    );
+
+    const nav = screen.getByRole("navigation", { name: "On this page" });
+    // Sticky chrome (site header + nav bar) ends 160px down; the reading line
+    // is 35% into the remaining 240px: 160 + 84 = 244.
+    vi.spyOn(nav, "getBoundingClientRect").mockImplementation(() => rect(104, 160));
+    const whySection = document.getElementById("why-refinance")!;
+    // Landed at the top of the visible area, above the old viewport-based
+    // line's position (35% of 400 = 140 < 160) — must still count as active.
+    vi.spyOn(whySection, "getBoundingClientRect").mockImplementation(() => rect(160));
+    vi.spyOn(
+      document.getElementById("loan-options")!,
+      "getBoundingClientRect",
+    ).mockImplementation(() => rect(700));
+
+    act(() => vi.runOnlyPendingTimers());
+    expect(screen.getByRole("link", { name: "Why refinance" })).toHaveAttribute(
+      "aria-current",
+      "location",
+    );
+  });
 });
