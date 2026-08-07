@@ -5,7 +5,7 @@ export function LoanIcon({
   className,
   fallback = null,
   name,
-  size,
+  size = 20,
 }: Readonly<{
   className?: string;
   fallback?: ReactNode;
