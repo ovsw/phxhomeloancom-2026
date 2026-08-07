@@ -4,20 +4,19 @@ import { createQuickNavModel } from "./quick-nav";
 function block(
   key: string,
   type: string,
-  sectionNav?: { showInQuickNav?: boolean | null; navLabel?: string | null },
+  sectionNav?: { navLabel?: string | null },
 ) {
   return { _key: key, _type: type, sectionNav };
 }
 
 describe("createQuickNavModel", () => {
-  it("includes only labeled sections that are not explicitly toggled off", () => {
+  it("includes only sections with nonblank labels", () => {
     const model = createQuickNavModel(
       [
-        block("a", "richTextBlock", { showInQuickNav: true, navLabel: "What it means" }),
+        block("a", "richTextBlock", { navLabel: "What it means" }),
         block("b", "processSteps", { navLabel: "How it works" }),
-        block("c", "ctaBanner", { showInQuickNav: false, navLabel: "Hidden" }),
-        block("d", "benefitCards", { showInQuickNav: true, navLabel: "  " }),
-        block("e", "faqAccordion"),
+        block("c", "benefitCards", { navLabel: "  " }),
+        block("d", "faqAccordion"),
       ],
       true,
     );

@@ -1,6 +1,6 @@
 import { UserRoundCheck } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionNavField } from "./shared/section-nav";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 export default defineType({
   name: "advisorCta",
@@ -59,7 +59,7 @@ export default defineType({
       ],
       validation: (rule) => rule.required(),
     }),
-    sectionNavField({ defaultOn: false }),
+    sectionNavField(),
   ],
   preview: {
     select: { media: "portraitImage", title: "title" },

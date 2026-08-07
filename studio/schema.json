@@ -6009,13 +6009,6 @@
             "value": "section-nav"
           }
         },
-        "showInQuickNav": {
-          "type": "objectAttribute",
-          "value": {
-            "type": "boolean"
-          },
-          "optional": true
-        },
         "navLabel": {
           "type": "objectAttribute",
           "value": {

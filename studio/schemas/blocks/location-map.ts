@@ -1,6 +1,6 @@
 import { MapPinned } from "lucide-react";
 import { defineField, defineType } from "sanity";
-import { sectionNavField } from "./shared/section-nav";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 export function validateGoogleMapsEmbedUrl(
   value: string | null | undefined,
@@ -128,7 +128,7 @@ export default defineType({
       ],
       validation: (rule) => rule.required(),
     }),
-    sectionNavField({ defaultOn: true }),
+    sectionNavField(),
   ],
   preview: {
     select: { media: "image", title: "title" },

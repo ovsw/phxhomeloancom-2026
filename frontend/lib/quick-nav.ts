@@ -7,7 +7,6 @@ type QuickNavSourceBlock = {
   _key: string;
   _type: string;
   sectionNav?: {
-    showInQuickNav?: boolean | null;
     navLabel?: string | null;
   } | null;
 };
@@ -35,9 +34,8 @@ function slugify(text: string) {
 }
 
 /**
- * A section appears in the quick nav when it has a nav label and its toggle
- * is not explicitly off. The nav itself only shows for two or more items —
- * a single-item jump nav is noise.
+ * A section appears in the quick nav when it has a nonblank nav label. The nav
+ * itself only shows for two or more items — a single-item jump nav is noise.
  */
 export function createQuickNavModel(
   blocks: QuickNavSourceBlock[],
@@ -57,7 +55,7 @@ export function createQuickNavModel(
 
   for (const block of blocks) {
     const nav = block.sectionNav;
-    if (!nav || nav.showInQuickNav === false) continue;
+    if (!nav) continue;
 
     const rawLabel = typeof nav.navLabel === "string" ? nav.navLabel : "";
     const cleanLabel = stegaClean(rawLabel)?.trim();

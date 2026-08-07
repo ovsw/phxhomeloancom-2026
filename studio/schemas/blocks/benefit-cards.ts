@@ -5,7 +5,7 @@ import NavigationIconInput, {
 } from "../inputs/navigation-icon-input";
 import { isNavigationIconName } from "../inputs/lucide-icon-catalog";
 import { isLoanIconName } from "../../../shared/loan-icons";
-import { sectionNavField } from "./shared/section-nav";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 const benefitCard = defineArrayMember({
   name: "phxBenefitCard",
@@ -105,7 +105,7 @@ export default defineType({
       of: [benefitCard],
       validation: (rule) => rule.required().min(1),
     }),
-    sectionNavField({ defaultOn: true }),
+    sectionNavField(),
   ],
   preview: {
     select: { title: "title", cards: "cards" },

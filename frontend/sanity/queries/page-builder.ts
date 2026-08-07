@@ -27,7 +27,6 @@ export const pageBuilderQuery = `
     _key,
     _type,
     sectionNav{
-      showInQuickNav,
       navLabel
     },
     ${homeHeroQuery},

@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionNavField } from "./shared/section-nav";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 export default defineType({
   name: "faqAccordion",
@@ -75,7 +75,7 @@ export default defineType({
       ],
       validation: (rule) => [rule.required(), rule.unique()],
     }),
-    sectionNavField({ defaultOn: true }),
+    sectionNavField(),
   ],
   preview: {
     select: { title: "title" },

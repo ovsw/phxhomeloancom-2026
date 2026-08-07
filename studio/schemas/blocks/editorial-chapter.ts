@@ -1,6 +1,6 @@
 import { BookOpenText } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { sectionNavField } from "./shared/section-nav";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 type SupportingModule = { _type?: string };
 
@@ -173,7 +173,7 @@ export default defineType({
       of: [quoteCallout, proofPoints, impactStatement],
       validation: (rule) => rule.custom(validateSupportingContent),
     }),
-    sectionNavField({ defaultOn: true }),
+    sectionNavField(),
   ],
   preview: {
     select: { title: "title" },
