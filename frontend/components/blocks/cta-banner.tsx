@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { getSafeLinkHref } from "@/lib/safe-href";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { stegaClean } from "next-sanity";
 import Link from "next/link";
@@ -52,7 +53,7 @@ export default function CtaBanner({
             data-sanity={dataAttribute?.("buttons")}
           >
             {buttons.slice(0, 2).map((button, index) => {
-              const href = stegaClean(button.href);
+              const href = getSafeLinkHref(button.href);
               if (!href) return null;
               const secondary =
                 index > 0 ||
