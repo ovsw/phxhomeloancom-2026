@@ -705,6 +705,13 @@
   * {
     @apply border-border;
   }
+  /* Same-page anchor jumps (quick nav, heading links) glide instead of
+     teleporting. Route transitions stay instant: layout.tsx sets
+     data-scroll-behavior="smooth" so Next.js suppresses this during
+     navigation, and the reduced-motion block below turns it off entirely. */
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);

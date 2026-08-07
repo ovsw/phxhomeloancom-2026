@@ -8,6 +8,7 @@ export const PAGE_QUERY = groq`
     _type,
     title,
     description,
+    showQuickNav,
     ${pageBuilderQuery},
     ${metaQuery},
   }

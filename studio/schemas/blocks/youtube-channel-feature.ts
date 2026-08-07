@@ -1,5 +1,6 @@
 import { PlayCircle as YoutubeIcon } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 type Fact = { label?: string; value?: string };
 type YoutubeButton = { label?: string; url?: string };
@@ -166,6 +167,7 @@ export default defineType({
       ],
       validation: (rule) => rule.required().custom(validateYoutubeButton),
     }),
+    sectionNavField(),
   ],
   preview: {
     select: { media: "channelImage", title: "title" },

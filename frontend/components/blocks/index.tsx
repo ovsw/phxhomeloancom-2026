@@ -91,11 +91,13 @@ const componentMap: Partial<{
 };
 
 export default function Blocks({
+  anchorIds,
   blocks,
   documentId,
   documentType = "page",
   stega,
 }: {
+  anchorIds?: Record<string, string>;
   blocks: Block[];
   documentId: string;
   documentType?: "blogIndex" | "homePage" | "page";
@@ -166,8 +168,20 @@ export default function Blocks({
               ? { dataAttribute }
               : {};
 
+        const anchorId = anchorIds?.[block._key];
+        // Reserve both bars because an upward anchor jump reveals the site
+        // header after the browser calculates the target offset.
+        const anchorClassName = anchorId
+          ? "scroll-mt-[calc(var(--header-height)+3.5rem)]"
+          : undefined;
+
         return (
-          <div data-sanity={dataSanity} key={block._key}>
+          <div
+            className={anchorClassName}
+            data-sanity={dataSanity}
+            id={anchorId}
+            key={block._key}
+          >
             <Component {...block} {...editingProps} />
           </div>
         );

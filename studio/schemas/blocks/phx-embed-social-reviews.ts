@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 function validateEmbedSocialUrl(value?: string) {
   if (!value) return true;
@@ -52,6 +53,7 @@ export default defineType({
       validation: (rule) =>
         rule.uri({ scheme: ["https"] }).custom(validateEmbedSocialUrl),
     }),
+    sectionNavField(),
   ],
   preview: {
     select: { title: "iframeTitle" },

@@ -1,5 +1,6 @@
 import { PlayCircle } from "lucide-react";
 import { defineField, defineType } from "sanity";
+import { sectionNavField } from "./shared/section-nav.ts";
 
 const youtubeHosts = [
   "youtube.com",
@@ -104,6 +105,7 @@ export default defineType({
         }),
       ],
     }),
+    sectionNavField(),
   ],
   preview: {
     select: { media: "thumbnailImage", title: "title" },

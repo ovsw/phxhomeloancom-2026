@@ -1,5 +1,7 @@
 import { createDataAttribute, stegaClean } from "next-sanity";
 import Blocks from "@/components/blocks";
+import QuickNav from "@/components/quick-nav";
+import { createQuickNavModel } from "@/lib/quick-nav";
 import PostHero from "@/components/blocks/post-hero";
 import { createPostBodyModel } from "@/components/post-sidebar/model";
 import { PostSidebar } from "@/components/post-sidebar/post-sidebar";
@@ -18,6 +20,9 @@ function PageContent({
   stega: boolean;
 }) {
   const blocks = page.blocks ?? [];
+  const quickNav = createQuickNavModel(blocks, page.showQuickNav !== false);
+  const heroBlocks = blocks.slice(0, quickNav.heroCount);
+  const contentBlocks = blocks.slice(quickNav.heroCount);
   const isRichTextOnlyPage =
     blocks.length > 0 && blocks.every((block) => block._type === "richTextBlock");
   const rootDataAttribute = stega
@@ -56,8 +61,18 @@ function PageContent({
           </div>
         </header>
       ) : null}
+      {heroBlocks.length > 0 ? (
+        <Blocks
+          blocks={heroBlocks}
+          documentId={page._id}
+          perspective={perspective}
+          stega={stega}
+        />
+      ) : null}
+      {quickNav.showQuickNav ? <QuickNav items={quickNav.items} /> : null}
       <Blocks
-        blocks={blocks}
+        anchorIds={quickNav.anchorIdByKey}
+        blocks={contentBlocks}
         documentId={page._id}
         perspective={perspective}
         stega={stega}

@@ -20,6 +20,7 @@ import link from "./schemas/blocks/shared/link";
 import { colorVariant } from "./schemas/blocks/shared/color-variant";
 import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
+import sectionNav from "./schemas/blocks/shared/section-nav";
 import customUrl from "./schemas/blocks/shared/custom-url";
 import button from "./schemas/blocks/shared/button";
 import richTextContent from "./schemas/blocks/shared/rich-text-content";
@@ -72,6 +73,7 @@ export const schemaTypes = [
   colorVariant,
   buttonVariant,
   sectionPadding,
+  sectionNav,
   customUrl,
   button,
   richTextContent,
