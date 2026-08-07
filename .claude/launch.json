@@ -16,6 +16,13 @@
       "autoPort": false
     },
     {
+      "name": "studio",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--dir", "studio", "run", "dev"],
+      "port": 3333,
+      "autoPort": false
+    },
+    {
       "name": "dev (root, all workspaces)",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["dev"],
