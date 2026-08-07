@@ -1,6 +1,44 @@
 [
   {
     "type": "type",
+    "name": "helpCard",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "title": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "body": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "ctaLabel": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "ctaLink": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "customUrl"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
+    "type": "type",
     "name": "faqAccordion.link",
     "value": {
       "type": "object",
@@ -3478,6 +3516,13 @@
           },
           "optional": true
         },
+        "intro": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
         "cards": {
           "type": "objectAttribute",
           "value": {
@@ -3559,6 +3604,21 @@
                 }
               }
             }
+          },
+          "optional": true
+        },
+        "showHelpCard": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "boolean"
+          },
+          "optional": true
+        },
+        "helpCard": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "helpCard"
           },
           "optional": true
         }
