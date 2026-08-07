@@ -1,34 +1,21 @@
 import {
-  Award,
-  Building2,
-  ChevronRight,
-  Home,
-  KeyRound,
-  ListCollapse,
-  RefreshCw,
-  ShieldCheck,
-  ShieldPlus,
-  UsersRound,
-  type LucideIcon,
-} from "lucide-react";
+  DynamicIcon,
+  dynamicIconImports,
+  type IconName,
+} from "lucide-react/dynamic.mjs";
 import { cn } from "@/lib/utils";
+import { lucideIconAliases } from "./lucide-icon-aliases";
 
-const icons: Record<string, LucideIcon> = {
-  award: Award,
-  building2: Building2,
-  "building-2": Building2,
-  "chevron-right": ChevronRight,
-  home: Home,
-  key: KeyRound,
-  "list-collapse": ListCollapse,
-  "refresh-cw": RefreshCw,
-  "shield-check": ShieldCheck,
-  "shield-plus": ShieldPlus,
-  users2: UsersRound,
-  "users-2": UsersRound,
-};
+const iconAliasSet = new Set<string>(lucideIconAliases);
 
 export function NavigationIcon({ className, name }: { className?: string; name: string }) {
-  const Icon = icons[name];
-  return Icon ? <Icon aria-hidden="true" className={cn("size-4", className)} /> : null;
+  if (!(name in dynamicIconImports) || iconAliasSet.has(name)) return null;
+
+  return (
+    <DynamicIcon
+      aria-hidden="true"
+      className={cn("size-4", className)}
+      name={name as IconName}
+    />
+  );
 }

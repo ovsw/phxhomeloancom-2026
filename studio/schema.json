@@ -6383,49 +6383,7 @@
         "icon": {
           "type": "objectAttribute",
           "value": {
-            "type": "union",
-            "of": [
-              {
-                "type": "string",
-                "value": "award"
-              },
-              {
-                "type": "string",
-                "value": "building-2"
-              },
-              {
-                "type": "string",
-                "value": "chevron-right"
-              },
-              {
-                "type": "string",
-                "value": "home"
-              },
-              {
-                "type": "string",
-                "value": "key"
-              },
-              {
-                "type": "string",
-                "value": "list-collapse"
-              },
-              {
-                "type": "string",
-                "value": "refresh-cw"
-              },
-              {
-                "type": "string",
-                "value": "shield-check"
-              },
-              {
-                "type": "string",
-                "value": "shield-plus"
-              },
-              {
-                "type": "string",
-                "value": "users-2"
-              }
-            ]
+            "type": "string"
           },
           "optional": true
         },

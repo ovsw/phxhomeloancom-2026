@@ -991,17 +991,7 @@ export type NavigationChildLink = {
   _type: "navigationChildLink";
   label?: string;
   description?: string;
-  icon?:
-    | "award"
-    | "building-2"
-    | "chevron-right"
-    | "home"
-    | "key"
-    | "list-collapse"
-    | "refresh-cw"
-    | "shield-check"
-    | "shield-plus"
-    | "users-2";
+  icon?: string;
   destination?: NavigationDestination;
 };
 
@@ -5729,18 +5719,7 @@ export type NAVIGATION_QUERY_RESULT = {
           _key: string;
           label: string | null;
           description: string | null;
-          icon:
-            | "award"
-            | "building-2"
-            | "chevron-right"
-            | "home"
-            | "key"
-            | "list-collapse"
-            | "refresh-cw"
-            | "shield-check"
-            | "shield-plus"
-            | "users-2"
-            | null;
+          icon: string | null;
           destination: {
             openInNewTab: boolean | null;
             href: string | null | "/" | "/blog/";

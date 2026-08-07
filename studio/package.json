@@ -8,6 +8,7 @@
     "start": "sanity start",
     "build": "sanity build",
     "deploy": "sanity deploy",
+    "generate:lucide-icons": "node scripts/generate-lucide-icon-catalog.mjs",
     "test:presentation": "node --test presentation/presentation.test.mjs",
     "typegen": "rm -f schema.json && sanity schema extract; test -f schema.json && sanity typegen generate",
     "typecheck": "tsc --noEmit"

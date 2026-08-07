@@ -1,5 +1,9 @@
 import { LinkIcon, Menu, PanelsTopLeft, Sparkles } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
+import LucideIconInput, {
+  createLucideIconPreview,
+} from "../inputs/lucide-icon-input";
+import { isCanonicalLucideIconName } from "../inputs/lucide-icon-catalog";
 
 const destination = defineType({
   name: "navigationDestination",
@@ -83,27 +87,28 @@ const childLink = defineType({
     }),
     defineField({
       name: "icon",
+      title: "Icon",
       type: "string",
-      options: {
-        list: [
-          "award",
-          "building-2",
-          "chevron-right",
-          "home",
-          "key",
-          "list-collapse",
-          "refresh-cw",
-          "shield-check",
-          "shield-plus",
-          "users-2",
-        ],
+      description: "Choose any canonical icon from the Lucide library.",
+      components: {
+        input: LucideIconInput,
       },
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.required().custom((value) =>
+          !value || isCanonicalLucideIconName(value)
+            ? true
+            : "Choose an icon from the Lucide icon picker",
+        ),
     }),
     defineField({ name: "destination", type: "navigationDestination" }),
   ],
   preview: {
-    select: { title: "label", subtitle: "description" },
+    select: { icon: "icon", title: "label", subtitle: "description" },
+    prepare: ({ icon, title, subtitle }) => ({
+      title,
+      subtitle,
+      media: icon ? createLucideIconPreview(icon) : undefined,
+    }),
   },
 });
 
