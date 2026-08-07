@@ -46,6 +46,7 @@ import teamMembers from "./schemas/blocks/team-members";
 import richTextBlock from "./schemas/blocks/rich-text-block";
 import advisorCta from "./schemas/blocks/advisor-cta";
 import processSteps from "./schemas/blocks/process-steps";
+import ctaBanner from "./schemas/blocks/cta-banner";
 
 export const schemaTypes = [
   // documents
@@ -95,4 +96,5 @@ export const schemaTypes = [
   richTextBlock,
   advisorCta,
   processSteps,
+  ctaBanner,
 ];
