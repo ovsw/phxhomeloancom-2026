@@ -34,6 +34,7 @@ const storyRichTextField = defineField({
                 name: "customLink",
                 type: "customUrl",
                 description: "Choose the internal or external page this text should link to",
+                validation: (rule) => rule.required(),
               }),
             ],
           },

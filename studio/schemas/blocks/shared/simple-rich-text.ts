@@ -29,6 +29,7 @@ export default defineType({
                 name: "customLink",
                 title: "Link",
                 type: "customUrl",
+                validation: (rule) => rule.required(),
               }),
             ],
           }),
