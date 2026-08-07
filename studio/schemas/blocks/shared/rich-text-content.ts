@@ -38,6 +38,7 @@ const linkAnnotation = (name: "buttonLink" | "customLink", title: string) =>
         name: "customLink",
         title: name === "buttonLink" ? "Button Destination" : "Link",
         type: "customUrl",
+        validation: (rule) => rule.required(),
       }),
     ],
   });

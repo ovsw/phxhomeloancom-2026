@@ -2,17 +2,17 @@ import { groq } from "next-sanity";
 import { simpleRichTextQuery } from "./shared/simple-rich-text";
 
 // @sanity-typegen-ignore
-export const processStepsQuery = groq`
-  _type == "processSteps" => {
+export const benefitCardsQuery = groq`
+  _type == "benefitCards" => {
     useCreamBackground,
     eyebrow,
     title,
     intro,
-    "steps": array::compact(steps[]{
+    "cards": array::compact(cards[]{
       _key,
       _type,
+      "icon": icon{ name, svg },
       title,
-      summary,
       body[]{
         ${simpleRichTextQuery}
       }

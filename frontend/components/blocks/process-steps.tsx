@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { PortableText, type PortableTextProps } from "@portabletext/react";
+import { PortableText } from "@portabletext/react";
+import { simpleRichTextComponents } from "@/components/simple-rich-text";
 import { stegaClean } from "next-sanity";
 
 type ProcessStepsProps = Extract<
@@ -8,18 +9,6 @@ type ProcessStepsProps = Extract<
   { _type: "processSteps" }
 > & {
   dataAttribute?: (path: string) => string | undefined;
-};
-
-/**
- * The step body uses the `simpleRichText` schema, which only ever produces
- * paragraphs with bold and italic. The shared PortableTextRenderer carries
- * inline margins and serializers for blocks this field cannot contain, so the
- * section spaces its own paragraphs instead.
- */
-const stepBodyComponents: PortableTextProps["components"] = {
-  block: {
-    normal: ({ children }) => <p>{children}</p>,
-  },
 };
 
 function hasText(value?: string | null) {
@@ -117,7 +106,7 @@ export default function ProcessSteps({
                         data-sanity={dataAttribute?.(`${stepPath}.body`)}
                       >
                         <PortableText
-                          components={stepBodyComponents}
+                          components={simpleRichTextComponents}
                           value={step.body}
                         />
                       </div>

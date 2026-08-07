@@ -1,9 +1,11 @@
-import { defineArrayMember, defineType } from "sanity";
+import { LinkIcon } from "lucide-react";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 /**
- * Deliberately minimal rich text: paragraphs with bold and italic, nothing else.
- * Use it where copy needs multiple paragraphs but must not introduce headings,
- * lists, links, or embedded media that would break the section's design.
+ * Deliberately minimal rich text: paragraphs with bold, italic, and inline
+ * links, nothing else. Use it where copy needs multiple paragraphs but must
+ * not introduce headings, lists, or embedded media that would break the
+ * section's design.
  */
 export default defineType({
   name: "simpleRichText",
@@ -16,7 +18,22 @@ export default defineType({
       styles: [{ title: "Normal", value: "normal" }],
       lists: [],
       marks: {
-        annotations: [],
+        annotations: [
+          defineArrayMember({
+            name: "customLink",
+            type: "object",
+            title: "Link",
+            icon: LinkIcon,
+            fields: [
+              defineField({
+                name: "customLink",
+                title: "Link",
+                type: "customUrl",
+                validation: (rule) => rule.required(),
+              }),
+            ],
+          }),
+        ],
         decorators: [
           { title: "Bold", value: "strong" },
           { title: "Italic", value: "em" },

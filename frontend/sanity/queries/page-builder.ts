@@ -1,7 +1,10 @@
 import { advisorCtaQuery } from "./advisor-cta";
 import { awardCtaQuery } from "./award-cta";
+import { benefitCardsQuery } from "./benefit-cards";
+import { comparisonTableQuery } from "./comparison-table";
 import { bigVideoFeatureQuery } from "./big-video-feature";
 import { contactFormQuery } from "./contact-form";
+import { ctaBannerQuery } from "./cta-banner";
 import { editorialChapterQuery } from "./editorial-chapter";
 import { faqAccordionQuery } from "./faq-accordion";
 import { homeHeroQuery } from "./home-hero";
@@ -42,6 +45,9 @@ export const pageBuilderQuery = `
     ${teamMembersQuery},
     ${richTextBlockQuery},
     ${advisorCtaQuery},
-    ${processStepsQuery}
+    ${processStepsQuery},
+    ${ctaBannerQuery},
+    ${benefitCardsQuery},
+    ${comparisonTableQuery}
   }
 `;
