@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { simpleRichTextQuery } from "./shared/simple-rich-text";
 
 // @sanity-typegen-ignore
 export const processStepsQuery = groq`
@@ -12,7 +13,9 @@ export const processStepsQuery = groq`
       _type,
       title,
       summary,
-      body
+      body[]{
+        ${simpleRichTextQuery}
+      }
     })
   }
 `;

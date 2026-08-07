@@ -22,6 +22,7 @@ export const generalPageBuilderBlockTypes = [
   "processSteps",
   "ctaBanner",
   "benefitCards",
+  "comparisonTable",
 ] as const;
 
 // Retain the established export for existing consumers of the general inventory.

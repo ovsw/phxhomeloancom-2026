@@ -1,6 +1,7 @@
 import { advisorCtaQuery } from "./advisor-cta";
 import { awardCtaQuery } from "./award-cta";
 import { benefitCardsQuery } from "./benefit-cards";
+import { comparisonTableQuery } from "./comparison-table";
 import { bigVideoFeatureQuery } from "./big-video-feature";
 import { contactFormQuery } from "./contact-form";
 import { ctaBannerQuery } from "./cta-banner";
@@ -46,6 +47,7 @@ export const pageBuilderQuery = `
     ${advisorCtaQuery},
     ${processStepsQuery},
     ${ctaBannerQuery},
-    ${benefitCardsQuery}
+    ${benefitCardsQuery},
+    ${comparisonTableQuery}
   }
 `;

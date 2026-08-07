@@ -1,7 +1,8 @@
 import { NavigationIcon } from "@/components/header/navigation-icon";
+import { simpleRichTextComponents } from "@/components/simple-rich-text";
 import { cn } from "@/lib/utils";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
-import { PortableText, type PortableTextProps } from "@portabletext/react";
+import { PortableText } from "@portabletext/react";
 import { stegaClean } from "next-sanity";
 
 type BenefitCardsProps = Extract<
@@ -9,18 +10,6 @@ type BenefitCardsProps = Extract<
   { _type: "benefitCards" }
 > & {
   dataAttribute?: (path: string) => string | undefined;
-};
-
-/**
- * The card body uses the `simpleRichText` schema, which only ever produces
- * paragraphs with bold and italic. The shared PortableTextRenderer carries
- * inline margins and serializers for blocks this field cannot contain, so the
- * section spaces its own paragraphs instead.
- */
-const cardBodyComponents: PortableTextProps["components"] = {
-  block: {
-    normal: ({ children }) => <p>{children}</p>,
-  },
 };
 
 function hasText(value?: string | null) {
@@ -129,7 +118,7 @@ export default function BenefitCards({
                     data-sanity={dataAttribute?.(`${cardPath}.body`)}
                   >
                     <PortableText
-                      components={cardBodyComponents}
+                      components={simpleRichTextComponents}
                       value={card.body}
                     />
                   </div>
