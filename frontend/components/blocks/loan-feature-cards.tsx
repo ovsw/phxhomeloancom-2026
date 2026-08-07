@@ -3,6 +3,8 @@ import type { PAGE_QUERY_RESULT } from "@/sanity.types";
 import { stegaClean } from "next-sanity";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { getLoanFeatureIcon } from "../../../shared/loan-icons";
+import { LoanIcon } from "../icons/loan-icon";
 
 type LoanFeatureCardsProps = Extract<
   NonNullable<NonNullable<PAGE_QUERY_RESULT>["blocks"]>[number],
@@ -10,13 +12,6 @@ type LoanFeatureCardsProps = Extract<
 >;
 
 type LoanFeatureCard = NonNullable<LoanFeatureCardsProps["cards"]>[number];
-
-type LoanIconName =
-  | "adjustable-rate-mortgage"
-  | "american-flag"
-  | "conventional-loan"
-  | "elephant"
-  | "fha-loan";
 
 const fallbackEyebrow = "Types of Loans";
 const fallbackTitle = "The right loan depends on your life — not the other way around.";
@@ -71,62 +66,14 @@ function IconShell({ children, className }: Readonly<{ children: ReactNode; clas
   );
 }
 
-function LoanIcon({ icon }: Readonly<{ icon?: string | null }>) {
-  const iconClassName = "size-5";
-
-  switch (stegaClean(icon) as LoanIconName) {
-    case "conventional-loan":
-      return (
-        <IconShell className={iconClassName}>
-          <path d="M3 21h18" />
-          <path d="M4 21V9l8-5 8 5v12" />
-          <path d="M9 21v-6h6v6" />
-        </IconShell>
-      );
-    case "fha-loan":
-      return (
-        <IconShell className={iconClassName}>
-          <circle cx="8" cy="14" r="4" />
-          <path d="M10.8 11.2 20 2" />
-          <path d="m17 5 3 3" />
-          <path d="m14 8 3 3" />
-        </IconShell>
-      );
-    case "american-flag":
-      return (
-        <IconShell className={iconClassName}>
-          <path d="M12 3 4 6v5c0 4.5 3.2 7.9 8 10 4.8-2.1 8-5.5 8-10V6l-8-3Z" />
-          <path d="m9 11 2 2 4-4" />
-        </IconShell>
-      );
-    case "adjustable-rate-mortgage":
-      return (
-        <IconShell className={iconClassName}>
-          <path d="M3 21h18" />
-          <path d="M5 21V8l7-4 7 4" />
-          <path d="M12 4V2" />
-          <path d="M9 21v-5h6v5" />
-          <path d="M8.5 11h7" />
-        </IconShell>
-      );
-    case "elephant":
-      return (
-        <IconShell className={iconClassName}>
-          <path d="M3 21h18" />
-          <path d="M5 21V6a2 2 0 0 1 2-2h5v17" />
-          <path d="M12 21V9h5a2 2 0 0 1 2 2v10" />
-          <path d="M8 8h1M8 12h1M8 16h1M15 13h1M15 17h1" />
-        </IconShell>
-      );
-    default:
-      return (
-        <IconShell className={iconClassName}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M12 7v10" />
-          <path d="M15 9.5A3 3 0 0 0 12 8h-1a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-1a3 3 0 0 1-3-1.5" />
-        </IconShell>
-      );
-  }
+function LoanFallbackIcon() {
+  return (
+    <IconShell className="size-5">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v10" />
+      <path d="M15 9.5A3 3 0 0 0 12 8h-1a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-1a3 3 0 0 1-3-1.5" />
+    </IconShell>
+  );
 }
 
 function CheckIcon() {
@@ -162,7 +109,11 @@ function LoanCard({ card }: Readonly<{ card: LoanFeatureCard }>) {
   const content = (
     <article className="group flex h-full min-h-[255px] flex-col rounded-card border border-border bg-card p-(--space-card) text-card-foreground transition-[box-shadow,translate] motion-base hover:-translate-y-1 hover:shadow-interactive-lift">
       <div className="mb-6 flex size-[46px] items-center justify-center rounded-control bg-secondary text-primary">
-        <LoanIcon icon={card.icon} />
+        <LoanIcon
+          className="size-5"
+          fallback={<LoanFallbackIcon />}
+          name={getLoanFeatureIcon(stegaClean(card.icon))}
+        />
       </div>
       {title ? <h3 className="mb-4 typo-showcase-title text-foreground">{title}</h3> : null}
       {card.bullets?.length ? (
