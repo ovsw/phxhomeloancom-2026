@@ -40,17 +40,27 @@ body{margin:0;background:#F7F4EE;-webkit-font-smoothing:antialiased}
   .team-row-rev>*{order:0!important}
   .team-row .team-img,.team-row-rev .team-img{max-width:420px}
 }
-details[data-acc-item] summary{list-style:none;cursor:pointer}
-details[data-acc-item] summary::-webkit-details-marker{display:none}
-details[data-acc-item][open] [data-acc-icon]{transform:rotate(45deg);background:#F7F4EE}
 .refi-two{display:grid;grid-template-columns:.9fr 1.4fr;gap:clamp(32px,5vw,80px);align-items:start}
+.refi-how{display:grid;grid-template-columns:.9fr 1.4fr;gap:clamp(32px,5vw,80px);align-items:start}
+.refi-how-intro{position:sticky;top:172px}
+.refi-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;row-gap:52px}
+.refi-step{position:relative;display:grid;grid-template-columns:44px 1fr;column-gap:clamp(20px,2.5vw,32px);align-items:start}
+.refi-step::before{content:"";position:absolute;left:21.5px;top:52px;bottom:-44px;width:1px;background:#E7E1D6}
+.refi-step:last-child::before{display:none}
+.refi-step-num{width:44px;height:44px;border-radius:50%;border:1px solid #C9C2B4;background:#fff;display:flex;align-items:center;justify-content:center;font:600 19px 'Source Serif 4',Georgia,serif;color:#B4552D}
+.refi-step-body{padding-top:8px}
+.refi-step-title{margin:0;font:600 23px/1.25 'Source Serif 4',Georgia,serif;color:#131C3B}
+.refi-step-sub{font:400 15px/1.5 'Archivo',Helvetica,sans-serif;color:#5B6172;margin-top:5px}
+.refi-step-copy{margin-top:16px;display:flex;flex-direction:column;gap:14px}
+.refi-step-copy p{margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty}
 .refi-why{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .refi-compare{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .refi-table{display:grid;grid-template-columns:1.2fr 1fr 1fr}
 .refi-flex-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .refi-advisor{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(36px,5vw,72px);align-items:center}
 @media(max-width:900px){
-  .refi-two,.refi-why,.refi-compare,.refi-flex-cards,.refi-advisor{grid-template-columns:1fr}
+  .refi-two,.refi-how,.refi-why,.refi-compare,.refi-flex-cards,.refi-advisor{grid-template-columns:1fr}
+  .refi-how-intro{position:static}
   .refi-advisor-img{max-width:380px;margin:0 auto}
 }
 </style>
@@ -128,121 +138,85 @@ details[data-acc-item][open] [data-acc-icon]{transform:rotate(45deg);background:
 </section>
 
 <section id="how" data-screen-label="How It Works" style="background:#fff;padding:96px 40px;border-top:1px solid #E7E1D6">
-  <div style="max-width:1280px;margin:0 auto">
-    <div style="max-width:720px;margin:0 auto 52px;text-align:center">
-      <div data-acc="text" style="font:600 13px 'Archivo',Helvetica,sans-serif;letter-spacing:.26em;color:#B4552D;margin-bottom:18px">THE PROCESS — 5 STEPS</div>
-      <h2 style="margin:0 0 20px;font:600 clamp(30px,3vw,42px)/1.12 'Source Serif 4',Georgia,serif;color:#131C3B;letter-spacing:-.01em;text-wrap:balance">How does refinancing a home work?</h2>
-      <p style="margin:0;font:400 17.5px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">Like buying a new home, refinancing requires you to apply, get an appraisal of the house, and then close your loan. Technical elements like underwriting and locking in an interest rate are handled by your loan specialist. Typically it takes 30–45 days to complete — confirm the timeline with your lender.</p>
+  <div class="refi-how" style="max-width:1280px;margin:0 auto">
+    <div class="refi-how-intro">
+        <div data-acc="text" style="font:600 13px 'Archivo',Helvetica,sans-serif;letter-spacing:.26em;color:#B4552D;margin-bottom:18px">THE PROCESS — 5 STEPS</div>
+        <h2 style="margin:0 0 20px;font:600 clamp(30px,3vw,42px)/1.12 'Source Serif 4',Georgia,serif;color:#131C3B;letter-spacing:-.01em;text-wrap:balance">How does refinancing a home work?</h2>
+        <p style="margin:0;font:400 17.5px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">Like buying a new home, refinancing requires you to apply, get an appraisal of the house, and then close your loan. Technical elements like underwriting and locking in an interest rate are handled by your loan specialist. Typically it takes 30–45 days to complete — confirm the timeline with your lender.</p>
+      </div>
+      <ol class="refi-steps">
+        <li class="refi-step">
+          <div class="refi-step-num">1</div>
+          <div class="refi-step-body">
+            <h3 class="refi-step-title">Submit an application</h3>
+            <div class="refi-step-sub">You can stay with your current lender or shop around</div>
+            <div class="refi-step-copy">
+              <p>The process starts with applying with your lender — who could be your initial lender or a different one. You are at liberty to shop around for a better refinance option, and whoever your home loan lender is will pay off your current loan.</p>
+              <p>The lender will ask for the same information you supplied when you bought the home: your income, assets, debts (auto loan, credit card, student loans, etc.), recent bank statements, and credit score. If you are married, your lender may request your spouse's documents, and you might need recent tax returns ready if asked for additional documentation.</p>
+            </div>
+          </div>
+        </li>
+        <li class="refi-step">
+          <div class="refi-step-num">2</div>
+          <div class="refi-step-body">
+            <h3 class="refi-step-title">Underwriting</h3>
+            <div class="refi-step-sub">Your lender verifies everything you submitted</div>
+            <div class="refi-step-copy">
+              <p>Underwriting begins soon after you submit your application. At this stage, your lender reviews the information and documents you supplied to make sure everything checks out, including an appraisal to determine the value of the house.</p>
+              <p>If you are refinancing to lower your monthly payment, your home's value could afford you enough equity to get rid of private mortgage insurance — or make you eligible for a different kind of home loan with other long-term financial benefits.</p>
+            </div>
+          </div>
+        </li>
+        <li class="refi-step">
+          <div class="refi-step-num">3</div>
+          <div class="refi-step-body">
+            <h3 class="refi-step-title">Home appraisal</h3>
+            <div class="refi-step-sub">An estimate of your home's current value</div>
+            <div class="refi-step-copy">
+              <p>Your lender will order a house appraisal so they can approve you for a refinance loan. The appraiser visits your property, and afterward you'll receive an estimate of your home's value. To ensure it reflects the actual value, tidy up the property, fix any pending upgrades, and list out any upgrades you've implemented since you bought the home.</p>
+              <p>The appraisal helps determine what loan options are available to you — whether you'll get the loan amount you want, pay the difference out of pocket if your home's value is less than the loan amount, or reduce how much you're requesting.</p>
+            </div>
+          </div>
+        </li>
+        <li class="refi-step">
+          <div class="refi-step-num">4</div>
+          <div class="refi-step-body">
+            <h3 class="refi-step-title">Locking in your interest rate</h3>
+            <div class="refi-step-sub">Rate locks typically last 15–60 days</div>
+            <div class="refi-step-copy">
+              <p>Once approved, your lender may give you the option to lock your interest rate in case of fluctuations before the loan closes. Rate locks typically last 15–60 days. Alternatively, you can float your rate — you might get a lower one, but there's a chance you set yourself up for a higher rate instead.</p>
+            </div>
+          </div>
+        </li>
+        <li class="refi-step">
+          <div class="refi-step-num">5</div>
+          <div class="refi-step-body">
+            <h3 class="refi-step-title">Closing the new loan</h3>
+            <div class="refi-step-sub">Usually faster than closing a home purchase</div>
+            <div class="refi-step-copy">
+              <p>After underwriting, you can close your loan. The Closing Disclosure, a document your lender provides, shows you all the numbers before you sign. You may have to pay closing costs unless your lender bundles them into your new mortgage loan.</p>
+              <p>After closing, you have a grace period of 3 days to cancel if something goes wrong and you do not wish to continue.</p>
+            </div>
+          </div>
+        </li>
+      </ol>
+  </div>
+</section>
+
+<section data-screen-label="Rate Lock CTA" style="background:#131C3B;padding:60px 40px">
+  <div style="max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:28px 48px;flex-wrap:wrap">
+    <div style="max-width:600px">
+      <div style="font:600 clamp(24px,2.4vw,31px)/1.2 'Source Serif 4',Georgia,serif;color:#fff;letter-spacing:-.01em;text-wrap:balance">Wondering if now is the right time to lock a rate?</div>
+      <div style="font:400 16px/1.6 'Archivo',Helvetica,sans-serif;color:rgba(255,255,255,.68);margin-top:10px;text-wrap:pretty">Rates change constantly. Jimmy's team will tell you honestly — even if the answer is "wait."</div>
     </div>
-    <div style="max-width:880px;margin:0 auto;display:flex;flex-direction:column">
-      <div style="display:grid;grid-template-columns:42px 1fr;column-gap:24px">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-          <div style="width:42px;height:42px;border-radius:50%;background:#131C3B;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px 'Archivo',Helvetica,sans-serif;flex-shrink:0">1</div>
-          <div style="flex:1;width:2px;background:#DDD5C4;border-radius:1px"></div>
-        </div>
-        <details data-acc-item="1" open="open" style="background:#F7F4EE;border:1px solid #E7E1D6;border-radius:14px;overflow:hidden;margin-bottom:18px">
-        <summary style="display:flex;align-items:center;gap:20px;padding:22px 26px">
-          <div style="flex:1;min-width:0">
-            <div style="font:600 19px 'Source Serif 4',Georgia,serif;color:#131C3B">Submit an application</div>
-            <div style="font:400 14px 'Archivo',Helvetica,sans-serif;color:#8A8F9C;margin-top:2px">You can stay with your current lender or shop around</div>
-          </div>
-          <div data-acc-icon="" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #C9C2B4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font:400 20px 'Archivo',Helvetica,sans-serif;color:#131C3B;transition:transform .25s ease,background .25s ease">+</div>
-        </summary>
-        <div style="padding:0 26px 26px 26px;display:flex;flex-direction:column;gap:14px">
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">The process starts with applying with your lender — who could be your initial lender or a different one. You are at liberty to shop around for a better refinance option, and whoever your home loan lender is will pay off your current loan.</p>
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">The lender will ask for the same information you supplied when you bought the home: your income, assets, debts (auto loan, credit card, student loans, etc.), recent bank statements, and credit score. If you are married, your lender may request your spouse's documents, and you might need recent tax returns ready if asked for additional documentation.</p>
-        </div>
-      </details>
-      </div>
-      <div style="display:grid;grid-template-columns:42px 1fr;column-gap:24px">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-          <div style="width:42px;height:42px;border-radius:50%;background:#131C3B;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px 'Archivo',Helvetica,sans-serif;flex-shrink:0">2</div>
-          <div style="flex:1;width:2px;background:#DDD5C4;border-radius:1px"></div>
-        </div>
-        <details data-acc-item="2" style="background:#F7F4EE;border:1px solid #E7E1D6;border-radius:14px;overflow:hidden;margin-bottom:18px">
-        <summary style="display:flex;align-items:center;gap:20px;padding:22px 26px">
-          <div style="flex:1;min-width:0">
-            <div style="font:600 19px 'Source Serif 4',Georgia,serif;color:#131C3B">Underwriting</div>
-            <div style="font:400 14px 'Archivo',Helvetica,sans-serif;color:#8A8F9C;margin-top:2px">Your lender verifies everything you submitted</div>
-          </div>
-          <div data-acc-icon="" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #C9C2B4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font:400 20px 'Archivo',Helvetica,sans-serif;color:#131C3B;transition:transform .25s ease,background .25s ease">+</div>
-        </summary>
-        <div style="padding:0 26px 26px 26px;display:flex;flex-direction:column;gap:14px">
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">Underwriting begins soon after you submit your application. At this stage, your lender reviews the information and documents you supplied to make sure everything checks out, including an appraisal to determine the value of the house.</p>
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">If you are refinancing to lower your monthly payment, your home's value could afford you enough equity to get rid of private mortgage insurance — or make you eligible for a different kind of home loan with other long-term financial benefits.</p>
-        </div>
-      </details>
-      </div>
-      <div style="display:grid;grid-template-columns:42px 1fr;column-gap:24px">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-          <div style="width:42px;height:42px;border-radius:50%;background:#131C3B;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px 'Archivo',Helvetica,sans-serif;flex-shrink:0">3</div>
-          <div style="flex:1;width:2px;background:#DDD5C4;border-radius:1px"></div>
-        </div>
-        <details data-acc-item="3" style="background:#F7F4EE;border:1px solid #E7E1D6;border-radius:14px;overflow:hidden;margin-bottom:18px">
-        <summary style="display:flex;align-items:center;gap:20px;padding:22px 26px">
-          <div style="flex:1;min-width:0">
-            <div style="font:600 19px 'Source Serif 4',Georgia,serif;color:#131C3B">Home appraisal</div>
-            <div style="font:400 14px 'Archivo',Helvetica,sans-serif;color:#8A8F9C;margin-top:2px">An estimate of your home's current value</div>
-          </div>
-          <div data-acc-icon="" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #C9C2B4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font:400 20px 'Archivo',Helvetica,sans-serif;color:#131C3B;transition:transform .25s ease,background .25s ease">+</div>
-        </summary>
-        <div style="padding:0 26px 26px 26px;display:flex;flex-direction:column;gap:14px">
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">Your lender will order a house appraisal so they can approve you for a refinance loan. The appraiser visits your property, and afterward you'll receive an estimate of your home's value. To ensure it reflects the actual value, tidy up the property, fix any pending upgrades, and list out any upgrades you've implemented since you bought the home.</p>
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">The appraisal helps determine what loan options are available to you — whether you'll get the loan amount you want, pay the difference out of pocket if your home's value is less than the loan amount, or reduce how much you're requesting.</p>
-        </div>
-      </details>
-      </div>
-      <div style="display:grid;grid-template-columns:42px 1fr;column-gap:24px">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
-          <div style="width:42px;height:42px;border-radius:50%;background:#131C3B;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px 'Archivo',Helvetica,sans-serif;flex-shrink:0">4</div>
-          <div style="flex:1;width:2px;background:#DDD5C4;border-radius:1px"></div>
-        </div>
-        <details data-acc-item="4" style="background:#F7F4EE;border:1px solid #E7E1D6;border-radius:14px;overflow:hidden;margin-bottom:18px">
-        <summary style="display:flex;align-items:center;gap:20px;padding:22px 26px">
-          <div style="flex:1;min-width:0">
-            <div style="font:600 19px 'Source Serif 4',Georgia,serif;color:#131C3B">Locking in your interest rate</div>
-            <div style="font:400 14px 'Archivo',Helvetica,sans-serif;color:#8A8F9C;margin-top:2px">Rate locks typically last 15–60 days</div>
-          </div>
-          <div data-acc-icon="" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #C9C2B4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font:400 20px 'Archivo',Helvetica,sans-serif;color:#131C3B;transition:transform .25s ease,background .25s ease">+</div>
-        </summary>
-        <div style="padding:0 26px 26px 26px">
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">Once approved, your lender may give you the option to lock your interest rate in case of fluctuations before the loan closes. Rate locks typically last 15–60 days. Alternatively, you can float your rate — you might get a lower one, but there's a chance you set yourself up for a higher rate instead.</p>
-        </div>
-      </details>
-      </div>
-      <div style="display:grid;grid-template-columns:42px 1fr;column-gap:24px">
-        <div style="display:flex;flex-direction:column;align-items:center">
-          <div style="width:42px;height:42px;border-radius:50%;background:#131C3B;color:#fff;display:flex;align-items:center;justify-content:center;font:600 16px 'Archivo',Helvetica,sans-serif;flex-shrink:0">5</div>
-        </div>
-        <details data-acc-item="5" style="background:#F7F4EE;border:1px solid #E7E1D6;border-radius:14px;overflow:hidden">
-        <summary style="display:flex;align-items:center;gap:20px;padding:22px 26px">
-          <div style="flex:1;min-width:0">
-            <div style="font:600 19px 'Source Serif 4',Georgia,serif;color:#131C3B">Closing the new loan</div>
-            <div style="font:400 14px 'Archivo',Helvetica,sans-serif;color:#8A8F9C;margin-top:2px">Usually faster than closing a home purchase</div>
-          </div>
-          <div data-acc-icon="" style="width:34px;height:34px;border-radius:50%;border:1.5px solid #C9C2B4;display:flex;align-items:center;justify-content:center;flex-shrink:0;font:400 20px 'Archivo',Helvetica,sans-serif;color:#131C3B;transition:transform .25s ease,background .25s ease">+</div>
-        </summary>
-        <div style="padding:0 26px 26px 26px;display:flex;flex-direction:column;gap:14px">
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">After underwriting, you can close your loan. The Closing Disclosure, a document your lender provides, shows you all the numbers before you sign. You may have to pay closing costs unless your lender bundles them into your new mortgage loan.</p>
-          <p style="margin:0;font:400 16px/1.75 'Archivo',Helvetica,sans-serif;color:#3D4356;text-wrap:pretty">After closing, you have a grace period of 3 days to cancel if something goes wrong and you do not wish to continue.</p>
-        </div>
-      </details>
-      </div>
-    </div>
-    <div style="max-width:880px;margin:44px auto 0;background:#131C3B;border-radius:16px;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap">
-      <div>
-        <div style="font:600 20px 'Source Serif 4',Georgia,serif;color:#fff">Wondering if now is the right time to lock a rate?</div>
-        <div style="font:400 15px 'Archivo',Helvetica,sans-serif;color:rgba(255,255,255,.65);margin-top:6px">Rates change constantly. Jimmy's team will tell you honestly — even if the answer is "wait."</div>
-      </div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="#contact" data-acc="bg" style="background:#B4552D;color:#fff;font:600 14.5px 'Archivo',Helvetica,sans-serif;padding:14px 24px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:filter .15s ease" style-hover="filter:brightness(1.08)">Schedule Consult</a>
-        <a href="tel:4808008387" style="border:1.5px solid rgba(255,255,255,.35);color:#fff;font:600 14.5px 'Archivo',Helvetica,sans-serif;padding:14px 24px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background .15s ease" style-hover="background:rgba(255,255,255,.1)">Call (480) 800-8387</a>
-      </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="#contact" data-acc="bg" style="background:#B4552D;color:#fff;font:600 14.5px 'Archivo',Helvetica,sans-serif;padding:14px 24px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:filter .15s ease" style-hover="filter:brightness(1.08)">Schedule Consult</a>
+      <a href="tel:4808008387" style="border:1.5px solid rgba(255,255,255,.35);color:#fff;font:600 14.5px 'Archivo',Helvetica,sans-serif;padding:14px 24px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background .15s ease" style-hover="background:rgba(255,255,255,.1)">Call (480) 800-8387</a>
     </div>
   </div>
 </section>
 
-<section id="why" data-screen-label="Why Refinance" style="background:#F7F4EE;padding:96px 40px;border-top:1px solid #E7E1D6">
+<section id="why" data-screen-label="Why Refinance" style="background:#F7F4EE;padding:96px 40px">
   <div style="max-width:1280px;margin:0 auto">
     <div style="max-width:720px;margin-bottom:52px">
       <div data-acc="text" style="font:600 13px 'Archivo',Helvetica,sans-serif;letter-spacing:.26em;color:#B4552D;margin-bottom:18px">FOUR GOOD REASONS</div>
@@ -605,5 +579,8 @@ class Component extends DCLogic {
   }
 }
 </script>
+<!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js?token=5ec9c3c0-2037-43b5-8608-609b8552b16e"></script>
+<!-- impeccable-live-end -->
 </body>
 </html>
