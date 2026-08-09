@@ -26,6 +26,7 @@ import ProcessSteps from "@/components/blocks/process-steps";
 import CtaBanner from "@/components/blocks/cta-banner";
 import BenefitCards from "@/components/blocks/benefit-cards";
 import ComparisonTable from "@/components/blocks/comparison-table";
+import LoanRequirements from "@/components/blocks/loan-requirements";
 import { dataset, projectId } from "@/sanity/lib/env";
 
 type Block =
@@ -58,6 +59,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "ctaBanner",
   "benefitCards",
   "comparisonTable",
+  "loanRequirements",
 ]);
 
 const componentMap: Partial<{
@@ -88,6 +90,7 @@ const componentMap: Partial<{
   ctaBanner: CtaBanner,
   benefitCards: BenefitCards,
   comparisonTable: ComparisonTable,
+  loanRequirements: LoanRequirements,
 };
 
 export default function Blocks({
