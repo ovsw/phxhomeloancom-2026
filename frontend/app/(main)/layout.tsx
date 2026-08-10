@@ -15,11 +15,29 @@ import { SanityLive } from "@/sanity/lib/live";
 import { Suspense } from "react";
 import { revalidateTags } from "@/app/actions/revalidate";
 
-export default async function MainLayout({
+export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  return (
+    <Suspense fallback={<MainLayoutFallback>{children}</MainLayoutFallback>}>
+      <MainLayoutContent>{children}</MainLayoutContent>
+    </Suspense>
+  );
+}
+
+function MainLayoutFallback({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <HeaderFallback />
+      <main>{children}</main>
+      <FooterFallback />
+    </>
+  );
+}
+
+async function MainLayoutContent({ children }: { children: React.ReactNode }) {
   const { isEnabled: isDraftMode } = await draftMode();
 
   return (
