@@ -3,6 +3,7 @@ import { documentEventHandler } from "@sanity/functions";
 
 import type { RedirectRecord } from "../../schemas/validation/redirect-rules.ts";
 import {
+  autoRedirectId,
   planAutoRedirect,
   shouldWriteAutoRedirect,
   type AutoRedirectEventData,
@@ -78,7 +79,11 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
       });
     }
     if (plan.create) {
-      transaction.create({
+      // Function events are delivered at least once. Deriving the id from the
+      // source keeps a redelivered publish from creating a second redirect that
+      // would collide with this one in the topology rules.
+      transaction.createIfNotExists({
+        _id: autoRedirectId(plan.source),
         _type: "redirect",
         status: "active",
         source: { _type: "slug", current: plan.source },

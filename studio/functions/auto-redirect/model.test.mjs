@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { planAutoRedirect, shouldWriteAutoRedirect } from "./model.ts";
+import {
+  autoRedirectId,
+  planAutoRedirect,
+  shouldWriteAutoRedirect,
+} from "./model.ts";
 import { CODE_OWNED_GONE_ROUTE_PATHS } from "../../schemas/validation/redirect-rules.ts";
 
 test("prevents writes during local Sanity Function tests", () => {
@@ -192,4 +196,12 @@ test("reserves every code-owned Gone route from automatic slug redirects", () =>
     }).reason,
     /reserved/,
   );
+});
+
+test("derives a stable redirect id from the source path", () => {
+  // At-least-once delivery means the same publish can arrive twice; the id has
+  // to match so the second write is a no-op rather than a conflicting source.
+  assert.equal(autoRedirectId("/old-path/"), autoRedirectId("/old-path/"));
+  assert.notEqual(autoRedirectId("/old-path/"), autoRedirectId("/other-path/"));
+  assert.match(autoRedirectId("/old-path/"), /^redirect-[0-9a-f]{24}$/);
 });

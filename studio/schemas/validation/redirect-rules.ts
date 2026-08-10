@@ -140,7 +140,26 @@ function documentIds(documentId?: string) {
   return [publishedId, `drafts.${publishedId}`];
 }
 
-async function fetchValidationData(context: ValidationContext) {
+// The three validators below run together on every validation pass and each
+// needs the same dataset-wide snapshot. Share one in-flight request between
+// them, keyed by the document revision so an edit still refetches.
+let validationDataCache:
+  | { key: string; promise: Promise<RedirectValidationData> }
+  | undefined;
+
+function fetchValidationData(context: ValidationContext) {
+  const key = `${context.document?._id ?? ""}:${context.document?._rev ?? ""}`;
+  if (validationDataCache?.key === key) return validationDataCache.promise;
+
+  const promise = requestValidationData(context).catch((error: unknown) => {
+    if (validationDataCache?.key === key) validationDataCache = undefined;
+    throw error;
+  });
+  validationDataCache = { key, promise };
+  return promise;
+}
+
+async function requestValidationData(context: ValidationContext) {
   const client = context.getClient({ apiVersion: "2026-03-23" });
   return client.fetch<RedirectValidationData>(
     `{

@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import {
   CODE_OWNED_GONE_ROUTE_PATHS,
   normalizeRedirectPath,
@@ -5,6 +7,16 @@ import {
   toStoredRedirectPath,
   type RedirectRecord,
 } from "../../schemas/validation/redirect-rules.ts";
+
+/**
+ * Derive a stable document id from the redirect source. Function events are
+ * delivered at least once, so a redelivered publish must land on the same id
+ * instead of creating a second redirect that collides in the topology rules.
+ */
+export function autoRedirectId(source: string) {
+  const digest = createHash("sha256").update(source).digest("hex");
+  return `redirect-${digest.slice(0, 24)}`;
+}
 
 export type AutoRedirectEventData = {
   beforeSlug?: string;
