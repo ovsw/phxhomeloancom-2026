@@ -85,3 +85,29 @@ VERDICT: APPROVED
 
 ---
 Converged after 5 rounds (4× REVISE, 1× APPROVED). Reviewer: gpt-5.6-sol via codex-cli 0.147.0, effort medium, read-only throughout.
+
+## Act 3 — Build
+
+### Round 1 — Codex build
+
+Codex (gpt-5.6-sol, --yolo sandbox, thread 019fec55-cdf5-7b62-a8ba-e0a045fdeda9) implemented the headless scope in 13m25s / ~132k tokens. Report summary:
+
+- Baseline recorded first; pre-existing lint failure found (2 errors in generated PHXHomeLoan-web-prototype/support.js) and cleared by adding the prototype dir to eslint ignores.
+- Bumped next / eslint-config-next / @next/third-parties to 16.3.0 (exact pins).
+- Pre-flag prefetch inventory recorded: zero prefetch={true}, zero router.prefetch(); one prefetch={false} on an external YouTube link; HeaderLink/FooterLink/SectionLink wrappers all default prefetching.
+- Enabled partialPrefetching; restructured (main)/layout.tsx and all four page routes so draftMode() sits inside Suspense with useful shells (navy hero skeleton + card grid; layout keeps HeaderFallback/FooterFallback around children).
+- Proxy: 60s TTL cache with promise single-flight and rejection cleanup on the blog count query; pagination prefetch preserved. proxy.test.ts extended (+6 tests: single-flight, expiry, rejection retry, main-route, draft-mode, out-of-range).
+- DEVIATION: TypeScript left at ^6.0.3 — typescript-eslint (8.63.0 resolved; 8.66.0 latest) caps peer at TS <6.1.0; no TS-7-compatible lint toolchain exists. Per plan, deferred to user decision.
+- All five proof commands green in Codex's run.
+
+### Claude's verdict
+
+Diff read in full — clean, consistent pattern, style-matched; eslint ignore addition judged in-scope (lint was a proof gate and the failure was pre-existing on the baseline). Proof re-run independently: build (89 pages, ◐ PPR on /[...slug] and /blog/[page]), typecheck, lint, 92/92 vitest, 2/2 e2e (CI=1, fresh prod server) — all green.
+
+Browser verification (Claude, per plan step 7):
+- Dev sweep: /, /blog/, /blog/2/, /apply/ — zero console errors, zero DevTools insights.
+- Presentation smoke: draft mode entered via Studio, draft content rendered on /, /contact/ ([...slug]) and /blog/; live edit round-trip proven (hero heading edit streamed into preview in ~1s, reverted, byte-identical draft verified via GROQ then discarded); Disable Draft Mode works.
+- Prod-mode (next start): pagination links selected from rendered /blog page (/blog/2/../5/); client-side nav to /contact/ and /blog/2/ instant; /blog/2/ initial HTML contains the shell skeleton with content streamed after (curl-verified); /blog/99/ returns proxy plain-text 404 as designed; viewport-triggered prefetch burst of all four pagination pages observed (the exact single-flight scenario the proxy cache absorbs).
+- Observation: 16.3's auto-maintained AGENTS.md block did not appear during dev sessions; nothing to commit. Non-blocking — it self-maintains when Next writes it.
+
+Verdict: build accepted, zero fix rounds needed. TS 7 deferral escalated to user (scope change per plan).
