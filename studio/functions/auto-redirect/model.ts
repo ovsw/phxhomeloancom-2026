@@ -1,4 +1,5 @@
 import {
+  CODE_OWNED_GONE_ROUTE_PATHS,
   normalizeRedirectPath,
   readRedirectPath,
   toStoredRedirectPath,
@@ -28,7 +29,11 @@ type AutoRedirectPlan =
     };
 
 const ROUTED_DOCUMENT_TYPES = new Set(["page", "post"]);
-const RESERVED_SOURCE_PATHS = new Set(["/", "/blog", "/index"]);
+const RESERVED_SOURCE_PATHS = new Set([
+  "/",
+  "/blog",
+  ...CODE_OWNED_GONE_ROUTE_PATHS,
+]);
 
 export function shouldWriteAutoRedirect(local?: boolean) {
   return local !== true;

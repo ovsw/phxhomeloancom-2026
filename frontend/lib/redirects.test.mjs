@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { compileNextRedirects } from "./redirects.mjs";
+import { HARD_CODED_GONE_ROUTE_PATHS } from "./gone-routes.ts";
 
 test("maps permanent and temporary redirects to explicit status codes", () => {
   assert.deepEqual(
@@ -90,13 +91,15 @@ test("rejects backslashes in redirect paths", () => {
   );
 });
 
-test("rejects a CMS redirect that conflicts with the code-owned index rule", () => {
-  assert.throws(
-    () =>
-      compileNextRedirects(
-        [{ source: "/index/", destination: "/other", permanent: true }],
-        { reservedSources: ["/index/"] },
-      ),
-    /reserved by a code-owned rule/,
-  );
+test("rejects CMS redirects that claim any code-owned Gone source", () => {
+  for (const source of HARD_CODED_GONE_ROUTE_PATHS) {
+    assert.throws(
+      () =>
+        compileNextRedirects(
+          [{ source, destination: "/other", permanent: true }],
+          { reservedSources: HARD_CODED_GONE_ROUTE_PATHS },
+        ),
+      /reserved by a code-owned rule/,
+    );
+  }
 });

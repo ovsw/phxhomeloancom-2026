@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { planAutoRedirect, shouldWriteAutoRedirect } from "./model.ts";
+import { CODE_OWNED_GONE_ROUTE_PATHS } from "../../schemas/validation/redirect-rules.ts";
 
 test("prevents writes during local Sanity Function tests", () => {
   assert.equal(shouldWriteAutoRedirect(true), false);
@@ -129,7 +130,7 @@ test("skips slug changes containing backslashes", () => {
   );
 });
 
-test("blocks route collisions, redirect chains, and reserved routes", () => {
+test("blocks route collisions and redirect chains", () => {
   assert.equal(
     planAutoRedirect({
       event: { beforeSlug: "/old", documentType: "page", slug: "/new" },
@@ -145,14 +146,6 @@ test("blocks route collisions, redirect chains, and reserved routes", () => {
       redirects: [{ source: "/new", destination: "/later", status: "active" }],
     }).reason,
     /already a redirect source/,
-  );
-  assert.match(
-    planAutoRedirect({
-      event: { beforeSlug: "/index", documentType: "page", slug: "/new" },
-      liveRoutes: [],
-      redirects: [],
-    }).reason,
-    /reserved/,
   );
 });
 
@@ -172,5 +165,31 @@ test("ignores unsupported document types and first publications", () => {
       redirects: [],
     }).action,
     "skip",
+  );
+});
+
+test("reserves every code-owned Gone route from automatic slug redirects", () => {
+  for (const route of CODE_OWNED_GONE_ROUTE_PATHS) {
+    assert.match(
+      planAutoRedirect({
+        event: { beforeSlug: route, documentType: "page", slug: "/new" },
+        liveRoutes: [],
+        redirects: [],
+      }).reason,
+      /reserved/,
+    );
+  }
+
+  assert.match(
+    planAutoRedirect({
+      event: {
+        beforeSlug: "/old",
+        documentType: "page",
+        slug: CODE_OWNED_GONE_ROUTE_PATHS[0],
+      },
+      liveRoutes: [],
+      redirects: [],
+    }).reason,
+    /reserved/,
   );
 });

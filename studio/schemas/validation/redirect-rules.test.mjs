@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { getRedirectValidationIssues } from "./redirect-rules.ts";
+import { HARD_CODED_GONE_ROUTE_PATHS } from "../../../frontend/lib/gone-routes.ts";
+import {
+  CODE_OWNED_GONE_ROUTE_PATHS,
+  getRedirectValidationIssues,
+} from "./redirect-rules.ts";
 
 function issues(current, redirects = [], liveRoutes = []) {
   return getRedirectValidationIssues({ current, redirects, liveRoutes });
@@ -60,10 +64,6 @@ test("rejects self redirects and sources that shadow routes", () => {
     ).errors.source,
     /already used by a page/,
   );
-  assert.match(
-    issues({ source: "/index/", destination: "/" }).errors.source,
-    /reserved/,
-  );
 });
 
 test("warns instead of blocking when a destination has no published route", () => {
@@ -97,4 +97,15 @@ test("rejects backslashes in source and destination paths", () => {
       .destination,
     /internal path/,
   );
+});
+
+test("reserves every code-owned Gone source and keeps policies in sync", () => {
+  assert.deepEqual(CODE_OWNED_GONE_ROUTE_PATHS, HARD_CODED_GONE_ROUTE_PATHS);
+
+  for (const source of CODE_OWNED_GONE_ROUTE_PATHS) {
+    assert.match(
+      issues({ source, destination: "/target" }).errors.source,
+      /reserved/,
+    );
+  }
 });

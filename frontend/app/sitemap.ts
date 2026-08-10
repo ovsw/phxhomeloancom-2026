@@ -18,7 +18,6 @@ const SITEMAP_QUERY = groq`
   *[
     _type in $viewableTypes
     && meta.noindex != true
-    && !(_type == "page" && string::lower(slug.current) in ["index", "/index", "index/", "/index/"])
     && (defined(slug.current) || _id in ["homePage", "blogIndex"])
   ] {
     ${urlQuery},

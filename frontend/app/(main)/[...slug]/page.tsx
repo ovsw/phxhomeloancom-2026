@@ -61,7 +61,7 @@ export async function generateStaticParams() {
 
   return slugs.flatMap((value) => {
     const slug = value?.replace(/^\/+|\/+$/g, "");
-    if (!slug || slug === "index") return [];
+    if (!slug) return [];
     return [{ slug: slug.split("/").filter(Boolean) }];
   });
 }

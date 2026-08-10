@@ -21,7 +21,15 @@ type RedirectValidationData = {
 };
 
 const LIVE_SYSTEM_PATHS = new Set(["/", "/blog"]);
-const CODE_OWNED_REDIRECT_PATHS = new Set(["/index"]);
+export const CODE_OWNED_GONE_ROUTE_PATHS = [
+  "/home-office-ideas-that-will-inspire-you",
+  "/staycation-ideas-your-family-will-enjoy",
+  "/top-10-interior-design-trends-in-2020-to-freshen-up-your-home",
+  "/phoenix-home-loan-payoff-vision-board",
+  "/make-home-attractive-before-putting-on-market",
+  "/virtual-showings-what-you-need-to-know",
+] as const;
+const CODE_OWNED_SOURCE_PATHS = new Set<string>(CODE_OWNED_GONE_ROUTE_PATHS);
 
 export function normalizeRedirectPath(value?: string | null) {
   const trimmed = value?.trim();
@@ -76,7 +84,7 @@ export function getRedirectValidationIssues({
     errors.destination = "Source and destination cannot be the same route";
   }
 
-  if (source && (LIVE_SYSTEM_PATHS.has(source) || CODE_OWNED_REDIRECT_PATHS.has(source))) {
+  if (source && (LIVE_SYSTEM_PATHS.has(source) || CODE_OWNED_SOURCE_PATHS.has(source))) {
     errors.source = "This source is reserved by an existing site route";
   }
 
@@ -110,9 +118,6 @@ export function getRedirectValidationIssues({
         normalizeRedirectPath(readRedirectPath(redirect.source)) === destination,
     );
     if (destination && destinationIsSource) {
-      errors.destination = "This destination redirects again and would create a chain";
-    }
-    if (destination && CODE_OWNED_REDIRECT_PATHS.has(destination)) {
       errors.destination = "This destination redirects again and would create a chain";
     }
   }
