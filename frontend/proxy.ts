@@ -6,6 +6,7 @@ import {
 import { isGoneRoute } from "@/lib/gone-routes";
 import { client } from "@/sanity/lib/client";
 import { ELIGIBLE_BLOG_POSTS_COUNT_QUERY } from "@/sanity/queries/blog-index";
+import type { ELIGIBLE_BLOG_POSTS_COUNT_QUERY_RESULT } from "@/sanity.types";
 import { NextRequest, NextResponse } from "next/server";
 
 const BLOG_POST_COUNT_TTL_MS = 60_000;
@@ -22,7 +23,7 @@ function getBlogPostCount() {
 
   if (!blogPostCountPromise) {
     blogPostCountPromise = client
-      .fetch<number>(ELIGIBLE_BLOG_POSTS_COUNT_QUERY)
+      .fetch<ELIGIBLE_BLOG_POSTS_COUNT_QUERY_RESULT>(ELIGIBLE_BLOG_POSTS_COUNT_QUERY)
       .then((value) => {
         blogPostCountCache = {
           expiresAt: Date.now() + BLOG_POST_COUNT_TTL_MS,
