@@ -12,6 +12,7 @@ import {
   PanelBottom,
   Tag,
   House,
+  TrendingUpDown,
 } from "lucide-react";
 
 export const structure = (S: any, context: any) =>
@@ -94,6 +95,15 @@ export const structure = (S: any, context: any) =>
         S,
         context,
       }),
+      S.listItem()
+        .title("Redirects")
+        .icon(TrendingUpDown)
+        .schemaType("redirect")
+        .child(
+          S.documentTypeList("redirect")
+            .title("Redirects")
+            .defaultOrdering([{ field: "source.current", direction: "asc" }])
+        ),
       S.divider(),
       S.listItem()
         .title("Site Configuration")

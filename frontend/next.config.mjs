@@ -1,4 +1,22 @@
+import { createClient } from "@sanity/client";
 import { sanity } from "next-sanity/live/cache-life";
+
+import { compileNextRedirects } from "./lib/redirects.mjs";
+import { REDIRECTS_QUERY } from "./sanity/queries/redirects.ts";
+
+const STATIC_REDIRECTS = [
+  {
+    source: "/index/",
+    destination: "/",
+    permanent: true,
+  },
+];
+
+function requiredEnvironmentValue(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing environment variable: ${name}`);
+  return value;
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -6,13 +24,19 @@ const nextConfig = {
   cacheLife: { default: sanity },
   trailingSlash: true,
   async redirects() {
+    const client = createClient({
+      projectId: requiredEnvironmentValue("NEXT_PUBLIC_SANITY_PROJECT_ID"),
+      dataset: requiredEnvironmentValue("NEXT_PUBLIC_SANITY_DATASET"),
+      apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2024-10-31",
+      perspective: "published",
+      token: process.env.SANITY_API_READ_TOKEN,
+      useCdn: false,
+    });
+    const redirects = await client.fetch(REDIRECTS_QUERY);
     return [
-      {
-        source: '/index/',
-        destination: '/',
-        permanent: true,
-      },
-    ]
+      ...STATIC_REDIRECTS,
+      ...compileNextRedirects(redirects, { reservedSources: ["/index/"] }),
+    ];
   },
   images: {
     qualities: [75, 100],

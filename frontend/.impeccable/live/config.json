@@ -1,6 +1,6 @@
 {
-  "files": ["app/layout.tsx"],
+  "files": ["PHXHomeLoan-web-prototype/*.dc.html"],
   "insertBefore": "</body>",
-  "commentSyntax": "jsx",
+  "commentSyntax": "html",
   "cspChecked": true
 }

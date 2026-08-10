@@ -13,6 +13,7 @@ import teamMember from "./schemas/documents/team-member";
 import blogIndex from "./schemas/documents/blog-index";
 import homePage from "./schemas/documents/home-page";
 import footer, { footerSchemaTypes } from "./schemas/documents/footer";
+import redirect from "./schemas/documents/redirect";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -67,6 +68,7 @@ export const schemaTypes = [
   blogIndex,
   homePage,
   footer,
+  redirect,
   ...footerSchemaTypes,
   // shared objects
   blockContent,

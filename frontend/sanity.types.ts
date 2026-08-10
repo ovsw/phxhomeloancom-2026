@@ -1041,6 +1041,24 @@ export type FooterDestination = {
   openInNewTab?: boolean;
 };
 
+export type Redirect = {
+  _id: string;
+  _type: "redirect";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  status?: "active" | "inactive";
+  source?: Slug;
+  destination?: Slug;
+  permanent?: "true" | "false";
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type Footer = {
   _id: string;
   _type: "footer";
@@ -1507,12 +1525,6 @@ export type Author = {
   orderRank?: string;
 };
 
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
-};
-
 export type Page = {
   _id: string;
   _type: "page";
@@ -1775,6 +1787,8 @@ export type AllSanitySchemaTypes =
   | CategoryReference
   | BlogIndexReference
   | FooterDestination
+  | Redirect
+  | Slug
   | Footer
   | TeamMember
   | Settings
@@ -1792,7 +1806,6 @@ export type AllSanitySchemaTypes =
   | AuthorReference
   | Post
   | Author
-  | Slug
   | Page
   | MediaTag
   | Code
@@ -5695,6 +5708,14 @@ export type BLOG_INDEX_QUERY_RESULT =
     }
   | {
       _id: "blogIndex";
+      _type: "redirect";
+      title: null;
+      description: null;
+      blocks: null;
+      meta: null;
+    }
+  | {
+      _id: "blogIndex";
       _type: "sanity.fileAsset";
       title: string | null;
       description: string | null;
@@ -8681,6 +8702,17 @@ export type POSTS_SLUGS_QUERY_RESULT = Array<{
   slug: Slug;
 }>;
 
+// Source: ../frontend/sanity/queries/redirects.ts
+// Variable: REDIRECTS_QUERY
+// Query: *[    _type == "redirect" &&    !(_id in path("drafts.**")) &&    status == "active" &&    defined(source.current) &&    defined(destination.current)  ] | order(source.current asc) {    _id,    status,    source,    destination,    permanent  }
+export type REDIRECTS_QUERY_RESULT = Array<{
+  _id: string;
+  status: "active" | "inactive" | null;
+  source: Slug | null;
+  destination: Slug | null;
+  permanent: "false" | "true" | null;
+}>;
+
 // Source: ../frontend/sanity/queries/settings.ts
 // Variable: SETTINGS_QUERY
 // Query: *[_type == "settings" && _id == "settings"][0]{  _type,  siteName,  logo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  secondaryLogo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  }}
@@ -8786,6 +8818,7 @@ declare module "@sanity/client" {
     '*[_type == "post" && slug.current == $slug][0]{\n    // richTextContent V2\n    _id,\n    _type,\n    title,\n    slug,\n    publishedAt,\n    "excerpt": pt::text(excerpt),\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n    body[]{\n      \n  ...,\n  _type == "block" => {\n    ...,\n    children[]{...},\n    markDefs[]{\n      ...,\n      _type in ["customLink", "buttonLink"] => {\n        "href": select(\n          customLink.type == "internal" => select(\n  customLink.internal->_id == "homePage" || customLink.internal->_type == "homePage" => "/",\n  string::startsWith(customLink.internal->slug.current, "/") => customLink.internal->slug.current + "/",\n  defined(customLink.internal->slug.current) => "/" + customLink.internal->slug.current + "/"\n),\n          customLink.type == "external" => customLink.external,\n          customLink.href\n        ),\n        "openInNewTab": customLink.openInNewTab\n      }\n    }\n  },\n  _type == "image" => {\n    ...,\n    "resolvedAsset": asset->{\n      _id,\n      url,\n      mimeType,\n      metadata {\n        lqip,\n        dimensions {\n          width,\n          height\n        }\n      }\n    }\n  },\n  _type == "table" => {\n    ...,\n    rows[]{\n      ...,\n      cells[]\n    }\n  }\n\n    },\n    author->{\n      name,\n      image {\n        ...,\n        asset->{\n          _id,\n          url,\n          mimeType,\n          metadata {\n            lqip,\n            dimensions {\n              width,\n              height\n            }\n          }\n        },\n        alt\n      }\n    },\n    _createdAt,\n    _updatedAt,\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n}': POST_QUERY_RESULT;
     '*[_type == "post" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    publishedAt,\n    "excerpt": pt::text(excerpt),\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n}': POSTS_QUERY_RESULT;
     '*[_type == "post" && defined(slug)]{slug}': POSTS_SLUGS_QUERY_RESULT;
+    '\n  *[\n    _type == "redirect" &&\n    !(_id in path("drafts.**")) &&\n    status == "active" &&\n    defined(source.current) &&\n    defined(destination.current)\n  ] | order(source.current asc) {\n    _id,\n    status,\n    source,\n    destination,\n    permanent\n  }\n': REDIRECTS_QUERY_RESULT;
     '*[_type == "settings" && _id == "settings"][0]{\n  _type,\n  siteName,\n  logo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  secondaryLogo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  }\n}': SETTINGS_QUERY_RESULT;
   }
 }
