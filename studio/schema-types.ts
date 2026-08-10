@@ -13,6 +13,7 @@ import teamMember from "./schemas/documents/team-member";
 import blogIndex from "./schemas/documents/blog-index";
 import homePage from "./schemas/documents/home-page";
 import footer, { footerSchemaTypes } from "./schemas/documents/footer";
+import redirect from "./schemas/documents/redirect";
 
 // Schema UI shared objects
 import blockContent from "./schemas/blocks/shared/block-content";
@@ -50,6 +51,7 @@ import processSteps from "./schemas/blocks/process-steps";
 import ctaBanner from "./schemas/blocks/cta-banner";
 import benefitCards from "./schemas/blocks/benefit-cards";
 import comparisonTable from "./schemas/blocks/comparison-table";
+import loanRequirements from "./schemas/blocks/loan-requirements";
 
 export const schemaTypes = [
   // documents
@@ -66,6 +68,7 @@ export const schemaTypes = [
   blogIndex,
   homePage,
   footer,
+  redirect,
   ...footerSchemaTypes,
   // shared objects
   blockContent,
@@ -103,4 +106,5 @@ export const schemaTypes = [
   ctaBanner,
   benefitCards,
   comparisonTable,
+  loanRequirements,
 ];

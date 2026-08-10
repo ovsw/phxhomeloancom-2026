@@ -10,6 +10,7 @@ import { faqAccordionQuery } from "./faq-accordion";
 import { homeHeroQuery } from "./home-hero";
 import { latestArticlesQuery } from "./latest-articles";
 import { loanFeatureCardsQuery } from "./loan-feature-cards";
+import { loanRequirementsQuery } from "./loan-requirements";
 import { locationMapQuery } from "./location-map";
 import { pageHeaderQuery } from "./page-header";
 import { personContactCtaQuery } from "./person-contact-cta";
@@ -51,6 +52,7 @@ export const pageBuilderQuery = `
     ${processStepsQuery},
     ${ctaBannerQuery},
     ${benefitCardsQuery},
-    ${comparisonTableQuery}
+    ${comparisonTableQuery},
+    ${loanRequirementsQuery}
   }
 `;

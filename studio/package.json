@@ -16,6 +16,7 @@
   "dependencies": {
     "@portabletext/react": "^6.2.0",
     "@sanity/code-input": "^7.2.5",
+    "@sanity/functions": "^1.2.1",
     "@sanity/icons": "^5.0.0",
     "@sanity/image-url": "^2.1.1",
     "@sanity/orderable-document-list": "^2.0.8",
@@ -35,6 +36,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@sanity/blueprints": "^0.20.2",
     "@sanity/client": "^7.23.0",
     "@sanity/eslint-config-studio": "^6.0.0",
     "@sanity/types": "^6.4.0",
