@@ -8,6 +8,36 @@ import { client } from "@/sanity/lib/client";
 import { ELIGIBLE_BLOG_POSTS_COUNT_QUERY } from "@/sanity/queries/blog-index";
 import { NextRequest, NextResponse } from "next/server";
 
+const BLOG_POST_COUNT_TTL_MS = 60_000;
+
+let blogPostCountCache:
+  | { expiresAt: number; value: number }
+  | undefined;
+let blogPostCountPromise: Promise<number> | undefined;
+
+function getBlogPostCount() {
+  if (blogPostCountCache && blogPostCountCache.expiresAt > Date.now()) {
+    return Promise.resolve(blogPostCountCache.value);
+  }
+
+  if (!blogPostCountPromise) {
+    blogPostCountPromise = client
+      .fetch<number>(ELIGIBLE_BLOG_POSTS_COUNT_QUERY)
+      .then((value) => {
+        blogPostCountCache = {
+          expiresAt: Date.now() + BLOG_POST_COUNT_TTL_MS,
+          value,
+        };
+        return value;
+      })
+      .finally(() => {
+        blogPostCountPromise = undefined;
+      });
+  }
+
+  return blogPostCountPromise;
+}
+
 function notFoundResponse() {
   return new NextResponse("Not Found", {
     headers: { "content-type": "text/plain; charset=utf-8" },
@@ -69,7 +99,7 @@ export async function proxy(request: NextRequest) {
 
   if (hasValidatedDraftMode(request)) return NextResponse.next();
 
-  const postCount = await client.fetch<number>(ELIGIBLE_BLOG_POSTS_COUNT_QUERY);
+  const postCount = await getBlogPostCount();
   const regularPostCount = Math.max(postCount - 1, 0);
   const { totalPages } = calculateBlogPagination(regularPostCount, page);
   return isBlogPageOutOfRange(page, totalPages)
