@@ -18,6 +18,31 @@ const DATASET = "development";
 // The five legacy WordPress archive URLs and where they now point.
 // Destinations under /blog/category/ must match the final category slugs
 // assigned by the rename branch.
+/**
+ * Destinations are **topical**, deliberately NOT derived from document identity.
+ *
+ * The taxonomy rename reused existing category documents to minimise post
+ * reassignment, so which document became which category is an implementation
+ * detail invisible outside the Studio. These redirects serve humans and
+ * crawlers arriving from the old site, so each one points at the archive that
+ * best matches what the legacy URL was *about*.
+ *
+ * Two rows therefore look "wrong" against CATEGORY_PLAN, and are correct:
+ *
+ * - `/benefits-of-buying-now/` -> `mortgage-rates`, even though the
+ *   benefits-of-buying-now *document* became `buying-process`. The legacy page
+ *   was market-timing content ("why buy now"), which is Mortgage Rates &
+ *   Market. Buying Process is for people already under contract.
+ * - `/requirements/` -> `getting-approved`, even though the requirements
+ *   *document* became `mortgage-rates`. Requirements means approval criteria,
+ *   and that page's one post now lives in Getting Approved.
+ *
+ * Do NOT "fix" these by binding each destination to its source's category id —
+ * that would follow document identity and silently undo the editorial decision.
+ * The preflight validates that the destination slug EXISTS, which is the right
+ * check: it catches a typo or an unrenamed category without constraining which
+ * archive a legacy URL is allowed to point at.
+ */
 export const LEGACY_CATEGORY_REDIRECTS = [
   { source: "/types-of-loans/", destination: "/blog/category/loan-types/" },
   { source: "/requirements/", destination: "/blog/category/getting-approved/" },

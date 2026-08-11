@@ -175,3 +175,32 @@ test("does not double-count a planned redirect that already exists", () => {
   const migrated = inventory({ redirects: planned });
   assert.equal(planTopologyError(migrated, planned), undefined);
 });
+
+test("keeps the two topical destinations that diverge from document identity", () => {
+  // These look wrong against CATEGORY_PLAN and are deliberate: redirects follow
+  // what the legacy URL was ABOUT, not which CMS document was reused for the
+  // rename. Pinned so a future "consistency" cleanup has to argue with a test.
+  const bySource = Object.fromEntries(
+    LEGACY_CATEGORY_REDIRECTS.map(({ source, destination }) => [
+      source,
+      destination,
+    ]),
+  );
+
+  // The benefits-of-buying-now document became `buying-process`, but the legacy
+  // page was market-timing content.
+  assert.equal(
+    bySource["/benefits-of-buying-now/"],
+    "/blog/category/mortgage-rates/",
+  );
+
+  // The requirements document became `mortgage-rates`, but "requirements" means
+  // approval criteria.
+  assert.equal(
+    bySource["/requirements/"],
+    "/blog/category/getting-approved/",
+  );
+
+  // The catch-all archive goes to the blog index, not any single category.
+  assert.equal(bySource["/buyer-education/"], "/blog/");
+});
