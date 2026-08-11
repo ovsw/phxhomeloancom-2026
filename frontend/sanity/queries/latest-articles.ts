@@ -43,9 +43,10 @@ export const latestArticlesQuery = groq`
       image{
         ${imageQuery}
       },
-      categories[]->{
+      category->{
         _id,
-        title
+        title,
+        slug
       }
     }
   }

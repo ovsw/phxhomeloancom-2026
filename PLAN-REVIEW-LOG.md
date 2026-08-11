@@ -311,3 +311,83 @@ VERDICT: APPROVED
 ---
 
 **Converged after 5 rounds.** No code written during either act.
+
+## Act 3 — Build
+
+### Round 1 — Codex build
+
+Builder: `gpt-5.6-sol`, `codex exec --yolo`, single round, no fix rounds needed.
+31 files touched (22 modified, 11 new). Codex's report claimed a clean
+`typecheck && lint && test`, a successful `next build` (97 static pages), and a
+clean migration dry-run.
+
+### Claude's verdict — verified independently
+
+**Diff read in full. Proof re-run by Claude, not trusted from the report.**
+
+- `pnpm typecheck` — clean.
+- `pnpm lint` — clean.
+- `pnpm test` — 104 node tests pass, 0 fail, plus the Vitest suite.
+
+Spot-checked the findings most likely to be implemented wrong:
+
+- **Proxy (the round-1 blocker)** — category branch sits before the 2-segment
+  check; uses a TTL snapshot with single-flight + `finally` cleanup; fails open on
+  query error; correctly uses the raw `postCount` without the global archive's
+  `postCount - 1` featured-post adjustment.
+- **Non-empty `generateStaticParams`** — both parent and child use a
+  `__missing-category__` sentinel, guarding the `cacheComponents: true` build
+  failure.
+- **Href resolvers** — all four shared helpers plus the separate inline resolver in
+  `queries/footer.ts` got the category branch, placed before the fallthrough.
+- **Stega** — category slugs are `stegaClean`'d in both card variants.
+
+**One out-of-scope change investigated:** Codex modified
+`frontend/components/header/header.test.tsx` to drop a theme-toggle assertion.
+Verified by stashing the build and running that suite against the pre-build tree —
+**the test was already failing on `main`**, fallout from `ac7b90f` (light-theme-only
+ship), not from this work. Legitimate fix of a pre-existing break; flagged to the
+user rather than silently kept.
+
+**One false alarm by Claude:** the dry-run showed an identical `ifRevisionId`
+across all four category patches, which looked like a builder bug. Querying the
+live dataset disproved it — all six categories genuinely share
+`_rev: fecMuKShDC3aWIsRKXWFok` because they were created in one transaction.
+Codex read them correctly.
+
+**Discovery the plan got wrong:** PLAN.md asserted categories had no slug. True of
+the *schema*, false of the *data* — four categories already carried slugs with
+leading slashes (`/buyer-education`, `/types-of-loans`, `/personal-finances`,
+`/requirements`). The migration normalised them. Harmless here, but the plan's
+premise was inaccurate.
+
+### Migration — applied by Claude
+
+Backup first: `backups/development-pre-category-taxonomy-20260811.tar.gz`
+(557 MB, 138 docs / 188 assets, verified to contain 58 posts + 6 categories).
+
+Pre-flight audit against live data: 0 draft categories, 0 posts with multiple
+categories, 0 posts with none — matching the dry-run's "58 migratable, 0 fatal".
+
+Applied. Script self-report: 58 posts, 6 categories, `legacyArraysRemaining: 0`,
+`categoryReferenceParity: true`, `categorySlugParity: true`.
+
+**Independently re-verified via GROQ** (not trusting the script's self-report):
+58/58 posts have `category`, 0 legacy arrays, 0 dangling refs, all six slugs clean,
+and post distribution unchanged (44 / 11 / 2 / 1 / 0 / 0).
+
+### Runtime verification (dev server)
+
+| Route | Result |
+|---|---|
+| `/blog/category/loan-types/` | 200, H1 + cards render |
+| `/blog/category/buyer-education/4/` | 200 (page 4 of 44 posts) |
+| `/blog/category/buyer-education/9/` | 404 (out of range) |
+| `/blog/category/made-up/` | not-found UI + noindex |
+| `/blog/category/realtor-information/` | empty state + `noindex, follow` |
+| `/blog/`, `/blog/2/` | 200 — existing routes unbroken |
+
+Nav category link now renders `/blog/category/buyer-education/` — the live latent
+bug (previously `/buyer-education/`) is fixed. Sitemap contains 0 category URLs,
+which is *correct*: no category has a description, so the eligibility rule excludes
+them.

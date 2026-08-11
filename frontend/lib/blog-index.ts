@@ -43,11 +43,68 @@ export function calculateBlogPagination(
   };
 }
 
-export function getBlogPaginationUrl(page: number) {
-  return page === 1 ? "/blog/" : `/blog/${page}/`;
+export function getBlogPaginationUrl(page: number, basePath = "/blog/") {
+  const normalizedBasePath = `/${basePath.replace(/^\/+|\/+$/g, "")}/`;
+  return page === 1 ? normalizedBasePath : `${normalizedBasePath}${page}/`;
 }
 
 export const getBlogCanonicalPath = getBlogPaginationUrl;
+
+export function getCategoryArchivePath(slug: string) {
+  return `/blog/category/${slug.replace(/^\/+|\/+$/g, "")}/`;
+}
+
+export function isIndexableCategory({
+  description,
+  metaNoindex,
+  publishedPostCount,
+}: {
+  description?: string | null;
+  metaNoindex?: boolean | null;
+  publishedPostCount: number;
+}) {
+  return publishedPostCount > 0 && Boolean(description?.trim()) && !metaNoindex;
+}
+
+type CategoryStaticParamSource = {
+  publishedPostCount: number;
+  slug: string;
+};
+
+const CATEGORY_STATIC_PARAM_SENTINEL = "__missing-category__";
+
+function hasValidCategorySlug({ slug }: Pick<CategoryStaticParamSource, "slug">) {
+  return (
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) &&
+    !/^\d+$/.test(slug)
+  );
+}
+
+export function getCategoryStaticParams(
+  categories: Array<Pick<CategoryStaticParamSource, "slug">>,
+) {
+  const params = categories
+    .filter(hasValidCategorySlug)
+    .map(({ slug }) => ({ slug }));
+  return params.length ? params : [{ slug: CATEGORY_STATIC_PARAM_SENTINEL }];
+}
+
+export function getCategoryPaginatedStaticParams(
+  categories: CategoryStaticParamSource[],
+) {
+  const validCategories = categories.filter(hasValidCategorySlug);
+  const params = validCategories.flatMap(({ publishedPostCount, slug }) => {
+    const { totalPages } = calculateBlogPagination(publishedPostCount, 1);
+    return Array.from({ length: Math.max(totalPages - 1, 0) }, (_, index) => ({
+      page: String(index + 2),
+      slug,
+    }));
+  });
+
+  return params.length
+    ? params
+    : [{ page: "2", slug: validCategories[0]?.slug || CATEGORY_STATIC_PARAM_SENTINEL }];
+}
 
 export function getBlogPageTitle(title: string, page: number) {
   return page > 1 ? `${title} - Page ${page}` : title;

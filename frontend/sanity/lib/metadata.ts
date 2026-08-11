@@ -6,10 +6,13 @@ import {
   POST_QUERY_RESULT,
 } from "@/sanity.types";
 import {
+  getCategoryArchivePath,
   getBlogCanonicalPath,
   getBlogPageDescription,
   getBlogPageTitle,
+  isIndexableCategory,
 } from "@/lib/blog-index";
+import type { CategoryArchive } from "@/sanity/queries/category";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export function generatePageMetadata({
@@ -83,6 +86,51 @@ export function generateBlogIndexMetadata({
     alternates: {
       canonical:
         process.env.NEXT_PUBLIC_SITE_URL + getBlogCanonicalPath(page),
+    },
+  };
+}
+
+export function generateCategoryMetadata({
+  category,
+  page,
+}: {
+  category: CategoryArchive;
+  page: number;
+}) {
+  const title = category.meta?.title || category.title || "Blog category";
+  const description = category.meta?.description || category.description || undefined;
+  const slug = category.slug?.current || "";
+  const isIndexable = isIndexableCategory({
+    description: category.description,
+    metaNoindex: category.meta?.noindex,
+    publishedPostCount: category.publishedPostCount,
+  });
+
+  return {
+    title: getBlogPageTitle(title, page),
+    description: getBlogPageDescription(description, page),
+    openGraph: {
+      images: [
+        {
+          url: category.meta?.image
+            ? urlFor(category.meta.image).quality(100).url()
+            : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
+          width: category.meta?.image?.asset?.metadata?.dimensions?.width || 1200,
+          height: category.meta?.image?.asset?.metadata?.dimensions?.height || 630,
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    robots: !isProduction
+      ? "noindex, nofollow"
+      : isIndexable
+        ? "index, follow"
+        : "noindex, follow",
+    alternates: {
+      canonical:
+        process.env.NEXT_PUBLIC_SITE_URL +
+        getBlogCanonicalPath(page, getCategoryArchivePath(slug)),
     },
   };
 }

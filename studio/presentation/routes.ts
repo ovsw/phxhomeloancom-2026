@@ -1,6 +1,7 @@
 const PRESENTATION_DOCUMENT_TYPES = new Set([
   "page",
   "post",
+  "category",
   "blogIndex",
   "homePage",
 ]);
@@ -28,6 +29,12 @@ export function resolveContentPath(value?: string | null) {
   return `/${slug}/`;
 }
 
+export function resolveCategoryPath(value?: string | null) {
+  const slug = value?.trim().replace(/^\/+|\/+$/g, "");
+  if (!slug) return null;
+  return `/blog/category/${slug}/`;
+}
+
 export function getPresentationPath(
   documentType: string,
   slug?: string | null,
@@ -35,6 +42,7 @@ export function getPresentationPath(
   if (documentType === "blogIndex") return "/blog/";
   if (documentType === "homePage") return "/";
   if (!isPresentationDocumentType(documentType) || !slug?.trim()) return null;
+  if (documentType === "category") return resolveCategoryPath(slug);
   return resolveContentPath(slug);
 }
 

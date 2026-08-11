@@ -5,12 +5,16 @@ import test from "node:test";
 import {
   BLOG_POSTS_PER_PAGE,
   calculateBlogPagination,
+  getCategoryArchivePath,
+  getCategoryPaginatedStaticParams,
+  getCategoryStaticParams,
   getBlogCanonicalPath,
   getBlogPageTitle,
   getBlogPaginationUrl,
   getBlogPostWindow,
   getRegularPostQueryParams,
   getBlogResultsLabel,
+  isIndexableCategory,
   parseBlogPageSegment,
   isBlogPageOutOfRange,
 } from "./blog-index.ts";
@@ -66,8 +70,23 @@ test("listing cards clamp excerpts and expose every visible post field to Presen
     assert.match(cardSource, new RegExp(`dataAttribute\\?\\.\\("${path}"\\)`));
   }
   assert.match(cardSource, /categoryDataAttribute\?\.\("title"\)/);
-  assert.match(cardSource, /!stega \? <span className="absolute inset-0" \/> : null/);
-  assert.match(querySource, /categories\[\]\->\{_id, title\}/);
+  assert.match(cardSource, /!stega \? \(/);
+  assert.match(cardSource, /className="absolute inset-0 z-0"/);
+  assert.match(querySource, /category->\{_id, title, slug\}/);
+  assert.match(cardSource, /stegaClean\(categoryReference\?\.slug\?\.current\)/);
+
+  const latestArticlesSource = readFileSync(
+    new URL("../components/blocks/latest-articles.tsx", import.meta.url),
+    "utf8",
+  );
+  const articleCardSource = latestArticlesSource.slice(
+    latestArticlesSource.indexOf("function ArticleCard"),
+    latestArticlesSource.indexOf("function SectionLink"),
+  );
+  assert.match(latestArticlesSource, /stegaClean\(slug\)/);
+  assert.match(latestArticlesSource, /`\/blog\/category\/\$\{cleanSlug\}\/`/);
+  assert.match(articleCardSource, /return \(\s*<article/);
+  assert.doesNotMatch(articleCardSource, /return \(\s*<Link\s/);
 });
 
 test("accepts only pagination route segments greater than one", () => {
@@ -90,6 +109,45 @@ test("builds trailing-slash pagination URLs and self-canonical paths", () => {
   assert.equal(getBlogPaginationUrl(2), "/blog/2/");
   assert.equal(getBlogCanonicalPath(1), "/blog/");
   assert.equal(getBlogCanonicalPath(3), "/blog/3/");
+  assert.equal(getBlogPaginationUrl(1, "/blog/category/loan-types/"), "/blog/category/loan-types/");
+  assert.equal(getBlogPaginationUrl(2, "/blog/category/loan-types/"), "/blog/category/loan-types/2/");
+  assert.equal(getCategoryArchivePath("loan-types"), "/blog/category/loan-types/");
+});
+
+test("keeps category static generation non-empty before archive copy or pagination exists", () => {
+  assert.deepEqual(getCategoryStaticParams([]), [{ slug: "__missing-category__" }]);
+  assert.deepEqual(getCategoryStaticParams([{ slug: "loan-types" }]), [{ slug: "loan-types" }]);
+  assert.deepEqual(getCategoryPaginatedStaticParams([]), [{ page: "2", slug: "__missing-category__" }]);
+  assert.deepEqual(
+    getCategoryPaginatedStaticParams([{ slug: "loan-types", publishedPostCount: 12 }]),
+    [{ page: "2", slug: "loan-types" }],
+  );
+  assert.deepEqual(
+    getCategoryPaginatedStaticParams([{ slug: "loan-types", publishedPostCount: 13 }]),
+    [{ page: "2", slug: "loan-types" }],
+  );
+  assert.deepEqual(
+    getCategoryStaticParams([{ slug: "/loan-types" }, { slug: "2" }]),
+    [{ slug: "__missing-category__" }],
+  );
+});
+
+test("uses one category indexability rule for post count, description, and noindex", () => {
+  assert.equal(
+    isIndexableCategory({
+      description: "Useful archive introduction",
+      metaNoindex: false,
+      publishedPostCount: 1,
+    }),
+    true,
+  );
+  for (const input of [
+    { description: "Useful archive introduction", metaNoindex: false, publishedPostCount: 0 },
+    { description: "   ", metaNoindex: false, publishedPostCount: 1 },
+    { description: "Useful archive introduction", metaNoindex: true, publishedPostCount: 1 },
+  ]) {
+    assert.equal(isIndexableCategory(input), false);
+  }
 });
 
 test("makes metadata titles unique after page one", () => {
