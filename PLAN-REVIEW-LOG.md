@@ -1,113 +1,313 @@
-# Plan Review Log: Upgrade frontend to Next.js 16.3
+# Plan Review Log: Make blog categories real, crawlable pages (branch 1 of 2)
 
 Act 1 (grill) complete — plan locked with the user. MAX_ROUNDS=5.
 
-Grill outcomes: Scope B (bump + Partial Prefetching full adoption + TS 7), verification bar B (local suite only), full PP adoption across all 4 routes, studio untouched.
+Decisions settled during the grill:
+
+- Scope split into two branches. Branch 1 (this one) = routing + schema only.
+  Branch 2 = renaming categories, reassigning posts, adding tags. User pushed back
+  on the original single-branch plan and was right: build the pages first so the
+  taxonomy imbalance becomes visible before deciding the final buckets.
+- `post.categories[]` → `post.category`, single required reference (user overruled
+  Claude's recommendation to keep the array with `max(1)` validation).
+- URL shape `/blog/category/[slug]/` with pagination at `.../[page]/`. User
+  questioned this given posts resolve from the root; investigation showed the root
+  namespace already needs a collision guard, which strengthened rather than weakened
+  the recommendation.
+- Hand-authored slugs, two hand-tuned (`loan-types`, `mortgage-requirements`).
+- Single `description` text field for archive intro copy; reuse the shared `meta`
+  object for SEO overrides.
+- Zero-post categories excluded from `generateStaticParams` and the sitemap.
+- Single-shot migration via a committed script; dev dataset, backup taken by user.
 
 ## Round 1 — Codex
 
-Two assumptions are valid: `next@16.3.0` is currently npm's latest release, and Next 16.3 enables its TypeScript CLI path by default.
+- Blocker: [proxy.ts](/Users/ovs/Work/learn/phxhomeloancom-2026/frontend/proxy.ts:90) rejects every `/blog/category/**` request before Next routing. Fix: exempt category routes from the numeric blog-pagination guard and add proxy tests.
 
-Material problems:
+- [blog-pagination.tsx](/Users/ovs/Work/learn/phxhomeloancom-2026/frontend/components/blog-pagination.tsx:21) hardcodes global `/blog/` URLs, so category pagination navigates to the wrong archive. Fix: accept a base path or URL builder and add category-specific URL/canonical helpers.
 
-1. TypeScript 7 conflicts with the lint stack. The resolved `typescript-eslint@8.63.0` supports TypeScript `<6.1.0`, while the plan upgrades to 7 and never runs lint. Fix: Defer TS 7 or prove a TS-7-compatible lint toolchain, and add `pnpm --dir frontend lint` to every gate.
-2. The definition of done cannot prove Partial Prefetching works. Its diagnostics require browser-driven `next dev`, while actual prefetching runs under `next start`; builds do not clear those diagnostics. Fix: Require a clean browser-driven development sweep, then a production-mode click-through that confirms meaningful shells paint before streamed content.
-3. Playwright may silently test the development server. With `CI` unset, it reuses anything already listening on port 3000; the existing tests only use direct `page.goto()` and never exercise client navigation. Fix: Stop the dev server and force a fresh production server—such as with `CI=1`—before e2e and production click-through checks.
-4. "All four routes" means four route patterns, not all actual URLs. The catch-all generates many Sanity paths, and pagination behavior varies by URL. Fix: Build a concrete queue containing every generated slug and valid blog page, then record the result of navigating each URL.
-5. The likely shell blocker is understated. The shared layout, homepage, blog page, and catch-all all await `draftMode()` before returning published UI, outside their existing Suspense boundaries. Fix: Explicitly target these top-level cookie reads and require a useful header/body/footer shell—not a whole-page empty fallback.
-6. Proxy load is unresolved, not merely "worth watching." Every visible pagination link can prefetch through the proxy and trigger another uncached Sanity count query. Fix: Measure prefetch query count and latency, then cache the count or disable pagination prefetch if requests multiply; test normal, draft, valid, and out-of-range requests.
-7. The baseline is not a baseline, and command location is ambiguous. It combines Next and TS upgrades before the first check, while root has no `build` script and root tests have different scope. Fix: Run the current suite first, then test the Next bump, then TS separately, using explicit `pnpm --dir frontend …` commands.
-8. The fallback contradicts the stated goal. "Land flag + minimum" can ship Partial Prefetching without proving every route has a usable instant shell. Fix: If full adoption fails, remove the flag and split the upgrade, or stop for user approval before changing the goal.
-9. The draft-mode smoke instruction is incomplete. A bare request to `/api/draft-mode/enable` does not supply the signed preview context expected by `defineEnableDraftMode`. Fix: Enter through Studio Presentation and verify draft content, live updates, Visual Editing, and disable behavior on both catch-all and blog routes.
+- The Latest Articles card is already one large `<Link>`, so the planned category `<Link>` creates invalid nested anchors. Fix: restructure it as an article with separate post and category links.
+
+- RegularPostCard’s full-card overlay can cover the new category link. Fix: give the category link an explicit higher stacking layer or remove the overlay-link pattern.
+
+- Categories are already selectable in navigation and footer, but their href projections produce `/<slug>/`, not `/blog/category/<slug>/`. Fix: add category handling to every shared, navigation, and footer internal-reference resolver.
+
+- Category documents are absent from Studio Presentation locations, main-document resolution, and supported document types. Fix: register `/blog/category/<slug>/` throughout Presentation and add tests.
+
+- The route plan has no category-specific metadata generation. Fix: define metadata for both routes with category fallbacks, page-number titles, correct canonicals, Open Graph data, `meta.noindex`, and Stega disabled.
+
+- Excluding empty categories from static params and the sitemap does not prevent direct URLs from being indexed. Fix: return 404 for empty archives or automatically emit `noindex, follow`.
+
+- The plan calls descriptions essential for avoiding thin pages but backfills none and does not require them. Fix: backfill reviewed descriptions or withhold indexing until a description exists.
+
+- The migration lists six required category slugs but only defines post mutations. Fix: include revision-guarded category slug patches and verify all six stored values.
+
+- Merely reporting zero-, multiple-, or invalid-category posts still allows destructive data loss. Fix: abort before all writes unless every legacy post version has exactly one valid category reference.
+
+- Migration handling for drafts, reruns, existing `category` values, dangling references, and array-only `_key` values is undefined. Fix: classify raw draft/published documents as safe, already migrated, or fatal, and construct clean `{_type, _ref}` references.
+
+- Backup-and-rerun is weaker than established repo migrations. Fix: require default dry-run, explicit `--apply`, exact project/dataset guards, revision-guarded atomic writes, and a post-write parity audit.
+
+- The category schema defines only `content` and `seo`, while leaving `slug` potentially assigned to nonexistent `settings`. Fix: choose `content` explicitly or define a `settings` group.
+
+- The proposed slug regex accepts purely numeric values despite claiming otherwise. Fix: add a separate numeric-only rejection and validator tests.
+
+- The uniqueness-validator requirements omit draft/published self-exclusion and draft collisions. Fix: follow `unique-root-slug.ts`’s paired-ID exclusion using raw perspective and test all collision cases.
+
+- `publishedPostFilter` and `blogPostOrder` are private constants, so the planned new query cannot reuse them. Fix: export them or move the shared listing contract into a dedicated query module.
+
+- `Rule.required()` is an error, not a warning as the plan states. Fix: correct the assumption and require every migrated post version to remain publishable.
+
+- No verification section covers these changes, and [blog-index.test.mjs](/Users/ovs/Work/learn/phxhomeloancom-2026/frontend/lib/blog-index.test.mjs:54) explicitly asserts the old `categories[]` projection. Fix: specify validator/migration, proxy, href, pagination, metadata, sitemap, Presentation, TypeGen, typecheck, lint, build, and focused runtime checks.
 
 VERDICT: REVISE
+### Claude's response — Round 1
 
-### Claude's response
+**Verified before acting.** Read `proxy.ts`, `blog-pagination.tsx`,
+`lib/blog-index.ts`, `internal-href.ts`, `navigation.ts`, `footer.ts`,
+`presentation/resolve.ts`, `presentation/routes.ts`, `blog-index.test.mjs`.
 
-Accepted in full: #1 (TS 7 now conditional on lint-toolchain support, sequenced separately, lint added to every gate), #3 (fresh prod server / CI=1 for e2e), #5 (draftMode() blockers named as the primary work item; bar is a useful shell), #7 (true baseline first, then Next bump, then TS bump, explicit --dir commands), #8 (fallback is now remove-the-flag + stop for user approval), #9 (smoke via Studio Presentation).
+**Accepted (plan revised):**
 
-Accepted reduced: #2 — dev sweep + prod-mode click-through added as part of the adoption step itself; kept inside step 6 rather than expanding the user's chosen verification bar. #6 — upgraded from "watch" to an explicit measure-and-mitigate step with the four request classes.
+- **Proxy blocker — confirmed and severe.** `proxy.ts:93` rejects any `/blog/` path
+  with >2 segments. Every category URL would have 404'd before Next routing. Added
+  as new step 0, ahead of everything else.
+- **Nav/footer href resolvers — confirmed, and worse than stated.** Both schemas
+  already accept `category` references and all four resolvers fall through to
+  `"/" + slug + "/"`. The bug is dormant only because categories have no slug;
+  adding one activates it. New section 4b.
+- **`getBlogPaginationUrl` hardcodes `/blog/`** — confirmed at `lib/blog-index.ts:46`.
+  Parameterised with a base path.
+- **Nested anchors** — both card variants wrap the whole card in a link. Restructure
+  to sibling links with explicit stacking.
+- **Presentation wiring absent** — confirmed. Added 6b, including the point that the
+  main-document filter must gain a separate branch rather than be widened.
+- **Migration hardening** — dry-run default, `--apply`, dataset guard, abort-on-fatal
+  (not report-and-continue), clean `{_type,_ref}` construction, revision guards,
+  parity audit, category slug patches, draft handling.
+- **`publishedPostFilter`/`blogPostOrder` are private** — confirmed; must be exported.
+- **`Rule.required()` is an error, not a warning** — my plan said warning. Corrected,
+  and it strengthens the abort-on-zero-category rule.
+- **Slug regex accepts numeric-only** — correct, `2` passes the kebab pattern. Added
+  a separate rejection.
+- **Validator needs draft/published self-exclusion** — correct; mirrors
+  `unique-root-slug.ts`.
+- **`settings` group doesn't exist on category** — correct, moved slug to `content`.
+- **Metadata generation missing** — correct, added.
+- **No verification section, and `blog-index.test.mjs` asserts the old projection** —
+  correct. Added section 8; tests updated, not deleted.
+- **Empty archives need `noindex`** — accepted the `noindex, follow` half.
 
-Rejected: #4's exhaustive URL queue. Shells are extracted per route pattern, so a representative sample per pattern (home, one slug, /blog, /blog/2, out-of-range page) yields the same proof; navigating every generated Sanity slug is O(content) ceremony with no added signal. Sampling now stated explicitly in the plan.
+**Rejected:**
+
+- **"Return 404 for empty archives."** Rejected the 404 option, took `noindex, follow`.
+  A category that exists but has no posts is not a missing resource; 404 would also
+  break Presentation preview for a newly created category before its first post.
+- **"Withhold indexing until a description exists" as the only remedy.** Adopted, but
+  paired with actually backfilling descriptions for the four non-empty categories —
+  Codex's framing would have left the pages permanently `noindex` by default, which
+  defeats the branch's purpose.
+- **Implicit scope creep toward branch 2.** Several findings gesture at the taxonomy
+  itself (empty categories, thin hubs). Out of scope here by explicit user decision;
+  both empty categories are expected to disappear in branch 2.
 
 ## Round 2 — Codex
 
-The prior findings are largely addressed. Four material problems remain:
+Most prior blockers are addressed. Material gaps remain:
 
-1. The flag is enabled before the required flag-off prefetch audit. Enabling it silences the diagnostic meant to find old full-prefetch behavior. Fix: Audit `prefetch`, `router.prefetch()`, and custom wrappers first, record the currently empty full-prefetch inventory, then enable the flag.
-2. The production command is invalid: `pnpm --dir frontend build && start` runs `start` as a separate shell command. Fix: Use `pnpm --dir frontend build && pnpm --dir frontend start`.
-3. The out-of-range blog URL cannot demonstrate an instant shell because `proxy.ts` returns a plain-text 404 before the page renders. Fix: Test shell painting only on valid URLs; verify the out-of-range URL separately for its expected plain-text 404 behavior.
-4. `prefetch={false}` contradicts the full-adoption goal: disabling pagination prefetch means `/blog/[page]` links cannot reuse a prefetched instant shell. The alternative—caching the post count—also lacks a freshness rule when posts are published or removed. Fix: Preserve pagination prefetching and define a bounded cache/invalidation policy for the proxy count, including publish/unpublish boundary checks; otherwise explicitly narrow the instant-navigation goal.
+- Presentation still opens categories at `/<slug>/`: adding `category` to [routes.ts](/Users/ovs/Work/learn/phxhomeloancom-2026/studio/presentation/routes.ts:1) makes `getPresentationPath()` use the root-path fallback. Fix: add an explicit category path branch and test the document action, location, and main-document resolver.
+
+- Footer has its own href resolver outside the four shared helpers and will still generate `/<slug>/`. Fix: explicitly update [footer.ts](/Users/ovs/Work/learn/phxhomeloancom-2026/frontend/sanity/queries/footer.ts:3) or refactor it onto the shared category-aware resolver.
+
+- Unknown category behavior remains undefined; a structurally valid nonexistent slug can reach rendering and metadata. Fix: require both routes and `generateMetadata` to call `notFound()` when `CATEGORY_QUERY` returns null, with a focused test.
+
+- The migration is revision-guarded but not explicitly atomic, so one revision failure can leave a partially converted dataset. Fix: commit all post and category patches in one transaction with synchronous visibility before auditing.
+
+- Migration classification still misses documents containing both fields, malformed existing `category` values, wrong-type targets, and conflicting existing slugs. Fix: classify every possible field shape, validate resolved targets, preserve matching values, and abort on conflicts before writing.
+
+- Category slug patches are not bound to exact document IDs or draft/published pairs. Fix: freeze the ID-to-slug mapping, audit raw document pairs, and patch every existing version or abort.
+
+- Four descriptions are promised without approved copy, source, migration mutations, or verification. Fix: provide an exact reviewed ID-to-description mapping or keep those archives out of indexing until editors author them.
+
+- Runtime robots and sitemap eligibility disagree: descriptionless categories emit `noindex` but are still sitemap-eligible. Fix: centralize one eligibility rule or exclude blank descriptions from static params and the sitemap.
+
+- Category sitemap timestamps would still use the category’s `_updatedAt`, which does not change when posts are published or reassigned. Fix: derive `lastModified` from the newest category or included-post update, or omit it.
+
+- Category proxy caching is underspecified; copying the current scalar cache can reuse one category’s count for another or create unbounded slug entries. Fix: use bounded, expiring caches and in-flight requests keyed by normalized slug, with cross-slug tests.
+
+- Category pagination must use the full post count, not the global archive’s `postCount - 1` featured-post adjustment. Fix: specify the calculation and test the 12/13-post boundary.
+
+- Automatic redirects explicitly reject `category`, and redirect validation only recognizes page/post destinations. Fix: extend both systems with `/blog/category/` path projection now, or make tested manual redirect creation a locked branch-two requirement.
+
+- `generateStaticParams` is ambiguous across two routes: `[slug]` needs `{slug}`, while `[slug]/[page]` needs `{slug,page}` and counts. Fix: define separate generators with pages `2..totalPages`, or explicitly test on-demand rendering for the child route.
+
+- Category H1 and description have no explicit `data-sanity` contract despite adding Presentation. Fix: require category document attributes for both fields and verify click-to-edit behavior.
+
+- Non-production robots protection is only implied; a new helper that merely honors `meta.noindex` could index staging. Fix: require the same environment-wide `noindex, nofollow` guard used by existing metadata helpers.
+
+- The destructive migration still lacks unit tests for its classifier and mutation builder. Fix: test dry-run, mixed states, drafts, dangling/wrong-type refs, slug conflicts, revision guards, and reruns.
 
 VERDICT: REVISE
+### Claude's response — Round 2
 
-### Claude's response
+**Verified before acting.** Read `presentation/routes.ts`, `queries/footer.ts`,
+`proxy.ts` cache internals, `functions/auto-redirect/model.ts`,
+`validation/redirect-rules.ts`.
 
-All four accepted. #1: pre-flag audit inserted as step 5 (inventory recorded before the flag flips). #2: command corrected. #3: out-of-range URL reclassified as an expected-behavior check (plain-text 404 by design), shell checks limited to valid URLs. #4: pagination prefetch stays on; the `prefetch={false}` option is dropped; mitigation, if measurement demands it, is a module-scope ~60s TTL cache on the proxy count with an explicit staleness bound (≤60s on top of Sanity CDN propagation), judged acceptable for marketing-blog pagination bounds and self-healing.
+**Accepted (plan revised):**
+
+- **`getPresentationPath` root fallback — confirmed.** Adding `"category"` to the
+  type set alone opens categories at `/<slug>/`; the function falls through to
+  `resolveContentPath`. Needs an explicit branch like `blogIndex` has.
+- **Footer has its own resolver — confirmed** at `queries/footer.ts:3`, with an
+  inline post branch outside the four shared helpers. My 4b missed it. Also added a
+  general instruction to grep for other inline href projections.
+- **`postCount - 1` must not be copied — confirmed** at `proxy.ts:104`. That is the
+  global archive's featured-post adjustment; category archives have no featured
+  post. Silent off-by-one at exact page multiples.
+- **Proxy cache is a scalar — confirmed** (`proxy.ts:19`). A per-category count
+  needs a slug-keyed, bounded, TTL'd map with per-slug in-flight dedup.
+- **Redirects genuinely do not cover categories — confirmed and worse than stated.**
+  `ROUTED_DOCUMENT_TYPES = ["page","post"]` and `model.test.mjs:159` explicitly
+  asserts category slug changes are *skipped*. Recorded as a locked mandatory
+  requirement for branch 2 rather than expanding branch 1's scope.
+- **Unknown slug must `notFound()` from both route and `generateMetadata`** — real
+  gap; metadata runs independently and would throw on null.
+- **Two separate `generateStaticParams`** — correct, `[slug]` and `[slug]/[page]`
+  need different shapes.
+- **Migration atomicity** — single transaction. With `category` required, a partial
+  conversion leaves some posts unpublishable.
+- **Migration classifier gaps** — both-fields-present, wrong-type targets, malformed
+  values. Added, including "both present and agreeing" as non-fatal.
+- **Category slug patches bound to document IDs, not titles** — correct, titles
+  change in branch 2.
+- **Single eligibility rule** — accepted. Sitemap keyed on post count while robots
+  keyed on description would emit sitemap entries for `noindex` pages.
+- **Sitemap `lastModified`** — correct that category `_updatedAt` is stale w.r.t.
+  post changes.
+- **Staging noindex guard** — accepted as a check against existing metadata helpers.
+- **Stega attributes on H1/description** — correct, follows from adding Presentation.
+- **Migration classifier unit tests** — accepted; it is pure logic and the one
+  destructive step.
+
+**Rejected / adjusted:**
+
+- **"Provide an exact reviewed ID-to-description mapping."** Rejected as stated. I
+  will not invent marketing copy for a real lender. Adjusted: descriptions are a
+  named deliverable of this branch authored by the user, and the eligibility rule
+  keeps description-less archives out of the index until copy lands — so the
+  failure mode is "not yet indexed," not "thin page indexed."
+- **Scope pressure toward branch 2.** Redirect support for categories is recorded as
+  a locked branch-2 requirement, not pulled into branch 1.
 
 ## Round 3 — Codex
 
-The prior findings are addressed: audit ordering, production command, out-of-range handling, and pagination prefetch policy are corrected. Three material problems remain:
+Most prior findings are addressed. Remaining material issues:
 
-1. The cache rationale is factually wrong. The plan assumes Sanity CDN propagation, but `useCdn` is always `false` (sanity/lib/env.ts:14), including production. Fix: Either use a dedicated CDN-enabled client for this published count query or remove the CDN assumption and define the actual freshness behavior.
-2. A module-level TTL cache does not prevent concurrent cold requests from all fetching the count, and Vercel instances do not share that cache. The plan also lacks metrics proving the mitigation works. Fix: Add promise-based single-flight, describe the cache as per-instance best effort, and test concurrent requests while recording proxy requests and Sanity query counts.
-3. The stated goal includes TypeScript 7, but the plan allows implementation to finish without it when lint compatibility fails. That silently changes the agreed scope. Fix: Either make TypeScript 7 optional in the goal or require user approval before deferring it.
+- Static generation is incorrectly coupled to SEO eligibility. With Cache Components, `generateStaticParams()` must return at least one parameter; valid periods with no eligible categories would fail the build. Fix: generate route params independently of index eligibility or return a safe placeholder handled by `notFound()`. This does not require descriptions to be authored yet. [Next.js documentation](https://nextjs.org/docs/app/api-reference/functions/generate-static-params)
+
+- `CATEGORY_SLUGS_QUERY` returns only slugs, but `[slug]/[page]` needs each category’s post count to produce pages `2..totalPages`. Fix: define a static-params query returning `{slug, publishedPostCount}` and build separate parent and child parameter arrays.
+
+- The metadata contract cannot apply the promised zero-post rule because `CATEGORY_QUERY` includes description/meta but not the published post count. Fix: project `publishedPostCount` or a shared `isIndexable` value and use it in the category metadata helper.
+
+- The migration parity audit compares every result with former `categories[0]`, which does not exist for already-migrated documents. Fix: record an `expectedCategoryRef` from whichever valid field supplied it during classification and audit against that snapshot.
+
+- Slug conflict checks cover mapped targets but not unrelated or draft-only category documents; client mutations bypass Studio validators. Fix: preflight every raw category version and assert each proposed slug is unique outside its mapped published/draft pair.
+
+- A bounded per-slug proxy cache still lets arbitrary slugs generate repeated Sanity queries and can temporarily reject newly valid pages using stale counts. Fix: cache one TTL-based snapshot of all known category slugs/counts, or document and test explicit stale/error behavior.
+
+- Sitemap `lastModified = max(category, current posts)` misses removals and reassignments because the removed post is no longer available to the query. Fix: use the plan’s stated fallback and omit category `lastModified` unless a persistent archive-update timestamp exists.
+
+- The plan repeatedly names `proxy.test.mjs`, but the repository test is [proxy.test.ts](/Users/ovs/Work/learn/phxhomeloancom-2026/frontend/proxy.test.ts). Fix: correct the plan so the Vitest test is extended rather than creating a second test file.
 
 VERDICT: REVISE
+### Claude's response — Round 3
 
-### Claude's response
+**Verified before acting.** Confirmed `cacheComponents: true` in
+`frontend/next.config.mjs:16` and that the proxy test is `frontend/proxy.test.ts`
+(Vitest), not `.mjs`.
 
-All three accepted. #1: CDN assumption removed (Codex correct — `useCdn` hardcoded false); freshness rule is now the TTL itself, stated per-instance. #2: promise-based single-flight added, cache described as per-instance best-effort on Vercel, mitigation must be proven with before/after proxy-request vs. Sanity-query counts under concurrent load. #3: defer path now stops and asks the user — scope changes are the user's to approve, not a silent downgrade in a PR note.
+**Accepted — all eight findings:**
+
+- **`generateStaticParams` must not be gated on SEO eligibility — genuine
+  build-breaker.** With `cacheComponents: true` the generator must return ≥1 entry;
+  since the eligibility rule requires a description and no descriptions exist yet,
+  the array would start empty and fail the build. Decoupled: prerender every valid
+  category, decide indexability at render time and in the sitemap. This also
+  resolves the ordering problem where the branch could not build until copy landed.
+- **Static-params query needs `{slug, publishedPostCount}`** — the child route
+  cannot expand `2..totalPages` from slugs alone.
+- **`CATEGORY_QUERY` needs the post count** for the metadata zero-post rule.
+- **Parity audit must compare against a recorded `expectedCategoryRef`** — comparing
+  everything to `categories[0]` spuriously fails already-migrated documents.
+- **Slug preflight must cover all raw category versions**, not just mapped targets;
+  script mutations bypass Studio validators entirely.
+- **Proxy cache** — switched from a per-slug map to one TTL'd snapshot of all
+  category slugs+counts: bounded by construction, no network call for unknown slugs.
+  Added explicit stale-path and fail-open behaviour.
+- **Sitemap `lastModified`** — Codex is right that my `max(category, posts)` fix was
+  still wrong: a post *removed* from a category takes its timestamp out of the
+  result set, so the value can move backwards. Omitting the field entirely.
+- **`proxy.test.mjs` → `proxy.test.ts`** — my error; would have produced a duplicate
+  test file.
+
+**Rejected:** nothing this round.
 
 ## Round 4 — Codex
 
-The three prior findings are addressed. Two new material gaps remain:
+The eight round-three findings are addressed, but new material issues remain:
 
-1. The proposed concurrent TTL cache has no automated tests for single-flight behavior, expiry, or failed Sanity requests. A retained rejected promise could break pagination until the instance restarts. Fix: Add proxy unit tests proving concurrent misses share one request, expiry triggers a new request, and failures clear the in-flight promise without caching the error.
-2. The plan calls `/blog/2` valid without proving the dataset contains enough posts; content changes could make this check exercise only the proxy 404. Fix: Select a valid pagination URL from the rendered `/blog` links at runtime, and explicitly report when no paginated route currently exists to verify.
+- Static generation still contradicts itself: lines 298–301 include every valid category, while lines 311–319 and the key decisions section still exclude zero-post categories using the obsolete `CATEGORY_SLUGS_QUERY`. Fix: remove the stale text and consistently use `CATEGORY_STATIC_PARAMS_QUERY` for every valid category.
+
+- The child `[slug]/[page]` generator can still return `[]` when no category has more than 12 posts; Cache Components rejects an empty static-params result. Fix: return a safe sentinel parameter handled by `notFound()` and test a dataset with no paginated categories. [Next.js documentation](https://nextjs.org/docs/app/api-reference/functions/generate-static-params)
+
+- The proxy snapshot design no longer explicitly preserves the existing single-flight promise, so concurrent cold or expired requests can stampede Sanity. Fix: coalesce refreshes behind one in-flight promise and test both concurrent misses and rejected refreshes.
+
+- The proxy snapshot count is not explicitly tied to the exact published-post filter used by category routes. Fix: reuse the shared filter and add a proxy-versus-route count parity test.
+
+- Migration patches only the six mapped category pairs but anticipates unmapped or draft-only categories; those could remain without the newly required slug. Fix: require every raw category version to be mapped or already have a valid unique slug, otherwise abort before writing.
+
+- Category card hrefs can contain Stega characters in Presentation because the plan does not require cleaning `category.slug.current`. Fix: apply `stegaClean()` before building category URLs in both card variants and test draft-mode navigation.
+
+- `documentDataAttribute` is currently private to `blog-card.tsx`, so the category route cannot reuse it directly as planned. Fix: export it or move it into a shared Sanity attribute helper.
 
 VERDICT: REVISE
+### Claude's response — Round 4
 
-### Claude's response
+**Verified before acting.** Confirmed `documentDataAttribute` is a module-private
+`function` at `blog-card.tsx:68`, and that the file already `stegaClean`s slugs at
+lines 91 and 122 before building hrefs.
 
-Both accepted. #1: if the TTL cache lands, `proxy.test.ts` gains unit tests for single-flight sharing, expiry refetch, and rejected-promise cleanup (no cached errors). #2: pagination URL is now selected from the links actually rendered on `/blog`; if none exist, that's reported and the pagination shell check is skipped explicitly.
+**Accepted — all seven findings:**
+
+- **Self-contradiction in the plan — my error.** My round-3 edit decoupled static
+  generation from eligibility in the routing section but left the old
+  "`generateStaticParams` uses `CATEGORY_SLUGS_QUERY` so zero-post categories are
+  not statically generated" text and the matching key-decisions bullet in place.
+  Both rewritten to match the decoupled design.
+- **Child generator can also return `[]`** — and this is not hypothetical: it is
+  exactly the state after branch 2, when the largest bucket is ~12 posts and no
+  category paginates. Sentinel param + `notFound()`, with a test.
+- **Single-flight promise must be preserved** — the existing scalar cache already
+  coalesces via `blogPostCountPromise`; my snapshot rewrite dropped that detail.
+  Restored, including `finally` cleanup so a rejected refresh cannot wedge it.
+- **Proxy count must use the shared `publishedPostFilter`** — a divergent count
+  means the proxy 404s pages the route would render.
+- **Every raw category version needs a valid slug** — `slug` is required, so an
+  unmapped draft-only category would be left unpublishable. Abort with IDs printed.
+- **Stega in category hrefs** — the file cleans every other slug before building a
+  URL; the category href would have been the lone exception, breaking navigation in
+  Presentation.
+- **`documentDataAttribute` is private** — must be exported or lifted to a shared
+  helper rather than duplicated.
+
+**Rejected:** nothing this round.
 
 ## Round 5 — Codex
 
-Both prior findings are addressed:
-
-- The proxy cache now has tests for concurrency, expiry, and failed-request recovery.
-- Pagination verification now selects a valid rendered link instead of assuming `/blog/2` exists.
-
-No new material flaws found. The plan is sound enough to implement.
+All seven round-four findings are addressed. No remaining issue is likely to break implementation or produce materially wrong behavior.
 
 VERDICT: APPROVED
-
 ---
-Converged after 5 rounds (4× REVISE, 1× APPROVED). Reviewer: gpt-5.6-sol via codex-cli 0.147.0, effort medium, read-only throughout.
 
-## Act 3 — Build
-
-### Round 1 — Codex build
-
-Codex (gpt-5.6-sol, --yolo sandbox, thread 019fec55-cdf5-7b62-a8ba-e0a045fdeda9) implemented the headless scope in 13m25s / ~132k tokens. Report summary:
-
-- Baseline recorded first; pre-existing lint failure found (2 errors in generated PHXHomeLoan-web-prototype/support.js) and cleared by adding the prototype dir to eslint ignores.
-- Bumped next / eslint-config-next / @next/third-parties to 16.3.0 (exact pins).
-- Pre-flag prefetch inventory recorded: zero prefetch={true}, zero router.prefetch(); one prefetch={false} on an external YouTube link; HeaderLink/FooterLink/SectionLink wrappers all default prefetching.
-- Enabled partialPrefetching; restructured (main)/layout.tsx and all four page routes so draftMode() sits inside Suspense with useful shells (navy hero skeleton + card grid; layout keeps HeaderFallback/FooterFallback around children).
-- Proxy: 60s TTL cache with promise single-flight and rejection cleanup on the blog count query; pagination prefetch preserved. proxy.test.ts extended (+6 tests: single-flight, expiry, rejection retry, main-route, draft-mode, out-of-range).
-- DEVIATION: TypeScript left at ^6.0.3 — typescript-eslint (8.63.0 resolved; 8.66.0 latest) caps peer at TS <6.1.0; no TS-7-compatible lint toolchain exists. Per plan, deferred to user decision.
-- All five proof commands green in Codex's run.
-
-### Claude's verdict
-
-Diff read in full — clean, consistent pattern, style-matched; eslint ignore addition judged in-scope (lint was a proof gate and the failure was pre-existing on the baseline). Proof re-run independently: build (89 pages, ◐ PPR on /[...slug] and /blog/[page]), typecheck, lint, 92/92 vitest, 2/2 e2e (CI=1, fresh prod server) — all green.
-
-Browser verification (Claude, per plan step 7):
-- Dev sweep: /, /blog/, /blog/2/, /apply/ — zero console errors, zero DevTools insights.
-- Presentation smoke: draft mode entered via Studio, draft content rendered on /, /contact/ ([...slug]) and /blog/; live edit round-trip proven (hero heading edit streamed into preview in ~1s, reverted, byte-identical draft verified via GROQ then discarded); Disable Draft Mode works.
-- Prod-mode (next start): pagination links selected from rendered /blog page (/blog/2/../5/); client-side nav to /contact/ and /blog/2/ instant; /blog/2/ initial HTML contains the shell skeleton with content streamed after (curl-verified); /blog/99/ returns proxy plain-text 404 as designed; viewport-triggered prefetch burst of all four pagination pages observed (the exact single-flight scenario the proxy cache absorbs).
-- Observation: 16.3's auto-maintained AGENTS.md block did not appear during dev sessions; nothing to commit. Non-blocking — it self-maintains when Next writes it.
-
-Verdict: build accepted, zero fix rounds needed. TS 7 deferral escalated to user (scope change per plan).
+**Converged after 5 rounds.** No code written during either act.
