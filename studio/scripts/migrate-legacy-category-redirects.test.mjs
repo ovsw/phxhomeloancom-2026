@@ -7,6 +7,7 @@ import {
   assertTargetDataset,
   buildDryRunReport,
   buildMigrationPlan,
+  planTopologyError,
 } from "./migrate-legacy-category-redirects.ts";
 
 const CATEGORY_SLUGS = [
@@ -134,4 +135,43 @@ test("reports dry-run mode and enforces the sole target dataset", () => {
     () => assertTargetDataset({ projectId: "hv0545v9", dataset: "other" }),
     /Refusing to run outside hv0545v9\/development/,
   );
+});
+
+test("accepts a topology with no chains", () => {
+  const plan = buildMigrationPlan(inventory());
+  const error = planTopologyError(
+    inventory(),
+    plan.records.map((record) => record.document),
+  );
+  assert.equal(error, undefined);
+});
+
+test("rejects a chain formed with an existing redirect", () => {
+  // An existing redirect INTO a legacy source turns the planned redirect into
+  // the second hop of a chain, which compileNextRedirects rejects at build time.
+  const existing = {
+    _id: "redirect-existing",
+    _type: "redirect",
+    status: "active",
+    permanent: "true",
+    source: { _type: "slug", current: "/old-archive/" },
+    destination: { _type: "slug", current: "/types-of-loans/" },
+  };
+  const withExisting = inventory({ redirects: [existing] });
+  const plan = buildMigrationPlan(withExisting);
+  const error = planTopologyError(
+    withExisting,
+    plan.records.map((record) => record.document),
+  );
+  assert.ok(error, "a chain must be reported");
+  assert.match(error, /chain|cycle/i);
+});
+
+test("does not double-count a planned redirect that already exists", () => {
+  // A re-run classifies the five as no-op; counting them as both existing and
+  // planned would look like a conflicting source and abort a valid re-run.
+  const plan = buildMigrationPlan(inventory());
+  const planned = plan.records.map((record) => record.document);
+  const migrated = inventory({ redirects: planned });
+  assert.equal(planTopologyError(migrated, planned), undefined);
 });

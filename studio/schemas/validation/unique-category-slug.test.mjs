@@ -98,10 +98,27 @@ test("excludes the current published and draft IDs from collision checks", async
     true,
   );
   assert.match(query, /_type == "category"/);
-  assert.match(query, /!\(_id in \[\$publishedId, \$draftId\]\)/);
+  // versionOf covers published, draft, AND versions.<releaseId>. documents; an
+  // id-list exclusion would miss release versions under the raw perspective.
+  assert.match(query, /!sanity::versionOf\(\$publishedId\)/);
   assert.deepEqual(params, {
-    draftId: "drafts.category-id",
     publishedId: "category-id",
     slug: "loan-types",
+  });
+});
+
+test("normalises a release version id down to the published id", () => {
+  let params;
+  const context = createContext({
+    documentId: "versions.rAbC123.category-id",
+    fetch: async (_query, receivedParams) => {
+      params = receivedParams;
+      return null;
+    },
+  });
+
+  return uniqueCategorySlug({ current: "loan-types" }, context).then(() => {
+    // sanity::versionOf rejects anything but a published id.
+    assert.equal(params.publishedId, "category-id");
   });
 });

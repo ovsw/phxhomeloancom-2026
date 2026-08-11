@@ -22,8 +22,9 @@ export async function uniqueCategorySlug(
   const documentId = context.document?._id;
   if (!documentId) return true;
 
-  const publishedId = documentId.replace(/^drafts\./, "");
-  const draftId = `drafts.${publishedId}`;
+  // sanity::versionOf expects a published id; normalise drafts and release
+  // versions (`versions.<releaseId>.<publishedId>`) down to it.
+  const publishedId = documentId.replace(/^drafts\./, "").replace(/^versions\.[^.]+\./, "");
   const client = context
     .getClient({ apiVersion: "2026-03-23" })
     .withConfig({ perspective: "raw" });
@@ -31,12 +32,16 @@ export async function uniqueCategorySlug(
     _id: string;
     slug: string;
   } | null>(
+    // Exclude every version of this category, not just published + draft. Under
+    // the raw perspective a content release also surfaces
+    // `versions.<releaseId>.<publishedId>`, which an id-list exclusion misses —
+    // the category would collide with its own release version.
     `*[
       _type == "category" &&
-      !(_id in [$publishedId, $draftId]) &&
+      !sanity::versionOf($publishedId) &&
       slug.current == $slug
     ][0]{_id, "slug": slug.current}`,
-    { draftId, publishedId, slug: current },
+    { publishedId, slug: current },
   );
 
   return collision

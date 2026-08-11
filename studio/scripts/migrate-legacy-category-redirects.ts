@@ -7,6 +7,7 @@ import { getPresentationPath } from "../presentation/routes.ts";
 import {
   normalizeRedirectPath,
   readRedirectPath,
+  topologyError,
   type RedirectRecord,
 } from "../schemas/validation/redirect-rules.ts";
 
@@ -181,6 +182,27 @@ export function buildMigrationPlan(
   };
 }
 
+/**
+ * Validate the whole resulting redirect graph, not just per-source ownership.
+ *
+ * classifyRedirect only proves each planned source is unowned. It cannot see
+ * that an existing `/old/ -> /types-of-loans/` redirect plus the planned
+ * `/types-of-loans/ -> /blog/category/loan-types/` forms a chain — which
+ * compileNextRedirects rejects at build time, long after the data is written.
+ * Running the same topology rules the Function uses catches it before the
+ * transaction opens.
+ */
+export function planTopologyError(
+  inventory: MigrationInventory,
+  planned: ExpectedRedirectDocument[],
+) {
+  const plannedIds = new Set(planned.map((document) => document._id));
+  const existing = inventory.redirects.filter(
+    (redirect) => !plannedIds.has(redirect._id),
+  );
+  return topologyError([...existing, ...planned] as RedirectRecord[]);
+}
+
 export function buildDryRunReport(plan: MigrationPlan, apply = false) {
   return {
     projectId: PROJECT_ID,
@@ -208,7 +230,11 @@ async function fetchInventory(
 ): Promise<MigrationInventory> {
   return client.fetch<MigrationInventory>(
     `{
-      "categorySlugs": *[_type == "category" && defined(slug.current)].slug.current,
+      "categorySlugs": *[
+        _type == "category" &&
+        !(_id in path("drafts.**")) &&
+        defined(slug.current)
+      ].slug.current,
       "redirects": *[_type == "redirect"]{
         _id,
         _type,
@@ -230,7 +256,10 @@ export async function run() {
   const client = getCliClient({
     apiVersion: API_VERSION,
     dataset: DATASET,
-    perspective: "published",
+    // Raw, not published: a draft page, category, or redirect can already own a
+    // legacy source and would collide the moment it publishes. The published
+    // perspective hides exactly the documents this preflight exists to catch.
+    perspective: "raw",
     useCdn: false,
   });
   assertTargetDataset(client.config());
@@ -242,6 +271,14 @@ export async function run() {
   if (plan.fatal.length) {
     throw new Error(`Aborting before writes: ${plan.fatal.length} fatal issue(s)`);
   }
+
+  const topology = planTopologyError(
+    inventory,
+    plan.records.map((record) => record.document),
+  );
+  if (topology) {
+    throw new Error(`Aborting before writes: redirect topology — ${topology}`);
+  }
   if (!apply) return;
 
   if (plan.creates.length) {
@@ -252,11 +289,19 @@ export async function run() {
     await transaction.commit({ visibility: "sync" });
   }
 
-  const after = buildMigrationPlan(await fetchInventory(client));
+  // Re-read the full raw inventory rather than checking only the deterministic
+  // ids: a redirect created under a different id between preflight and commit
+  // is invisible to an id-scoped audit but still breaks the build.
+  const afterInventory = await fetchInventory(client);
+  const after = buildMigrationPlan(afterInventory);
   if (after.summary.noOp !== LEGACY_CATEGORY_REDIRECTS.length) {
     throw new Error(
       `Post-write check failed: expected ${LEGACY_CATEGORY_REDIRECTS.length} redirects in place, got ${after.summary.noOp}`,
     );
+  }
+  const afterTopology = planTopologyError(afterInventory, []);
+  if (afterTopology) {
+    throw new Error(`Post-write topology check failed: ${afterTopology}`);
   }
   console.log(
     JSON.stringify({ applied: true, created: plan.creates.length }, null, 2),

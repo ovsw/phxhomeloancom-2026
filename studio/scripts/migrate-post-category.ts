@@ -7,6 +7,16 @@ const API_VERSION = "2026-08-11";
 const PROJECT_ID = "hv0545v9";
 const DATASET = "development";
 
+/**
+ * The pre-rename slugs this migration normalised. Superseded by
+ * migrate-category-taxonomy.ts, which renamed every one of these.
+ *
+ * This script is spent. It is kept for the record, but re-running it against a
+ * migrated dataset would rewrite the taxonomy slugs back to these values,
+ * silently reverting the rename and turning the five legacy category redirects
+ * into 301s pointing at archives that no longer exist. TAXONOMY_SLUGS below is
+ * the guard that stops it.
+ */
 export const CATEGORY_SLUGS = {
   "5fd54e84-404e-459f-bc8f-6ea5435149f9": "mortgage-requirements",
   "66619325-b9e7-4b38-8120-dfbf16e9af7c": "realtor-information",
@@ -15,6 +25,20 @@ export const CATEGORY_SLUGS = {
   "a8649d6b-6478-4c41-8294-e3b947539946": "benefits-of-buying-now",
   "ec3cbe04-4630-4c73-bc41-f73523b2de97": "personal-finances",
 } as const;
+
+/**
+ * Post-rename slugs, from migrate-category-taxonomy.ts. A category already
+ * carrying one of these means the taxonomy migration has run and this script
+ * must not touch it. `loan-types` is deliberately absent: it is unchanged by the
+ * rename, so its presence proves nothing either way.
+ */
+export const TAXONOMY_SLUGS: Record<string, string> = {
+  "5fd54e84-404e-459f-bc8f-6ea5435149f9": "mortgage-rates",
+  "66619325-b9e7-4b38-8120-dfbf16e9af7c": "refinance",
+  "9c4c1393-afe8-4eb4-b662-a20789de0c1b": "getting-approved",
+  "a8649d6b-6478-4c41-8294-e3b947539946": "buying-process",
+  "ec3cbe04-4630-4c73-bc41-f73523b2de97": "closing-costs",
+};
 
 type Reference = {
   _ref: string;
@@ -212,6 +236,22 @@ function planCategories(categories: CategoryDocument[]) {
         id,
         status: "fatal",
         reason: "mapped category has no published or draft document",
+      });
+    }
+  }
+
+  // Ordering guard: if any category already carries a post-rename slug, the
+  // taxonomy migration has run and this one is obsolete. Continuing would set
+  // the slug back to its pre-rename value, reverting the rename and orphaning
+  // the legacy category redirects that point at the new archives.
+  for (const category of categories) {
+    const id = publishedId(category._id);
+    const taxonomySlug = TAXONOMY_SLUGS[id];
+    if (taxonomySlug && category.slug?.current === taxonomySlug) {
+      results.push({
+        id: category._id,
+        status: "fatal",
+        reason: `category already migrated to "${taxonomySlug}" by migrate-category-taxonomy.ts — this script is superseded and would revert the rename`,
       });
     }
   }

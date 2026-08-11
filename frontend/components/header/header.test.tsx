@@ -81,6 +81,11 @@ describe("Site Header", () => {
     render(<Header model={model} />);
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
+    // The site ships light-theme-only (docs/adr/0001), so the header must not
+    // regain a theme toggle. Its accessible name comes from menu-toggle.tsx.
+    expect(
+      screen.queryByRole("button", { name: "Toggle theme" }),
+    ).not.toBeInTheDocument();
     expect(screen.getAllByRole("navigation", { name: "Main navigation" })).toHaveLength(1);
     expect(screen.getAllByRole("link", { name: "Contact" })[0]).toHaveAttribute("href", "/contact");
     await user.click(screen.getByRole("button", { name: "Loan Types" }));

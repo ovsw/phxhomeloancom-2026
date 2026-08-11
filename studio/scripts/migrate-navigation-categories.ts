@@ -3,6 +3,8 @@ import { pathToFileURL } from "node:url";
 import type { Patch } from "@sanity/client";
 import { getCliClient } from "sanity/cli";
 
+import { CATEGORY_PLAN } from "./migrate-category-taxonomy.ts";
+
 const API_VERSION = "2026-08-11";
 const PROJECT_ID = "hv0545v9";
 const DATASET = "development";
@@ -57,14 +59,19 @@ export const NAVIGATION_LINK_PLAN = {
   },
 } as const;
 
-/** Category id -> expected slug, asserted so a wrong rename aborts the run. */
-export const EXPECTED_CATEGORY_SLUGS: Record<string, string> = {
-  "9e74332a-7a4e-4322-bd00-91dd80c29e94": "loan-types",
-  "ec3cbe04-4630-4c73-bc41-f73523b2de97": "closing-costs",
-  "5fd54e84-404e-459f-bc8f-6ea5435149f9": "mortgage-rates",
-  "a8649d6b-6478-4c41-8294-e3b947539946": "buying-process",
-  "9c4c1393-afe8-4eb4-b662-a20789de0c1b": "getting-approved",
-};
+/**
+ * Category id -> expected slug, asserted so a wrong rename aborts the run.
+ * Derived from CATEGORY_PLAN rather than redeclared: a second hand-maintained
+ * copy of the same table is exactly how the three migration scripts drifted
+ * apart in the first place. Only the five categories the nav links to are
+ * included; `realtor-information`/`refinance` has no submenu entry.
+ */
+export const EXPECTED_CATEGORY_SLUGS: Record<string, string> = Object.fromEntries(
+  Object.values(NAVIGATION_LINK_PLAN).map((link) => [
+    link.categoryId,
+    CATEGORY_PLAN[link.categoryId as keyof typeof CATEGORY_PLAN].slug,
+  ]),
+);
 
 export type NavigationLink = {
   _key: string;

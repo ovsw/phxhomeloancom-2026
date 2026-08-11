@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   CATEGORY_SLUGS,
+  TAXONOMY_SLUGS,
   buildDryRunReport,
   buildMigrationPlan,
   buildTargetTypes,
@@ -264,4 +265,35 @@ test("is idempotent after category fields and slugs are migrated", () => {
   assert.equal(plan.postMutations.length, 0);
   assert.equal(plan.categoryMutations.length, 0);
   assert.deepEqual(plan.fatal, []);
+});
+
+test("aborts when the taxonomy migration has already renamed a category", () => {
+  // migrate-category-taxonomy.ts supersedes this script. Re-running it against a
+  // migrated dataset would rewrite the new slugs back to the old ones, reverting
+  // the rename and orphaning the legacy category redirects.
+  const [renamedId, renamedSlug] = Object.entries(TAXONOMY_SLUGS)[0];
+  const migrated = Object.entries(CATEGORY_SLUGS).map(([id, slug]) => ({
+    _id: id,
+    _rev: `rev-${id}`,
+    slug: { _type: "slug", current: id === renamedId ? renamedSlug : slug },
+  }));
+
+  const plan = buildMigrationPlan([post()], migrated, targetTypes);
+  const fatal = plan.categories.find(
+    (category) => category.id === renamedId && category.status === "fatal",
+  );
+  assert.ok(fatal, "a renamed category must classify as fatal");
+  assert.match(fatal.reason, /superseded|already migrated/);
+});
+
+test("TAXONOMY_SLUGS omits loan-types, whose slug the rename left unchanged", () => {
+  // Its presence would prove nothing: it reads the same before and after.
+  assert.equal(TAXONOMY_SLUGS["9e74332a-7a4e-4322-bd00-91dd80c29e94"], undefined);
+  assert.equal(
+    CATEGORY_SLUGS["9e74332a-7a4e-4322-bd00-91dd80c29e94"],
+    "loan-types",
+  );
+  for (const [id, slug] of Object.entries(TAXONOMY_SLUGS)) {
+    assert.notEqual(slug, CATEGORY_SLUGS[id], `${id} must actually change`);
+  }
 });
