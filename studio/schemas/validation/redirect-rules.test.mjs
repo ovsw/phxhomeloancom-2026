@@ -66,6 +66,35 @@ test("rejects self redirects and sources that shadow routes", () => {
   );
 });
 
+test("rejects category sources that shadow public category routes", () => {
+  assert.match(
+    issues(
+      {
+        source: "/blog/category/loan-types/",
+        destination: "/target/",
+      },
+      [],
+      [{ path: "/blog/category/loan-types/", type: "category" }],
+    ).errors.source,
+    /already used by a category/,
+  );
+});
+
+test("recognizes public category routes as existing destinations", () => {
+  assert.deepEqual(
+    issues(
+      {
+        source: "/legacy-category/",
+        destination: "/blog/category/loan-types/",
+        status: "active",
+      },
+      [],
+      [{ path: "/blog/category/loan-types/", type: "category" }],
+    ),
+    { destinationWarning: undefined, errors: {} },
+  );
+});
+
 test("warns instead of blocking when a destination has no published route", () => {
   assert.deepEqual(
     issues({ source: "/old", destination: "/missing", status: "active" }),

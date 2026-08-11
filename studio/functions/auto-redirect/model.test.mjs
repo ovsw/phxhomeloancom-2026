@@ -153,10 +153,39 @@ test("blocks route collisions and redirect chains", () => {
   );
 });
 
+test("creates category redirects inside the public category namespace", () => {
+  assert.deepEqual(
+    planAutoRedirect({
+      event: { beforeSlug: "old", documentType: "category", slug: "new" },
+      liveRoutes: [],
+      redirects: [],
+    }),
+    {
+      action: "apply",
+      create: true,
+      destination: "/blog/category/new/",
+      retarget: [],
+      source: "/blog/category/old/",
+    },
+  );
+});
+
+test("never generates root-level sources for category renames", () => {
+  const plan = planAutoRedirect({
+    event: { beforeSlug: "loan-types", documentType: "category", slug: "loans" },
+    liveRoutes: [],
+    redirects: [],
+  });
+
+  assert.equal(plan.action, "apply");
+  assert.equal(plan.source, "/blog/category/loan-types/");
+  assert.notEqual(plan.source, "/loan-types/");
+});
+
 test("ignores unsupported document types and first publications", () => {
   assert.equal(
     planAutoRedirect({
-      event: { beforeSlug: "/old", documentType: "category", slug: "/new" },
+      event: { beforeSlug: "/old", documentType: "author", slug: "/new" },
       liveRoutes: [],
       redirects: [],
     }).action,
@@ -204,4 +233,58 @@ test("derives a stable redirect id from the source path", () => {
   assert.equal(autoRedirectId("/old-path/"), autoRedirectId("/old-path/"));
   assert.notEqual(autoRedirectId("/old-path/"), autoRedirectId("/other-path/"));
   assert.match(autoRedirectId("/old-path/"), /^redirect-[0-9a-f]{24}$/);
+});
+
+test("duplicate redelivery reuses the id and does not plan another create", () => {
+  const event = {
+    beforeSlug: "old-category",
+    documentType: "category",
+    slug: "new-category",
+  };
+  const first = planAutoRedirect({ event, liveRoutes: [], redirects: [] });
+
+  assert.equal(first.action, "apply");
+  assert.equal(first.create, true);
+  const redirectId = autoRedirectId(first.source);
+
+  const second = planAutoRedirect({
+    event,
+    liveRoutes: [],
+    redirects: [
+      {
+        _id: redirectId,
+        source: first.source,
+        destination: first.destination,
+        status: "active",
+      },
+    ],
+  });
+
+  assert.equal(autoRedirectId(first.source), redirectId);
+  assert.equal(second.action, "apply");
+  assert.equal(second.create, false);
+});
+
+test("documents the out-of-order rename orphan", () => {
+  const newerRename = planAutoRedirect({
+    event: { beforeSlug: "/b", documentType: "page", slug: "/c" },
+    liveRoutes: [],
+    redirects: [],
+  });
+  assert.equal(newerRename.action, "apply");
+
+  const olderRename = planAutoRedirect({
+    event: { beforeSlug: "/a", documentType: "page", slug: "/b" },
+    liveRoutes: [],
+    redirects: [
+      {
+        source: newerRename.source,
+        destination: newerRename.destination,
+        status: "active",
+      },
+    ],
+  });
+
+  assert.equal(olderRename.action, "skip");
+  assert.match(olderRename.reason, /new route is already a redirect source/i);
 });

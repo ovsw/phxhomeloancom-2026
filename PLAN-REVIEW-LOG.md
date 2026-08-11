@@ -214,3 +214,26 @@ VERDICT: APPROVED
 ## Resolution
 
 Converged at round 5 of 5 with `VERDICT: APPROVED`. Awaiting user sign-off before any code is written.
+
+## Act 3 — Build
+
+Builder: Codex `gpt-5.6-sol`, codex-cli 0.147.0. Thread `019fef38-a806-7170-a068-7253e3078f59`. Scope: **Part A only** (function fixes + `topologyError` extraction + migration script written-but-not-run).
+
+### Round 1 — Codex build
+
+Reported: 8 files (6 modified, 2 new), no deviations from spec. Proof `pnpm test && pnpm typecheck` passing.
+
+### Claude's verdict — ACCEPTED, no fix rounds needed
+
+Verified independently rather than trusting the report:
+
+- **Proof reproduced.** `pnpm test` → 106 frontend vitest + **121 node tests, 0 failures**. `pnpm typecheck` clean in both workspaces.
+- **Scope respected.** `git status` shows only the 8 intended files. No dataset connection, no writes, no deploy, no rename — the Part B fence held.
+- **Core bug fixed correctly** (`model.ts:70-76`): both `beforeSlug` and `slug` now route through `getPresentationPath` before normalizing. Verified by direct execution that page/post behaviour is unchanged (`foo` → `/foo/`, `/apply` → `/apply/`) while `category` now yields `/blog/category/loan-types/` instead of the phantom `/loan-types`. Empty/undefined slugs still return null, preserving the existing "no previous slug" skip path.
+- **`topologyError` extracted cleanly** to `redirect-rules.ts:59` as a pure move, exported for the rename branch to import. `model.ts` imports it. Behaviour identical — it now closes over the local `active()` rather than `isActive()`, which are the same predicate.
+- **Both `liveRoutes` queries materialize real paths** (`index.ts:38-55`, `redirect-rules.ts:193-228`), selecting `_type` and mapping via `getPresentationPath` post-fetch, since GROQ cannot call it.
+- **The two critical tests assert honestly.** `never generates root-level sources for category renames` asserts the source is `/blog/category/loan-types/` and explicitly *not* `/loan-types/`. `documents the out-of-order rename orphan` asserts `action: "skip"` — it pins the defect rather than claiming safety, as specified. The old category-skip assertion was repurposed to `author` rather than deleted, preserving unsupported-type coverage.
+
+No fix rounds used (MAX_FIX_ROUNDS=2, 0 consumed).
+
+**Part B remains outstanding** and is blocked on the rename branch: run the migration dry-run, `--apply`, deploy the blueprint, and curl the five legacy URLs for 301s.
