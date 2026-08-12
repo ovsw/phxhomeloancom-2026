@@ -1,6 +1,8 @@
 import { defineQuery } from "next-sanity";
 
-import { redirectDestinationPath } from "./shared/redirect-destination";
+// Extension is explicit: next.config.mjs imports this module, and Node resolves
+// those specifiers literally rather than through TypeScript's resolver.
+import { redirectDestinationPath } from "./shared/redirect-destination.ts";
 
 export const REDIRECTS_QUERY = defineQuery(/* groq */ `
   *[
