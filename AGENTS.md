@@ -6,6 +6,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 <!-- END:nextjs-agent-rules -->
 
+## Dev Server rules
+If you need a dev server for inspecting the front-end or the back-end, please first check that the server or the running at that port is not actually the exact server that you need. If it is, use it, instead of starting a new one.
+
+
 ## Shell discipline and reporting observations
 
 The Bash tool's working directory **persists between calls**. A `cd` in one
