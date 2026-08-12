@@ -1,120 +1,167 @@
-# Plan: Restore the five legacy root-level blog category archive URLs
-_Locked via grill — by Claude + OVIS_
+# Plan: No-skeleton cacheComponents architecture (turbo-start-sanity PR #432 pattern, improved)
+_Locked via grill — by Claude + Ovi_
 
 ## Goal
 
-The old WordPress site served five blog category archives at root-level URLs (`/types-of-loans/`, `/personal-finances/`, `/requirements/`, `/benefits-of-buying-now/`, `/buyer-education/`), linked from the main nav. Branch `feat/blog-taxonomy` moved category archives to `/blog/category/<slug>/` with no redirects, so all five legacy URLs now 404. A follow-up branch renames all six categories, which would break any redirect written against today's slugs.
+Eliminate every flash of skeleton/unloaded content on this site by making the published
+site fully prerendered static HTML, while keeping full Sanity Presentation editing
+(draft preview, visual editing overlays, perspective switcher) working. The pattern is
+the one robotostudio landed in turbo-start-sanity PR #432: branch once on `draftMode()`
+per route, render the published path straight from `"use cache"` fetchers with literal
+`perspective: "published", stega: false` (no Suspense, no cookie reads), and let the
+draft path block instead of suspend. Improvements over the starter: header/footer draft
+preview is kept, and the revalidation action is fixed to next-sanity 13's official
+semantics.
 
-This plan does two separate things. First, it hand-authors five redirect documents — via a checked-in, re-runnable migration script — mapping each legacy root URL to its final post-rename destination. Second, it adds ordinary `category` support to the `auto-redirect` Sanity Function so *future* category renames mint `/blog/category/old/` → `/blog/category/new/` automatically. The legacy root-level quirk is deliberately kept out of the function: it is a one-time historical artifact with a known, closed list, and encoding it in shared redirect infrastructure would leave a permanently dead branch that every future reader has to reason about.
-
-The backfill runs **after** the rename branch lands, so every redirect is authored once, against a destination that already resolves.
+Stack: Next 16.3.0, next-sanity 13.3.1, `cacheComponents: true`. All data fetches are
+already `"use cache"` via `sanityFetch` from `defineLive` (frontend/sanity/lib/live.ts is
+the verbatim official setup). Pagination is path-based (`/blog/2/`, `/blog/category/x/2/`),
+so no route depends on `searchParams`.
 
 ## Approach
 
-**This plan has two parts. Part A runs first and unblocks the rename branch; Part B runs after the rename.** There is no circular dependency: the rename branch is blocked on the *function fixes* (categories excluded in two places, root-level paths derived wrongly), not on redirect documents. Order is: Part A → rename branch → Part B.
+0. **Spike first, then roll out**: convert ONE representative route (`[...slug]`) plus
+   the layout, run `next build`, and confirm the route table shows it fully
+   prerendered with real content and no fallback markers in its HTML. Only then apply
+   the pattern to the remaining routes. (The starter's build demonstrably behaves this
+   way, but we prove it in this repo before committing to the global rewrite.)
 
-- **Part A — steps 2-7.** Function fixes plus the `topologyError` extraction. Independent of the rename. Proof is `pnpm test` + `pnpm typecheck`.
-- **Part B — steps 8-9.** Running the backfill migration and verifying the five legacy URLs. Requires the six final slugs (`mortgage-rates`, `getting-approved`, `loan-types`, `closing-costs`, `buying-process`, `refinancing`) to exist, so it runs after the rename branch.
+1. **Config** (frontend/next.config.mjs): remove `partialPrefetching: true`. With fully
+   prerendered pages, default `<Link>` prefetching downloads whole pages — instant
+   navigation with zero streaming gap. `cacheLife: { default: sanity }` is already set;
+   keep it.
 
-1. **Extract `topologyError` for reuse.** `model.ts:58` defines `topologyError` as a module-private function. The rename branch needs to import it to validate topology before writing. Move it to a shared module (alongside `normalizeRedirectPath` in `studio/schemas/validation/redirect-rules.ts`, which both the function and the Studio already import) and export it, leaving `model.ts` importing it rather than defining it. Behaviour unchanged — this is a pure move.
+2. **Layout** (frontend/app/(main)/layout.tsx): replace the Suspense-wrapped dual tree.
+   Branch on `await draftMode()`: published → render `CachedHeader`/`CachedFooter`
+   directly (literal `perspective="published"`, `stega={false}`), no Suspense boundary;
+   draft → render the Dynamic header/footer (cookie-resolved perspective), also without
+   skeleton fallbacks. Delete `HeaderFallback`/`FooterFallback`. `SanityLive` (and
+   draft-only `VisualEditing`/`DisableDraftMode`) stay in the layout; placement details
+   are implementation-level, constrained by "must not reintroduce a fallback into the
+   published shell". Note: layout.tsx currently carries an uncommitted interim edit
+   (real-content fallbacks) — this step supersedes it.
 
-2. **Widen the blueprint event filter.** `studio/sanity.blueprint.ts:16` filters function events with `_type in ["page", "post"] && delta::changedAny(slug.current)`. Category publishes never reach the function today, so changing `ROUTED_DOCUMENT_TYPES` alone would be a silent no-op. Add `"category"` to that filter. The existing projection already emits `documentType`, so no projection change is needed.
+3. **Every route** (home, `[...slug]`, blog index, `blog/[page]`,
+   `blog/category/[slug]`, `blog/category/[slug]/[page]`): same restructure. Top of the
+   route: `const { isEnabled } = await draftMode()`. Draft → existing Dynamic component,
+   no Suspense (navigation blocks; previous page stays on screen). Published → await the
+   cached fetcher directly with published literals, `notFound()` before any HTML is sent
+   (hard 404 restored), render the content component. Delete all `PageFallback` skeleton
+   components. Since no route reads `searchParams`, no Suspense boundary should survive
+   in production; if implementation turns up a genuine exception, its fallback must
+   render real cached published content (starter's blog-shell trick), never a skeleton.
 
-3. **Resolve event slugs through a type-aware path resolver — this is the core fix.** `model.ts:98-99` currently normalizes the raw event slugs directly: `normalizeRedirectPath(event.beforeSlug)`. For a post, slug `foo` happens to normalize to `/foo`, which is the correct public path by coincidence. For a category, slug `loan-types` would normalize to `/loan-types` — a root path that was never public — instead of `/blog/category/loan-types/`. Route both `beforeSlug` and `slug` through `getPresentationPath(event.documentType, slug)` (from `studio/presentation/routes.ts`) before normalizing, so every generated redirect uses the document type's real public path shape. Without this, adding `category` to the routed types generates redirects between two non-existent root URLs.
+   Two sub-requirements surfaced in review:
+   - **Static params coverage**: every paginated route must have `generateStaticParams`
+     covering all currently existing pages (audit found `blog/[page]` may lack one).
+     Paths NOT known at build time (brand-new posts, future pagination pages) block on
+     the server on first visit, then get cached — a deliberate decision. Mechanism:
+     `export const instant = false` (documented in Next 16.3's instant-navigation
+     guide) on each param-bearing segment: `[...slug]`, `blog/[page]`,
+     `blog/category/[slug]`, `blog/category/[slug]/[page]`. Spike/build must confirm
+     the known paths of those segments remain prerendered while an unlisted path
+     blocks and resolves correctly. No skeleton boundary is added for them.
+   - **Metadata goes published-only**: every `generateMetadata` currently calls
+     `getDynamicFetchOptions()` (draftMode + potentially cookies), which risks making
+     otherwise-static routes request-bound. Change all `generateMetadata` to literal
+     `perspective: "published", stega: false` via `sanityFetchMetadata`. Draft sessions
+     get published metadata — irrelevant to editing, invisible to visitors.
 
-4. **Materialize real paths in BOTH `liveRoutes` collision snapshots.** There are two separate queries returning raw `"path": slug.current`, and both must change:
-   - `studio/functions/auto-redirect/index.ts:37-48` — the function's runtime snapshot.
-   - `studio/schemas/validation/redirect-rules.ts:176` — the Studio validator's snapshot.
+4. **Revalidation** (frontend/app/actions/revalidate.ts): delete the custom action and
+   the `action` prop on `SanityLive`, falling back to next-sanity 13's built-in
+   `revalidateSyncTagsAction`. The custom action has the semantics inverted (calls
+   `revalidateTag` in draft mode where cache is bypassed, `updateTag` in production).
+   Official default = stale-while-revalidate for visitors, `router.refresh()` for draft
+   sessions — the freshness semantics Ovi chose.
 
-   GROQ cannot call `getPresentationPath`, so each query must select `_type` alongside the slug and map to a public path in TypeScript after the fetch. Include `category` in both. This also fixes a latent inconsistency where page slugs are stored with a leading slash (`/apply`) and post slugs without (`buy-house-low-no-down-payment`) — currently masked by `normalizeRedirectPath` tolerating both.
+5. **Fetch layer — separate, last, independently revertable**: consolidating the ~14
+   per-query `"use cache"` wrappers into one generic cached wrapper (official
+   sanity-live-cache-components skill pattern) is orthogonal to skeleton removal, so it
+   lands as its own final step/commit after the architecture is verified — not mixed
+   into the route rewrite. Before it, prove sync-tag invalidation empirically as part
+   of step 4's verification (publish in Studio → public page updates without rebuild,
+   checked in a separate non-draft browser session). Installed next-sanity 13.3.1
+   already calls `cacheTag(...tags)` inside the active cache boundary, so no
+   re-registration is added unless that empirical check fails (turbo-start-sanity
+   needed it on older 13.x — their PRs #396/#406/#421).
 
-5. **Add `"category"` to `ROUTED_DOCUMENT_TYPES`** in `studio/functions/auto-redirect/model.ts:43`. With steps 3 and 4 in place, source and destination both derive from `resolveCategoryPath`, so generated redirects stay inside the `/blog/category/` namespace. No legacy-path awareness is added to the function.
+6. **Prefetch policy (explicit inventory)**: dropping partialPrefetching makes every
+   viewport `<Link>` to a static route eligible for full-page prefetch. Policy:
+   header nav, in-content links, blog cards, and pagination keep default prefetch
+   (that fan-out IS the chosen UX — Next's scheduler already queues, prioritizes, and
+   discards off-screen links); footer link lists get `prefetch={false}`. The
+   implementation inventories dense link collections and applies exactly this policy,
+   documenting any judgment call that deviates.
 
-6. **Update `studio/functions/auto-redirect/model.test.mjs:159`.** Flip the assertion that category slug changes are skipped into one asserting a category rename produces `/blog/category/old/` → `/blog/category/new/`. Add a second case asserting the function does **not** generate root-level sources for categories — this is the guard that stops a future contributor "helpfully" teaching the function about legacy root paths. Add coverage for category source-collision and destination-existence in the validator. Add two clearly distinguished concurrency cases, each asserting only what its layer can actually prove. A **duplicate-redelivery test that must pass**: `model.test.mjs` is a pure test of `planAutoRedirect` and cannot demonstrate persistence, because `createIfNotExists` runs in `index.ts:85`. So it asserts what the model does own — that `autoRedirectId(source)` is stable across identical events, and that a second event whose redirect already exists plans `create: false` rather than a duplicate. The single-document guarantee itself comes from `createIfNotExists` at `index.ts:85` and is **not proven by any test in this plan** — a local `sanity functions test` run exits at the `shouldWriteAutoRedirect` guard (`index.ts:64`) before reaching the transaction. It rests on the existing behaviour of `createIfNotExists` on a deterministic id, which is already how the 25 live redirects were written. If stronger proof is wanted, add a handler test with a mocked transaction during implementation; that is optional and does not block this work. And a **named known-defect test** — e.g. `documents the out-of-order rename orphan` — that asserts today's actual behaviour: `B → C` arriving before `A → B` causes the later event to skip and leave `/A/` orphaned. The second test pins current behaviour so the defect is visible and a future fix has a failing case to flip; it must not be written as if it proves safety.
-
-7. **[Written in Part A, run in Part B] Write the migration script following the established house pattern.** The script is authored now but not executed — its preflight binds destinations to final slugs that do not exist until the rename lands, so running it today would correctly abort. File: `studio/scripts/migrate-legacy-category-redirects.ts`, with a paired `studio/scripts/migrate-legacy-category-redirects.test.mjs`. `studio/scripts/migrate-post-category.ts` is the reference implementation; every `migrate-*.ts` in that directory has a paired `*.test.mjs`. The script uses `getCliClient` from `sanity/cli` (as `migrate-post-category.ts:4` does) and reads `--apply` from `process.argv`, so it runs via `sanity exec` from the `studio/` workspace with a user token; the exact invocation is not documented anywhere in the repo, so confirm it against how the existing migrations are actually run before relying on it in a runbook. Non-negotiable elements of that pattern:
-   - **Dry-run by default**, writes only behind `--apply`.
-   - **Project/dataset guard** that throws unless `hv0545v9` / `development`.
-   - **Pure planning functions** exported separately from `run()` so the test file can exercise classification logic with no network.
-   - **Fatal-before-writes**: build the full plan, print it, and abort if any document classifies fatal.
-   - **Re-query immediately before writing, in the `raw` perspective, covering drafts as well as published documents** — pages, posts, categories, and existing redirects. The collision facts recorded in this plan are re-verified at execution time rather than trusted from the grill. Drafts matter for two reasons: a draft page or redirect can already own one of the five legacy sources and would collide the moment it publishes, and a `drafts.<deterministic-id>` redirect could later publish straight over a migrated document. The existing validator already handles published/draft pairs deliberately (`redirect-rules.ts:138`, `documentIds()`), so this follows the house convention rather than inventing one. Abort on any collision, published or draft.
-   - **Bind each destination to a category document id, not just a slug string.** The five mappings resolve to specific categories (ids are known and listed below). Preflight must fetch each target category by id and assert its published slug matches the expected final slug, treating any missing document or slug mismatch as **fatal**. Also assert that each target's **draft version is either absent or carries the same expected final slug** — a stale draft holding the pre-rename slug would silently break the destination the moment someone publishes it. This is what stops a wrong or not-yet-renamed destination from being discovered later as a 301-into-404. `/buyer-education/` → `/blog/` is the exception: it targets the blog index route, so assert that route resolves rather than a category id.
-   - **Simulate the full resulting topology before opening the transaction.** Run the existing active redirects plus all five planned records through the same chain/cycle/conflict logic the frontend build uses (`compileNextRedirects` in `frontend/lib/redirects.mjs`), and abort on any error. Otherwise a chain involving an existing redirect's destination is only discovered after the data is written, at build time.
-   - **A three-state mutation contract — never `createOrReplace`.** For each of the five records, classify and act:
-     - **Missing** (no document at the deterministic id, no other document with that normalized source) → `createIfNotExists`.
-     - **Exact match** (document at the deterministic id with the expected source, destination, `status: "active"`, `permanent: "true"`) → no-op; this is the idempotent re-run case.
-     - **Anything else** — a document at the deterministic id with any differing field, or the normalized source present under any other document id, in published or draft form → **fatal**, abort before writing.
-
-     There is deliberately no update path: the script only ever creates or does nothing. `createOrReplace` would silently clobber a hand-edited redirect, and a patch path is unreachable given every mismatch is fatal. Checking only the deterministic id would also let a duplicate source slip through under a different id and fail the build later.
-   - **One transaction**, committed with `visibility: "sync"`.
-   - **Post-write audit that re-runs the full inventory, not just the five ids.** Refetch all five records in the `raw` perspective and throw unless each has the exact expected source, destination, `status: "active"`, and `permanent: "true"`, and unless no draft version exists at any of the five ids that would later publish over them. Then **repeat the whole raw collision inventory and the topology simulation** and assert exactly one owner per legacy source. Checking only the five ids would miss a page, post, category, or redirect created under a *different* id between preflight and commit that now claims one of the legacy sources — invisible to an id-scoped audit, but a build failure or a shadowed route later.
-   - Ids come from `autoRedirectId(source)` (the sha256 helper in `model.ts:16`), matching the 25 existing function-generated documents.
-
-8. **The five-row mapping:**
-
-   | Legacy URL | Destination | Target category `_id` (bind preflight to this) | Confidence |
-   |---|---|---|---|
-   | `/types-of-loans/` | `/blog/category/loan-types/` | `9e74332a-7a4e-4322-bd00-91dd80c29e94` | Certain — same category, unchanged slug |
-   | `/requirements/` | `/blog/category/getting-approved/` | `5fd54e84-404e-459f-bc8f-6ea5435149f9` (currently `mortgage-requirements`) | Certain — its one post is documentation requirements |
-   | `/personal-finances/` | `/blog/category/closing-costs/` | `ec3cbe04-4630-4c73-bc41-f73523b2de97` (currently `personal-finances`) | High — its two posts are down-payment saving and buy-vs-rent |
-   | `/benefits-of-buying-now/` | `/blog/category/mortgage-rates/` | `a8649d6b-6478-4c41-8294-e3b947539946` (currently `benefits-of-buying-now`) | Judgment call |
-   | `/buyer-education/` | `/blog/` | n/a — blog index route, assert the route resolves | Judgment call |
-
-   Ids are taken from `CATEGORY_SLUGS` in `studio/scripts/migrate-post-category.ts:10-17` and confirmed against the dataset. The id→final-slug pairing is an assumption about how the rename branch reassigns slugs; preflight asserting the pairing is what converts that assumption into a hard check.
-
-   `realtor-information` is excluded: it was not in the legacy nav HTML and had no public archive page.
-
-9. **[PART B — after the rename branch] Verify, in this order.** Redirects are compiled into `next.config.mjs` at **build time**, so a redirect document only takes effect on the next frontend build — ordering matters. Everything below runs against `development`:
-   1. Audit that the rename landed and all six categories carry their final slugs.
-   2. Run `pnpm test` from the repo root — this runs `frontend` tests plus every `studio/**/*.test.mjs`, including `redirect-rules.test.mjs`, `model.test.mjs`, and the new migration test. Also `pnpm typecheck`.
-   3. Run the migration dry-run; review the printed plan, explicitly approving the two editorial mappings.
-   4. Run with `--apply`; the post-write parity audit must pass.
-   5. **Smoke-test the handler locally, before deploying anything.** `sanity functions test` with a synthetic before/after payload for a category rename; confirm it logs the planned `/blog/category/old/` → `/blog/category/new/` redirect. This runs the real wrapper — the client queries in `index.ts` and the `liveRoutes` path materialization — which the pure model tests do not cover. Note it stops at the `shouldWriteAutoRedirect` guard (`index.ts:64`) and does not write, so it validates the plan and the queries, not persistence. **Do not rename a real category** to test this; that would mutate canonical taxonomy data and mint a stray redirect. Running this *before* the Blueprint deploy is the point: a broken wrapper or query should be caught locally, not shipped and then discovered.
-   6. **Deploy the blueprint** (`sanity blueprints deploy` from `studio/`) — Sanity Functions ship via a Blueprint deployment, which is separate from `sanity deploy` for the Studio. Without this, the widened event filter from step 2 never reaches the running function.
-   7. **Inspect the deployed Blueprint** and confirm its event filter actually includes `category`. Step 5 invokes the handler directly and passes even if the deployed filter still excludes category events, so only this check proves step 2 actually shipped. Record the resolved project id, dataset, and filter string alongside the result — a filter that reads correct against the wrong project or dataset proves nothing.
-   8. Build/deploy the frontend **against `hv0545v9`/`development`** — assert both `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET` match the migrated dataset, otherwise the build compiles a different dataset's redirects and proves nothing. This build is where `compileNextRedirects` throws on conflicts, chains, cycles, and self-redirects.
-   9. Curl all five legacy URLs against the deployed build; assert `301`, an exact `Location` header matching the mapped destination, and `200` on following it.
+7. **Verification** (acceptance criteria):
+   - `next build`: all known slugs prerender; the build's route table shows no
+     unexpected dynamic routes.
+   - A script enumerates every known route from the same complete slug queries that
+     feed `generateStaticParams` (the sitemap filters out noindex content, so it
+     under-counts), plus the pagination/category index math, issues real GET
+     requests against the production server, and asserts on the RESPONSE bodies: zero layout/page
+     fallback markers (`aria-busy` loaders, the fallback components'
+     `animate-pulse` classes) and presence of real footer/header markup.
+     Block-level component skeletons (video posters etc.) are unrelated and stay.
+     `.next` build artifacts are never inspected directly (repo rule).
+   - Same GET pass asserts status codes: 200 on known routes, 404 on unknown ones —
+     GET, not HEAD.
+   - Negative-caching check: request a not-yet-existing slug (cached 404), then
+     publish a document with that slug, and confirm the URL reaches 200 with content
+     without a rebuild. If the cached miss doesn't invalidate, the fix is scoped
+     before merging (this is exactly the silent failure mode we refuse to ship).
+     The fixture uses a generated unique ID and slug in the development dataset,
+     aborting if either already exists; both draft and published variants are
+     deleted afterwards (even on test failure), their absence verified, and the
+     fixture URL confirmed to return 404 again without a rebuild — which doubles
+     as the unpublish-propagation check.
+   - Real browser, one route per family (home, page, post, blog index, paginated
+     blog, category, paginated category): navigate forward and back — no flash of
+     fallback content.
+   - Presentation (draft browser session): editing works with overlays, perspective
+     switcher toggles published/drafts, header/footer edits preview.
+   - Publish propagation: from a separate NON-draft browser session, publish in
+     Studio → public page updates without a rebuild (proves tag invalidation,
+     step 5's precondition).
 
 ## Key decisions & tradeoffs
 
-- **Backfill is data, not logic.** The five legacy URLs are a closed, fully-enumerated set from a site that no longer exists; no future category will ever be born at root level. Teaching `auto-redirect` to handle them (e.g. via a `legacyPath` schema field) would add a branch that is dead forever after one use. Rejected in favour of five hand-authored documents.
-- **The function still gains category support** — for the ordinary same-namespace rename case it was designed for, not for the legacy quirk.
-- **Rename first, backfill second.** Authoring redirects against not-yet-existent slugs would ship five 301s pointing at 404s. `warnMissingRedirectDestination` is only a `.warning()` (`redirect.ts:51`) and `compileNextRedirects` does not validate that destinations resolve, so nothing would catch it. Waiting costs nothing: the URLs already 404 today and the site is pre-launch.
-- **No redirect chains exist to resolve.** `feat/blog-taxonomy` has never been pushed (no upstream, no preview deploy), so `/blog/category/<slug>/` has zero public history. The rename needs no redirects of its own for SEO, which means the backfill points straight at final destinations and the topology stays flat. This retires the chain problem entirely rather than working around it.
-- **Cannibalization is deliberately out of scope.** Four of six new category archives overlap in intent with pages that have already been designated canonical hubs (visible from redirects pointing *at* them: `/types-of-mortgage-loans/` absorbed 5 URLs, `/mortgage-interest-rates/` absorbed 2, `/down-payment-assistance-.../` absorbed 2). A redirect answers "where did this URL go"; a canonical answers "who owns this query." Solving the second with the first would mean `/types-of-loans/` could never point at its actual successor archive.
-- **Legacy paginated archives (`/buyer-education/page/2/`) are left to 404.** Redirect docs are exact-path only — `compileNextRedirects` emits one rule per source with two trailing-slash variants, no wildcards — so collapsing page-N would mean one hand-authored doc per page number, against a URL list nobody has. Paginated archive pages are crawl-discovered rather than link-earned. Adding pattern support to shared redirect infra for a legacy quirk is the same mistake the first decision rejects.
-- **The five legacy paths are NOT added to `RESERVED_SOURCE_PATHS`.** That set exists for paths **code** owns (the hardcoded Gone routes). These are ordinary data, and they are already protected: the function only writes sources derived from a routed document's old path, and no page or post can produce these (verified — zero collisions).
-- **Idempotency is confirmed for the function, but the script needs more than a deterministic id.** Function-event redelivery is safe: `index.ts:85` uses `createIfNotExists` on `autoRedirectId(source)`, so a redelivered publish lands on the same document instead of creating a conflicting duplicate. The migration script reuses the same id helper under the three-state contract in step 7 — **create if missing, no-op on an exact match, fatal on anything else**, with no update path and never `createOrReplace`. A deterministic id prevents duplicates; it does not prevent silently overwriting a redirect someone edited by hand between runs, which is why a mismatch aborts instead of being patched.
-- **Collision facts are re-verified at execution, not trusted from this plan.** The dataset counts recorded below were true during the grill. A page, post, category, or redirect created before the script runs would invalidate them, and `compileNextRedirects` checks redirect-vs-redirect topology but does **not** check whether a redirect source shadows a live route. The script therefore re-queries and aborts on any new collision.
-- **Two mappings are editorial and get an explicit gate.** `/benefits-of-buying-now/` → `mortgage-rates` and `/buyer-education/` → `/blog/` are judgment calls that become public 301s. The dry-run output must be reviewed and approved before `--apply`; the dry-run-by-default design is what makes that gate real rather than advisory.
-
-## Verified facts (checked against the `development` dataset, project `hv0545v9`)
-
-- **Zero path collisions.** None of the five legacy root paths, and none of the six new category slugs, match any of the 22 live page slugs or 58 live post slugs.
-- **Two of the five legacy slugs were already renamed before this branch.** `types-of-loans` → `loan-types` and `requirements` → `mortgage-requirements`. The original brief assumed all five still matched.
-- **There are six categories, not five.** `realtor-information` has no legacy root URL.
-- **`/refinancing/` and `/mortgage-interest-rates/` do not collide.** `/refinancing/` is an existing redirect *source* at root; `/mortgage-interest-rates/` is a live post at root. Both are distinct paths from `/blog/category/refinancing/` and `/blog/category/mortgage-rates/`. They are intent-overlap concerns only — see out of scope.
-- **Redirects are compiled at build time** into `next.config.mjs` via `compileNextRedirects`, not resolved at request time. A redirect only takes effect on the next frontend build.
-
-## Known pre-existing function limitations (documented, not fixed here)
-
-These are real defects in `auto-redirect` that predate this branch and affect pages and posts today exactly as much as categories. This plan adds test coverage that **documents** the current behaviour; it does not change it. Fixing them is a redesign of the function's concurrency model and belongs in its own branch.
-
-- **Out-of-order renames leave an orphan.** If `B → C` is processed before `A → B`, the later event hits the guard at `model.ts:153` ("The new route is already a redirect source") and skips, leaving `/A/` broken. A proper fix resolves the event destination through existing redirects to its terminal path so the late event creates `A → C` directly. Not triggered by this plan's work: the five backfill redirects are written by a single-transaction script, not by the function, and the category rename is one coordinated migration rather than a sequence of independent publishes.
-- **Concurrent publishes can commit a chain from stale snapshots.** Two handlers can each read a topology snapshot, independently approve `A → B` and `B → C`, and both commit, because the two new documents have different deterministic ids and neither transaction guards the other's read. The result is a chain that then fails the next frontend build. The build failing is a loud, recoverable outcome rather than silent corruption, which is why this is documented rather than urgently fixed.
-
-Both are recorded here so the next person to touch the function does not have to rediscover them.
+- **Drop `partialPrefetching`** (Ovi): full-page prefetch on viewport links. Trades
+  bandwidth for instant navigation; mitigated by `prefetch={false}` on footer lists.
+- **Keep header/footer draft preview** (Ovi): diverges from the starter (published-only
+  nav). Costs a small draft-only branch; public site unaffected.
+- **Official SWR revalidation** (Ovi): a just-published change may take one request to
+  appear for a visitor. Chosen over read-your-writes.
+- **Draft navigation blocks, no spinner** (Ovi): Presentation keeps the previous page
+  on screen during navigation; no draft-only loading UI.
+- **Hard 404s** (Ovi): `notFound()` resolves before streaming; no soft-404 shells.
+- **Content Releases are irrelevant** (Ovi: no client uses them), but this pattern
+  keeps the Presentation perspective switcher working anyway (draft path still resolves
+  the `sanity-preview-perspective` cookie outside the cache boundary).
+- **No `loading.tsx` variant, no draftMode-inside-use-cache collapse**: both were
+  considered and rejected (the former reintroduces fallback flashes; the latter breaks
+  the perspective switcher for no additional benefit over this pattern).
 
 ## Risks / open questions
 
-- Two of the five mappings (`/benefits-of-buying-now/` → `mortgage-rates`, `/buyer-education/` → `/blog/`) are judgment calls on intent, not mechanical matches. They are reversible — a redirect document edit plus a rebuild.
-- The migration script bypasses Studio's `Rule.custom` validation, which only runs in the Studio editor and not on API writes. Mitigated by the build-time checks in `compileNextRedirects`, which fail the build on any topology violation, plus the collision check already performed.
-- If the rename branch ships slugs different from the six listed here, the script's destinations are wrong. This is now caught **before any write**: preflight binds each destination to a known category document id and treats a missing document or a slug mismatch as fatal, so the dry-run aborts rather than producing a 301-into-404 that is only noticed after deployment.
+- **Core prerender assumption** (step 0 exists to retire this): branching on
+  `draftMode()` at the route top must not make the published branch request-bound.
+  Evidence says it doesn't (the starter ships it; Next 16.3 docs treat `draftMode` as
+  cache-compatible), but the spike proves it in this repo before the global rewrite.
+- **Sync-tag invalidation on 13.3.1** (step 5): if tags don't reach the cache entries,
+  publishes silently stop propagating. The plan proves it empirically before shipping.
+- **Hosting semantics**: cacheComponents ISR + tag invalidation assumes a host with a
+  persistent shared cache (Vercel or equivalent). Verify against the actual deploy
+  target before merging.
+- **Brand-new slugs** (published after the last build) render on first visit
+  (blocking, standard ISR); acceptable by decision, but confirm on-demand rendering
+  of unlisted params behaves under cacheComponents in the spike.
+- **`<SanityLive>` in the static shell**: 13.1.7+ is built to coexist with prerendered
+  HTML; confirm no bailout markers appear in built output.
 
 ## Out of scope
 
-- **Archive-vs-hub cannibalization.** Acknowledged as real and deferred to its own pass; the fix is canonical tags, `noindex` on thin archives, or internal linking — not redirect destinations.
-- **Legacy paginated archive URLs** (`/buyer-education/page/2/` and deeper). Individual redirect docs can be added cheaply later if a crawl or GSC pull surfaces specific page-N URLs with real inbound links.
-- **Other undiscovered legacy URL shapes** — tag archives, author archives, feeds, `?cat=` query URLs. Optional extra scope, not a prerequisite.
-- **Any dataset other than `development`.**
-- **Wildcard or pattern support in `compileNextRedirects`.**
+- Dark-mode/surface-contrast work (separately deferred).
+- Content Release preview support.
+- Any redesign of blocks, queries, or the Sanity schema.
+- The `wizard`-style migration of other projects to this pattern.
