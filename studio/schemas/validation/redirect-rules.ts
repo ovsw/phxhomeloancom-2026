@@ -176,7 +176,9 @@ export function getRedirectValidationIssues({
         (route) => normalizeRedirectPath(route.path) === destination,
       ));
   if (destination && !destinationExists && !errors.destination) {
-    errors.destination = "This destination does not exist on the published website";
+    errors.destination =
+      "Can't redirect to a non-existent or non-published page. " +
+      "No published page with this slug exists. Please create one.";
   }
 
   return { errors };

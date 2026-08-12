@@ -100,7 +100,9 @@ test("blocks a destination that has no published route", () => {
     issues({ source: "/old", destination: "/missing", status: "active" }),
     {
       errors: {
-        destination: "This destination does not exist on the published website",
+        destination:
+          "Can't redirect to a non-existent or non-published page. " +
+          "No published page with this slug exists. Please create one.",
       },
     },
   );
