@@ -59,10 +59,13 @@ export default function RootLayout({
           "min-h-screen bg-background font-sans antialiased overscroll-none",
         )}
       >
+        {/* Light-only for launch; see docs/adr/0001-light-theme-only-for-launch.md
+            to re-enable dark mode (swap forcedTheme for the commented props). */}
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          forcedTheme="light"
+          // defaultTheme="system"
+          // enableSystem
           disableTransitionOnChange
         >
           {children}

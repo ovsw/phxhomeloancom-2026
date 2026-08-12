@@ -100,11 +100,12 @@ export default defineType({
       ],
     }),
     defineField({
-      name: "categories",
-      title: "Categories",
-      type: "array",
+      name: "category",
+      title: "Category",
+      type: "reference",
+      to: [{ type: "category" }],
       group: "settings",
-      of: [{ type: "reference", to: { type: "category" } }],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "body",

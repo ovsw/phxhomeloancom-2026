@@ -6,7 +6,13 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
-export default function BlogPagination({ pagination }: { pagination: BlogPaginationData }) {
+export default function BlogPagination({
+  basePath,
+  pagination,
+}: {
+  basePath?: string;
+  pagination: BlogPaginationData;
+}) {
   if (pagination.totalPages <= 1) return null;
   const items = generateBlogPaginationItems(
     pagination.currentPage,
@@ -18,7 +24,7 @@ export default function BlogPagination({ pagination }: { pagination: BlogPaginat
   return (
     <nav aria-label="Pagination" className="mt-14 flex flex-wrap items-center justify-center gap-2">
       {pagination.hasPreviousPage ? (
-        <Link className={buttonClass} href={getBlogPaginationUrl(pagination.currentPage - 1)}>
+        <Link className={buttonClass} href={getBlogPaginationUrl(pagination.currentPage - 1, basePath)}>
           {"\u2190"} Previous
         </Link>
       ) : (
@@ -32,7 +38,7 @@ export default function BlogPagination({ pagination }: { pagination: BlogPaginat
             aria-current={item === pagination.currentPage ? "page" : undefined}
             aria-label={`Go to page ${item}`}
             className={cn(buttonClass, "px-0", item === pagination.currentPage && "border-primary bg-primary text-primary-foreground hover:bg-primary/90")}
-            href={getBlogPaginationUrl(item)}
+            href={getBlogPaginationUrl(item, basePath)}
             key={item}
           >
             {item}
@@ -40,7 +46,7 @@ export default function BlogPagination({ pagination }: { pagination: BlogPaginat
         ),
       )}
       {pagination.hasNextPage ? (
-        <Link className={buttonClass} href={getBlogPaginationUrl(pagination.currentPage + 1)}>
+        <Link className={buttonClass} href={getBlogPaginationUrl(pagination.currentPage + 1, basePath)}>
           Next {"\u2192"}
         </Link>
       ) : (

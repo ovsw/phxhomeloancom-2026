@@ -76,16 +76,20 @@ const model: HeaderModel = {
 };
 
 describe("Site Header", () => {
-  it("renders branding, navigation hierarchy, theme control, and safe actions", async () => {
+  it("renders branding, navigation hierarchy, and safe actions", async () => {
     const user = userEvent.setup();
     render(<Header model={model} />);
 
     expect(screen.getByRole("banner")).toBeInTheDocument();
+    // The site ships light-theme-only (docs/adr/0001), so the header must not
+    // regain a theme toggle. Its accessible name comes from menu-toggle.tsx.
+    expect(
+      screen.queryByRole("button", { name: "Toggle theme" }),
+    ).not.toBeInTheDocument();
     expect(screen.getAllByRole("navigation", { name: "Main navigation" })).toHaveLength(1);
     expect(screen.getAllByRole("link", { name: "Contact" })[0]).toHaveAttribute("href", "/contact");
     await user.click(screen.getByRole("button", { name: "Loan Types" }));
     expect(screen.getByText("Benefits for eligible service members.")).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Toggle theme" }).length).toBeGreaterThan(0);
     const action = screen.getAllByRole("link", { name: "Schedule Consult" })[0];
     expect(action).toHaveAttribute("href", "https://example.com/book");
     expect(action).toHaveAttribute("rel", "noopener noreferrer");

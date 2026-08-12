@@ -3,7 +3,7 @@ import {
   defineDocuments,
   PresentationPluginOptions,
 } from "sanity/presentation";
-import { resolveContentPath } from "./routes";
+import { resolveCategoryPath, resolveContentPath } from "./routes";
 
 export { resolveContentPath } from "./routes";
 
@@ -38,6 +38,20 @@ export const resolve: PresentationPluginOptions["resolve"] = {
         ],
       }),
     }),
+    category: defineLocations({
+      select: {
+        title: "title",
+        slug: "slug.current",
+      },
+      resolve: (doc) => {
+        const href = resolveCategoryPath(doc?.slug);
+        return {
+          locations: href
+            ? [{ title: doc?.title || "Untitled Category", href }]
+            : [],
+        };
+      },
+    }),
     blogIndex: defineLocations({
       select: { title: "title" },
       resolve: (doc) => ({
@@ -59,6 +73,10 @@ export const resolve: PresentationPluginOptions["resolve"] = {
     {
       route: "/",
       filter: `_id == 'homePage' && _type == 'homePage'`,
+    },
+    {
+      route: "/blog/category/:slug/",
+      filter: `_type == 'category' && slug.current in [$slug, "/" + $slug]`,
     },
     {
       route: "/:slug/",

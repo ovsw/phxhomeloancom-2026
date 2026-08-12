@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 
+import { getPresentationPath } from "../../presentation/routes.ts";
 import {
   CODE_OWNED_GONE_ROUTE_PATHS,
   normalizeRedirectPath,
   readRedirectPath,
   toStoredRedirectPath,
+  topologyError,
   type RedirectRecord,
 } from "../../schemas/validation/redirect-rules.ts";
 
@@ -40,7 +42,7 @@ type AutoRedirectPlan =
       source: string;
     };
 
-const ROUTED_DOCUMENT_TYPES = new Set(["page", "post"]);
+const ROUTED_DOCUMENT_TYPES = new Set(["page", "post", "category"]);
 const RESERVED_SOURCE_PATHS = new Set([
   "/",
   "/blog",
@@ -53,33 +55,6 @@ export function shouldWriteAutoRedirect(local?: boolean) {
 
 function isActive(record: RedirectRecord) {
   return !record.status || record.status === "active";
-}
-
-function topologyError(redirects: RedirectRecord[]) {
-  const redirectsBySource = new Map<string, string>();
-
-  for (const redirect of redirects.filter(isActive)) {
-    const source = normalizeRedirectPath(readRedirectPath(redirect.source));
-    const destination = normalizeRedirectPath(
-      readRedirectPath(redirect.destination),
-    );
-    if (!source || !destination) continue;
-    if (source === destination) return `Self redirect at ${source}`;
-
-    const existingDestination = redirectsBySource.get(source);
-    if (existingDestination && existingDestination !== destination) {
-      return `Conflicting redirect source ${source}`;
-    }
-    redirectsBySource.set(source, destination);
-  }
-
-  for (const [source, destination] of redirectsBySource) {
-    if (redirectsBySource.has(destination)) {
-      return `Redirect chain or cycle at ${source}`;
-    }
-  }
-
-  return undefined;
 }
 
 export function planAutoRedirect({
@@ -95,8 +70,12 @@ export function planAutoRedirect({
     return { action: "skip", reason: "Document type is not routed by a slug" };
   }
 
-  const source = normalizeRedirectPath(event.beforeSlug);
-  const destination = normalizeRedirectPath(event.slug);
+  const source = normalizeRedirectPath(
+    getPresentationPath(event.documentType, event.beforeSlug),
+  );
+  const destination = normalizeRedirectPath(
+    getPresentationPath(event.documentType, event.slug),
+  );
   if (!source || !destination) {
     return { action: "skip", reason: "The publish event has no previous slug" };
   }

@@ -1,6 +1,7 @@
 import { createClient } from "@sanity/client";
 import { documentEventHandler } from "@sanity/functions";
 
+import { getPresentationPath } from "../../presentation/routes.ts";
 import type { RedirectRecord } from "../../schemas/validation/redirect-rules.ts";
 import {
   autoRedirectId,
@@ -20,7 +21,7 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
       useCdn: false,
     });
 
-    const [redirects, liveRoutes] = await Promise.all([
+    const [redirects, rawLiveRoutes] = await Promise.all([
       client.fetch<RedirectRecord[]>(`
         *[
           _type == "redirect" &&
@@ -34,19 +35,24 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
           permanent
         }
       `),
-      client.fetch<{ _id: string; path: string }[]>(
+      client.fetch<{ _id: string; _type: string; slug: string }[]>(
         `*[
-          _type in ["page", "post"] &&
+          _type in ["page", "post", "category"] &&
           !(_id in path("drafts.**")) &&
           _id != $documentId &&
           defined(slug.current)
         ]{
           _id,
-          "path": slug.current
+          _type,
+          "slug": slug.current
         }`,
         { documentId: event.data.documentId ?? "" },
       ),
     ]);
+    const liveRoutes = rawLiveRoutes.map((route) => ({
+      _id: route._id,
+      path: getPresentationPath(route._type, route.slug) ?? undefined,
+    }));
 
     const plan = planAutoRedirect({
       event: event.data,

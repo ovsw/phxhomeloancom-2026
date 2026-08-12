@@ -1,5 +1,8 @@
 "use client";
 
+// Currently unused: the site ships light-only for launch. Kept for the
+// template. See docs/adr/0001-light-theme-only-for-launch.md to re-enable.
+
 import * as React from "react";
 import { Check, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";

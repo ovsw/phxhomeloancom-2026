@@ -5,7 +5,8 @@ import { HeaderBrand } from "./brand";
 import { HeaderLink } from "./header-link";
 import type { HeaderModel } from "./model";
 import { SiteHeaderShell } from "./site-header-shell";
-import { ModeToggle } from "@/components/menu-toggle";
+// Light-only for launch; see docs/adr/0001-light-theme-only-for-launch.md
+// import { ModeToggle } from "@/components/menu-toggle";
 import { buttonVariants } from "@/components/ui/button";
 
 /**
@@ -63,7 +64,7 @@ export function Header({ model }: { model: HeaderModel }) {
         </Link>
         <DesktopNav navigation={navigation} />
         <div className="hidden items-center gap-2 xl:flex xl:gap-3">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           {navigation.actions.map((action) => (
             <HeaderLink
               className={buttonVariants({ size: "compact" })}
@@ -73,7 +74,7 @@ export function Header({ model }: { model: HeaderModel }) {
           ))}
         </div>
         <div className="flex shrink-0 items-center gap-1 xl:hidden">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           <MobileNav brand={brand} navigation={navigation} />
         </div>
       </div>

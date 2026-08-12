@@ -19,6 +19,11 @@ function getArticleHref(slug?: string | null) {
   return cleanSlug ? contentPath(cleanSlug) : "#";
 }
 
+function getCategoryHref(slug?: string | null) {
+  const cleanSlug = stegaClean(slug);
+  return cleanSlug ? `/blog/category/${cleanSlug}/` : undefined;
+}
+
 function formatPublishedDate(publishedAt?: string | null) {
   const cleanPublishedAt = stegaClean(publishedAt);
   if (!cleanPublishedAt) return null;
@@ -41,17 +46,22 @@ function ArticleCard({
   fallbackImage,
 }: Readonly<{ article: Article; fallbackImage?: ArticleImage }>) {
   const image = article.image?.asset?._id ? article.image : fallbackImage;
-  const categoryLabel = article.categories?.[0]?.title;
+  const category = (article as Article & {
+    category?: { slug?: { current?: string | null } | null; title?: string | null } | null;
+  }).category;
+  const categoryLabel = stegaClean(category?.title);
+  const categoryHref = getCategoryHref(category?.slug?.current);
   const publishedDate = formatPublishedDate(article.publishedAt);
   const title = article.title || "Untitled article";
 
   return (
-    <Link
-      aria-label={`Read post: ${stegaClean(title)}`}
-      className="group flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground no-underline shadow-sm transition-[box-shadow,translate] motion-base hover:-translate-y-1 hover:shadow-interactive-lift focus-ring hover:[--focus-ring-keep:var(--shadow-interactive-lift)]"
-      href={getArticleHref(article.slug)}
-    >
-      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-border bg-card text-card-foreground shadow-sm transition-[box-shadow,translate] motion-base hover:-translate-y-1 hover:shadow-interactive-lift focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 hover:[--focus-ring-keep:var(--shadow-interactive-lift)]">
+      <Link
+        aria-label={`Read post: ${stegaClean(title)}`}
+        className="absolute inset-0 z-0"
+        href={getArticleHref(article.slug)}
+      />
+      <div className="pointer-events-none relative aspect-[16/10] overflow-hidden bg-muted">
         {image?.asset?._id ? (
           <Image
             alt={image.alt || stegaClean(title)}
@@ -63,13 +73,13 @@ function ArticleCard({
             src={urlFor(image).width(720).height(450).url()}
           />
         ) : null}
-        {categoryLabel ? (
-          <div className="absolute left-3.5 top-3.5 rounded-full bg-foreground/80 px-2.5 py-1.5 typo-meta-label text-white backdrop-blur-sm">
+        {categoryLabel && categoryHref ? (
+          <Link className="pointer-events-auto absolute left-3.5 top-3.5 z-10 rounded-full bg-foreground/80 px-2.5 py-1.5 typo-meta-label text-white no-underline backdrop-blur-sm" href={categoryHref}>
             {categoryLabel}
-          </div>
+          </Link>
         ) : null}
       </div>
-      <div className="flex flex-1 flex-col gap-3 p-(--space-card)">
+      <div className="pointer-events-none relative z-10 flex flex-1 flex-col gap-3 p-(--space-card)">
         {publishedDate ? (
           <time
             className="typo-meta-label text-muted-foreground"
@@ -90,7 +100,7 @@ function ArticleCard({
           Read post <span aria-hidden="true">&rarr;</span>
         </span>
       </div>
-    </Link>
+    </article>
   );
 }
 

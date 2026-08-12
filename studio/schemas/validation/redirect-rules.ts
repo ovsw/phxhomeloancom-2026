@@ -1,5 +1,7 @@
 import type { ValidationContext } from "sanity";
 
+import { getPresentationPath } from "../../presentation/routes.ts";
+
 export type RedirectRecord = {
   _id?: string;
   _rev?: string;
@@ -52,6 +54,33 @@ export function readRedirectPath(value: RedirectRecord["source"]) {
 
 function active(record: RedirectRecord) {
   return !record.status || record.status === "active";
+}
+
+export function topologyError(redirects: RedirectRecord[]) {
+  const redirectsBySource = new Map<string, string>();
+
+  for (const redirect of redirects.filter(active)) {
+    const source = normalizeRedirectPath(readRedirectPath(redirect.source));
+    const destination = normalizeRedirectPath(
+      readRedirectPath(redirect.destination),
+    );
+    if (!source || !destination) continue;
+    if (source === destination) return `Self redirect at ${source}`;
+
+    const existingDestination = redirectsBySource.get(source);
+    if (existingDestination && existingDestination !== destination) {
+      return `Conflicting redirect source ${source}`;
+    }
+    redirectsBySource.set(source, destination);
+  }
+
+  for (const [source, destination] of redirectsBySource) {
+    if (redirectsBySource.has(destination)) {
+      return `Redirect chain or cycle at ${source}`;
+    }
+  }
+
+  return undefined;
 }
 
 export function getRedirectValidationIssues({
@@ -161,7 +190,10 @@ function fetchValidationData(context: ValidationContext) {
 
 async function requestValidationData(context: ValidationContext) {
   const client = context.getClient({ apiVersion: "2026-03-23" });
-  return client.fetch<RedirectValidationData>(
+  const data = await client.fetch<{
+    liveRoutes: Array<{ _id: string; _type: string; slug: string }>;
+    redirects: RedirectRecord[];
+  }>(
     `{
       "redirects": *[
         _type == "redirect" &&
@@ -174,17 +206,26 @@ async function requestValidationData(context: ValidationContext) {
         permanent
       },
       "liveRoutes": *[
-        _type in ["page", "post"] &&
+        _type in ["page", "post", "category"] &&
         !(_id in path("drafts.**")) &&
         defined(slug.current)
       ]{
         _id,
-        "path": slug.current,
-        "type": _type
+        _type,
+        "slug": slug.current
       }
     }`,
     { currentIds: documentIds(context.document?._id) },
   );
+
+  return {
+    redirects: data.redirects,
+    liveRoutes: data.liveRoutes.map((route) => ({
+      _id: route._id,
+      path: getPresentationPath(route._type, route.slug) ?? undefined,
+      type: route._type,
+    })),
+  } satisfies RedirectValidationData;
 }
 
 function currentRedirect(context: ValidationContext): RedirectRecord {

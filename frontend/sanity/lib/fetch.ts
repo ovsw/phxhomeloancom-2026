@@ -18,17 +18,20 @@ import {
   FOOTER_QUERY_RESULT,
   HOME_PAGE_QUERY_RESULT,
 } from "@/sanity.types";
-import type {
-  BLOG_INDEX_QUERY_RESULT,
-  LATEST_POST_QUERY_RESULT,
-  REGULAR_POSTS_QUERY_RESULT,
-} from "@/sanity.types";
+import type { BLOG_INDEX_QUERY_RESULT } from "@/sanity.types";
+import type { BlogPost } from "@/sanity/queries/blog-index";
+import type { CategoryArchive } from "@/sanity/queries/category";
 import {
   BLOG_INDEX_QUERY,
   LATEST_POST_QUERY,
   REGULAR_POSTS_COUNT_QUERY,
   REGULAR_POSTS_QUERY,
 } from "@/sanity/queries/blog-index";
+import {
+  CATEGORY_POSTS_COUNT_QUERY,
+  CATEGORY_POSTS_QUERY,
+  CATEGORY_QUERY,
+} from "@/sanity/queries/category";
 
 export async function fetchSanityPageBySlug({
   slug,
@@ -92,14 +95,14 @@ export async function fetchBlogIndex({
 export async function fetchLatestPost({
   perspective,
   stega,
-}: DynamicFetchOptions): Promise<LATEST_POST_QUERY_RESULT> {
+}: DynamicFetchOptions): Promise<BlogPost | null> {
   "use cache";
   const { data } = await sanityFetch({
     query: LATEST_POST_QUERY,
     perspective,
     stega,
   });
-  return data as LATEST_POST_QUERY_RESULT;
+  return data as unknown as BlogPost | null;
 }
 
 export async function fetchRegularPosts({
@@ -112,7 +115,7 @@ export async function fetchRegularPosts({
   end: number;
   latestPostId: string;
   start: number;
-} & DynamicFetchOptions): Promise<REGULAR_POSTS_QUERY_RESULT> {
+} & DynamicFetchOptions): Promise<BlogPost[]> {
   "use cache";
   const { data } = await sanityFetch({
     query: REGULAR_POSTS_QUERY,
@@ -120,7 +123,7 @@ export async function fetchRegularPosts({
     perspective,
     stega,
   });
-  return data as REGULAR_POSTS_QUERY_RESULT;
+  return data as unknown as BlogPost[];
 }
 
 export async function fetchRegularPostsCount({
@@ -132,6 +135,59 @@ export async function fetchRegularPostsCount({
   const { data } = await sanityFetch({
     query: REGULAR_POSTS_COUNT_QUERY,
     params: { latestPostId },
+    perspective,
+    stega,
+  });
+  return data as number;
+}
+
+export async function fetchCategory({
+  perspective,
+  slug,
+  stega,
+}: {
+  slug: string;
+} & DynamicFetchOptions): Promise<CategoryArchive | null> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: CATEGORY_QUERY,
+    params: { slug },
+    perspective,
+    stega,
+  });
+  return data as unknown as CategoryArchive | null;
+}
+
+export async function fetchCategoryPosts({
+  categoryId,
+  end,
+  perspective,
+  start,
+  stega,
+}: {
+  categoryId: string;
+  end: number;
+  start: number;
+} & DynamicFetchOptions): Promise<BlogPost[]> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: CATEGORY_POSTS_QUERY,
+    params: { categoryId, end, start },
+    perspective,
+    stega,
+  });
+  return data as unknown as BlogPost[];
+}
+
+export async function fetchCategoryPostsCount({
+  categoryId,
+  perspective,
+  stega,
+}: { categoryId: string } & DynamicFetchOptions): Promise<number> {
+  "use cache";
+  const { data } = await sanityFetch({
+    query: CATEGORY_POSTS_COUNT_QUERY,
+    params: { categoryId },
     perspective,
     stega,
   });
