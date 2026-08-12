@@ -14,9 +14,15 @@ import { fileURLToPath } from "node:url";
 
 const EXPECTED_DATASET = "development";
 const POSTS_PER_PAGE = 12;
-const baseUrl = new URL(process.env.VERIFY_BASE_URL || "http://127.0.0.1:3000");
 
+// process.loadEnvFile requires Node 20.12+ / 21.7+; fail with a clear message
+// instead of a TypeError on older runtimes.
+if (typeof process.loadEnvFile !== "function") {
+  throw new Error("This script requires Node.js 20.12 or newer.");
+}
+// Load env before reading VERIFY_BASE_URL so a value in .env.local is honored.
 process.loadEnvFile(fileURLToPath(new URL("../.env.local", import.meta.url)));
+const baseUrl = new URL(process.env.VERIFY_BASE_URL || "http://127.0.0.1:3000");
 
 if (process.env.NEXT_PUBLIC_SANITY_DATASET !== EXPECTED_DATASET) {
   throw new Error(
