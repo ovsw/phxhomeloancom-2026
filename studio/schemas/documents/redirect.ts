@@ -4,7 +4,6 @@ import { defineField, defineType } from "sanity";
 import {
   validateRedirectDestination,
   validateRedirectSource,
-  warnMissingRedirectDestination,
 } from "../validation/redirect-rules";
 
 export default defineType({
@@ -45,11 +44,12 @@ export default defineType({
       title: "Destination",
       type: "slug",
       description: "The current internal path, starting with /.",
-      validation: (Rule) => [
-        Rule.required(),
-        Rule.custom(validateRedirectDestination),
-        Rule.custom(warnMissingRedirectDestination).warning(),
-      ],
+      options: {
+        // Many old routes may legitimately point to the same current route.
+        isUnique: () => true,
+      },
+      validation: (Rule) =>
+        Rule.required().custom(validateRedirectDestination),
     }),
     defineField({
       name: "permanent",

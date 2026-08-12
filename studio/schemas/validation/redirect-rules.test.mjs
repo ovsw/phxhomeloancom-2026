@@ -18,7 +18,7 @@ test("allows many redirects to share a destination", () => {
       [{ source: "/another", destination: "/target/", status: "active" }],
       [{ path: "/target", type: "page" }],
     ),
-    { destinationWarning: undefined, errors: {} },
+    { errors: {} },
   );
 });
 
@@ -40,7 +40,7 @@ test("rejects redirect chains in either direction", () => {
       [{ source: "/a", destination: "/b", status: "active" }],
       [{ path: "/c", type: "post" }],
     ).errors.source,
-    /destination of another redirect/,
+    /active redirect from \/a\/ points here/,
   );
   assert.match(
     issues(
@@ -91,16 +91,17 @@ test("recognizes public category routes as existing destinations", () => {
       [],
       [{ path: "/blog/category/loan-types/", type: "category" }],
     ),
-    { destinationWarning: undefined, errors: {} },
+    { errors: {} },
   );
 });
 
-test("warns instead of blocking when a destination has no published route", () => {
+test("blocks a destination that has no published route", () => {
   assert.deepEqual(
     issues({ source: "/old", destination: "/missing", status: "active" }),
     {
-      destinationWarning: "No published page or post currently uses this destination",
-      errors: {},
+      errors: {
+        destination: "This destination does not exist on the published website",
+      },
     },
   );
 });

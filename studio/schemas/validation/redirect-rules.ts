@@ -97,7 +97,6 @@ export function getRedirectValidationIssues({
   const source = normalizeRedirectPath(sourceValue);
   const destination = normalizeRedirectPath(destinationValue);
   const errors: { destination?: string; source?: string } = {};
-  let destinationWarning: string | undefined;
 
   if (sourceValue && (!sourceValue.trim().startsWith("/") || !source)) {
     errors.source = "The source must be an internal path that starts with /";
@@ -134,12 +133,31 @@ export function getRedirectValidationIssues({
       errors.source = "Another active redirect already uses this source";
     }
 
-    const sourceIsDestination = activeRedirects.find(
+    const sourcesPointingHere = activeRedirects.filter(
       (redirect) =>
         normalizeRedirectPath(readRedirectPath(redirect.destination)) === source,
     );
-    if (source && sourceIsDestination) {
-      errors.source = "This source is already the destination of another redirect";
+    if (source && sourcesPointingHere.length > 0) {
+      const incomingSources = Array.from(
+        new Set(
+          sourcesPointingHere.flatMap((redirect) => {
+            const incomingSource = toStoredRedirectPath(
+              readRedirectPath(redirect.source),
+            );
+            return incomingSource ? [incomingSource] : [];
+          }),
+        ),
+      );
+
+      if (incomingSources.length === 1) {
+        errors.source =
+          `The active redirect from ${incomingSources[0]} points here. ` +
+          "Update or deactivate it before using this path as a source";
+      } else if (incomingSources.length > 1) {
+        errors.source =
+          `${incomingSources.length} active redirects point here: ${incomingSources.join(", ")}. ` +
+          "Update or deactivate them before using this path as a source";
+      }
     }
 
     const destinationIsSource = activeRedirects.find(
@@ -158,10 +176,10 @@ export function getRedirectValidationIssues({
         (route) => normalizeRedirectPath(route.path) === destination,
       ));
   if (destination && !destinationExists && !errors.destination) {
-    destinationWarning = "No published page or post currently uses this destination";
+    errors.destination = "This destination does not exist on the published website";
   }
 
-  return { destinationWarning, errors };
+  return { errors };
 }
 
 function documentIds(documentId?: string) {
@@ -169,7 +187,7 @@ function documentIds(documentId?: string) {
   return [publishedId, `drafts.${publishedId}`];
 }
 
-// The three validators below run together on every validation pass and each
+// The two validators below run together on every validation pass and each
 // needs the same dataset-wide snapshot. Share one in-flight request between
 // them, keyed by the document revision so an edit still refetches.
 let validationDataCache:
@@ -233,40 +251,34 @@ function currentRedirect(context: ValidationContext): RedirectRecord {
 }
 
 export async function validateRedirectSource(
-  _value: unknown,
+  value: unknown,
   context: ValidationContext,
 ) {
   const data = await fetchValidationData(context);
   return (
     getRedirectValidationIssues({
-      current: currentRedirect(context),
+      // The field value is newer than context.document while Studio is saving.
+      current: {
+        ...currentRedirect(context),
+        source: value as RedirectRecord["source"],
+      },
       ...data,
     }).errors.source ?? true
   );
 }
 
 export async function validateRedirectDestination(
-  _value: unknown,
+  value: unknown,
   context: ValidationContext,
 ) {
   const data = await fetchValidationData(context);
   return (
     getRedirectValidationIssues({
-      current: currentRedirect(context),
+      current: {
+        ...currentRedirect(context),
+        destination: value as RedirectRecord["destination"],
+      },
       ...data,
     }).errors.destination ?? true
-  );
-}
-
-export async function warnMissingRedirectDestination(
-  _value: unknown,
-  context: ValidationContext,
-) {
-  const data = await fetchValidationData(context);
-  return (
-    getRedirectValidationIssues({
-      current: currentRedirect(context),
-      ...data,
-    }).destinationWarning ?? true
   );
 }
