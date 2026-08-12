@@ -38,6 +38,7 @@ type AutoRedirectPlan =
       action: "apply";
       create: boolean;
       destination: string;
+      destinationDocumentId: string;
       retarget: { _id: string; _rev?: string }[];
       source: string;
     };
@@ -68,6 +69,11 @@ export function planAutoRedirect({
 }): AutoRedirectPlan {
   if (!event.documentType || !ROUTED_DOCUMENT_TYPES.has(event.documentType)) {
     return { action: "skip", reason: "Document type is not routed by a slug" };
+  }
+
+  const destinationDocumentId = event.documentId?.replace(/^drafts\./, "");
+  if (!destinationDocumentId) {
+    return { action: "skip", reason: "The publish event has no document id" };
   }
 
   const source = normalizeRedirectPath(
@@ -165,6 +171,7 @@ export function planAutoRedirect({
     action: "apply",
     create: !directRedirect,
     destination: toStoredRedirectPath(destination),
+    destinationDocumentId,
     retarget: incoming.map((redirect) => ({
       _id: redirect._id as string,
       _rev: redirect._rev,
