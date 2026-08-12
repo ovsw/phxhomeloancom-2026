@@ -23,26 +23,8 @@ import type {
 } from "@/sanity.types";
 import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
-function PageFallback() {
-  return (
-    <div aria-busy aria-label="Page content loading" className="min-h-[60vh]">
-      <section className="bg-[var(--phx-navy-900)] px-4 py-16 md:px-10">
-        <div className="container space-y-4">
-          <div className="h-4 w-28 animate-pulse rounded bg-white/20" />
-          <div className="h-10 max-w-xl animate-pulse rounded bg-white/15" />
-          <div className="h-5 max-w-md animate-pulse rounded bg-white/10" />
-        </div>
-      </section>
-      <section className="container grid gap-6 py-12 md:grid-cols-3">
-        {[0, 1, 2].map((item) => (
-          <div className="h-36 animate-pulse rounded-control bg-muted" key={item} />
-        ))}
-      </section>
-    </div>
-  );
-}
+export const instant = false;
 
 function resolveRootContent(
   page: PAGE_QUERY_RESULT,
@@ -80,21 +62,18 @@ export async function generateStaticParams() {
 export async function generateMetadata(props: {
   params: Promise<{ slug: string[] }>;
 }) {
-  const [{ slug }, { perspective }] = await Promise.all([
-    props.params,
-    getDynamicFetchOptions(),
-  ]);
+  const { slug } = await props.params;
   const slugPath = slug.join("/");
   const [{ data: page }, { data: post }] = await Promise.all([
     sanityFetchMetadata({
       query: PAGE_QUERY,
       params: { slug: slugPath },
-      perspective,
+      perspective: "published",
     }) as Promise<{ data: PAGE_QUERY_RESULT }>,
     sanityFetchMetadata({
       query: POST_QUERY,
       params: { slug: slugPath },
-      perspective,
+      perspective: "published",
     }) as Promise<{ data: POST_QUERY_RESULT }>,
   ]);
   const content = resolveRootContent(page, post, slugPath);
@@ -103,28 +82,16 @@ export async function generateMetadata(props: {
   return generatePageMetadata({ page: content, path: contentPath(slugPath) });
 }
 
-export default function RootContentPage(props: {
-  params: Promise<{ slug: string[] }>;
-}) {
-  return (
-    <Suspense fallback={<PageFallback />}>
-      <RootContentPageContent params={props.params} />
-    </Suspense>
-  );
-}
-
-async function RootContentPageContent({
-  params,
-}: {
+export default async function RootContentPage(props: {
   params: Promise<{ slug: string[] }>;
 }) {
   const { isEnabled: isDraftMode } = await draftMode();
 
   if (isDraftMode) {
-    return <DynamicRootContent params={params} />;
+    return <DynamicRootContent params={props.params} />;
   }
 
-  const { slug } = await params;
+  const { slug } = await props.params;
   return (
     <CachedRootContent
       slug={slug.join("/")}

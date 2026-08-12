@@ -21,6 +21,7 @@ export function FooterLink({
       className={`${baseClassName} ${className}`}
       data-sanity={dataSanity}
       href={link.href}
+      prefetch={false}
       rel={link.openInNewTab ? "noopener noreferrer" : undefined}
       target={link.openInNewTab ? "_blank" : undefined}
     >

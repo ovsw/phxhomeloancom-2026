@@ -14,7 +14,6 @@ function requiredEnvironmentValue(name) {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   cacheComponents: true,
-  partialPrefetching: true,
   cacheLife: { default: sanity },
   trailingSlash: true,
   skipTrailingSlashRedirect: true,

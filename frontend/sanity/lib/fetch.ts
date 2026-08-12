@@ -1,3 +1,4 @@
+import { type QueryParams } from "next-sanity";
 import { sanityFetch, type DynamicFetchOptions } from "@/sanity/lib/live";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
 import { NAVIGATION_QUERY } from "@/sanity/queries/navigation";
@@ -9,16 +10,16 @@ import {
   POSTS_QUERY,
   POSTS_SLUGS_QUERY,
 } from "@/sanity/queries/post";
-import {
-  PAGE_QUERY_RESULT,
-  POST_QUERY_RESULT,
-  POSTS_QUERY_RESULT,
-  NAVIGATION_QUERY_RESULT,
-  SETTINGS_QUERY_RESULT,
+import type {
+  BLOG_INDEX_QUERY_RESULT,
   FOOTER_QUERY_RESULT,
   HOME_PAGE_QUERY_RESULT,
+  NAVIGATION_QUERY_RESULT,
+  PAGE_QUERY_RESULT,
+  POSTS_QUERY_RESULT,
+  POST_QUERY_RESULT,
+  SETTINGS_QUERY_RESULT,
 } from "@/sanity.types";
-import type { BLOG_INDEX_QUERY_RESULT } from "@/sanity.types";
 import type { BlogPost } from "@/sanity/queries/blog-index";
 import type { CategoryArchive } from "@/sanity/queries/category";
 import {
@@ -33,79 +34,57 @@ import {
   CATEGORY_QUERY,
 } from "@/sanity/queries/category";
 
-export async function fetchSanityPageBySlug({
+async function fetchCached<QueryResult>({
+  params = {},
+  perspective,
+  query,
+  stega,
+}: {
+  params?: QueryParams;
+  query: string;
+} & DynamicFetchOptions): Promise<QueryResult> {
+  "use cache";
+  const { data } = await sanityFetch({ query, params, perspective, stega });
+  return data as QueryResult;
+}
+
+export function fetchSanityPageBySlug({
   slug,
   perspective,
   stega,
-}: {
-  slug: string;
-} & DynamicFetchOptions): Promise<PAGE_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: PAGE_QUERY,
-    params: { slug },
-    perspective,
-    stega,
-  });
-
-  return data as PAGE_QUERY_RESULT;
+}: { slug: string } & DynamicFetchOptions): Promise<PAGE_QUERY_RESULT> {
+  return fetchCached({ query: PAGE_QUERY, params: { slug }, perspective, stega });
 }
 
-export async function fetchHomePage({
+export function fetchHomePage({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<HOME_PAGE_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: HOME_PAGE_QUERY,
-    perspective,
-    stega,
-  });
-
-  return data as HOME_PAGE_QUERY_RESULT;
+  return fetchCached({ query: HOME_PAGE_QUERY, perspective, stega });
 }
 
-export async function fetchSanityPosts({
+export function fetchSanityPosts({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<POSTS_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: POSTS_QUERY,
-    perspective,
-    stega,
-  });
-
-  return data as POSTS_QUERY_RESULT;
+  return fetchCached({ query: POSTS_QUERY, perspective, stega });
 }
 
-export async function fetchBlogIndex({
+export function fetchBlogIndex({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<BLOG_INDEX_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: BLOG_INDEX_QUERY,
-    perspective,
-    stega,
-  });
-  return data as BLOG_INDEX_QUERY_RESULT;
+  return fetchCached({ query: BLOG_INDEX_QUERY, perspective, stega });
 }
 
-export async function fetchLatestPost({
+export function fetchLatestPost({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<BlogPost | null> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: LATEST_POST_QUERY,
-    perspective,
-    stega,
-  });
-  return data as unknown as BlogPost | null;
+  return fetchCached({ query: LATEST_POST_QUERY, perspective, stega });
 }
 
-export async function fetchRegularPosts({
+export function fetchRegularPosts({
   end,
   latestPostId,
   perspective,
@@ -116,49 +95,36 @@ export async function fetchRegularPosts({
   latestPostId: string;
   start: number;
 } & DynamicFetchOptions): Promise<BlogPost[]> {
-  "use cache";
-  const { data } = await sanityFetch({
+  return fetchCached({
     query: REGULAR_POSTS_QUERY,
     params: { end, latestPostId, start },
     perspective,
     stega,
   });
-  return data as unknown as BlogPost[];
 }
 
-export async function fetchRegularPostsCount({
+export function fetchRegularPostsCount({
   latestPostId,
   perspective,
   stega,
 }: { latestPostId: string } & DynamicFetchOptions): Promise<number> {
-  "use cache";
-  const { data } = await sanityFetch({
+  return fetchCached({
     query: REGULAR_POSTS_COUNT_QUERY,
     params: { latestPostId },
     perspective,
     stega,
   });
-  return data as number;
 }
 
-export async function fetchCategory({
+export function fetchCategory({
   perspective,
   slug,
   stega,
-}: {
-  slug: string;
-} & DynamicFetchOptions): Promise<CategoryArchive | null> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: CATEGORY_QUERY,
-    params: { slug },
-    perspective,
-    stega,
-  });
-  return data as unknown as CategoryArchive | null;
+}: { slug: string } & DynamicFetchOptions): Promise<CategoryArchive | null> {
+  return fetchCached({ query: CATEGORY_QUERY, params: { slug }, perspective, stega });
 }
 
-export async function fetchCategoryPosts({
+export function fetchCategoryPosts({
   categoryId,
   end,
   perspective,
@@ -169,89 +135,54 @@ export async function fetchCategoryPosts({
   end: number;
   start: number;
 } & DynamicFetchOptions): Promise<BlogPost[]> {
-  "use cache";
-  const { data } = await sanityFetch({
+  return fetchCached({
     query: CATEGORY_POSTS_QUERY,
     params: { categoryId, end, start },
     perspective,
     stega,
   });
-  return data as unknown as BlogPost[];
 }
 
-export async function fetchCategoryPostsCount({
+export function fetchCategoryPostsCount({
   categoryId,
   perspective,
   stega,
 }: { categoryId: string } & DynamicFetchOptions): Promise<number> {
-  "use cache";
-  const { data } = await sanityFetch({
+  return fetchCached({
     query: CATEGORY_POSTS_COUNT_QUERY,
     params: { categoryId },
     perspective,
     stega,
   });
-  return data as number;
 }
 
-export async function fetchSanityPostBySlug({
+export function fetchSanityPostBySlug({
   slug,
   perspective,
   stega,
-}: {
-  slug: string;
-} & DynamicFetchOptions): Promise<POST_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: POST_QUERY,
-    params: { slug },
-    perspective,
-    stega,
-  });
-
-  return data as POST_QUERY_RESULT;
+}: { slug: string } & DynamicFetchOptions): Promise<POST_QUERY_RESULT> {
+  return fetchCached({ query: POST_QUERY, params: { slug }, perspective, stega });
 }
 
-export async function fetchSanityNavigation({
+export function fetchSanityNavigation({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<NAVIGATION_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: NAVIGATION_QUERY,
-    perspective,
-    stega,
-  });
-
-  return data as NAVIGATION_QUERY_RESULT;
+  return fetchCached({ query: NAVIGATION_QUERY, perspective, stega });
 }
 
-export async function fetchSanitySettings({
+export function fetchSanitySettings({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<SETTINGS_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: SETTINGS_QUERY,
-    perspective,
-    stega,
-  });
-
-  return data as SETTINGS_QUERY_RESULT;
+  return fetchCached({ query: SETTINGS_QUERY, perspective, stega });
 }
 
-export async function fetchSanityFooter({
+export function fetchSanityFooter({
   perspective,
   stega,
 }: DynamicFetchOptions): Promise<FOOTER_QUERY_RESULT> {
-  "use cache";
-  const { data } = await sanityFetch({
-    query: FOOTER_QUERY,
-    perspective,
-    stega,
-  });
-
-  return data as FOOTER_QUERY_RESULT;
+  return fetchCached({ query: FOOTER_QUERY, perspective, stega });
 }
 
 export async function getCurrentYear(): Promise<number> {
