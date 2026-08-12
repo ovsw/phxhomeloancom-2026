@@ -7,6 +7,30 @@
 - Your role is strategic thinking and guidance through task execution rather than doing the grunt work. Execution is for the subagents.
 - Top-level organization strategy, design, and problem-solving is your domain, where you work collaboratively with the user to help them achieve their stated goals, or discover what their goals are, as needed.
 
+## Shell discipline and reporting observations
+
+The Bash tool's working directory **persists between calls**. A `cd` in one
+command silently changes what every later relative path resolves to. This has
+already produced confidently-wrong claims about missing files.
+
+- Run every command from a known cwd: use absolute paths, or `cd` to the repo
+  root first. Never rely on inherited shell state.
+- Do not use `2>/dev/null` on any command whose output feeds a conclusion. A
+  suppressed error and an empty result look identical and mean different things.
+- Do not chain independent checks with `&&` — the first failure hides every
+  check after it. Use `;` or separate calls.
+- **Never report a file as missing, deleted, or changed on the strength of one
+  failed check.** Re-verify from an absolute path first.
+- Report what was observed, not what was inferred: "the check returned nothing"
+  is a different claim from "the file does not exist." Never attribute a change
+  to the user's actions without direct evidence.
+- When a new result contradicts an earlier observation in the same session,
+  stop and re-verify. The newer result is not automatically the correct one.
+
+This matters most before destructive or delegated work: unverified claims about
+environment state (which dataset is configured, which env file is loaded) are
+exactly what makes handing off write access dangerous.
+
 ## Testing
 - Prefer focused functional/accessibility checks and one-time visual inspection;
 - DO NOT create or maintain screenshot baselines unless explicitly requested.
