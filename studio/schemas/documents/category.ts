@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { orderRankField } from "@sanity/orderable-document-list";
 import { BookA } from "lucide-react";
 import meta from "../blocks/shared/meta";
 import { uniqueCategorySlug } from "../validation/unique-category-slug";
@@ -35,7 +34,6 @@ export default defineType({
       rows: 3,
       group: "content",
     }),
-    orderRankField({ type: "category" }),
     meta,
   ],
   preview: {

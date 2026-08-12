@@ -1,6 +1,5 @@
 import { defineField, defineType } from "sanity";
 import { ListCollapse } from "lucide-react";
-import { orderRankField } from "@sanity/orderable-document-list";
 
 export default defineType({
   name: "faq",
@@ -17,7 +16,6 @@ export default defineType({
       name: "body",
       type: "block-content",
     }),
-    orderRankField({ type: "faq" }),
   ],
 
   preview: {

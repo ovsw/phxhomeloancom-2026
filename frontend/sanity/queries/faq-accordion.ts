@@ -14,7 +14,7 @@ export const faqAccordionQuery = groq`
       "_id": @->._id,
       "_type": @->._type,
       "title": @->.title,
-      "answer": coalesce(@->.richText, @->.body)[]{
+      "answer": @->.body[]{
         ${bodyQuery}
       }
     }),

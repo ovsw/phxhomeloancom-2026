@@ -8565,13 +8565,6 @@
           "type": "number"
         },
         "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
       }
     }
   },
@@ -8622,13 +8615,6 @@
         "value": {
           "type": "inline",
           "name": "block-content"
-        },
-        "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       }
@@ -9416,13 +9402,6 @@
         },
         "optional": true
       },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "meta": {
         "type": "objectAttribute",
         "value": {
@@ -9534,13 +9513,6 @@
               }
             }
           }
-        },
-        "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       }
