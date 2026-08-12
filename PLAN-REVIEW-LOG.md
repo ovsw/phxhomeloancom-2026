@@ -53,3 +53,28 @@ VERDICT: REVISE
 ## Round 5 — Codex
 All prior material findings addressed; no new concrete blockers.
 VERDICT: APPROVED
+
+## Act 3 — Build
+
+### Round 1 — Codex build (thread 019ff4f2-1168-7123-b79b-38fef83fdbe4)
+Implemented steps 0-6 in one pass: spike passed, all six routes + layout
+rewritten, skeletons deleted, metadata published-only, custom revalidate
+action removed, prefetch policy applied, HTTP verifier written. Reported
+its own negative-cache check as FAILED (miss stayed 404).
+
+### Claude's verdict
+Independently re-ran build (105 static pages), verifier (93 known 200 /
+4 unknown 404, zero fallback markers), typecheck, lint, 106 tests — all
+pass. Reproduced the sticky 404, then falsified it: the failure was the
+test harness, not the code. next-sanity 13.3.1 registers sync tags via
+cacheTag() for every fetch INCLUDING misses (verified in installed
+source, live/conditions/next-js/index.js:47); invalidation is delivered
+through <SanityLive> in an open browser tab. curl-only polling has no
+delivery path, so nothing invalidates. With one browser session open:
+published fixture URL went 404→200 in 5s, unpublish went 200→404 in 5s.
+The plan's own step-7 wording ("checked in a separate browser session")
+was the required condition. No code fix needed. Scope deviation noted:
+step 5's fetch consolidation landed in-diff; split into its own commit
+(064d2fe) per Ovi. Backup taken pre-fixture, gitignored at studio/backups/.
+Note for deploys: with zero visitors connected, a publish propagates on
+the second visit (first visitor's tab delivers the invalidation).
