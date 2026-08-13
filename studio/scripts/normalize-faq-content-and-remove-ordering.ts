@@ -163,11 +163,19 @@ async function main() {
     richText: number;
   }>(
     /* groq */ `{
-      "faqMissingBody": count(*[_type == "faq" && !defined(body)]),
+      "faqMissingBody": count(*[_id in $faqBodyIds && !defined(body)]),
       "orderRanks": count(*[_type in $documentTypes && defined(orderRank)]),
       "richText": count(*[_type == "faq" && defined(richText)])
     }`,
-    { documentTypes: ORDERED_DOCUMENT_TYPES },
+    {
+      documentTypes: ORDERED_DOCUMENT_TYPES,
+      faqBodyIds: before
+        .filter(
+          (document) =>
+            document._type === "faq" && document.richText !== undefined,
+        )
+        .map((document) => document._id),
+    },
   );
   if (
     remaining.faqMissingBody !== 0 ||

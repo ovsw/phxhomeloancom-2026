@@ -3,25 +3,15 @@ import { documentEventHandler } from "@sanity/functions";
 
 import { getPresentationPath } from "../../presentation/routes.ts";
 import {
-  readRedirectPath,
-  type RedirectRecord,
-} from "../../schemas/validation/redirect-rules.ts";
-import {
   autoRedirectId,
   planAutoRedirect,
+  resolveFetchedRedirectDestination,
   shouldWriteAutoRedirect,
   type AutoRedirectEventData,
+  type FetchedRedirect,
 } from "./model.ts";
 
 const API_VERSION = "2026-03-23";
-
-type FetchedRedirect = RedirectRecord & {
-  destinationDocument?: {
-    _id: string;
-    _type: string;
-    slug?: string;
-  };
-};
 
 export const handler = documentEventHandler<AutoRedirectEventData>(
   async ({ context, event }) => {
@@ -72,12 +62,7 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
     }));
     const redirects = rawRedirects.map((redirect) => ({
       ...redirect,
-      destination:
-        (redirect.destinationDocument &&
-          getPresentationPath(
-            redirect.destinationDocument._type,
-            redirect.destinationDocument.slug,
-          )) || readRedirectPath(redirect.destination),
+      destination: resolveFetchedRedirectDestination(redirect),
     }));
 
     const plan = planAutoRedirect({

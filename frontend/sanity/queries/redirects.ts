@@ -15,7 +15,10 @@ export const REDIRECTS_QUERY = defineQuery(/* groq */ `
     _id,
     status,
     source,
-    "destination": coalesce(${redirectDestinationPath}, destination.current),
+    "destination": select(
+      defined(destinationReference._ref) => ${redirectDestinationPath},
+      destination.current
+    ),
     permanent
   }
 `);

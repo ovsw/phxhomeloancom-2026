@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   autoRedirectId,
   planAutoRedirect,
+  resolveFetchedRedirectDestination,
   shouldWriteAutoRedirect,
 } from "./model.ts";
 import { CODE_OWNED_GONE_ROUTE_PATHS } from "../../schemas/validation/redirect-rules.ts";
@@ -12,6 +13,20 @@ test("prevents writes during local Sanity Function tests", () => {
   assert.equal(shouldWriteAutoRedirect(true), false);
   assert.equal(shouldWriteAutoRedirect(false), true);
   assert.equal(shouldWriteAutoRedirect(undefined), true);
+});
+
+test("never falls back to a legacy path when a destination reference cannot resolve", () => {
+  assert.equal(
+    resolveFetchedRedirectDestination({
+      destination: "/stale-path/",
+      destinationReference: {_ref: "missing-page", _type: "reference"},
+    }),
+    undefined,
+  );
+  assert.equal(
+    resolveFetchedRedirectDestination({destination: "/legacy-path/"}),
+    "/legacy-path/",
+  );
 });
 
 test("creates a permanent redirect for a routed slug change", () => {

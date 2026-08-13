@@ -7,7 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 <!-- END:nextjs-agent-rules -->
 
 ## Dev Server rules
-If you need a dev server for inspecting the front-end or the back-end, please first check that the server or the running at that port is not actually the exact server that you need. If it is, use it, instead of starting a new one.
+Before starting a development server, inspect the required port. If the exact server you need is already running there, reuse it.
 
 
 ## Shell discipline and reporting observations
@@ -67,4 +67,3 @@ Before adding or changing a Page Builder section, read `docs/agents/page-builder
 ### Development workflow
 
 Before changing workspace dependencies, Sanity schemas, GROQ queries, or development scripts, consult the relevant section of `README.md`.
-
