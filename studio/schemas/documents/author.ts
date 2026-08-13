@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { orderRankField } from "@sanity/orderable-document-list";
 
 export default defineType({
   name: "author",
@@ -34,7 +33,6 @@ export default defineType({
         },
       ],
     }),
-    orderRankField({ type: "author" }),
   ],
   preview: {
     select: {

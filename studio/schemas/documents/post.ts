@@ -119,12 +119,17 @@ export default defineType({
   preview: {
     select: {
       title: "title",
-      author: "author.name",
+      slug: "slug.current",
       media: "image",
     },
-    prepare(selection) {
-      const { author } = selection;
-      return { ...selection, subtitle: author && `by ${author}` };
+    prepare({ title, slug, media }) {
+      const normalizedSlug = slug?.trim().replace(/^\/+|\/+$/g, "");
+
+      return {
+        title,
+        subtitle: normalizedSlug ? `/${normalizedSlug}/` : undefined,
+        media,
+      };
     },
   },
 });

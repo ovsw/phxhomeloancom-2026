@@ -6797,6 +6797,35 @@
         },
         "optional": true
       },
+      "destinationReference": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "inline",
+              "name": "homePage.reference"
+            },
+            {
+              "type": "inline",
+              "name": "page.reference"
+            },
+            {
+              "type": "inline",
+              "name": "post.reference"
+            },
+            {
+              "type": "inline",
+              "name": "category.reference"
+            },
+            {
+              "type": "inline",
+              "name": "blogIndex.reference"
+            }
+          ]
+        },
+        "optional": true
+      },
       "destination": {
         "type": "objectAttribute",
         "value": {
@@ -8536,13 +8565,6 @@
           "type": "number"
         },
         "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
       }
     }
   },
@@ -8593,13 +8615,6 @@
         "value": {
           "type": "inline",
           "name": "block-content"
-        },
-        "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       }
@@ -9387,13 +9402,6 @@
         },
         "optional": true
       },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
-        },
-        "optional": true
-      },
       "meta": {
         "type": "objectAttribute",
         "value": {
@@ -9505,13 +9513,6 @@
               }
             }
           }
-        },
-        "optional": true
-      },
-      "orderRank": {
-        "type": "objectAttribute",
-        "value": {
-          "type": "string"
         },
         "optional": true
       }

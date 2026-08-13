@@ -1,4 +1,3 @@
-import { orderableDocumentListDeskItem } from "@sanity/orderable-document-list";
 import {
   Files,
   BookMarked,
@@ -14,8 +13,9 @@ import {
   House,
   TrendingUpDown,
 } from "lucide-react";
+import type { StructureResolver } from "sanity/structure";
 
-export const structure = (S: any, context: any) =>
+export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
     .items([
@@ -65,36 +65,44 @@ export const structure = (S: any, context: any) =>
                       { field: "_createdAt", direction: "desc" },
                     ])
                 ),
-              orderableDocumentListDeskItem({
-                type: "category",
-                title: "Categories",
-                icon: Tag,
-                S,
-                context,
-              }),
-              orderableDocumentListDeskItem({
-                type: "author",
-                title: "Authors",
-                icon: User,
-                S,
-                context,
-              }),
+              S.listItem()
+                .title("Categories")
+                .icon(Tag)
+                .schemaType("category")
+                .child(
+                  S.documentTypeList("category")
+                    .title("Categories")
+                    .defaultOrdering([{ field: "title", direction: "asc" }])
+                ),
+              S.listItem()
+                .title("Authors")
+                .icon(User)
+                .schemaType("author")
+                .child(
+                  S.documentTypeList("author")
+                    .title("Authors")
+                    .defaultOrdering([{ field: "name", direction: "asc" }])
+                ),
             ])
         ),
-      orderableDocumentListDeskItem({
-        type: "faq",
-        title: "FAQs",
-        icon: ListCollapse,
-        S,
-        context,
-      }),
-      orderableDocumentListDeskItem({
-        type: "testimonial",
-        title: "Testimonials",
-        icon: Quote,
-        S,
-        context,
-      }),
+      S.listItem()
+        .title("FAQs")
+        .icon(ListCollapse)
+        .schemaType("faq")
+        .child(
+          S.documentTypeList("faq")
+            .title("FAQs")
+            .defaultOrdering([{ field: "title", direction: "asc" }])
+        ),
+      S.listItem()
+        .title("Testimonials")
+        .icon(Quote)
+        .schemaType("testimonial")
+        .child(
+          S.documentTypeList("testimonial")
+            .title("Testimonials")
+            .defaultOrdering([{ field: "name", direction: "asc" }])
+        ),
       S.listItem()
         .title("Redirects")
         .icon(TrendingUpDown)

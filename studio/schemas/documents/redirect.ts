@@ -1,10 +1,10 @@
 import { TrendingUpDown } from "lucide-react";
 import { defineField, defineType } from "sanity";
 
+import { getPresentationPath } from "../../presentation/routes";
 import {
-  validateRedirectDestination,
+  validateRedirectDestinationReference,
   validateRedirectSource,
-  warnMissingRedirectDestination,
 } from "../validation/redirect-rules";
 
 export default defineType({
@@ -41,15 +41,31 @@ export default defineType({
       ],
     }),
     defineField({
-      name: "destination",
+      name: "destinationReference",
       title: "Destination",
-      type: "slug",
-      description: "The current internal path, starting with /.",
-      validation: (Rule) => [
-        Rule.required(),
-        Rule.custom(validateRedirectDestination),
-        Rule.custom(warnMissingRedirectDestination).warning(),
+      type: "reference",
+      description: "Select the published page visitors should reach.",
+      to: [
+        { type: "homePage" },
+        { type: "page" },
+        { type: "post" },
+        { type: "category" },
+        { type: "blogIndex" },
       ],
+      validation: (Rule) =>
+        Rule.required().custom(validateRedirectDestinationReference),
+    }),
+    defineField({
+      name: "destination",
+      title: "Destination path (legacy)",
+      type: "slug",
+      deprecated: {
+        reason: "Redirect destinations now use the Destination page selector.",
+      },
+      readOnly: true,
+      hidden: ({ document, value }) =>
+        !value || Boolean(document?.destinationReference),
+      initialValue: undefined,
     }),
     defineField({
       name: "permanent",
@@ -69,15 +85,37 @@ export default defineType({
   ],
   preview: {
     select: {
-      destination: "destination.current",
+      destinationId: "destinationReference._id",
+      destinationSlug: "destinationReference.slug.current",
+      destinationType: "destinationReference._type",
+      legacyDestination: "destination.current",
       permanent: "permanent",
       source: "source.current",
       status: "status",
     },
-    prepare: ({ destination, permanent, source, status }) => ({
-      title: `${source || "Untitled"} → ${destination || "Untitled"}`,
-      subtitle: `${permanent === "false" ? "302 temporary" : "301 permanent"}, ${status || "inactive"}`,
-      media: TrendingUpDown,
-    }),
+    prepare: ({
+      destinationId,
+      destinationSlug,
+      destinationType,
+      legacyDestination,
+      permanent,
+      source,
+      status,
+    }) => {
+      const destination =
+        getPresentationPath(
+          destinationType,
+          destinationSlug ??
+            (destinationId === "homePage" || destinationId === "blogIndex"
+              ? null
+              : undefined),
+        ) ?? legacyDestination;
+
+      return {
+        title: `${source || "Untitled"} → ${destination || "Untitled"}`,
+        subtitle: `${permanent === "false" ? "302 temporary" : "301 permanent"}, ${status || "inactive"}`,
+        media: TrendingUpDown,
+      };
+    },
   },
 });

@@ -9,7 +9,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Dev Server rules
 Before starting a development server, inspect the required port. If the exact server you need is already running there, reuse it.
 
-
 ## Shell discipline and reporting observations
 
 The Bash tool's working directory **persists between calls**. A `cd` in one

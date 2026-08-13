@@ -6,13 +6,14 @@ export type RedirectRecord = {
   _id?: string;
   _rev?: string;
   destination?: { current?: string } | string;
+  destinationReference?: { _ref?: string; _type?: "reference" };
   permanent?: "false" | "true" | boolean;
   source?: { current?: string } | string;
   status?: string;
 };
 
 type LiveRoute = {
-  _id?: string;
+  _id: string;
   path?: string;
   type?: string;
 };
@@ -32,6 +33,9 @@ export const CODE_OWNED_GONE_ROUTE_PATHS = [
   "/virtual-showings-what-you-need-to-know",
 ] as const;
 const CODE_OWNED_SOURCE_PATHS = new Set<string>(CODE_OWNED_GONE_ROUTE_PATHS);
+const MISSING_DESTINATION_ERROR =
+  "Can't redirect to a non-existent or non-published page. " +
+  "No published page with this slug exists. Please create one.";
 
 export function normalizeRedirectPath(value?: string | null) {
   const trimmed = value?.trim();
@@ -50,6 +54,28 @@ export function toStoredRedirectPath(value?: string | null) {
 
 export function readRedirectPath(value: RedirectRecord["source"]) {
   return typeof value === "string" ? value : value?.current;
+}
+
+function publishedDocumentId(documentId?: string) {
+  return documentId
+    ?.replace(/^drafts\./, "")
+    .replace(/^versions\.[^.]+\./, "");
+}
+
+function resolveDestinationPath(
+  redirect: RedirectRecord,
+  liveRoutes: LiveRoute[],
+) {
+  const destinationId = publishedDocumentId(
+    redirect.destinationReference?._ref,
+  );
+  if (destinationId) {
+    return liveRoutes.find(
+      (route) => publishedDocumentId(route._id) === destinationId,
+    )?.path;
+  }
+
+  return readRedirectPath(redirect.destination);
 }
 
 function active(record: RedirectRecord) {
@@ -97,7 +123,6 @@ export function getRedirectValidationIssues({
   const source = normalizeRedirectPath(sourceValue);
   const destination = normalizeRedirectPath(destinationValue);
   const errors: { destination?: string; source?: string } = {};
-  let destinationWarning: string | undefined;
 
   if (sourceValue && (!sourceValue.trim().startsWith("/") || !source)) {
     errors.source = "The source must be an internal path that starts with /";
@@ -113,7 +138,10 @@ export function getRedirectValidationIssues({
     errors.destination = "Source and destination cannot be the same route";
   }
 
-  if (source && (LIVE_SYSTEM_PATHS.has(source) || CODE_OWNED_SOURCE_PATHS.has(source))) {
+  if (
+    source &&
+    (LIVE_SYSTEM_PATHS.has(source) || CODE_OWNED_SOURCE_PATHS.has(source))
+  ) {
     errors.source = "This source is reserved by an existing site route";
   }
 
@@ -134,12 +162,31 @@ export function getRedirectValidationIssues({
       errors.source = "Another active redirect already uses this source";
     }
 
-    const sourceIsDestination = activeRedirects.find(
+    const sourcesPointingHere = activeRedirects.filter(
       (redirect) =>
         normalizeRedirectPath(readRedirectPath(redirect.destination)) === source,
     );
-    if (source && sourceIsDestination) {
-      errors.source = "This source is already the destination of another redirect";
+    if (source && sourcesPointingHere.length > 0) {
+      const incomingSources = Array.from(
+        new Set(
+          sourcesPointingHere.flatMap((redirect) => {
+            const incomingSource = toStoredRedirectPath(
+              readRedirectPath(redirect.source),
+            );
+            return incomingSource ? [incomingSource] : [];
+          }),
+        ),
+      );
+
+      if (incomingSources.length === 1) {
+        errors.source =
+          `The active redirect from ${incomingSources[0]} points here. ` +
+          "Update or deactivate it before using this path as a source";
+      } else if (incomingSources.length > 1) {
+        errors.source =
+          `${incomingSources.length} active redirects point here: ${incomingSources.join(", ")}. ` +
+          "Update or deactivate them before using this path as a source";
+      }
     }
 
     const destinationIsSource = activeRedirects.find(
@@ -158,10 +205,10 @@ export function getRedirectValidationIssues({
         (route) => normalizeRedirectPath(route.path) === destination,
       ));
   if (destination && !destinationExists && !errors.destination) {
-    destinationWarning = "No published page or post currently uses this destination";
+    errors.destination = MISSING_DESTINATION_ERROR;
   }
 
-  return { destinationWarning, errors };
+  return { errors };
 }
 
 function documentIds(documentId?: string) {
@@ -169,7 +216,7 @@ function documentIds(documentId?: string) {
   return [publishedId, `drafts.${publishedId}`];
 }
 
-// The three validators below run together on every validation pass and each
+// The two validators below run together on every validation pass and each
 // needs the same dataset-wide snapshot. Share one in-flight request between
 // them, keyed by the document revision so an edit still refetches.
 let validationDataCache:
@@ -191,7 +238,7 @@ function fetchValidationData(context: ValidationContext) {
 async function requestValidationData(context: ValidationContext) {
   const client = context.getClient({ apiVersion: "2026-03-23" });
   const data = await client.fetch<{
-    liveRoutes: Array<{ _id: string; _type: string; slug: string }>;
+    liveRoutes: Array<{ _id: string; _type: string; slug?: string }>;
     redirects: RedirectRecord[];
   }>(
     `{
@@ -203,12 +250,14 @@ async function requestValidationData(context: ValidationContext) {
         status,
         source,
         destination,
+        destinationReference,
         permanent
       },
       "liveRoutes": *[
-        _type in ["page", "post", "category"] &&
+        _type in ["page", "post", "category", "homePage", "blogIndex"] &&
         !(_id in path("drafts.**")) &&
-        defined(slug.current)
+        !(_id in path("versions.**")) &&
+        (_type in ["homePage", "blogIndex"] || defined(slug.current))
       ]{
         _id,
         _type,
@@ -218,55 +267,68 @@ async function requestValidationData(context: ValidationContext) {
     { currentIds: documentIds(context.document?._id) },
   );
 
+  const liveRoutes = data.liveRoutes.map((route) => ({
+    _id: route._id,
+    path: getPresentationPath(route._type, route.slug) ?? undefined,
+    type: route._type,
+  }));
+
   return {
-    redirects: data.redirects,
-    liveRoutes: data.liveRoutes.map((route) => ({
-      _id: route._id,
-      path: getPresentationPath(route._type, route.slug) ?? undefined,
-      type: route._type,
+    redirects: data.redirects.map((redirect) => ({
+      ...redirect,
+      destination: resolveDestinationPath(redirect, liveRoutes),
     })),
+    liveRoutes,
   } satisfies RedirectValidationData;
 }
 
-function currentRedirect(context: ValidationContext): RedirectRecord {
-  return (context.document ?? {}) as RedirectRecord;
+function currentRedirect(
+  context: ValidationContext,
+  liveRoutes: LiveRoute[],
+): RedirectRecord {
+  const current = (context.document ?? {}) as RedirectRecord;
+  return {
+    ...current,
+    destination: resolveDestinationPath(current, liveRoutes),
+  };
 }
 
 export async function validateRedirectSource(
-  _value: unknown,
+  value: unknown,
   context: ValidationContext,
 ) {
   const data = await fetchValidationData(context);
   return (
     getRedirectValidationIssues({
-      current: currentRedirect(context),
+      // The field value is newer than context.document while Studio is saving.
+      current: {
+        ...currentRedirect(context, data.liveRoutes),
+        source: value as RedirectRecord["source"],
+      },
       ...data,
     }).errors.source ?? true
   );
 }
 
-export async function validateRedirectDestination(
-  _value: unknown,
+export async function validateRedirectDestinationReference(
+  value: unknown,
   context: ValidationContext,
 ) {
   const data = await fetchValidationData(context);
+  const current = {
+    ...((context.document ?? {}) as RedirectRecord),
+    destinationReference: value as RedirectRecord["destinationReference"],
+  };
+  const destination = resolveDestinationPath(current, data.liveRoutes);
+  if (value && !destination) return MISSING_DESTINATION_ERROR;
+
   return (
     getRedirectValidationIssues({
-      current: currentRedirect(context),
+      current: {
+        ...current,
+        destination,
+      },
       ...data,
     }).errors.destination ?? true
-  );
-}
-
-export async function warnMissingRedirectDestination(
-  _value: unknown,
-  context: ValidationContext,
-) {
-  const data = await fetchValidationData(context);
-  return (
-    getRedirectValidationIssues({
-      current: currentRedirect(context),
-      ...data,
-    }).destinationWarning ?? true
   );
 }

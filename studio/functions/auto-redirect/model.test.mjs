@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   autoRedirectId,
   planAutoRedirect,
+  resolveFetchedRedirectDestination,
   shouldWriteAutoRedirect,
 } from "./model.ts";
 import { CODE_OWNED_GONE_ROUTE_PATHS } from "../../schemas/validation/redirect-rules.ts";
@@ -12,6 +13,20 @@ test("prevents writes during local Sanity Function tests", () => {
   assert.equal(shouldWriteAutoRedirect(true), false);
   assert.equal(shouldWriteAutoRedirect(false), true);
   assert.equal(shouldWriteAutoRedirect(undefined), true);
+});
+
+test("never falls back to a legacy path when a destination reference cannot resolve", () => {
+  assert.equal(
+    resolveFetchedRedirectDestination({
+      destination: "/stale-path/",
+      destinationReference: {_ref: "missing-page", _type: "reference"},
+    }),
+    undefined,
+  );
+  assert.equal(
+    resolveFetchedRedirectDestination({destination: "/legacy-path/"}),
+    "/legacy-path/",
+  );
 });
 
 test("creates a permanent redirect for a routed slug change", () => {
@@ -30,6 +45,7 @@ test("creates a permanent redirect for a routed slug change", () => {
       action: "apply",
       create: true,
       destination: "/new-page/",
+      destinationDocumentId: "page-id",
       retarget: [],
       source: "/old-page/",
     },
@@ -55,7 +71,12 @@ test("does not treat the published document as its own route collision", () => {
 test("flattens incoming redirects when a slug changes repeatedly", () => {
   assert.deepEqual(
     planAutoRedirect({
-      event: { beforeSlug: "/b", documentType: "post", slug: "/c" },
+      event: {
+        beforeSlug: "/b",
+        documentId: "post-id",
+        documentType: "post",
+        slug: "/c",
+      },
       liveRoutes: [],
       redirects: [
         {
@@ -71,6 +92,7 @@ test("flattens incoming redirects when a slug changes repeatedly", () => {
       action: "apply",
       create: true,
       destination: "/c/",
+      destinationDocumentId: "post-id",
       retarget: [{ _id: "redirect-a", _rev: "rev-a" }],
       source: "/b/",
     },
@@ -80,7 +102,12 @@ test("flattens incoming redirects when a slug changes repeatedly", () => {
 test("is idempotent when the direct redirect already exists", () => {
   assert.deepEqual(
     planAutoRedirect({
-      event: { beforeSlug: "/old", documentType: "page", slug: "/new" },
+      event: {
+        beforeSlug: "/old",
+        documentId: "page-id",
+        documentType: "page",
+        slug: "/new",
+      },
       liveRoutes: [],
       redirects: [
         {
@@ -95,6 +122,7 @@ test("is idempotent when the direct redirect already exists", () => {
       action: "apply",
       create: false,
       destination: "/new/",
+      destinationDocumentId: "page-id",
       retarget: [],
       source: "/old/",
     },
@@ -103,7 +131,12 @@ test("is idempotent when the direct redirect already exists", () => {
 
 test("does not create a duplicate when an inactive redirect owns the source", () => {
   const plan = planAutoRedirect({
-    event: { beforeSlug: "/old", documentType: "page", slug: "/new" },
+    event: {
+      beforeSlug: "/old",
+      documentId: "page-id",
+      documentType: "page",
+      slug: "/new",
+    },
     liveRoutes: [],
     redirects: [
       {
@@ -124,6 +157,7 @@ test("skips slug changes containing backslashes", () => {
     planAutoRedirect({
       event: {
         beforeSlug: "/bad\\source",
+        documentId: "page-id",
         documentType: "page",
         slug: "/new",
       },
@@ -137,7 +171,12 @@ test("skips slug changes containing backslashes", () => {
 test("blocks route collisions and redirect chains", () => {
   assert.equal(
     planAutoRedirect({
-      event: { beforeSlug: "/old", documentType: "page", slug: "/new" },
+      event: {
+        beforeSlug: "/old",
+        documentId: "page-id",
+        documentType: "page",
+        slug: "/new",
+      },
       liveRoutes: [{ _id: "other-page", path: "/old" }],
       redirects: [],
     }).action,
@@ -145,7 +184,12 @@ test("blocks route collisions and redirect chains", () => {
   );
   assert.match(
     planAutoRedirect({
-      event: { beforeSlug: "/old", documentType: "page", slug: "/new" },
+      event: {
+        beforeSlug: "/old",
+        documentId: "page-id",
+        documentType: "page",
+        slug: "/new",
+      },
       liveRoutes: [],
       redirects: [{ source: "/new", destination: "/later", status: "active" }],
     }).reason,
@@ -156,7 +200,12 @@ test("blocks route collisions and redirect chains", () => {
 test("creates category redirects inside the public category namespace", () => {
   assert.deepEqual(
     planAutoRedirect({
-      event: { beforeSlug: "old", documentType: "category", slug: "new" },
+      event: {
+        beforeSlug: "old",
+        documentId: "category-id",
+        documentType: "category",
+        slug: "new",
+      },
       liveRoutes: [],
       redirects: [],
     }),
@@ -164,6 +213,7 @@ test("creates category redirects inside the public category namespace", () => {
       action: "apply",
       create: true,
       destination: "/blog/category/new/",
+      destinationDocumentId: "category-id",
       retarget: [],
       source: "/blog/category/old/",
     },
@@ -172,7 +222,12 @@ test("creates category redirects inside the public category namespace", () => {
 
 test("never generates root-level sources for category renames", () => {
   const plan = planAutoRedirect({
-    event: { beforeSlug: "loan-types", documentType: "category", slug: "loans" },
+    event: {
+      beforeSlug: "loan-types",
+      documentId: "category-id",
+      documentType: "category",
+      slug: "loans",
+    },
     liveRoutes: [],
     redirects: [],
   });
@@ -193,7 +248,7 @@ test("ignores unsupported document types and first publications", () => {
   );
   assert.equal(
     planAutoRedirect({
-      event: { documentType: "post", slug: "/new" },
+      event: { documentId: "post-id", documentType: "post", slug: "/new" },
       liveRoutes: [],
       redirects: [],
     }).action,
@@ -205,7 +260,12 @@ test("reserves every code-owned Gone route from automatic slug redirects", () =>
   for (const route of CODE_OWNED_GONE_ROUTE_PATHS) {
     assert.match(
       planAutoRedirect({
-        event: { beforeSlug: route, documentType: "page", slug: "/new" },
+        event: {
+          beforeSlug: route,
+          documentId: "page-id",
+          documentType: "page",
+          slug: "/new",
+        },
         liveRoutes: [],
         redirects: [],
       }).reason,
@@ -217,6 +277,7 @@ test("reserves every code-owned Gone route from automatic slug redirects", () =>
     planAutoRedirect({
       event: {
         beforeSlug: "/old",
+        documentId: "page-id",
         documentType: "page",
         slug: CODE_OWNED_GONE_ROUTE_PATHS[0],
       },
@@ -238,6 +299,7 @@ test("derives a stable redirect id from the source path", () => {
 test("duplicate redelivery reuses the id and does not plan another create", () => {
   const event = {
     beforeSlug: "old-category",
+    documentId: "category-id",
     documentType: "category",
     slug: "new-category",
   };
@@ -267,14 +329,24 @@ test("duplicate redelivery reuses the id and does not plan another create", () =
 
 test("documents the out-of-order rename orphan", () => {
   const newerRename = planAutoRedirect({
-    event: { beforeSlug: "/b", documentType: "page", slug: "/c" },
+    event: {
+      beforeSlug: "/b",
+      documentId: "page-id",
+      documentType: "page",
+      slug: "/c",
+    },
     liveRoutes: [],
     redirects: [],
   });
   assert.equal(newerRename.action, "apply");
 
   const olderRename = planAutoRedirect({
-    event: { beforeSlug: "/a", documentType: "page", slug: "/b" },
+    event: {
+      beforeSlug: "/a",
+      documentId: "page-id",
+      documentType: "page",
+      slug: "/b",
+    },
     liveRoutes: [],
     redirects: [
       {

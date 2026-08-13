@@ -1,5 +1,4 @@
 import { defineField, defineType } from "sanity";
-import { orderRankField } from "@sanity/orderable-document-list";
 
 export default defineType({
   name: "testimonial",
@@ -27,7 +26,6 @@ export default defineType({
       type: "number",
       validation: (rule) => rule.min(1).max(5),
     }),
-    orderRankField({ type: "testimonial" }),
   ],
 
   preview: {

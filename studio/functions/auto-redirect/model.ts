@@ -32,12 +32,21 @@ type LiveRoute = {
   path?: string;
 };
 
+export type FetchedRedirect = RedirectRecord & {
+  destinationDocument?: {
+    _id: string;
+    _type: string;
+    slug?: string;
+  };
+};
+
 type AutoRedirectPlan =
   | { action: "skip"; reason: string }
   | {
       action: "apply";
       create: boolean;
       destination: string;
+      destinationDocumentId: string;
       retarget: { _id: string; _rev?: string }[];
       source: string;
     };
@@ -51,6 +60,23 @@ const RESERVED_SOURCE_PATHS = new Set([
 
 export function shouldWriteAutoRedirect(local?: boolean) {
   return local !== true;
+}
+
+export function resolveFetchedRedirectDestination(
+  redirect: FetchedRedirect,
+) {
+  if (redirect.destinationReference?._ref) {
+    if (!redirect.destinationDocument) return undefined;
+
+    return (
+      getPresentationPath(
+        redirect.destinationDocument._type,
+        redirect.destinationDocument.slug,
+      ) ?? undefined
+    );
+  }
+
+  return readRedirectPath(redirect.destination);
 }
 
 function isActive(record: RedirectRecord) {
@@ -68,6 +94,11 @@ export function planAutoRedirect({
 }): AutoRedirectPlan {
   if (!event.documentType || !ROUTED_DOCUMENT_TYPES.has(event.documentType)) {
     return { action: "skip", reason: "Document type is not routed by a slug" };
+  }
+
+  const destinationDocumentId = event.documentId?.replace(/^drafts\./, "");
+  if (!destinationDocumentId) {
+    return { action: "skip", reason: "The publish event has no document id" };
   }
 
   const source = normalizeRedirectPath(
@@ -165,6 +196,7 @@ export function planAutoRedirect({
     action: "apply",
     create: !directRedirect,
     destination: toStoredRedirectPath(destination),
+    destinationDocumentId,
     retarget: incoming.map((redirect) => ({
       _id: redirect._id as string,
       _rev: redirect._rev,

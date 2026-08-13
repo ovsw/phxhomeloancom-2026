@@ -2,12 +2,13 @@ import { createClient } from "@sanity/client";
 import { documentEventHandler } from "@sanity/functions";
 
 import { getPresentationPath } from "../../presentation/routes.ts";
-import type { RedirectRecord } from "../../schemas/validation/redirect-rules.ts";
 import {
   autoRedirectId,
   planAutoRedirect,
+  resolveFetchedRedirectDestination,
   shouldWriteAutoRedirect,
   type AutoRedirectEventData,
+  type FetchedRedirect,
 } from "./model.ts";
 
 const API_VERSION = "2026-03-23";
@@ -21,8 +22,8 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
       useCdn: false,
     });
 
-    const [redirects, rawLiveRoutes] = await Promise.all([
-      client.fetch<RedirectRecord[]>(`
+    const [rawRedirects, rawLiveRoutes] = await Promise.all([
+      client.fetch<FetchedRedirect[]>(`
         *[
           _type == "redirect" &&
           !(_id in path("drafts.**"))
@@ -32,6 +33,12 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
           status,
           source,
           destination,
+          destinationReference,
+          "destinationDocument": destinationReference->{
+            _id,
+            _type,
+            "slug": slug.current
+          },
           permanent
         }
       `),
@@ -52,6 +59,10 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
     const liveRoutes = rawLiveRoutes.map((route) => ({
       _id: route._id,
       path: getPresentationPath(route._type, route.slug) ?? undefined,
+    }));
+    const redirects = rawRedirects.map((redirect) => ({
+      ...redirect,
+      destination: resolveFetchedRedirectDestination(redirect),
     }));
 
     const plan = planAutoRedirect({
@@ -75,13 +86,17 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
     }
 
     const destination = { _type: "slug", current: plan.destination };
+    const destinationReference = {
+      _type: "reference",
+      _ref: plan.destinationDocumentId,
+    };
     const transaction = client.transaction();
     for (const redirect of plan.retarget) {
       transaction.patch(redirect._id, (patch) => {
         const guardedPatch = redirect._rev
           ? patch.ifRevisionId(redirect._rev)
           : patch;
-        return guardedPatch.set({ destination });
+        return guardedPatch.set({ destination, destinationReference });
       });
     }
     if (plan.create) {
@@ -94,6 +109,7 @@ export const handler = documentEventHandler<AutoRedirectEventData>(
         status: "active",
         source: { _type: "slug", current: plan.source },
         destination,
+        destinationReference,
         permanent: "true",
       });
     }
