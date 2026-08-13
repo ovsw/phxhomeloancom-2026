@@ -5,6 +5,7 @@ import {
   type PortableTextProps,
 } from "@portabletext/react";
 import { buttonVariants } from "@/components/ui/button";
+import { CustomLinkMarkRenderer } from "@/components/portable-text/custom-link-mark";
 import { getSafeLinkHref } from "@/lib/safe-href";
 import { cn } from "@/lib/utils";
 import { stegaClean } from "next-sanity";
@@ -107,21 +108,7 @@ export const richTextContentComponents: PortableTextProps["components"] = {
     ),
   },
   marks: {
-    customLink: ({ children, value }) => {
-      const href = getSafeLinkHref(value?.href);
-      return href ? (
-        <Link
-          className="font-medium text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
-          href={href}
-          rel={value.openInNewTab ? "noopener noreferrer" : undefined}
-          target={value.openInNewTab ? "_blank" : undefined}
-        >
-          {children}
-        </Link>
-      ) : (
-        <span>{children}</span>
-      );
-    },
+    customLink: CustomLinkMarkRenderer,
     buttonLink: ({ children, value }) => {
       const href = getSafeLinkHref(value?.href);
       return href ? (

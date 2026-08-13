@@ -1,47 +1,11 @@
 import {
   CodeIcon,
   ImageIcon,
-  LinkIcon,
   Table2Icon,
   VideoIcon,
 } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
 import RichTextTableInput from "../../inputs/rich-text-table-input";
-
-const linkAnnotation = (name: "buttonLink" | "customLink", title: string) =>
-  defineArrayMember({
-    name,
-    type: "object",
-    title,
-    icon: LinkIcon,
-    fields: [
-      ...(name === "buttonLink"
-        ? [
-            defineField({
-              name: "variant",
-              title: "Button Style",
-              type: "string",
-              initialValue: "default",
-              options: {
-                layout: "radio",
-                list: [
-                  { title: "Default", value: "default" },
-                  { title: "Secondary", value: "secondary" },
-                  { title: "Outline", value: "outline" },
-                  { title: "Link", value: "link" },
-                ],
-              },
-            }),
-          ]
-        : []),
-      defineField({
-        name: "customLink",
-        title: name === "buttonLink" ? "Button Destination" : "Link",
-        type: "customUrl",
-        validation: (rule) => rule.required(),
-      }),
-    ],
-  });
 
 export default defineType({
   name: "richTextContent",
@@ -66,8 +30,8 @@ export default defineType({
       ],
       marks: {
         annotations: [
-          linkAnnotation("customLink", "Internal/External Link"),
-          linkAnnotation("buttonLink", "Button Link"),
+          defineArrayMember({ type: "customLink" }),
+          defineArrayMember({ type: "buttonLink" }),
         ],
         decorators: [
           { title: "Strong", value: "strong" },

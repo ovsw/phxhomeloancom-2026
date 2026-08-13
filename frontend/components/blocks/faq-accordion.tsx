@@ -1,4 +1,4 @@
-import PortableTextRenderer from "@/components/portable-text-renderer";
+import { simpleRichTextComponents } from "@/components/simple-rich-text";
 import {
   Accordion,
   AccordionContent,
@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import type { PAGE_QUERY_RESULT } from "@/sanity.types";
+import { PortableText } from "@portabletext/react";
 import { ArrowUpRight, Plus } from "lucide-react";
 import { stegaClean } from "next-sanity";
 import Link from "next/link";
@@ -103,7 +104,10 @@ export default function FaqAccordion({
                     {faq.answer?.length ? (
                       <AccordionContent className="pb-6 text-muted-foreground">
                         <div className="max-w-3xl typo-body">
-                          <PortableTextRenderer value={faq.answer} />
+                          <PortableText
+                            components={simpleRichTextComponents}
+                            value={faq.answer}
+                          />
                         </div>
                       </AccordionContent>
                     ) : null}

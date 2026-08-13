@@ -14,7 +14,7 @@ export default defineType({
     }),
     defineField({
       name: "body",
-      type: "block-content",
+      type: "simpleRichText",
     }),
   ],
 

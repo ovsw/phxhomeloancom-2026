@@ -1,9 +1,9 @@
 import { PortableText, PortableTextProps } from "@portabletext/react";
 import Image from "next/image";
-import Link from "next/link";
 import { YouTubeEmbed } from "@next/third-parties/google";
 import { Highlight, themes } from "prism-react-renderer";
 import { CopyButton } from "@/components/ui/copy-button";
+import { CustomLinkMarkRenderer } from "@/components/portable-text/custom-link-mark";
 
 const portableTextComponents: PortableTextProps["components"] = {
   types: {
@@ -94,23 +94,7 @@ const portableTextComponents: PortableTextProps["components"] = {
     ),
   },
   marks: {
-    link: ({ value, children }) => {
-      const isExternal =
-        (value?.href || "").startsWith("http") ||
-        (value?.href || "").startsWith("https") ||
-        (value?.href || "").startsWith("mailto");
-      const target = isExternal ? "_blank" : undefined;
-      return (
-        <Link
-          href={value?.href || "#"}
-          target={target}
-          rel={target ? "noopener" : undefined}
-          style={{ textDecoration: "underline" }}
-        >
-          {children}
-        </Link>
-      );
-    },
+    customLink: CustomLinkMarkRenderer,
   },
   list: {
     bullet: ({ children }) => (

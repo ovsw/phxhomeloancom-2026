@@ -1,9 +1,7 @@
 import { groq } from "next-sanity";
 import { imageQuery } from "./shared/image";
-import {
-  customLinkInternalHref,
-  urlInternalHref,
-} from "./shared/internal-href";
+import { customLinkMarkDefsQuery } from "./shared/custom-link";
+import { urlInternalHref } from "./shared/internal-href";
 
 // @sanity-typegen-ignore
 export const storyFeatureQuery = groq`
@@ -17,18 +15,7 @@ export const storyFeatureQuery = groq`
     imageCaption,
     richText[]{
       ...,
-      markDefs[]{
-        ...,
-        _type == "customLink" => {
-          "_type": "link",
-          "href": select(
-            customLink.type == "internal" => ${customLinkInternalHref},
-            customLink.type == "external" => customLink.external,
-            customLink.href
-          ),
-          "openInNewTab": customLink.openInNewTab
-        }
-      }
+      ${customLinkMarkDefsQuery}
     },
     keyDetails {
       title,

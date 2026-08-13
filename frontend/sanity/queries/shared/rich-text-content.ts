@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { customLinkInternalHref } from "./internal-href";
+import { customLinkProjection } from "./custom-link";
 
 // @sanity-typegen-ignore
 export const richTextContentQuery = groq`
@@ -10,12 +10,7 @@ export const richTextContentQuery = groq`
     markDefs[]{
       ...,
       _type in ["customLink", "buttonLink"] => {
-        "href": select(
-          customLink.type == "internal" => ${customLinkInternalHref},
-          customLink.type == "external" => customLink.external,
-          customLink.href
-        ),
-        "openInNewTab": customLink.openInNewTab
+        ${customLinkProjection}
       }
     }
   },

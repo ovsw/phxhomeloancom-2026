@@ -1,4 +1,4 @@
-import { defineType, defineArrayMember } from "sanity";
+import { defineArrayMember, defineType } from "sanity";
 import { SquarePlay } from "lucide-react";
 import { YouTubePreview } from "../../previews/youtube-preview";
 
@@ -28,48 +28,7 @@ export default defineType({
           { title: "Emphasis", value: "em" },
         ],
         annotations: [
-          {
-            name: "link",
-            type: "object",
-            title: "Link",
-            fields: [
-              {
-                name: "isExternal",
-                type: "boolean",
-                title: "Is External",
-                initialValue: false,
-              },
-              {
-                name: "internalLink",
-                type: "reference",
-                title: "Internal Link",
-                to: [
-                  { type: "homePage" },
-                  { type: "page" },
-                  { type: "post" },
-                ],
-                hidden: ({ parent }) => parent?.isExternal,
-              },
-              {
-                name: "href",
-                title: "href",
-                type: "url",
-                hidden: ({ parent }) => !parent?.isExternal,
-                validation: (Rule) =>
-                  Rule.uri({
-                    allowRelative: true,
-                    scheme: ["http", "https", "mailto", "tel"],
-                  }),
-              },
-              {
-                name: "target",
-                type: "boolean",
-                title: "Open in new tab",
-                initialValue: false,
-                hidden: ({ parent }) => !parent?.isExternal,
-              },
-            ],
-          },
+          defineArrayMember({ type: "customLink" }),
         ],
       },
     }),

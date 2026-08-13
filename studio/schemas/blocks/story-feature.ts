@@ -1,4 +1,4 @@
-import { BookOpenText, Link as LinkIcon } from "lucide-react";
+import { BookOpenText } from "lucide-react";
 import { defineArrayMember, defineField, defineType } from "sanity";
 import { sectionNavField } from "./shared/section-nav.ts";
 
@@ -25,20 +25,7 @@ const storyRichTextField = defineField({
           { title: "Emphasis", value: "em" },
         ],
         annotations: [
-          {
-            name: "customLink",
-            type: "object",
-            title: "Internal/External Link",
-            icon: LinkIcon,
-            fields: [
-              defineField({
-                name: "customLink",
-                type: "customUrl",
-                description: "Choose the internal or external page this text should link to",
-                validation: (rule) => rule.required(),
-              }),
-            ],
-          },
+          defineArrayMember({ type: "customLink" }),
         ],
       },
     }),
