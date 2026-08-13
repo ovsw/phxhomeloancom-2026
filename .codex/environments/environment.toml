@@ -3,7 +3,7 @@ version = 1
 name = "phxhomeloancom-2026"
 
 [setup]
-script = ""
+script = "pnpm install"
 
 [[actions]]
 name = "pnpm dev"

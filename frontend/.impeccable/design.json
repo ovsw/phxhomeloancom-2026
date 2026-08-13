@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-04T21:30:00Z",
+  "generatedAt": "2026-08-13T05:23:46Z",
   "title": "Design System: PHX Home Loan",
   "extensions": {
     "colorMeta": {
@@ -351,7 +351,7 @@
       },
       "title-minor": {
         "displayName": "Minor Title",
-        "purpose": "Dense interactive rows such as FAQ questions."
+        "purpose": "FAQ questions, with enough weight and presence to anchor spacious accordion rows."
       },
       "lead": {
         "displayName": "Lead",
@@ -623,7 +623,7 @@
       "ease": "cubic-bezier(0.22, 0.61, 0.36, 1)",
       "easeNote": "One decelerating curve for everything. Motion that decelerates arrives settled instead of stopping dead. Nothing eases in — an element that starts slowly feels unresponsive to the click that triggered it.",
       "scale": "Speed follows travel distance, not importance. The further a thing moves, the longer it needs to stay believable.",
-      "split": "The roles set duration and timing-function only. The call site declares what animates (transition-colors, transition-transform), because the property list is a per-component decision and the speed is a system one.",
+      "split": "The roles set duration and easing only, for animations as well as transitions. The call site declares what animates because the property list is a per-component decision and the speed is a system one. Explicit property lists name translate or scale, not transform, because Tailwind v4 compiles movement to standalone properties.",
       "entrance": {
         "token": "--animate-fade-up",
         "value": "700ms",
@@ -633,7 +633,7 @@
         "strategy": "global",
         "why": "A blanket guard rather than per-component motion-reduce: variants. Honouring the preference only where a developer remembered to opt in means it gets missed, and the misses are invisible to anyone not testing with the setting on.",
         "transitions": "Collapse to 1ms, not 0, so transitionend still fires and any JS waiting on it does not hang.",
-        "travel": "Hover lifts and scale echoes are zeroed at the source. Tailwind v4 drives these through the standalone translate and scale properties rather than transform, so the guard resets --tw-translate-* and --tw-scale-*. A transform: none override silently does nothing.",
+        "travel": "Hover lifts and scale echoes are zeroed by naming the movement utilities individually. Tailwind v4 drives them through standalone translate and scale properties, so the guard resets --tw-translate-* and --tw-scale-*. A blanket reset would also erase static positioning such as -translate-x-1/2 and relocate centered UI.",
         "kept": "Opacity and colour still change. A cross-fade carries no travel and is what most reduced-motion users expect to keep."
       },
       "exceptions": {
@@ -719,7 +719,7 @@
       "refersTo": "button-primary",
       "description": "Default teal action, 48px tall. Flat at rest; lifts 2px on hover.",
       "html": "<button class=\"ds-btn-primary\">Schedule a Consultation</button>",
-      "css": ".ds-btn-primary { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px var(--phx-accent, #1f6e8c); } .ds-btn-primary:active { translate: 0 0; }"
+      "css": ".ds-btn-primary { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 8px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1), translate 200ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-primary:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-btn-primary:active { translate: 0 0; } .ds-btn-primary:disabled { pointer-events: none; opacity: 0.5; translate: 0 0; box-shadow: none; }"
     },
     {
       "name": "Primary Button (Compact)",
@@ -727,7 +727,7 @@
       "refersTo": "button-primary-compact",
       "description": "40px compact action for the header, nav, and dense repeating UI.",
       "html": "<button class=\"ds-btn-primary-compact\">Schedule Consult</button>",
-      "css": ".ds-btn-primary-compact { min-height: 40px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary-compact:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-compact:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px var(--phx-accent, #1f6e8c); }"
+      "css": ".ds-btn-primary-compact { min-height: 40px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 8px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1), translate 200ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-primary-compact:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-compact:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-btn-primary-compact:disabled { pointer-events: none; opacity: 0.5; translate: 0 0; box-shadow: none; }"
     },
     {
       "name": "Primary Button (Hero)",
@@ -735,7 +735,7 @@
       "refersTo": "button-primary-hero",
       "description": "56px action with the larger 16px label. Reserved for the sole action in a section whose headline is the largest type on the page — today, the award CTA only.",
       "html": "<button class=\"ds-btn-primary-hero\">Learn More</button>",
-      "css": ".ds-btn-primary-hero { min-height: 56px; padding: 0 32px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 16px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-accent, #1f6e8c); color: #fff; } .ds-btn-primary-hero:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-hero:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px var(--phx-accent, #1f6e8c); }"
+      "css": ".ds-btn-primary-hero { min-height: 56px; padding: 0 32px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 8px; background: var(--phx-accent, #1f6e8c); color: #fff; font: 600 16px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1), translate 200ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-primary-hero:hover { background: var(--phx-accent-hover, #18576f); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-primary-hero:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-btn-primary-hero:disabled { pointer-events: none; opacity: 0.5; translate: 0 0; box-shadow: none; }"
     },
     {
       "name": "Outline Button",
@@ -743,14 +743,15 @@
       "refersTo": "button-outline",
       "description": "Default-size secondary action with a sand edge. Switches to a white edge on dark surfaces.",
       "html": "<button class=\"ds-btn-outline\">Learn More</button>",
-      "css": ".ds-btn-outline { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: 1px solid var(--phx-border-strong, #c9c2b4); background: transparent; color: var(--phx-text-heading, #131c3b); } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--phx-cream-050, #fbf9f4); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-outline:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px var(--phx-accent, #1f6e8c); }"
+      "css": ".ds-btn-outline { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--phx-border-strong, #c9c2b4); border-radius: 8px; background: transparent; color: var(--phx-text-heading, #131c3b); font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms cubic-bezier(0.22, 0.61, 0.36, 1), border-color 200ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1), translate 200ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-outline:hover { border-color: rgba(31, 110, 140, 0.3); background: var(--surface-card-default, #fff); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-btn-outline:disabled { pointer-events: none; opacity: 0.5; translate: 0 0; box-shadow: none; }"
     },
     {
       "name": "Copper Button",
       "kind": "button",
+      "refersTo": "button-copper",
       "description": "Rare warm action for media and editorial CTAs. Never paired against a primary teal in the same group.",
       "html": "<button class=\"ds-btn-copper\">Watch the Latest Video</button>",
-      "css": ".ds-btn-copper { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, translate 200ms ease-out; border: none; background: var(--phx-copper-600, #b4552d); color: #fff; box-shadow: 0 14px 40px -12px rgba(180, 85, 45, 0.7); } .ds-btn-copper:hover { filter: brightness(1.1); translate: 0 -2px; } .ds-btn-copper:focus-visible { outline: 1px solid rgba(31, 110, 140, 0.5); outline-offset: 3px; box-shadow: 0 0 0 3px var(--phx-accent, #1f6e8c); } .ds-btn-copper:active { translate: 0 0; }"
+      "css": ".ds-btn-copper { min-height: 48px; padding: 0 28px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 8px; background: var(--phx-copper-600, #b4552d); color: #fff; font: 600 14.5px/1.5 \"Archivo\", Helvetica, Arial, sans-serif; cursor: pointer; transition: filter 200ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1), translate 200ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-copper:hover { filter: brightness(1.1); translate: 0 -2px; box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); } .ds-btn-copper:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-btn-copper:active { translate: 0 0; } .ds-btn-copper:disabled { pointer-events: none; opacity: 0.5; translate: 0 0; box-shadow: none; }"
     },
     {
       "name": "Text Input",
@@ -758,7 +759,7 @@
       "refersTo": "input",
       "description": "A comfortable, clearly bounded field for contact and guidance flows.",
       "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">EMAIL ADDRESS</span><input class=\"ds-input\" type=\"email\" placeholder=\"you@example.com\"></label>",
-      "css": ".ds-field { display: grid; gap: 8px; color: var(--phx-text-heading, #131c3b); font-family: \"Archivo\", Helvetica, Arial, sans-serif; } .ds-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-input { min-height: 48px; box-sizing: border-box; width: 100%; padding: 14px 16px; border: 1px solid var(--phx-border-input, #d8d1c3); border-radius: 8px; background: var(--phx-cream-000, #fdfcf9); color: var(--phx-text-heading, #131c3b); font: 400 15px/1.4 \"Archivo\", Helvetica, Arial, sans-serif; outline: none; transition: border-color 150ms ease-out, box-shadow 150ms ease-out; } .ds-input::placeholder { color: var(--phx-text-muted, #5b6172); } .ds-input:focus-visible { border-color: var(--phx-accent, #1f6e8c); box-shadow: 0 0 0 3px rgba(31, 110, 140, 0.2); }"
+      "css": ".ds-field { display: grid; gap: 8px; color: var(--phx-text-heading, #131c3b); font-family: \"Archivo\", Helvetica, Arial, sans-serif; } .ds-field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; } .ds-input { min-height: 48px; box-sizing: border-box; width: 100%; padding: 14px 16px; border: 1px solid var(--phx-border-input, #d8d1c3); border-radius: 8px; background: transparent; color: var(--phx-text-heading, #131c3b); font: 400 16px/1.4 \"Archivo\", Helvetica, Arial, sans-serif; outline: none; transition: color 150ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 150ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-input::placeholder { color: var(--phx-text-muted, #5b6172); } .ds-input:focus-visible { box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-input[aria-invalid=true] { border-color: color-mix(in srgb, #dc2626 60%, transparent); } .ds-input:disabled { pointer-events: none; cursor: not-allowed; opacity: 0.5; }"
     },
     {
       "name": "Editorial Card",
@@ -766,14 +767,14 @@
       "refersTo": "card",
       "description": "The default evidence or educational card on a neutral section.",
       "html": "<article class=\"ds-card\"><p class=\"ds-card-label\">HOME LOAN GUIDANCE</p><h3 class=\"ds-card-title\">Clear options, explained personally.</h3><p class=\"ds-card-copy\">Understand the tradeoffs before choosing your next step.</p></article>",
-      "css": ".ds-card { padding: 28px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 14px; background: var(--surface-card-default, #fff); color: var(--phx-text-heading, #131c3b); box-shadow: 0 1px 3px rgba(19, 28, 59, 0.06); transition: box-shadow 200ms ease-out, transform 200ms ease-out; } .ds-card:hover { box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); transform: translateY(-4px); } .ds-card-label { margin: 0 0 12px; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.18em; } .ds-card-title { margin: 0; color: var(--phx-text-heading, #131c3b); font: 600 24px/1.2 \"Source Serif 4\", Georgia, serif; } .ds-card-copy { margin: 12px 0 0; color: var(--phx-text-body, #3d4356); font: 400 16px/1.7 \"Archivo\", Helvetica, Arial, sans-serif; }"
+      "css": ".ds-card { padding: 28px; border: 1px solid var(--phx-border, #e7e1d6); border-radius: 14px; background: var(--surface-card-default, #fff); color: var(--phx-text-heading, #131c3b); transition: box-shadow 200ms cubic-bezier(0.22, 0.61, 0.36, 1), translate 200ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-card:hover { box-shadow: 0 22px 48px rgba(19, 28, 59, 0.14); translate: 0 -4px; } .ds-card-label { margin: 0 0 12px; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.18em; } .ds-card-title { margin: 0; color: var(--phx-text-heading, #131c3b); font: 600 21px/1.25 \"Source Serif 4\", Georgia, serif; } .ds-card-copy { margin: 12px 0 0; color: var(--phx-text-body, #3d4356); font: 400 14.5px/1.6 \"Archivo\", Helvetica, Arial, sans-serif; }"
     },
     {
-      "name": "Navigation Link",
+      "name": "Navigation Dropdown Item",
       "kind": "nav",
-      "description": "The default desktop navigation link and focus behavior.",
-      "html": "<a class=\"ds-nav-link\" href=\"#\">LOAN OPTIONS</a>",
-      "css": ".ds-nav-link { display: inline-flex; align-items: center; min-height: 40px; color: var(--phx-text-heading, #131c3b); font: 500 14.5px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.01em; text-decoration: none; transition: color 150ms ease-out; } .ds-nav-link:hover { color: var(--phx-accent, #1f6e8c); } .ds-nav-link:focus-visible { border-radius: 8px; outline: 3px solid var(--phx-accent, #1f6e8c); outline-offset: 2px; }"
+      "description": "A current main-navigation submenu row. The fixed icon holder preserves alignment but shares the panel background and has no border.",
+      "html": "<a class=\"ds-nav-item\" href=\"#\"><span class=\"ds-nav-icon\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75\"/></svg></span><span><strong>Our Team</strong><small>The people behind every step of your mortgage.</small></span></a>",
+      "css": ".ds-nav-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 8px; border-radius: 8px; background: var(--popover, #fff); color: var(--phx-text-heading, #131c3b); font-family: \"Archivo\", Helvetica, Arial, sans-serif; text-decoration: none; transition: background-color 150ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-nav-item:hover { background: var(--phx-cream-050, #fbf9f4); } .ds-nav-item:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--background, #f7f4ee), 0 0 0 5px var(--phx-accent, #1f6e8c); } .ds-nav-icon { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border: 0; border-radius: 8px; background: var(--popover, #fff); color: var(--phx-accent, #1f6e8c); } .ds-nav-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; } .ds-nav-item strong { display: block; font-size: 14.5px; line-height: 1; } .ds-nav-item small { display: block; margin-top: 6px; color: var(--phx-text-muted, #5b6172); font-size: 13px; line-height: 1.25; }"
     },
     {
       "name": "Eyebrow Label",
@@ -787,7 +788,7 @@
       "kind": "custom",
       "description": "A canonical Page Builder section that receives white or cream from the shared resolver.",
       "html": "<section class=\"ds-surface\"><div class=\"ds-surface-inner\"><p class=\"ds-eyebrow\">LOCAL EXPERTISE</p><h2 class=\"ds-surface-title\">A clearer path through your home loan.</h2></div></section>",
-      "css": ".ds-surface { padding: 80px 24px; background: var(--surface-section-cream, #f7f4ee); color: var(--phx-text-heading, #131c3b); } .ds-surface-inner { width: min(100%, 1280px); margin: 0 auto; } .ds-eyebrow { margin: 0 0 16px; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.22em; text-transform: uppercase; } .ds-surface-title { max-width: 720px; margin: 0; font: 600 clamp(30px, 3vw, 36px)/1.25 \"Source Serif 4\", Georgia, serif; } @media (min-width: 768px) { .ds-surface { padding-top: 96px; padding-bottom: 96px; } }"
+      "css": ".ds-surface { padding: clamp(80px, 2.5vw + 64px, 96px) clamp(16px, 4vw, 40px); background: var(--surface-section-cream, #f7f4ee); color: var(--phx-text-heading, #131c3b); } .ds-surface-inner { width: min(100%, 1280px); margin: 0 auto; } .ds-eyebrow { margin: 0 0 16px; color: var(--phx-accent, #1f6e8c); font: 600 12px/1 \"Archivo\", Helvetica, Arial, sans-serif; letter-spacing: 0.22em; text-transform: uppercase; } .ds-surface-title { max-width: 720px; margin: 0; font: 600 clamp(30px, 3.2vw, 44px)/1.12 \"Source Serif 4\", Georgia, serif; letter-spacing: -0.01em; }"
     }
   ],
   "narrative": {
@@ -818,6 +819,21 @@
         "section": "typography"
       },
       {
+        "name": "The One Recipe Rule",
+        "body": "Components serving the same semantic role share the same complete `typo-*` recipe — size, responsive behavior, weight, line height, and tracking. New typography variants require a new documented role, not an inline override.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Rhythm Rule",
+        "body": "Section vertical padding is one of exactly three roles — standard, showpiece, banner. A section that seems to need a fourth value is either mis-tiered or a documented exception.",
+        "section": "layout-spacing"
+      },
+      {
+        "name": "The One Gutter Rule",
+        "body": "All two-column feature splits share `gap-split`. Widening or narrowing a single section's split is drift, not composition.",
+        "section": "layout-spacing"
+      },
+      {
         "name": "The Ambient, Not Floating Rule",
         "body": "Depth should feel like soft environmental light. Use tonal separation and borders first; reserve stronger shadows for state, overlap, or high-value emphasis.",
         "section": "elevation"
@@ -829,12 +845,12 @@
       },
       {
         "name": "The Five Shadows Rule",
-        "body": "Every shadow in the system is one of the five named tokens, a documented exception, or a :hover intensification of one. A new arbitrary shadow value is drift, not composition.",
+        "body": "Every shadow in the system is one of the five named tokens above, a documented exception, or a `:hover` intensification of one. A new `shadow-[...]` arbitrary value is drift, not composition.",
         "section": "elevation"
       },
       {
         "name": "The Two Sizes Rule",
-        "body": "A button is default or compact. If a design seems to need a different height, the surrounding spacing is usually wrong, not the button. The one exception is a hero action, which must meet the Hero Is Earned test.",
+        "body": "A button is default or compact. If a design seems to need a different height, the surrounding spacing is usually wrong, not the button — the one exception is a hero action, below.",
         "section": "components"
       },
       {
@@ -844,7 +860,7 @@
       },
       {
         "name": "The Three Corners Rule",
-        "body": "A corner is control (8px), card (14px), or frame (20px). If a design seems to need a fourth value, it is a container that has not decided which of the three it is.",
+        "body": "A corner is control, card, or frame. If a design seems to need a fourth value, it is a container that has not decided which of the three it is.",
         "section": "shapes"
       },
       {
@@ -869,7 +885,7 @@
       },
       {
         "name": "The Distance Sets the Duration Rule",
-        "body": "Pick a speed by how far the element travels, not by how important it is. A prominent button that moves 2px still uses motion-base; a modest drawer that crosses the screen still uses motion-slow.",
+        "body": "Pick a speed by how far the element travels, not by how important it is. A prominent button that moves 2px still uses `motion-base`; a modest drawer that crosses the screen still uses `motion-slow`.",
         "section": "motion"
       },
       {
@@ -884,7 +900,7 @@
       },
       {
         "name": "The Three Sizes Rule",
-        "body": "An icon is size-3.5, size-4, or size-5. A value between them is drift — 17px and 18px are both a size-4 that someone nudged.",
+        "body": "An icon is `size-3.5`, `size-4`, or `size-5`. A value between them is drift — `17px` and `18px` are both a `size-4` that someone nudged.",
         "section": "icons"
       },
       {
@@ -894,7 +910,7 @@
       },
       {
         "name": "The One Width Rule",
-        "body": "Every border in the system is 1px. A design that seems to need a thicker line needs a different colour, a surface change, or a shadow.",
+        "body": "Every border in the system is `1px`. A design that seems to need a thicker line needs a different colour, a surface change, or a shadow.",
         "section": "borders"
       },
       {
@@ -904,7 +920,7 @@
       },
       {
         "name": "The Hero Is Earned Rule",
-        "body": "The hero button size is available only where the section headline is the largest type on the page AND the button is the sole action in that section. Both conditions, not either — two buttons carry each other and stay at default. The trigger is testable rather than a matter of taste, because a third size is how the sizes sprawled before they were collapsed. It also raises the label to 16px: against 66px display type the 14.5px default label, more than the 48px height, is what makes a button read as an afterthought.",
+        "body": "The hero size is available only where both are true: the section headline is the largest type on the page, and the button is the sole action in that section. Both conditions, not either. A section with two buttons has them carry each other and stays at default; a large button in a section with ordinary headings is just a large button.",
         "section": "components"
       }
     ],
