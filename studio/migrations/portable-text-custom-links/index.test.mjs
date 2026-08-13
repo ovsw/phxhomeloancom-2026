@@ -61,7 +61,7 @@ test("matches the legacy external fallback when isExternal is absent", () => {
   assert.equal(converted.customLink.external, "/relative-path/");
 });
 
-test("finds nested Portable Text links and audits invalid destinations", () => {
+test("finds nested Portable Text links and rejects invalid destinations", () => {
   const plan = planPortableTextLinkMigration({
     _id: "drafts.faq-id",
     _rev: "revision",
@@ -92,7 +92,65 @@ test("finds nested Portable Text links and audits invalid destinations", () => {
   ]);
   assert.equal(plan.audit.legacyLinks, 1);
   assert.equal(plan.audit.missingDestinations, 1);
+  assert.match(plan.issues[0], /link empty-link has no destination/);
+});
+
+test("accepts FAQ content supported by simple rich text", () => {
+  const plan = planPortableTextLinkMigration({
+    _id: "faq-id",
+    _rev: "revision",
+    _type: "faq",
+    body: [
+      {
+        _key: "block-key",
+        _type: "block",
+        style: "normal",
+        markDefs: [],
+        children: [
+          {
+            _key: "span-key",
+            _type: "span",
+            marks: ["strong", "em"],
+            text: "Answer",
+          },
+        ],
+      },
+    ],
+  });
+
   assert.deepEqual(plan.issues, []);
+});
+
+test("rejects FAQ content unsupported by simple rich text", () => {
+  const plan = planPortableTextLinkMigration({
+    _id: "faq-id",
+    _rev: "revision",
+    _type: "faq",
+    body: [
+      {
+        _key: "heading-key",
+        _type: "block",
+        style: "h2",
+        listItem: "bullet",
+        markDefs: [],
+        children: [
+          {
+            _key: "span-key",
+            _type: "span",
+            marks: ["code"],
+            text: "Unsupported",
+          },
+        ],
+      },
+      { _key: "image-key", _type: "image" },
+    ],
+  });
+
+  assert.equal(plan.issues.length, 4);
+  assert.match(plan.issues[0], /unsupported style h2/);
+  assert.match(plan.issues[1], /lists are not supported/);
+  assert.match(plan.issues[2], /unsupported text mark/);
+  assert.match(plan.issues[3], /unsupported embedded content/);
 });
 
 test("is idempotent for canonical links", () => {
@@ -118,6 +176,7 @@ test("rejects unfamiliar legacy fields before any writes", () => {
       {
         _key: "block-key",
         _type: "block",
+        children: [],
         markDefs: [
           {
             _key: "link-key",
@@ -130,5 +189,9 @@ test("rejects unfamiliar legacy fields before any writes", () => {
     ],
   });
 
-  assert.match(plan.issues[0], /unexpected link fields legacyLabel/);
+  assert.ok(
+    plan.issues.some((issue) =>
+      /unexpected link fields legacyLabel/.test(issue),
+    ),
+  );
 });

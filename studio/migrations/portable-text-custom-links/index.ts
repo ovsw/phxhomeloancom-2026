@@ -38,6 +38,73 @@ function isLegacyLink(value: unknown): value is JsonRecord {
   return isRecord(value) && value._type === "link";
 }
 
+function auditSimpleFaqBody(document: SanityDocument, issues: string[]) {
+  if (document._type !== "faq" || document.body === undefined) return;
+  if (!Array.isArray(document.body)) {
+    issues.push(`${document._id} body: expected Portable Text blocks`);
+    return;
+  }
+
+  document.body.forEach((block, blockIndex) => {
+    const path = `body.${blockIndex}`;
+    if (!isRecord(block) || block._type !== "block") {
+      issues.push(`${document._id} ${path}: unsupported embedded content`);
+      return;
+    }
+
+    if (block.style !== undefined && block.style !== "normal") {
+      issues.push(`${document._id} ${path}: unsupported style ${String(block.style)}`);
+    }
+    if (block.listItem !== undefined || block.level !== undefined) {
+      issues.push(`${document._id} ${path}: lists are not supported`);
+    }
+
+    const markDefs = Array.isArray(block.markDefs) ? block.markDefs : [];
+    const annotationKeys = new Set(
+      markDefs.flatMap((mark) =>
+        isRecord(mark) && typeof mark._key === "string" ? [mark._key] : [],
+      ),
+    );
+
+    markDefs.forEach((mark, markIndex) => {
+      if (
+        !isRecord(mark) ||
+        (mark._type !== "link" && mark._type !== "customLink")
+      ) {
+        issues.push(
+          `${document._id} ${path}.markDefs.${markIndex}: unsupported annotation`,
+        );
+      }
+    });
+
+    if (!Array.isArray(block.children)) {
+      issues.push(`${document._id} ${path}: expected text spans`);
+      return;
+    }
+
+    block.children.forEach((child, childIndex) => {
+      if (!isRecord(child) || child._type !== "span") {
+        issues.push(
+          `${document._id} ${path}.children.${childIndex}: unsupported inline content`,
+        );
+        return;
+      }
+
+      const marks = Array.isArray(child.marks) ? child.marks : [];
+      const unsupportedMarks = marks.filter(
+        (mark) =>
+          typeof mark !== "string" ||
+          (!annotationKeys.has(mark) && mark !== "strong" && mark !== "em"),
+      );
+      if (unsupportedMarks.length > 0) {
+        issues.push(
+          `${document._id} ${path}.children.${childIndex}: unsupported text mark`,
+        );
+      }
+    });
+  });
+}
+
 function legacyLinkKind(link: JsonRecord) {
   return link.isExternal === true ||
     (typeof link.href === "string" && !isRecord(link.internalLink))
@@ -82,6 +149,8 @@ export function planPortableTextLinkMigration(
   const issues: string[] = [];
   const replacements: PortableTextLinkPlan["replacements"] = [];
 
+  auditSimpleFaqBody(document, issues);
+
   function visit(value: unknown, path: Path) {
     if (Array.isArray(value)) {
       value.forEach((item, index) => visit(item, [...path, index]));
@@ -105,7 +174,12 @@ export function planPortableTextLinkMigration(
             kind === "external"
               ? typeof link.href === "string" && Boolean(link.href.trim())
               : Boolean(ref);
-          if (!hasDestination) audit.missingDestinations += 1;
+          if (!hasDestination) {
+            audit.missingDestinations += 1;
+            issues.push(
+              `${document._id} ${path.join(".")}: link ${String(link._key ?? "without a key")} has no destination`,
+            );
+          }
 
           if (typeof link._key !== "string" || !link._key) {
             issues.push(`${document._id} ${path.join(".")}: link has no _key`);
