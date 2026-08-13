@@ -1,14 +1,9 @@
-import { linkQuery } from "./link";
+import { customLinkMarkDefsQuery } from "./custom-link";
 import { imageQuery } from "./image";
 
 export const bodyQuery = `
   ...,
-  markDefs[]{
-    ...,
-    _type == "link" => {
-      ${linkQuery}
-    }
-  },
+  ${customLinkMarkDefsQuery},
   _type == "image" => {
     ${imageQuery}
   }

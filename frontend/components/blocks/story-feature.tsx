@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { CustomLinkMarkRenderer } from "@/components/portable-text/custom-link-mark";
 import { getSafeLinkHref } from "@/lib/safe-href";
 import { cn } from "@/lib/utils";
 import { urlFor } from "@/sanity/lib/image";
@@ -30,22 +31,7 @@ const storyRichTextComponents: Partial<PortableTextComponents> = {
     number: ({ children }) => <ol className="list-decimal space-y-2 pl-6">{children}</ol>,
   },
   marks: {
-    link: ({ children, value }) => {
-      const href = getSafeLinkHref(value?.href);
-      if (!href) return <>{children}</>;
-
-      const openInNewTab = stegaClean(value?.openInNewTab);
-      return (
-        <Link
-          className="font-medium text-primary underline underline-offset-4 hover:text-accent-hover"
-          href={href}
-          rel={openInNewTab ? "noopener noreferrer" : undefined}
-          target={openInNewTab ? "_blank" : undefined}
-        >
-          {children}
-        </Link>
-      );
-    },
+    customLink: CustomLinkMarkRenderer,
   },
 };
 

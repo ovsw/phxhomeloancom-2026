@@ -23,7 +23,9 @@ import { buttonVariant } from "./schemas/blocks/shared/button-variant";
 import sectionPadding from "./schemas/blocks/shared/section-padding";
 import sectionNav from "./schemas/blocks/shared/section-nav";
 import customUrl from "./schemas/blocks/shared/custom-url";
+import customLink from "./schemas/blocks/shared/custom-link";
 import button from "./schemas/blocks/shared/button";
+import buttonLink from "./schemas/blocks/shared/button-link";
 import richTextContent from "./schemas/blocks/shared/rich-text-content";
 import simpleRichText from "./schemas/blocks/shared/simple-rich-text";
 // Schema UI objects
@@ -78,7 +80,9 @@ export const schemaTypes = [
   sectionPadding,
   sectionNav,
   customUrl,
+  customLink,
   button,
+  buttonLink,
   richTextContent,
   simpleRichText,
   // blocks

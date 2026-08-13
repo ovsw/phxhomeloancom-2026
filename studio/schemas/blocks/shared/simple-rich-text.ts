@@ -1,5 +1,4 @@
-import { LinkIcon } from "lucide-react";
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineArrayMember, defineType } from "sanity";
 
 /**
  * Deliberately minimal rich text: paragraphs with bold, italic, and inline
@@ -20,18 +19,7 @@ export default defineType({
       marks: {
         annotations: [
           defineArrayMember({
-            name: "customLink",
-            type: "object",
-            title: "Link",
-            icon: LinkIcon,
-            fields: [
-              defineField({
-                name: "customLink",
-                title: "Link",
-                type: "customUrl",
-                validation: (rule) => rule.required(),
-              }),
-            ],
+            type: "customLink",
           }),
         ],
         decorators: [

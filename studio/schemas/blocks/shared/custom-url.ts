@@ -34,25 +34,6 @@ export default defineType({
   type: "object",
   fields: [
     defineField({
-      name: "type",
-      type: "string",
-      initialValue: "external",
-      options: {
-        layout: "radio",
-        list: [
-          { title: "Internal", value: "internal" },
-          { title: "External", value: "external" },
-        ],
-      },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "openInNewTab",
-      title: "Open in new tab",
-      type: "boolean",
-      initialValue: false,
-    }),
-    defineField({
       name: "external",
       title: "External URL",
       type: "string",
@@ -76,6 +57,25 @@ export default defineType({
             ? "Select the internal page"
             : true;
         }),
+    }),
+    defineField({
+      name: "type",
+      type: "string",
+      initialValue: "external",
+      options: {
+        layout: "radio",
+        list: [
+          { title: "Internal", value: "internal" },
+          { title: "External", value: "external" },
+        ],
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "openInNewTab",
+      title: "Open in new tab",
+      type: "boolean",
+      initialValue: false,
     }),
     defineField({
       name: "href",

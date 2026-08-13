@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { bodyQuery } from "./shared/body";
+import { simpleRichTextQuery } from "./shared/simple-rich-text";
 import { urlInternalHref } from "./shared/internal-href";
 
 // @sanity-typegen-ignore
@@ -15,7 +15,7 @@ export const faqAccordionQuery = groq`
       "_type": @->._type,
       "title": @->.title,
       "answer": coalesce(@->.body, @->.richText)[]{
-        ${bodyQuery}
+        ${simpleRichTextQuery}
       }
     }),
     link{
