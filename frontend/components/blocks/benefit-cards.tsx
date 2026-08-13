@@ -29,6 +29,7 @@ export default function BenefitCards({
 
   const displayTitle = stegaClean(title)?.trim();
   const headingId = `benefit-cards-${stegaClean(_key)}`;
+  const useThreeColumns = cards.length === 3 || cards.length >= 5;
 
   return (
     <section
@@ -69,7 +70,10 @@ export default function BenefitCards({
         </header>
 
         <ol
-          className="grid list-none gap-6 p-0 sm:grid-cols-2"
+          className={cn(
+            "grid list-none gap-6 p-0 sm:grid-cols-2",
+            useThreeColumns && "lg:grid-cols-3",
+          )}
           data-sanity={dataAttribute?.("cards")}
         >
           {cards.map((card, index) => {
@@ -87,7 +91,7 @@ export default function BenefitCards({
               >
                 <div className="flex items-center justify-between">
                   <div
-                    className="flex size-[46px] items-center justify-center rounded-control bg-secondary text-primary"
+                    className="flex size-[46px] items-center justify-center rounded-full bg-secondary text-primary"
                     data-sanity={dataAttribute?.(`${cardPath}.icon`)}
                   >
                     {iconName ? (

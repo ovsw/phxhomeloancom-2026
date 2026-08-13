@@ -101,9 +101,9 @@ export default defineType({
       name: "cards",
       type: "array",
       description:
-        "The benefit cards. They are numbered automatically in the order listed here.",
+        "Add up to 6 benefit cards. They are numbered automatically in the order listed here.",
       of: [benefitCard],
-      validation: (rule) => rule.required().min(1),
+      validation: (rule) => rule.required().min(1).max(6),
     }),
     sectionNavField(),
   ],
