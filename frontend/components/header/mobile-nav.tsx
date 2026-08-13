@@ -122,13 +122,10 @@ export default function MobileNav({
                           onClick={close}
                         >
                           {/*
-                            Outlined chip, matching the desktop panel. One size
-                            down from desktop's size-10/size-5: the sheet is
-                            narrower than the panel and the rows already carry
-                            p-3, so a full-size chip would crowd the text it
-                            sits beside.
+                            Keep the smaller fixed holder for alignment, but
+                            match the sheet surface so it remains invisible.
                           */}
-                          <span className="flex size-8 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
+                          <span className="flex size-8 shrink-0 items-center justify-center rounded-control bg-background text-primary">
                             <NavigationIcon icon={child.icon} />
                           </span>
                           <span className="grid gap-1">

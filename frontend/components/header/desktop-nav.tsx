@@ -63,12 +63,10 @@ function GroupPanelContent({ label, links }: { label: string; links: HeaderChild
             link={child.link}
           >
             {/*
-              Outlined rather than filled: against the popover a cream-filled
-              chip reads as another surface layer, and with five of them stacked
-              the panel turns into a column of blocks. The border carries the
-              same shape at a fraction of the visual weight.
+              Keep the fixed holder for alignment, but let it disappear into
+              the panel surface so the icon does not read as a separate chip.
             */}
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-popover text-primary">
               <NavigationIcon className="size-5" icon={child.icon} />
             </span>
             <span className="grid gap-1">
