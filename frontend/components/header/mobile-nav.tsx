@@ -154,9 +154,15 @@ export default function MobileNav({
         </nav>
         {navigation.actions.length ? (
           <SheetFooter className="border-t border-border/80 p-4">
-            {navigation.actions.map((action) => (
+            {navigation.actions.map((action, index) => (
               <HeaderLink
-                className={cn(buttonVariants({ size: "compact" }), "w-full")}
+                className={cn(
+                  buttonVariants({
+                    size: "compact",
+                    variant: index === 1 ? "outline" : "primary",
+                  }),
+                  "w-full",
+                )}
                 key={action.key}
                 link={action.link}
                 onClick={close}

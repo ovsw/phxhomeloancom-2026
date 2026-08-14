@@ -65,9 +65,12 @@ export function Header({ model }: { model: HeaderModel }) {
         <DesktopNav navigation={navigation} />
         <div className="hidden items-center gap-2 xl:flex xl:gap-3">
           {/* <ModeToggle /> */}
-          {navigation.actions.map((action) => (
+          {navigation.actions.map((action, index) => (
             <HeaderLink
-              className={buttonVariants({ size: "compact" })}
+              className={buttonVariants({
+                size: "compact",
+                variant: index === 1 ? "outline" : "primary",
+              })}
               key={action.key}
               link={action.link}
             />
