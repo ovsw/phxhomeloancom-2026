@@ -66,7 +66,7 @@ function GroupPanelContent({ label, links }: { label: string; links: HeaderChild
               Keep the fixed holder for alignment, but let it disappear into
               the panel surface so the icon does not read as a separate chip.
             */}
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-popover text-primary">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-popover text-primary transition-colors motion-fast group-hover/nav-link:bg-secondary group-focus-visible/nav-link:bg-secondary">
               <NavigationIcon className="size-5" icon={child.icon} />
             </span>
             <span className="grid gap-1">
