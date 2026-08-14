@@ -24,7 +24,18 @@ const page = {
   _type: "page",
   blocks: [],
   description: null,
+  loanType: null,
+  slug: "ordinary-page",
   title: "Ordinary page",
+} as unknown as NonNullable<PAGE_QUERY_RESULT>;
+
+const loanPage = {
+  ...page,
+  _id: "loan-page-1",
+  description: "VA loan page description.",
+  loanType: "VA Loan",
+  slug: "/phoenix-va-loan",
+  title: "VA loan page",
 } as unknown as NonNullable<PAGE_QUERY_RESULT>;
 
 const post = {
@@ -39,26 +50,26 @@ const post = {
   title: "Post title",
 } as unknown as NonNullable<POST_QUERY_RESULT>;
 
-function isBlogPosting(value: unknown) {
+function isJsonLdType(value: unknown, type: string) {
   return (
     typeof value === "object" &&
     value !== null &&
     "@type" in value &&
-    value["@type"] === "BlogPosting"
+    value["@type"] === type
   );
 }
 
-function countBlogPostingScripts(container: HTMLElement) {
-  let count = 0;
+function jsonLdNodesByType(container: HTMLElement, type: string) {
+  const nodes: unknown[] = [];
 
   for (const script of container.querySelectorAll(
     'script[type="application/ld+json"]',
   )) {
     const value: unknown = JSON.parse(script.textContent ?? "null");
-    if (isBlogPosting(value)) count += 1;
+    if (isJsonLdType(value, type)) nodes.push(value);
   }
 
-  return count;
+  return nodes;
 }
 
 describe("RootContentView", () => {
@@ -77,11 +88,39 @@ describe("RootContentView", () => {
     const { container, rerender } = render(
       <RootContentView content={post} perspective="published" stega={false} />,
     );
-    expect(countBlogPostingScripts(container)).toBe(1);
+    expect(jsonLdNodesByType(container, "BlogPosting")).toHaveLength(1);
 
     rerender(
       <RootContentView content={page} perspective="published" stega={false} />,
     );
-    expect(countBlogPostingScripts(container)).toBe(0);
+    expect(jsonLdNodesByType(container, "BlogPosting")).toHaveLength(0);
+  });
+
+  it("emits one LoanOrCredit for a loan page and none for an ordinary page or post", () => {
+    const { container, rerender } = render(
+      <RootContentView
+        content={loanPage}
+        perspective="published"
+        stega={false}
+      />,
+    );
+    const loanNodes = jsonLdNodesByType(container, "LoanOrCredit");
+    expect(loanNodes).toHaveLength(1);
+    expect(loanNodes[0]).toMatchObject({
+      "@type": "LoanOrCredit",
+      name: "VA Loan",
+      loanType: "VA Loan",
+      description: "VA loan page description.",
+    });
+
+    rerender(
+      <RootContentView content={page} perspective="published" stega={false} />,
+    );
+    expect(jsonLdNodesByType(container, "LoanOrCredit")).toHaveLength(0);
+
+    rerender(
+      <RootContentView content={post} perspective="published" stega={false} />,
+    );
+    expect(jsonLdNodesByType(container, "LoanOrCredit")).toHaveLength(0);
   });
 });

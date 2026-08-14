@@ -2,6 +2,7 @@ import { createDataAttribute, stegaClean } from "next-sanity";
 import Blocks from "@/components/blocks";
 import BlogPostingJsonLd from "@/components/blog-posting-json-ld";
 import FaqPageJsonLd from "@/components/faq-json-ld";
+import LoanJsonLd from "@/components/loan-json-ld";
 import VideoJsonLd from "@/components/video-json-ld";
 import { siteUrl } from "@/lib/site-url";
 import QuickNav from "@/components/quick-nav";
@@ -44,6 +45,13 @@ function PageContent({
   return (
     <>
       <FaqPageJsonLd blocks={blocks} />
+      <LoanJsonLd
+        loanType={page.loanType}
+        metaDescription={page.meta?.description}
+        pageDescription={page.description}
+        siteUrl={siteUrl}
+        slug={page.slug}
+      />
       <VideoJsonLd blocks={blocks} siteUrl={siteUrl} />
       {isRichTextOnlyPage && stegaClean(page.title)?.trim() ? (
         <header className="surface-white border-b border-border py-14 md:py-20">

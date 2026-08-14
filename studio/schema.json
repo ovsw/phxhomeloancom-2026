@@ -9577,6 +9577,47 @@
         },
         "optional": true
       },
+      "loanType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "VA Loan"
+            },
+            {
+              "type": "string",
+              "value": "FHA Loan"
+            },
+            {
+              "type": "string",
+              "value": "Conventional Loan"
+            },
+            {
+              "type": "string",
+              "value": "Jumbo Loan"
+            },
+            {
+              "type": "string",
+              "value": "USDA Loan"
+            },
+            {
+              "type": "string",
+              "value": "Construction-to-Permanent Loan"
+            },
+            {
+              "type": "string",
+              "value": "Adjustable-Rate Mortgage (ARM)"
+            },
+            {
+              "type": "string",
+              "value": "Refinance Loan"
+            }
+          ]
+        },
+        "optional": true
+      },
       "blocks": {
         "type": "objectAttribute",
         "value": {
