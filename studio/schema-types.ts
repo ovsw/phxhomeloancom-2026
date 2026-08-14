@@ -34,6 +34,7 @@ import homeHero from "./schemas/blocks/home-hero";
 import loanFeatureCards from "./schemas/blocks/loan-feature-cards";
 import videoFeature from "./schemas/blocks/video-feature";
 import phxEmbedSocialReviews from "./schemas/blocks/phx-embed-social-reviews";
+import homebotWidget from "./schemas/blocks/homebot-widget";
 import latestArticles from "./schemas/blocks/latest-articles";
 import faqAccordion from "./schemas/blocks/faq-accordion";
 import awardCta from "./schemas/blocks/award-cta";
@@ -91,6 +92,7 @@ export const schemaTypes = [
   loanFeatureCards,
   videoFeature,
   phxEmbedSocialReviews,
+  homebotWidget,
   latestArticles,
   faqAccordion,
   awardCta,

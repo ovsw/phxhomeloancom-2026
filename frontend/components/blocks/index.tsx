@@ -5,6 +5,7 @@ import HomeHero from "@/components/blocks/home-hero";
 import LoanFeatureCards from "@/components/blocks/loan-feature-cards";
 import VideoFeature from "@/components/blocks/video-feature";
 import PhxEmbedSocialReviews from "@/components/blocks/phx-embed-social-reviews";
+import HomebotWidget from "@/components/blocks/homebot-widget";
 import LatestArticles from "@/components/blocks/latest-articles";
 import FaqAccordion from "@/components/blocks/faq-accordion";
 import AwardCta from "@/components/blocks/award-cta";
@@ -54,6 +55,7 @@ const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
   "contactForm",
   "teamMembers",
   "richTextBlock",
+  "homebotWidget",
   "advisorCta",
   "processSteps",
   "ctaBanner",
@@ -71,6 +73,7 @@ const componentMap: Partial<{
   loanFeatureCards: LoanFeatureCards,
   videoFeature: VideoFeature,
   phxEmbedSocialReviews: PhxEmbedSocialReviews,
+  homebotWidget: HomebotWidget,
   latestArticles: LatestArticles,
   faqAccordion: FaqAccordion,
   awardCta: AwardCta,

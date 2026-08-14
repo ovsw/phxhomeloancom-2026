@@ -8,6 +8,7 @@ import { ctaBannerQuery } from "./cta-banner";
 import { editorialChapterQuery } from "./editorial-chapter";
 import { faqAccordionQuery } from "./faq-accordion";
 import { homeHeroQuery } from "./home-hero";
+import { homebotWidgetQuery } from "./homebot-widget";
 import { latestArticlesQuery } from "./latest-articles";
 import { loanFeatureCardsQuery } from "./loan-feature-cards";
 import { loanRequirementsQuery } from "./loan-requirements";
@@ -34,6 +35,7 @@ export const pageBuilderQuery = `
     ${loanFeatureCardsQuery},
     ${videoFeatureQuery},
     ${phxEmbedSocialReviewsQuery},
+    ${homebotWidgetQuery},
     ${latestArticlesQuery},
     ${faqAccordionQuery},
     ${awardCtaQuery},

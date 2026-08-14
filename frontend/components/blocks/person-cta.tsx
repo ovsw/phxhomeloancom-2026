@@ -118,6 +118,8 @@ export default function PersonCta({
   const titleId = _key
     ? `person-cta-${stegaClean(_key)}-title`
     : undefined;
+  const sourceWidth = personImage?.asset?.metadata?.dimensions?.width ?? 680;
+  const sourceHeight = personImage?.asset?.metadata?.dimensions?.height ?? 806;
 
   return (
     <section
@@ -127,8 +129,8 @@ export default function PersonCta({
         creamSurface ? "surface-cream" : "surface-white",
       )}
     >
-      <div className="container-narrow grid items-center gap-split min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-        <div className="relative mx-auto flex w-full max-w-[18.75rem] items-end justify-center overflow-hidden sm:max-w-[20rem] lg:max-w-none">
+      <div className="container-narrow grid items-center gap-split min-[700px]:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-6">
+        <div className="relative mx-auto flex w-full max-w-[18.75rem] items-end justify-center sm:max-w-[20rem] lg:max-w-none">
           <div
             aria-hidden="true"
             className={cn(
@@ -140,14 +142,14 @@ export default function PersonCta({
             <Image
               alt={stegaClean(personImage.alt) || ""}
               blurDataURL={personImage.asset.metadata?.lqip || undefined}
-              className="relative z-10 h-auto w-[96%]"
+              className="relative z-10 h-auto w-full"
               data-sanity={dataAttribute?.("personImage")}
-              height={806}
+              height={sourceHeight}
               loading="lazy"
               placeholder={personImage.asset.metadata?.lqip ? "blur" : undefined}
-              sizes="(min-width: 1024px) 500px, (min-width: 700px) 38vw, (min-width: 640px) 320px, 300px"
-              src={urlFor(personImage).width(680).height(806).url()}
-              width={680}
+              sizes="(min-width: 1024px) 600px, (min-width: 700px) 38vw, (min-width: 640px) 320px, 300px"
+              src={personImage.asset.url || urlFor(personImage).width(960).fit("max").url()}
+              width={sourceWidth}
             />
           ) : null}
         </div>

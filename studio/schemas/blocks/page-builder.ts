@@ -4,6 +4,7 @@ export const generalPageBuilderBlockTypes = [
   "loanFeatureCards",
   "videoFeature",
   "phxEmbedSocialReviews",
+  "homebotWidget",
   "latestArticles",
   "faqAccordion",
   "awardCta",
