@@ -8,6 +8,10 @@ const youtubeHosts = [
 const youtubePathPrefixes = new Set(["embed", "live", "shorts", "v"]);
 const youtubeVideoIdPattern = /^[A-Za-z0-9_-]{11}$/;
 
+export function isYouTubeVideoId(value?: string | null): value is string {
+  return !!value && youtubeVideoIdPattern.test(value);
+}
+
 export function getYouTubeVideoId(value?: string | null) {
   if (!value) return null;
 
