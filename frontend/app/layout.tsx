@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
+import { siteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -8,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
+  metadataBase: new URL(siteUrl),
   title: {
     template: "%s | Schema UI",
     default: "Sanity Next.js Website | Schema UI",
