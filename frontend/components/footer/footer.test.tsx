@@ -29,6 +29,7 @@ const model: FooterModel = {
   brand: {
     label: "PHX Home Loan",
     image: null,
+    secondaryImage: null,
     phone: link("brand-phone", "602-908-5849", "tel:+16029085849"),
     addressLines: ["3602 E Campbell Ave,", "Phoenix AZ 85018"],
     organizationNmlsId: "477166",

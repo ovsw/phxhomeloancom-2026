@@ -2,19 +2,57 @@ import Image from "next/image";
 import Link from "next/link";
 import type { FooterColumnModel, FooterLinkModel, FooterModel } from "./model";
 import { FooterLink } from "./footer-link";
+import { FooterIcon, socialIconFor } from "./icons";
 
 const headingClassName =
   "mb-5 text-[13px] font-semibold uppercase leading-none tracking-[0.18em] text-white/70";
 
+// Small dim glyph next to a contact detail; brightens with the link on hover.
+const detailIconClassName = "mt-[3px] size-[15px] shrink-0 text-white/45";
+const detailIconOnLinkClassName = `${detailIconClassName} transition-colors motion-fast group-hover:text-white`;
+const detailLinkClassName = "group flex items-start gap-2";
+const officeMapLink = {
+  href: "https://www.google.com/maps/place/3602+E+Campbell+Ave,+Phoenix,+AZ+85018",
+  key: "office-map",
+  label: "View office on Google Maps",
+  openInNewTab: true,
+} satisfies FooterLinkModel;
+
 function LinkList({ links }: { links: FooterLinkModel[] }) {
   return (
     <ul className="space-y-3">
-      {links.map((link) => (
-        <li key={link.key}>
-          <FooterLink link={link} />
-        </li>
-      ))}
+      {links.map((link) => {
+        const icon = socialIconFor(link.href);
+        return (
+          <li key={link.key}>
+            {icon ? (
+              <FooterLink className="group inline-flex items-center gap-2.5" link={link}>
+                <FooterIcon
+                  className="size-[17px] shrink-0 text-white/50 transition-colors motion-fast group-hover:text-white"
+                  name={icon}
+                />
+                {link.label}
+              </FooterLink>
+            ) : (
+              <FooterLink link={link} />
+            )}
+          </li>
+        );
+      })}
     </ul>
+  );
+}
+
+// Lets the email wrap cleanly at the @ instead of mid-word when space is tight.
+function EmailLabel({ label }: { label: string }) {
+  const at = label.indexOf("@");
+  if (at <= 0) return label;
+  return (
+    <>
+      {label.slice(0, at)}
+      <wbr />
+      {label.slice(at)}
+    </>
   );
 }
 
@@ -50,42 +88,61 @@ export function SiteFooter({
         <h2 className="sr-only" id="site-footer-heading">
           Site footer
         </h2>
-        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
-          <section aria-labelledby="footer-brand-heading" className="flex flex-col gap-5">
+        <div className="grid gap-12 pb-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1.3fr_0.9fr]">
+          <section aria-labelledby="footer-brand-heading" className="flex flex-col gap-8">
             <h3 className="sr-only" id="footer-brand-heading">
               {model.brand.label}
             </h3>
             <Link
               aria-label="Home page"
-              className="w-fit rounded-control bg-white px-[18px] py-3.5 focus-ring-on-dark"
+              className="w-fit rounded-control focus-ring-on-dark"
               href="/"
             >
               {model.brand.image ? (
-                <Image
-                  alt=""
-                  className="h-16 w-auto max-w-[10rem] object-contain"
-                  height={model.brand.image.height}
-                  priority
-                  quality={100}
-                  src={model.brand.image.src}
-                  width={model.brand.image.width}
-                />
+                <span className="flex w-[13rem] max-w-full flex-col items-center gap-3">
+                  <Image
+                    alt=""
+                    className="h-auto w-full object-contain brightness-0 invert"
+                    height={model.brand.image.height}
+                    priority
+                    quality={100}
+                    src={model.brand.image.src}
+                    width={model.brand.image.width}
+                  />
+                  {model.brand.secondaryImage ? (
+                    <Image
+                      alt=""
+                      className="h-auto w-[85%] object-contain brightness-0 invert"
+                      height={model.brand.secondaryImage.height}
+                      priority
+                      quality={100}
+                      src={model.brand.secondaryImage.src}
+                      width={model.brand.secondaryImage.width}
+                    />
+                  ) : null}
+                </span>
               ) : (
-                <span className="text-lg font-semibold text-[#0c1329]">{model.brand.label}</span>
+                <span className="text-lg font-semibold text-white">{model.brand.label}</span>
               )}
             </Link>
-            <div className="typo-body-sm text-white/75">
+            <div className="flex flex-col gap-2 typo-body-sm text-white/75">
               <p>NMLS ID {model.brand.organizationNmlsId}</p>
-              <p>
-                Call: <FooterLink className="inline text-white/90" link={model.brand.phone} />
+              <p className="flex items-start gap-2">
+                <FooterIcon className={detailIconClassName} name="phone" />
+                <span>
+                  Call: <FooterLink className="inline text-white/90" link={model.brand.phone} />
+                </span>
               </p>
-              <address className="not-italic">
-                {model.brand.addressLines.map((line) => (
-                  <span className="block" key={line}>
-                    {line}
-                  </span>
-                ))}
-              </address>
+              <FooterLink className={`${detailLinkClassName} w-fit`} link={officeMapLink}>
+                <FooterIcon className={detailIconOnLinkClassName} name="pin" />
+                <address className="not-italic">
+                  {model.brand.addressLines.map((line) => (
+                    <span className="block" key={line}>
+                      {line}
+                    </span>
+                  ))}
+                </address>
+              </FooterLink>
             </div>
           </section>
 
@@ -96,16 +153,30 @@ export function SiteFooter({
               {model.contact.heading}
             </h3>
             <div className="flex flex-col gap-3 typo-body-sm text-white/80">
-              <p className="font-semibold text-white">
-                {model.contact.fullName}
-                <br />
-                <span className="typo-fine-print text-white/70">
-                  NMLS# {model.contact.nmlsId}
+              <p className="flex items-start gap-2 font-semibold text-white">
+                <FooterIcon className={detailIconClassName} name="person" />
+                <span>
+                  {model.contact.fullName}
+                  <br />
+                  <span className="typo-fine-print text-white/70">
+                    NMLS# {model.contact.nmlsId}
+                  </span>
                 </span>
               </p>
-              <FooterLink link={model.contact.phone} />
-              <FooterLink link={model.contact.email} />
-              <FooterLink link={model.contact.website} />
+              <FooterLink className={detailLinkClassName} link={model.contact.phone}>
+                <FooterIcon className={detailIconOnLinkClassName} name="phone" />
+                <span>{model.contact.phone.label}</span>
+              </FooterLink>
+              <FooterLink className={detailLinkClassName} link={model.contact.email}>
+                <FooterIcon className={detailIconOnLinkClassName} name="email" />
+                <span className="[overflow-wrap:normal]">
+                  <EmailLabel label={model.contact.email.label} />
+                </span>
+              </FooterLink>
+              <FooterLink className={detailLinkClassName} link={model.contact.website}>
+                <FooterIcon className={detailIconOnLinkClassName} name="globe" />
+                <span>{model.contact.website.label}</span>
+              </FooterLink>
             </div>
           </section>
 
