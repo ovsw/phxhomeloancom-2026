@@ -169,7 +169,7 @@ export default function StoryFeature({
           <figure className="flex min-w-0 flex-col">
             {image?.asset?._id ? (
               <div
-                className="relative min-h-[21.25rem] w-full flex-1 overflow-hidden rounded-card shadow-ambient-feature"
+                className="relative min-h-[21.25rem] w-full flex-1 overflow-hidden rounded-card shadow-ambient-feature md:aspect-[16/9] md:min-h-0 md:flex-none lg:aspect-auto lg:min-h-[21.25rem] lg:flex-1"
                 data-sanity={dataAttribute?.("image")}
               >
                 <Image
