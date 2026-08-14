@@ -102,7 +102,7 @@ export default function MobileNav({
                 <HeaderLink className={mobileLinkClassName} key={item.key} link={item.link} onClick={close} />
               ) : (
                 <AccordionItem className="border-b-0" key={item.key} value={item.key}>
-                  <AccordionTrigger className="min-h-11 rounded-control px-3 py-2 typo-nav hover:bg-secondary hover:no-underline">
+                  <AccordionTrigger className="min-h-11 items-center rounded-control px-3 py-2 typo-nav hover:bg-secondary hover:no-underline [&>svg]:translate-y-0">
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent>
