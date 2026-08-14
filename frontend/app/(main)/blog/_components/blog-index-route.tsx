@@ -1,4 +1,5 @@
 import Blocks from "@/components/blocks";
+import FaqPageJsonLd from "@/components/faq-json-ld";
 import { LatestPostCard, RegularPostCard } from "@/components/blog-card";
 import BlogPagination from "@/components/blog-pagination";
 import {
@@ -58,6 +59,7 @@ export async function BlogIndexRoute({
 
   return (
     <main className="bg-background">
+      <FaqPageJsonLd blocks={blogIndex.blocks ?? []} />
       <header className="relative overflow-hidden bg-[var(--phx-navy-900)] py-[4.625rem] text-white md:py-[4.875rem]">
         <div
           aria-hidden="true"

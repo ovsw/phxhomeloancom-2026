@@ -1,4 +1,5 @@
 import Blocks from "@/components/blocks";
+import FaqPageJsonLd from "@/components/faq-json-ld";
 import { fetchHomePage } from "@/sanity/lib/fetch";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
 import MissingSanityPage from "@/components/ui/missing-sanity-page";
@@ -45,12 +46,15 @@ async function CachedIndexPage({ perspective, stega }: DynamicFetchOptions) {
   }
 
   return (
-    <Blocks
-      blocks={page?.blocks ?? []}
-      documentId={page._id}
-      documentType="homePage"
-      perspective={perspective}
-      stega={stega}
-    />
+    <>
+      <FaqPageJsonLd blocks={page.blocks ?? []} />
+      <Blocks
+        blocks={page.blocks ?? []}
+        documentId={page._id}
+        documentType="homePage"
+        perspective={perspective}
+        stega={stega}
+      />
+    </>
   );
 }

@@ -62,3 +62,15 @@ VERDICT: REVISE
 
 ### Claude's response
 Accepted and applied (goal reworded). MAX_ROUNDS reached — loop terminated. No substantive disagreement remains; the final REVISE was a wording alignment, applied post-loop.
+
+## Act 3 — Build
+
+### Round 1 — Codex build
+Implemented the full spec: studio validator + 0/1/2 test, validation wired into createBlocksField, pure builder frontend/lib/faq-json-ld.ts + 7 vitest tests, FaqPageJsonLd component, emission at the three route owners. One deviation: repaired a stale assertion in frontend/app/(main)/blog/category/category-routes.test.mjs that blocked a green suite.
+
+### Claude's verdict
+- Full diff read: on-spec, style-matched, nothing out of scope beyond the test repair.
+- Deviation verified independently: the old assertion fails on main too (commit c35a691 changed the category route without updating the test) — pre-existing breakage, fix is correct.
+- Proof re-run by Claude: pnpm test → 114 vitest + 164 node:test, all pass; pnpm typecheck → clean.
+- Rendered check on the running dev server: /phoenix-usda-loan/ emits exactly one FAQPage script (7 questions, valid JSON, matches visible accordion); /blog/ (no FAQ block) emits none; home emits one (3 questions).
+Rounds used: 1 of 2. Passed.

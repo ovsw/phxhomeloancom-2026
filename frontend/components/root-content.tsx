@@ -1,5 +1,6 @@
 import { createDataAttribute, stegaClean } from "next-sanity";
 import Blocks from "@/components/blocks";
+import FaqPageJsonLd from "@/components/faq-json-ld";
 import QuickNav from "@/components/quick-nav";
 import { createQuickNavModel } from "@/lib/quick-nav";
 import PostHero from "@/components/blocks/post-hero";
@@ -39,6 +40,7 @@ function PageContent({
 
   return (
     <>
+      <FaqPageJsonLd blocks={blocks} />
       {isRichTextOnlyPage && stegaClean(page.title)?.trim() ? (
         <header className="surface-white border-b border-border py-14 md:py-20">
           <div className="container">
