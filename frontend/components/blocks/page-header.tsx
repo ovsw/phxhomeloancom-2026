@@ -82,7 +82,10 @@ export default function PageHeader({
         {visibleStatistics.length ? (
           <div className="mt-10 flex flex-wrap gap-x-split gap-y-8 border-t border-edge-on-dark pt-8">
             {visibleStatistics.map((statistic) => (
-              <div className="flex flex-col gap-1" key={statistic._key}>
+              <div
+                className="flex w-full min-w-0 flex-col gap-1 break-words sm:w-auto sm:flex-1 sm:basis-0"
+                key={statistic._key}
+              >
                 <p
                   className="typo-stat-md text-white"
                   data-sanity={dataAttribute?.(

@@ -4081,6 +4081,37 @@
     }
   },
   {
+    "name": "homebotWidget",
+    "type": "type",
+    "value": {
+      "type": "object",
+      "attributes": {
+        "_type": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string",
+            "value": "homebotWidget"
+          }
+        },
+        "heading": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "string"
+          },
+          "optional": true
+        },
+        "sectionNav": {
+          "type": "objectAttribute",
+          "value": {
+            "type": "inline",
+            "name": "section-nav"
+          },
+          "optional": true
+        }
+      }
+    }
+  },
+  {
     "name": "phxEmbedSocialReviews",
     "type": "type",
     "value": {
@@ -7985,6 +8016,21 @@
                 },
                 "rest": {
                   "type": "inline",
+                  "name": "homebotWidget"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
                   "name": "latestArticles"
                 }
               },
@@ -8402,6 +8448,21 @@
                 "rest": {
                   "type": "inline",
                   "name": "phxEmbedSocialReviews"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "homebotWidget"
                 }
               },
               {
@@ -9516,6 +9577,47 @@
         },
         "optional": true
       },
+      "loanType": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "VA Loan"
+            },
+            {
+              "type": "string",
+              "value": "FHA Loan"
+            },
+            {
+              "type": "string",
+              "value": "Conventional Loan"
+            },
+            {
+              "type": "string",
+              "value": "Jumbo Loan"
+            },
+            {
+              "type": "string",
+              "value": "USDA Loan"
+            },
+            {
+              "type": "string",
+              "value": "Construction-to-Permanent Loan"
+            },
+            {
+              "type": "string",
+              "value": "Adjustable-Rate Mortgage (ARM)"
+            },
+            {
+              "type": "string",
+              "value": "Refinance Loan"
+            }
+          ]
+        },
+        "optional": true
+      },
       "blocks": {
         "type": "objectAttribute",
         "value": {
@@ -9566,6 +9668,21 @@
                 "rest": {
                   "type": "inline",
                   "name": "phxEmbedSocialReviews"
+                }
+              },
+              {
+                "type": "object",
+                "attributes": {
+                  "_key": {
+                    "type": "objectAttribute",
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "rest": {
+                  "type": "inline",
+                  "name": "homebotWidget"
                 }
               },
               {

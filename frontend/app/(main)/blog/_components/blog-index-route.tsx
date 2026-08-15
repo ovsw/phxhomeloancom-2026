@@ -1,4 +1,7 @@
 import Blocks from "@/components/blocks";
+import FaqPageJsonLd from "@/components/faq-json-ld";
+import VideoJsonLd from "@/components/video-json-ld";
+import { siteUrl } from "@/lib/site-url";
 import { LatestPostCard, RegularPostCard } from "@/components/blog-card";
 import BlogPagination from "@/components/blog-pagination";
 import {
@@ -58,6 +61,8 @@ export async function BlogIndexRoute({
 
   return (
     <main className="bg-background">
+      <FaqPageJsonLd blocks={blogIndex.blocks ?? []} />
+      <VideoJsonLd blocks={blogIndex.blocks ?? []} siteUrl={siteUrl} />
       <header className="relative overflow-hidden bg-[var(--phx-navy-900)] py-[4.625rem] text-white md:py-[4.875rem]">
         <div
           aria-hidden="true"

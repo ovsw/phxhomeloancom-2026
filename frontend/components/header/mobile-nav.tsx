@@ -102,7 +102,7 @@ export default function MobileNav({
                 <HeaderLink className={mobileLinkClassName} key={item.key} link={item.link} onClick={close} />
               ) : (
                 <AccordionItem className="border-b-0" key={item.key} value={item.key}>
-                  <AccordionTrigger className="min-h-11 rounded-control px-3 py-2 typo-nav hover:bg-secondary hover:no-underline">
+                  <AccordionTrigger className="min-h-11 items-center rounded-control px-3 py-2 typo-nav hover:bg-secondary hover:no-underline [&>svg]:translate-y-0">
                     {item.label}
                   </AccordionTrigger>
                   <AccordionContent>
@@ -122,13 +122,10 @@ export default function MobileNav({
                           onClick={close}
                         >
                           {/*
-                            Outlined chip, matching the desktop panel. One size
-                            down from desktop's size-10/size-5: the sheet is
-                            narrower than the panel and the rows already carry
-                            p-3, so a full-size chip would crowd the text it
-                            sits beside.
+                            Keep the smaller fixed holder for alignment, but
+                            match the sheet surface so it remains invisible.
                           */}
-                          <span className="flex size-8 shrink-0 items-center justify-center rounded-control border border-border bg-background text-primary">
+                          <span className="flex size-8 shrink-0 items-center justify-center rounded-control bg-background text-primary">
                             <NavigationIcon icon={child.icon} />
                           </span>
                           <span className="grid gap-1">
@@ -157,9 +154,15 @@ export default function MobileNav({
         </nav>
         {navigation.actions.length ? (
           <SheetFooter className="border-t border-border/80 p-4">
-            {navigation.actions.map((action) => (
+            {navigation.actions.map((action, index) => (
               <HeaderLink
-                className={cn(buttonVariants({ size: "compact" }), "w-full")}
+                className={cn(
+                  buttonVariants({
+                    size: "compact",
+                    variant: index === 1 ? "outline" : "primary",
+                  }),
+                  "w-full",
+                )}
                 key={action.key}
                 link={action.link}
                 onClick={close}

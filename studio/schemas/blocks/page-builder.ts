@@ -1,9 +1,11 @@
 import { defineField } from "sanity";
+import { singleFaqBlock } from "../validation/single-faq-block.ts";
 
 export const generalPageBuilderBlockTypes = [
   "loanFeatureCards",
   "videoFeature",
   "phxEmbedSocialReviews",
+  "homebotWidget",
   "latestArticles",
   "faqAccordion",
   "awardCta",
@@ -50,6 +52,7 @@ function createBlocksField(blockTypes: readonly PageBuilderBlockType[]) {
     type: "array",
     group: "content",
     of: blockTypes.map((type) => ({ type })),
+    validation: (rule) => rule.custom(singleFaqBlock),
     options: {
       insertMenu: {
         groups: [

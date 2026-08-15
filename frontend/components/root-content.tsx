@@ -1,5 +1,10 @@
 import { createDataAttribute, stegaClean } from "next-sanity";
 import Blocks from "@/components/blocks";
+import BlogPostingJsonLd from "@/components/blog-posting-json-ld";
+import FaqPageJsonLd from "@/components/faq-json-ld";
+import LoanJsonLd from "@/components/loan-json-ld";
+import VideoJsonLd from "@/components/video-json-ld";
+import { siteUrl } from "@/lib/site-url";
 import QuickNav from "@/components/quick-nav";
 import { createQuickNavModel } from "@/lib/quick-nav";
 import PostHero from "@/components/blocks/post-hero";
@@ -39,6 +44,15 @@ function PageContent({
 
   return (
     <>
+      <FaqPageJsonLd blocks={blocks} />
+      <LoanJsonLd
+        loanType={page.loanType}
+        metaDescription={page.meta?.description}
+        pageDescription={page.description}
+        siteUrl={siteUrl}
+        slug={page.slug}
+      />
+      <VideoJsonLd blocks={blocks} siteUrl={siteUrl} />
       {isRichTextOnlyPage && stegaClean(page.title)?.trim() ? (
         <header className="surface-white border-b border-border py-14 md:py-20">
           <div className="container">
@@ -103,6 +117,8 @@ function PostContent({
 
   return (
     <section className="bg-background">
+      <BlogPostingJsonLd post={post} siteUrl={siteUrl} />
+      <VideoJsonLd blocks={[]} postBody={body} siteUrl={siteUrl} />
       <div className="mx-auto w-full max-w-7xl px-4 py-20 md:px-6 md:py-24 lg:px-0">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
           <article className="min-w-0">

@@ -14,10 +14,11 @@ const metadataSource = readFileSync(
 );
 
 test("category route fetches metadata without stega and 404s unknown slugs", () => {
-  assert.match(routeSource, /fetchCategory\(\{ \.\.\.options, slug, stega: false \}\)/);
-  assert.match(routeSource, /if \(!category\) notFound\(\)/);
-  assert.match(paginatedRouteSource, /fetchCategory\(\{ \.\.\.options, slug, stega: false \}\)/);
-  assert.match(paginatedRouteSource, /if \(!category\) notFound\(\)/);
+  for (const source of [routeSource, paginatedRouteSource]) {
+    assert.match(source, /sanityFetchMetadata\(\{/);
+    assert.match(source, /perspective: "published"/);
+    assert.match(source, /if \(!category\) notFound\(\)/);
+  }
   assert.match(archiveSource, /const category = await fetchCategory/);
   assert.match(archiveSource, /if \(!category\) notFound\(\)/);
 });

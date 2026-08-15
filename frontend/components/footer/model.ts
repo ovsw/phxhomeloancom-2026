@@ -18,6 +18,7 @@ export type FooterModel = {
   brand: {
     label: string;
     image: { src: string; width: number; height: number } | null;
+    secondaryImage: { src: string; width: number; height: number } | null;
     phone: FooterLinkModel;
     addressLines: string[];
     organizationNmlsId: string;
@@ -93,6 +94,12 @@ export type RawFooterSettings = {
     width?: number | null;
     height?: number | null;
   } | null;
+  secondaryLogo?: {
+    light?: SanityImageSource | null;
+    dark?: SanityImageSource | null;
+    width?: number | null;
+    height?: number | null;
+  } | null;
 } | null;
 
 function text(value: string | null | undefined): string | null {
@@ -134,14 +141,16 @@ function columns(raw: NonNullable<RawFooter>["columns"]): FooterColumnModel[] {
   });
 }
 
-function image(settings: RawFooterSettings): FooterModel["brand"]["image"] {
-  const source = settings?.logo?.light ?? settings?.logo?.dark;
+function image(
+  logo: NonNullable<RawFooterSettings>["logo"],
+): FooterModel["brand"]["image"] {
+  const source = logo?.light ?? logo?.dark;
   if (!source) return null;
   try {
     return {
       src: urlFor(source).url(),
-      width: settings?.logo?.width ?? 300,
-      height: settings?.logo?.height ?? 125,
+      width: logo?.width ?? 300,
+      height: logo?.height ?? 125,
     };
   } catch {
     return null;
@@ -211,7 +220,8 @@ export function createFooterModel(
   return {
     brand: {
       label,
-      image: image(settings),
+      image: image(settings?.logo),
+      secondaryImage: image(settings?.secondaryLogo),
       phone: brandPhone,
       addressLines,
       organizationNmlsId,
