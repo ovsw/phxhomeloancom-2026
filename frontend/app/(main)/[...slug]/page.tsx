@@ -130,7 +130,7 @@ async function CachedRootContent({
   const [page, post, blogPostSettings] = await Promise.all([
     fetchSanityPageBySlug({ slug, perspective, stega }),
     fetchSanityPostBySlug({ slug, perspective, stega }),
-    fetchBlogPostSettings({ perspective, stega }),
+    fetchBlogPostSettings({ perspective, stega }).catch(() => null),
   ]);
   const content = resolveRootContent(page, post, slug);
   if (!content) notFound();

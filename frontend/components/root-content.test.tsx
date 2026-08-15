@@ -167,6 +167,38 @@ describe("RootContentView", () => {
     expect(screen.getByRole("navigation", { name: "Table of Contents" })).toBeInTheDocument();
   });
 
+  it("centers a thin post when the sidebar is unavailable", () => {
+    const thinPost = {
+      ...post,
+      body: [heading("first", "First"), heading("second", "Second")],
+    } as unknown as NonNullable<POST_QUERY_RESULT>;
+    const { container } = render(
+      <RootContentView content={thinPost} perspective="published" stega={false} />,
+    );
+
+    expect(container.querySelector('[data-post-layout="single-column"]')).toHaveClass(
+      "lg:grid-cols-[minmax(0,48rem)]",
+    );
+  });
+
+  it("keeps the table of contents without reserving sidebar space", () => {
+    const headingRichPost = {
+      ...post,
+      body: [
+        heading("first", "First"),
+        heading("second", "Second"),
+        heading("third", "Third"),
+      ],
+    } as unknown as NonNullable<POST_QUERY_RESULT>;
+    const { container } = render(
+      <RootContentView content={headingRichPost} perspective="published" stega={false} />,
+    );
+
+    expect(container.querySelector('[data-post-layout="toc-column"]')).toHaveClass(
+      "lg:grid-cols-[15rem_minmax(0,48rem)]",
+    );
+  });
+
   it("emits exactly one BlogPosting script for posts and none for pages", () => {
     const { container, rerender } = render(
       <RootContentView content={post} perspective="published" stega={false} />,

@@ -115,6 +115,22 @@ function PostContent({
 }) {
   const body = post.body ?? [];
   const bodyModel = createPostBodyModel(body);
+  const hasPostSidebar = Boolean(blogPostSidebar?.actions?.length);
+  const hasTableOfContents = bodyModel.showTableOfContents;
+  const layoutClassName = hasTableOfContents
+    ? hasPostSidebar
+      ? "lg:grid-cols-[15rem_minmax(0,1fr)_17rem]"
+      : "lg:grid-cols-[15rem_minmax(0,48rem)] lg:justify-center"
+    : hasPostSidebar
+      ? "lg:grid-cols-[minmax(0,48rem)_20rem] lg:justify-center"
+      : "lg:grid-cols-[minmax(0,48rem)] lg:justify-center";
+  const layoutName = hasTableOfContents
+    ? hasPostSidebar
+      ? "three-column"
+      : "toc-column"
+    : hasPostSidebar
+      ? "two-column"
+      : "single-column";
   const readTime = getPostReadTime(body);
   const blogPostSettingsDataAttribute = blogPostSidebar
     ? documentDataAttribute({
@@ -143,11 +159,9 @@ function PostContent({
         <div
           className={cn(
             "mt-12 grid grid-cols-1 gap-10 lg:mt-16 lg:gap-12",
-            bodyModel.showTableOfContents
-              ? "lg:grid-cols-[15rem_minmax(0,1fr)_17rem]"
-              : "lg:grid-cols-[minmax(0,48rem)_20rem] lg:justify-center",
+            layoutClassName,
           )}
-          data-post-layout={bodyModel.showTableOfContents ? "three-column" : "two-column"}
+          data-post-layout={layoutName}
         >
           {bodyModel.showTableOfContents ? (
             <PostTableOfContentsRail headings={bodyModel.headings} />
