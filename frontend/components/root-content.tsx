@@ -116,11 +116,13 @@ function PostContent({
   const body = post.body ?? [];
   const bodyModel = createPostBodyModel(body);
   const readTime = getPostReadTime(body);
-  const settingsDataAttribute = documentDataAttribute({
-    id: "settings",
-    stega,
-    type: "settings",
-  });
+  const blogPostSettingsDataAttribute = blogPostSidebar
+    ? documentDataAttribute({
+        id: blogPostSidebar._id,
+        stega,
+        type: blogPostSidebar._type,
+      })
+    : undefined;
   const bodyDataAttribute = stega
     ? createDataAttribute({
         baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
@@ -140,9 +142,9 @@ function PostContent({
         <PostHero post={post} readTime={readTime} stega={stega} />
         <div
           className={cn(
-            "mt-12 grid grid-cols-1 gap-10 lg:mt-16 lg:gap-8",
+            "mt-12 grid grid-cols-1 gap-10 lg:mt-16 lg:gap-12",
             bodyModel.showTableOfContents
-              ? "lg:grid-cols-[13rem_minmax(0,1fr)_18rem]"
+              ? "lg:grid-cols-[15rem_minmax(0,1fr)_17rem]"
               : "lg:grid-cols-[minmax(0,48rem)_20rem] lg:justify-center",
           )}
           data-post-layout={bodyModel.showTableOfContents ? "three-column" : "two-column"}
@@ -160,7 +162,7 @@ function PostContent({
             ) : null}
           </article>
           <PostSidebar
-            dataAttribute={settingsDataAttribute}
+            dataAttribute={blogPostSettingsDataAttribute}
             sidebar={blogPostSidebar}
           />
         </div>

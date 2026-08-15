@@ -11,6 +11,7 @@ import navigation, {
 import settings from "./schemas/documents/settings";
 import teamMember from "./schemas/documents/team-member";
 import blogIndex from "./schemas/documents/blog-index";
+import blogPostSettings from "./schemas/documents/blog-post-settings";
 import homePage from "./schemas/documents/home-page";
 import footer, { footerSchemaTypes } from "./schemas/documents/footer";
 import redirect from "./schemas/documents/redirect";
@@ -73,6 +74,7 @@ export const schemaTypes = [
   settings,
   teamMember,
   blogIndex,
+  blogPostSettings,
   homePage,
   footer,
   redirect,

@@ -71,7 +71,7 @@ export function documentDataAttribute({
 }: {
   id: string;
   stega: boolean;
-  type: "author" | "category" | "post" | "settings";
+  type: "author" | "blogPostSettings" | "category" | "post" | "settings";
 }): DataAttribute | undefined {
   if (!stega) return undefined;
 

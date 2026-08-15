@@ -52,8 +52,8 @@ const post = {
 } as unknown as NonNullable<POST_QUERY_RESULT>;
 
 const blogPostSidebar = {
-
-
+  _id: "blogPostSettings",
+  _type: "blogPostSettings",
   title: "Contact Jimmy",
   description: null,
   actions: [
@@ -61,9 +61,7 @@ const blogPostSidebar = {
       _key: "apply",
       title: "Apply Now",
       description: null,
-      actionType: "outboundLink",
       text: "Apply Now",
-      variant: "default",
       openInNewTab: true,
       href: "https://applynow.example.com/",
     },
@@ -165,7 +163,7 @@ describe("RootContentView", () => {
     );
 
     const layout = container.querySelector('[data-post-layout="three-column"]');
-    expect(layout).toHaveClass("lg:grid-cols-[13rem_minmax(0,1fr)_18rem]");
+    expect(layout).toHaveClass("lg:grid-cols-[15rem_minmax(0,1fr)_17rem]");
     expect(screen.getByRole("navigation", { name: "Table of Contents" })).toBeInTheDocument();
   });
 

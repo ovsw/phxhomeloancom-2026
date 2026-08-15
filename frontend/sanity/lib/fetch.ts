@@ -3,6 +3,7 @@ import { sanityFetch, type DynamicFetchOptions } from "@/sanity/lib/live";
 import { PAGE_QUERY, PAGES_SLUGS_QUERY } from "@/sanity/queries/page";
 import { NAVIGATION_QUERY } from "@/sanity/queries/navigation";
 import { SETTINGS_QUERY } from "@/sanity/queries/settings";
+import { BLOG_POST_SETTINGS_QUERY } from "@/sanity/queries/blog-post-settings";
 import { FOOTER_QUERY } from "@/sanity/queries/footer";
 import { HOME_PAGE_QUERY } from "@/sanity/queries/home-page";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/sanity/queries/post";
 import type {
   BLOG_INDEX_QUERY_RESULT,
+  BLOG_POST_SETTINGS_QUERY_RESULT,
   FOOTER_QUERY_RESULT,
   HOME_PAGE_QUERY_RESULT,
   NAVIGATION_QUERY_RESULT,
@@ -176,6 +178,13 @@ export function fetchSanitySettings({
   stega,
 }: DynamicFetchOptions): Promise<SETTINGS_QUERY_RESULT> {
   return fetchCached({ query: SETTINGS_QUERY, perspective, stega });
+}
+
+export function fetchBlogPostSettings({
+  perspective,
+  stega,
+}: DynamicFetchOptions): Promise<BLOG_POST_SETTINGS_QUERY_RESULT> {
+  return fetchCached({ query: BLOG_POST_SETTINGS_QUERY, perspective, stega });
 }
 
 export function fetchSanityFooter({

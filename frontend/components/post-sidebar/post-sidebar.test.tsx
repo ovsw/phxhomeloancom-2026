@@ -25,8 +25,8 @@ const threeHeadings = [
 ] as PortableTextProps["value"];
 
 const currentSidebar = {
-
-
+  _id: "blogPostSettings",
+  _type: "blogPostSettings",
   title: "Contact Jimmy",
   description: "Choose the next step that fits where you are in the mortgage process.",
   actions: [
@@ -34,9 +34,7 @@ const currentSidebar = {
       _key: "call",
       title: "Call Jimmy",
       description: "Speak with Jimmy's team about your home loan options.",
-      actionType: "call",
       text: "Call 480-800-8387",
-      variant: "outline",
       openInNewTab: false,
       href: "tel:+14808008387",
     },
@@ -44,9 +42,7 @@ const currentSidebar = {
       _key: "apply",
       title: "Apply online for a loan today!",
       description: "Fast and easy online application.",
-      actionType: "outboundLink",
       text: "Apply Online",
-      variant: "default",
       openInNewTab: true,
       href: "https://applynow.example.com/",
     },
@@ -54,9 +50,7 @@ const currentSidebar = {
       _key: "mortgage-calculator",
       title: "Mortgage Calculator",
       description: "Find out what you can expect to pay for your home loan.",
-      actionType: "form",
       text: "Calculate Now",
-      variant: "secondary",
       openInNewTab: false,
       href: "/mortgage-calculator/",
     },
@@ -64,9 +58,7 @@ const currentSidebar = {
       _key: "home-value",
       title: "What's My Home Worth?",
       description: "Get a ballpark estimate for your home with our online calculator.",
-      actionType: "form",
       text: "Calculate Now",
-      variant: "secondary",
       openInNewTab: false,
       href: "/home-value-estimator/",
     },
@@ -102,6 +94,25 @@ describe("PostSidebar", () => {
       "Call Jimmy",
       "Apply online for a loan today!",
     ]);
+  });
+
+  it("uses action order to choose the solid button", () => {
+    render(<PostSidebar sidebar={currentSidebar} />);
+
+    expect(screen.getByRole("link", { name: "Call 480-800-8387" })).toHaveClass(
+      "bg-primary",
+    );
+    expect(screen.getByRole("link", { name: "Apply Online" })).not.toHaveClass(
+      "bg-primary",
+    );
+  });
+
+  it("places secondary descriptions before their links", () => {
+    render(<PostSidebar sidebar={currentSidebar} />);
+
+    const description = screen.getByText("Fast and easy online application.");
+    const link = screen.getByRole("link", { name: "Apply Online" });
+    expect(description.nextElementSibling).toBe(link);
   });
 
   it.each([

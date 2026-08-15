@@ -6,7 +6,6 @@ export default defineType({
   title: "Settings",
   type: "document",
   icon: Settings,
-  groups: [{ name: "contact", title: "Contact" }],
   fields: [
     defineField({
       name: "logo",
@@ -90,7 +89,11 @@ export default defineType({
       name: "blogPostSidebar",
       title: "Blog Post Sidebar",
       type: "blogPostSidebar",
-      group: "contact",
+      deprecated: {
+        reason: "Moved to Blog > Blog Post Settings.",
+      },
+      hidden: true,
+      readOnly: true,
     }),
   ],
   preview: {

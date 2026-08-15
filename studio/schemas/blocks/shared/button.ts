@@ -8,6 +8,8 @@ export default defineType({
     defineField({
       name: "variant",
       type: "string",
+      hidden: ({ document }) =>
+        document?._type === "blogPostSettings" || document?._type === "settings",
       initialValue: "default",
       options: {
         layout: "radio",

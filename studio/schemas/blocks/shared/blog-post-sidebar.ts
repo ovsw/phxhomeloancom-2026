@@ -19,8 +19,12 @@ export const blogPostSidebarAction = defineType({
       name: "actionType",
       title: "Action Type",
       type: "string",
-      description: "Chooses the icon shown on the button.",
-      initialValue: "outboundLink",
+      deprecated: {
+        reason: "The destination now determines the icon automatically.",
+      },
+      hidden: true,
+      initialValue: undefined,
+      readOnly: true,
       options: {
         layout: "radio",
         list: [
@@ -43,6 +47,25 @@ export const blogPostSidebarAction = defineType({
   },
 });
 
+export const blogPostSidebarFields = [
+  defineField({
+    name: "title",
+    type: "string",
+  }),
+  defineField({
+    name: "description",
+    type: "text",
+    rows: 2,
+  }),
+  defineField({
+    name: "actions",
+    type: "array",
+    description:
+      "The first action is the primary button. Later actions appear as text links.",
+    of: [defineArrayMember({ type: "blogPostSidebarAction" })],
+  }),
+];
+
 /**
  * The call-to-action panel shown beside blog post bodies. Single object rather
  * than a keyed array: there is exactly one blog post sidebar, so selecting one
@@ -54,22 +77,7 @@ export const blogPostSidebar = defineType({
   type: "object",
   description:
     "Calls to action shown alongside blog post content. Keep this to two or three actions — the panel is sticky, and a taller panel than the screen cannot stay pinned while readers scroll.",
-  fields: [
-    defineField({
-      name: "title",
-      type: "string",
-    }),
-    defineField({
-      name: "description",
-      type: "text",
-      rows: 2,
-    }),
-    defineField({
-      name: "actions",
-      type: "array",
-      of: [defineArrayMember({ type: "blogPostSidebarAction" })],
-    }),
-  ],
+  fields: blogPostSidebarFields,
   preview: {
     select: {
       title: "title",

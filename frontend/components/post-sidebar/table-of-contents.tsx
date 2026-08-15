@@ -19,23 +19,25 @@ function HeadingLinks({
   headings: PostHeading[];
 }) {
   return (
-    <ul className="space-y-2">
+    /* The shared left rule is the index's spine; the active item brightens its
+       own segment of it, so the marker travels down the list as you read. */
+    <ul className="space-y-1 border-l border-border">
       {headings.map((heading) => (
         <li key={heading.id}>
           <a
             aria-current={activeId === heading.id ? "location" : undefined}
             className={cn(
-              "block rounded-sm py-1 text-sm leading-5 underline-offset-4 transition-colors motion-fast hover:text-foreground hover:underline focus-underline",
+              "-ml-px block border-l py-1 pl-4 text-sm leading-5 underline-offset-4 transition-colors motion-fast hover:border-border-strong hover:text-foreground focus-underline",
               activeId === heading.id
-                ? "font-semibold text-primary"
-                : "text-muted-foreground",
+                ? "border-primary font-semibold text-primary"
+                : "border-transparent text-muted-foreground",
             )}
             href={`#${heading.id}`}
           >
             {heading.text}
           </a>
           {heading.children.length ? (
-            <div className="mt-1 border-l border-border pl-4">
+            <div className="pl-4">
               <HeadingLinks activeId={activeId} headings={heading.children} />
             </div>
           ) : null}

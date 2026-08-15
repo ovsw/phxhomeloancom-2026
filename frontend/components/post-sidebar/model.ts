@@ -1,6 +1,6 @@
 import type { PortableTextProps } from "@portabletext/react";
 import { stegaClean } from "next-sanity";
-import type { SETTINGS_QUERY_RESULT } from "@/sanity.types";
+import type { BLOG_POST_SETTINGS_QUERY_RESULT } from "@/sanity.types";
 
 export type PostHeading = {
   children: PostHeading[];
@@ -15,14 +15,12 @@ export type PostBodyModel = {
   showTableOfContents: boolean;
 };
 
-type Settings = NonNullable<SETTINGS_QUERY_RESULT>;
-
-export type BlogPostSidebar = NonNullable<Settings["blogPostSidebar"]>;
+export type BlogPostSidebar = NonNullable<BLOG_POST_SETTINGS_QUERY_RESULT>;
 
 export function getBlogPostSidebar(
-  settings: SETTINGS_QUERY_RESULT,
+  settings: BLOG_POST_SETTINGS_QUERY_RESULT,
 ): BlogPostSidebar | null {
-  return settings?.blogPostSidebar ?? null;
+  return settings ?? null;
 }
 
 const HEADING_STYLES = new Set(["h2", "h3", "h4", "h5", "h6"]);

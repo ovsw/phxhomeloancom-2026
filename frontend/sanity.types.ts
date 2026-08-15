@@ -1134,6 +1134,21 @@ export type Footer = {
   };
 };
 
+export type BlogPostSettings = {
+  _id: string;
+  _type: "blogPostSettings";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  description?: string;
+  actions?: Array<
+    {
+      _key: string;
+    } & BlogPostSidebarAction
+  >;
+};
+
 export type TeamMember = {
   _id: string;
   _type: "teamMember";
@@ -1843,6 +1858,7 @@ export type AllSanitySchemaTypes =
   | Redirect
   | Slug
   | Footer
+  | BlogPostSettings
   | TeamMember
   | Settings
   | NavigationAction
@@ -3087,6 +3103,14 @@ export type BLOG_INDEX_QUERY_RESULT =
           _type: "image";
         } | null;
       } | null;
+    }
+  | {
+      _id: "blogIndex";
+      _type: "blogPostSettings";
+      title: string | null;
+      description: string | null;
+      blocks: null;
+      meta: null;
     }
   | {
       _id: "blogIndex";
@@ -5827,6 +5851,54 @@ export type BLOG_CATEGORY_POST_COUNTS_QUERY_RESULT = Array<{
   slug: string | null;
   postCount: number;
 }>;
+
+// Source: ../frontend/sanity/queries/blog-post-settings.ts
+// Variable: BLOG_POST_SETTINGS_QUERY
+// Query: coalesce(  *[    _type == "blogPostSettings" &&    _id == "blogPostSettings" &&    defined(actions)  ][0]{    _id,    _type,    title,    description,    "actions": array::compact(actions[]{  _key,  title,  description,  ...button{    "text": text,    "openInNewTab": url.openInNewTab,    "href": select(      url.type == "internal" => select(  url.internal->_id == "homePage" || url.internal->_type == "homePage" => "/",  url.internal->_type == "category" && defined(url.internal->slug.current) => "/blog/category/" + url.internal->slug.current + "/",  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"),      url.type == "external" => url.external,      url.href    )  }})  },  *[    _type == "settings" &&    _id == "settings" &&    defined(blogPostSidebar.actions)  ][0]{    _id,    _type,    "title": blogPostSidebar.title,    "description": blogPostSidebar.description,    "actions": array::compact(blogPostSidebar.actions[]{  _key,  title,  description,  ...button{    "text": text,    "openInNewTab": url.openInNewTab,    "href": select(      url.type == "internal" => select(  url.internal->_id == "homePage" || url.internal->_type == "homePage" => "/",  url.internal->_type == "category" && defined(url.internal->slug.current) => "/blog/category/" + url.internal->slug.current + "/",  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"),      url.type == "external" => url.external,      url.href    )  }})  })
+export type BLOG_POST_SETTINGS_QUERY_RESULT =
+  | {
+      _id: "blogPostSettings";
+      _type: "blogPostSettings";
+      title: string | null;
+      description: string | null;
+      actions: Array<
+        | {
+            _key: string;
+            title: string | null;
+            description: string | null;
+            text: string | null;
+            openInNewTab: boolean | null;
+            href: string | null | "/";
+          }
+        | {
+            _key: string;
+            title: string | null;
+            description: string | null;
+          }
+      >;
+    }
+  | {
+      _id: string;
+      _type: "settings";
+      title: string | null;
+      description: string | null;
+      actions: Array<
+        | {
+            _key: string;
+            title: string | null;
+            description: string | null;
+            text: string | null;
+            openInNewTab: boolean | null;
+            href: string | null | "/";
+          }
+        | {
+            _key: string;
+            title: string | null;
+            description: string | null;
+          }
+      > | null;
+    }
+  | null;
 
 // Source: ../frontend/sanity/queries/category.ts
 // Variable: CATEGORY_QUERY
@@ -8748,7 +8820,7 @@ export type REDIRECTS_QUERY_RESULT = Array<{
 
 // Source: ../frontend/sanity/queries/settings.ts
 // Variable: SETTINGS_QUERY
-// Query: *[_type == "settings" && _id == "settings"][0]{  _type,  siteName,  logo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  secondaryLogo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  blogPostSidebar{    title,    description,    "actions": array::compact(actions[]{      _key,      title,      description,      actionType,      ...button{        "text": text,        "variant": variant,        "openInNewTab": url.openInNewTab,        "href": select(          url.type == "internal" => select(  url.internal->_id == "homePage" || url.internal->_type == "homePage" => "/",  url.internal->_type == "category" && defined(url.internal->slug.current) => "/blog/category/" + url.internal->slug.current + "/",  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"),          url.type == "external" => url.external,          url.href        )      }    })  }}
+// Query: *[_type == "settings" && _id == "settings"][0]{  _type,  siteName,  logo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  },  secondaryLogo{    dark{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    light{      ...,      asset->{        _id,        url,        mimeType,        metadata {          lqip,          dimensions {            width,            height          }        }      }    },    width,    height,  }}
 export type SETTINGS_QUERY_RESULT = {
   _type: "settings";
   siteName: string | null;
@@ -8832,28 +8904,6 @@ export type SETTINGS_QUERY_RESULT = {
     width: number | null;
     height: number | null;
   } | null;
-  blogPostSidebar: {
-    title: string | null;
-    description: string | null;
-    actions: Array<
-      | {
-          _key: string;
-          title: string | null;
-          description: string | null;
-          actionType: "call" | "form" | "outboundLink" | null;
-          text: string | null;
-          variant: "default" | "link" | "outline" | "secondary" | null;
-          openInNewTab: boolean | null;
-          href: string | null | "/";
-        }
-      | {
-          _key: string;
-          title: string | null;
-          description: string | null;
-          actionType: "call" | "form" | "outboundLink" | null;
-        }
-    > | null;
-  } | null;
 } | null;
 
 // Query TypeMap
@@ -8866,6 +8916,7 @@ declare module "@sanity/client" {
     '\n  count(*[_type == "post" && defined(slug.current) && defined(publishedAt) && _id != $latestPostId])\n': REGULAR_POSTS_COUNT_QUERY_RESULT;
     '\n  count(*[_type == "post" && defined(slug.current) && defined(publishedAt)])\n': ELIGIBLE_BLOG_POSTS_COUNT_QUERY_RESULT;
     '\n  *[_type == "category" && defined(slug.current)]{\n    "slug": slug.current,\n    "postCount": count(*[_type == "post" && defined(slug.current) && defined(publishedAt) && category._ref == ^._id])\n  }\n': BLOG_CATEGORY_POST_COUNTS_QUERY_RESULT;
+    'coalesce(\n  *[\n    _type == "blogPostSettings" &&\n    _id == "blogPostSettings" &&\n    defined(actions)\n  ][0]{\n    _id,\n    _type,\n    title,\n    description,\n    "actions": array::compact(actions[]{\n  _key,\n  title,\n  description,\n  ...button{\n    "text": text,\n    "openInNewTab": url.openInNewTab,\n    "href": select(\n      url.type == "internal" => select(\n  url.internal->_id == "homePage" || url.internal->_type == "homePage" => "/",\n  url.internal->_type == "category" && defined(url.internal->slug.current) => "/blog/category/" + url.internal->slug.current + "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n      url.type == "external" => url.external,\n      url.href\n    )\n  }\n})\n  },\n  *[\n    _type == "settings" &&\n    _id == "settings" &&\n    defined(blogPostSidebar.actions)\n  ][0]{\n    _id,\n    _type,\n    "title": blogPostSidebar.title,\n    "description": blogPostSidebar.description,\n    "actions": array::compact(blogPostSidebar.actions[]{\n  _key,\n  title,\n  description,\n  ...button{\n    "text": text,\n    "openInNewTab": url.openInNewTab,\n    "href": select(\n      url.type == "internal" => select(\n  url.internal->_id == "homePage" || url.internal->_type == "homePage" => "/",\n  url.internal->_type == "category" && defined(url.internal->slug.current) => "/blog/category/" + url.internal->slug.current + "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n      url.type == "external" => url.external,\n      url.href\n    )\n  }\n})\n  }\n)': BLOG_POST_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "category" && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    description,\n    \n  meta{\n    title,\n    description,\n    noindex,\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    }\n  }\n,\n    "publishedPostCount": count(*[_type == "post" && defined(slug.current) && defined(publishedAt) && category._ref == ^._id])\n  }\n': CATEGORY_QUERY_RESULT;
     '\n  *[_type == "post" && defined(slug.current) && defined(publishedAt) && category._ref == $categoryId]\n    | order(publishedAt desc, _createdAt desc, _id asc)[$start...$end]{\n      \n  _id,\n  title,\n  slug,\n  publishedAt,\n  "excerpt": pt::text(excerpt),\n  image {\n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n},\n  category->{_id, title, slug}\n\n    }\n': CATEGORY_POSTS_QUERY_RESULT;
     '\n  count(*[_type == "post" && defined(slug.current) && defined(publishedAt) && category._ref == $categoryId])\n': CATEGORY_POSTS_COUNT_QUERY_RESULT;
@@ -8879,6 +8930,6 @@ declare module "@sanity/client" {
     '*[_type == "post" && defined(slug)] | order(_createdAt desc){\n    title,\n    slug,\n    publishedAt,\n    "excerpt": pt::text(excerpt),\n    image{\n      \n  ...,\n  asset->{\n    _id,\n    url,\n    mimeType,\n    metadata {\n      lqip,\n      dimensions {\n        width,\n        height\n      }\n    }\n  }\n\n    },\n}': POSTS_QUERY_RESULT;
     '*[_type == "post" && defined(slug)]{slug}': POSTS_SLUGS_QUERY_RESULT;
     '\n  *[\n    _type == "redirect" &&\n    !(_id in path("drafts.**")) &&\n    status == "active" &&\n    defined(source.current) &&\n    (defined(destinationReference._ref) || defined(destination.current))\n  ] | order(source.current asc) {\n    _id,\n    status,\n    source,\n    "destination": select(\n      defined(destinationReference._ref) => select(\n  destinationReference->_id == "homePage" || destinationReference->_type == "homePage" => "/",\n  destinationReference->_id == "blogIndex" || destinationReference->_type == "blogIndex" => "/blog/",\n  destinationReference->_type == "category" && defined(destinationReference->slug.current) => "/blog/category/" + destinationReference->slug.current + "/",\n  destinationReference->_type in ["page", "post"] && string::startsWith(destinationReference->slug.current, "/") => destinationReference->slug.current + "/",\n  destinationReference->_type in ["page", "post"] && defined(destinationReference->slug.current) => "/" + destinationReference->slug.current + "/"\n),\n      destination.current\n    ),\n    permanent\n  }\n': REDIRECTS_QUERY_RESULT;
-    '*[_type == "settings" && _id == "settings"][0]{\n  _type,\n  siteName,\n  logo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  secondaryLogo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  blogPostSidebar{\n    title,\n    description,\n    "actions": array::compact(actions[]{\n      _key,\n      title,\n      description,\n      actionType,\n      ...button{\n        "text": text,\n        "variant": variant,\n        "openInNewTab": url.openInNewTab,\n        "href": select(\n          url.type == "internal" => select(\n  url.internal->_id == "homePage" || url.internal->_type == "homePage" => "/",\n  url.internal->_type == "category" && defined(url.internal->slug.current) => "/blog/category/" + url.internal->slug.current + "/",\n  string::startsWith(url.internal->slug.current, "/") => url.internal->slug.current + "/",\n  defined(url.internal->slug.current) => "/" + url.internal->slug.current + "/"\n),\n          url.type == "external" => url.external,\n          url.href\n        )\n      }\n    })\n  }\n}': SETTINGS_QUERY_RESULT;
+    '*[_type == "settings" && _id == "settings"][0]{\n  _type,\n  siteName,\n  logo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  },\n  secondaryLogo{\n    dark{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    light{\n      ...,\n      asset->{\n        _id,\n        url,\n        mimeType,\n        metadata {\n          lqip,\n          dimensions {\n            width,\n            height\n          }\n        }\n      }\n    },\n    width,\n    height,\n  }\n}': SETTINGS_QUERY_RESULT;
   }
 }
