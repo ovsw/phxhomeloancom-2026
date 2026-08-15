@@ -1,5 +1,19 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+function validateSidebarButton(value: unknown) {
+  if (!value || typeof value !== "object") return "Add a button";
+
+  const button = value as Record<string, unknown>;
+  if (typeof button.text !== "string" || !button.text.trim()) {
+    return "Add button text";
+  }
+  if (!button.url || typeof button.url !== "object") {
+    return "Add a button destination";
+  }
+
+  return true;
+}
+
 export const blogPostSidebarAction = defineType({
   name: "blogPostSidebarAction",
   title: "Sidebar Action",
@@ -37,6 +51,7 @@ export const blogPostSidebarAction = defineType({
     defineField({
       name: "button",
       type: "button",
+      validation: (rule) => rule.required().custom(validateSidebarButton),
     }),
   ],
   preview: {
