@@ -6,6 +6,7 @@ export default defineType({
   title: "Settings",
   type: "document",
   icon: Settings,
+  groups: [{ name: "contact", title: "Contact" }],
   fields: [
     defineField({
       name: "logo",
@@ -84,6 +85,12 @@ export default defineType({
       type: "string",
       description: "The name of your site",
       validation: (Rule) => Rule.required().error("Site name is required"),
+    }),
+    defineField({
+      name: "blogPostSidebar",
+      title: "Blog Post Sidebar",
+      type: "blogPostSidebar",
+      group: "contact",
     }),
   ],
   preview: {

@@ -18,6 +18,8 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
       ${richTextContentQuery}
     },
     author->{
+      _id,
+      _type,
       name,
       image {
         ...,
@@ -35,6 +37,12 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
         },
         alt
       }
+    },
+    category->{
+      _id,
+      _type,
+      title,
+      slug
     },
     _createdAt,
     _updatedAt,

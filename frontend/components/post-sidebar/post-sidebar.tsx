@@ -1,36 +1,72 @@
-import { ChevronDown, ChevronRight, ExternalLink, Phone } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink, Mail, Phone } from "lucide-react";
+import { stegaClean } from "next-sanity";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { PostBodyModel, PostHeading } from "./model";
-import { POST_CONTACT_SIDEBAR } from "./model";
+import { getSafeLinkHref } from "@/lib/safe-href";
+import type { BlogPostSidebar, PostHeading } from "./model";
+import { PostTableOfContents } from "./table-of-contents";
 
-function ContactActionButton({ action }: { action: (typeof POST_CONTACT_SIDEBAR.actions)[number] }) {
-  const icon =
-    action.kind === "internal" ? (
-      <ChevronRight aria-hidden="true" />
-    ) : action.kind === "phone" ? (
-      <Phone aria-hidden="true" />
-    ) : (
-      <ExternalLink aria-hidden="true" />
-    );
-  const className = "h-auto min-h-11 w-full justify-between whitespace-normal py-2.5 text-left";
+type Action = NonNullable<BlogPostSidebar["actions"]>[number];
+type DataAttribute = (path: string) => string | undefined;
+
+function getButtonVariant(action: Action) {
+  const variant = "variant" in action ? stegaClean(action.variant) : null;
+  return variant === "outline" ||
+    variant === "secondary" ||
+    variant === "link"
+    ? variant
+    : "default";
+}
+
+function ContactActionButton({
+  action,
+  dataAttribute,
+  path,
+}: {
+  action: Action;
+  dataAttribute?: DataAttribute;
+  path: string;
+}) {
+  const href = getSafeLinkHref("href" in action ? action.href : null);
+  const label = "text" in action ? action.text : null;
+  if (!href || !label) return null;
+
+  const actionType = stegaClean(action.actionType);
+  const openInNewTab =
+    "openInNewTab" in action && stegaClean(action.openInNewTab) === true;
+  const isInternal = href.startsWith("/") && !href.startsWith("//");
+  const isHttp = /^https?:\/\//i.test(href);
+  const icon = isInternal ? (
+    <ChevronRight aria-hidden="true" />
+  ) : actionType === "call" || href.startsWith("tel:") ? (
+    <Phone aria-hidden="true" />
+  ) : href.startsWith("mailto:") ? (
+    <Mail aria-hidden="true" />
+  ) : (
+    <ExternalLink aria-hidden="true" />
+  );
   const content = (
     <>
-      <span>{action.buttonLabel}</span>
+      <span>{label}</span>
       {icon}
     </>
   );
+  const className =
+    "h-auto min-h-11 w-full justify-between whitespace-normal py-2.5 text-left";
 
   return (
-    <Button asChild className={className} variant={action.variant}>
-      {action.kind === "internal" ? (
-        <Link href={action.href}>{content}</Link>
+    <Button asChild className={className} variant={getButtonVariant(action)}>
+      {isInternal ? (
+        <Link data-sanity={dataAttribute?.(`${path}.button.text`)} href={href}>
+          {content}
+        </Link>
       ) : (
         <a
-          href={action.href}
-          rel={action.kind === "external" ? "noopener noreferrer" : undefined}
-          target={action.kind === "external" ? "_blank" : undefined}
+          data-sanity={dataAttribute?.(`${path}.button.text`)}
+          href={href}
+          rel={isHttp && openInNewTab ? "noopener noreferrer" : undefined}
+          target={isHttp && openInNewTab ? "_blank" : undefined}
         >
           {content}
         </a>
@@ -39,82 +75,106 @@ function ContactActionButton({ action }: { action: (typeof POST_CONTACT_SIDEBAR.
   );
 }
 
-function ContactSidebar() {
-  return (
-    <div className="space-y-4">
-      <header className="space-y-2">
-        <h2 className="text-2xl font-semibold tracking-tight">{POST_CONTACT_SIDEBAR.title}</h2>
-        <p className="text-sm leading-6 text-muted-foreground">
-          {POST_CONTACT_SIDEBAR.description}
-        </p>
-      </header>
-      <div className="grid gap-4">
-        {POST_CONTACT_SIDEBAR.actions.map((action) => (
-          <Card className="p-5" key={action.title}>
-            <section className="space-y-3">
-              <h3 className="text-base font-semibold tracking-normal">{action.title}</h3>
-              <p className="text-sm leading-6 text-muted-foreground">{action.description}</p>
-              <ContactActionButton action={action} />
-            </section>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function HeadingLinks({ headings }: { headings: PostHeading[] }) {
-  return (
-    <ul className="space-y-2">
-      {headings.map((heading) => (
-        <li key={heading.id}>
-          <a
-            className="block rounded-sm py-1 text-sm leading-5 text-muted-foreground underline-offset-4 transition-colors motion-fast hover:text-foreground hover:underline focus-underline"
-            href={`#${heading.id}`}
-          >
-            {heading.text}
-          </a>
-          {heading.children.length ? (
-            <div className="mt-1 border-l pl-4">
-              <HeadingLinks headings={heading.children} />
-            </div>
-          ) : null}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function TableOfContents({ headings }: { headings: PostHeading[] }) {
-  return (
-    <div className="hidden lg:sticky lg:top-24 lg:block">
-      <Card className="p-5">
-        <details className="group" open>
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-sm text-sm font-semibold uppercase tracking-wide focus-underline [&::-webkit-details-marker]:hidden">
-            <span>Table of Contents</span>
-            <ChevronDown
-              aria-hidden="true"
-              className="size-5 shrink-0 transition-transform motion-fast group-open:rotate-180"
-            />
-          </summary>
-          <nav aria-label="Table of Contents" className="mt-4">
-            <HeadingLinks headings={headings} />
-          </nav>
-        </details>
-      </Card>
-    </div>
-  );
-}
-
 export function PostSidebar({
-  bodyModel,
+  dataAttribute,
+  sidebar,
 }: {
-  bodyModel: PostBodyModel;
+  dataAttribute?: DataAttribute;
+  sidebar: BlogPostSidebar | null;
 }) {
+  const actions = sidebar?.actions ?? [];
+  if (!sidebar || actions.length === 0) return null;
+
+  const sidebarPath = "blogPostSidebar";
+
   return (
-    <aside aria-label="Post sidebar" className="min-w-0 space-y-6 lg:w-80">
-      <ContactSidebar />
-      {bodyModel.showTableOfContents ? <TableOfContents headings={bodyModel.headings} /> : null}
+    <aside
+      aria-label="Post contact options"
+      className="min-w-0 self-stretch"
+      data-sanity={dataAttribute?.(sidebarPath)}
+    >
+      <div className="grid gap-5 lg:sticky lg:top-24">
+        {sidebar.title || sidebar.description ? (
+          <header className="space-y-2">
+            {sidebar.title ? (
+              <h2
+                className="typo-subsection-heading text-foreground"
+                data-sanity={dataAttribute?.(`${sidebarPath}.title`)}
+              >
+                {sidebar.title}
+              </h2>
+            ) : null}
+            {sidebar.description ? (
+              <p
+                className="typo-body-sm text-muted-foreground"
+                data-sanity={dataAttribute?.(`${sidebarPath}.description`)}
+              >
+                {sidebar.description}
+              </p>
+            ) : null}
+          </header>
+        ) : null}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          {actions.map((action) => {
+            const actionKey = stegaClean(action._key);
+            const actionPath = `${sidebarPath}.actions[_key=="${actionKey}"]`;
+
+            return (
+              <Card className="p-5" data-sanity={dataAttribute?.(actionPath)} key={actionKey}>
+                <section className="space-y-3">
+                  {action.title ? (
+                    <h3
+                      className="typo-card-title text-foreground"
+                      data-sanity={dataAttribute?.(`${actionPath}.title`)}
+                    >
+                      {action.title}
+                    </h3>
+                  ) : null}
+                  {action.description ? (
+                    <p
+                      className="typo-body-sm text-muted-foreground"
+                      data-sanity={dataAttribute?.(`${actionPath}.description`)}
+                    >
+                      {action.description}
+                    </p>
+                  ) : null}
+                  <ContactActionButton
+                    action={action}
+                    dataAttribute={dataAttribute}
+                    path={actionPath}
+                  />
+                </section>
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+export function PostTableOfContentsRail({ headings }: { headings: PostHeading[] }) {
+  return (
+    <aside
+      aria-label="Post table of contents"
+      className="hidden min-w-0 self-stretch lg:block"
+    >
+      <div className="sticky top-24">
+        <Card className="p-5">
+          <details className="group" open>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-sm typo-meta-label text-foreground focus-underline [&::-webkit-details-marker]:hidden">
+              <span>Table of Contents</span>
+              <ChevronDown
+                aria-hidden="true"
+                className="size-5 shrink-0 transition-transform motion-fast group-open:rotate-180"
+              />
+            </summary>
+            <div className="mt-4">
+              <PostTableOfContents headings={headings} />
+            </div>
+          </details>
+        </Card>
+      </div>
     </aside>
   );
 }

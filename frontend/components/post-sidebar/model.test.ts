@@ -1,6 +1,6 @@
 import type { PortableTextProps } from "@portabletext/react";
 import { describe, expect, it } from "vitest";
-import { createPostBodyModel } from "./model";
+import { createPostBodyModel, getPostReadTime } from "./model";
 
 function heading(key: string, style: string, text: string) {
   return {
@@ -13,7 +13,7 @@ function heading(key: string, style: string, text: string) {
 }
 
 describe("createPostBodyModel", () => {
-  it("omits empty and unsupported headings and requires two valid headings for a table of contents", () => {
+  it("omits empty and unsupported headings", () => {
     const zero = createPostBodyModel([
       heading("normal", "normal", "Not a heading"),
       heading("empty", "h2", "   "),
@@ -26,6 +26,21 @@ describe("createPostBodyModel", () => {
     expect(zero.showTableOfContents).toBe(false);
     expect(one.headings).toHaveLength(1);
     expect(one.showTableOfContents).toBe(false);
+  });
+
+  it("shows the table of contents at exactly three headings, not two", () => {
+    const two = createPostBodyModel([
+      heading("first", "h2", "First heading"),
+      heading("second", "h2", "Second heading"),
+    ] as PortableTextProps["value"]);
+    const three = createPostBodyModel([
+      heading("first", "h2", "First heading"),
+      heading("second", "h2", "Second heading"),
+      heading("third", "h2", "Third heading"),
+    ] as PortableTextProps["value"]);
+
+    expect(two.showTableOfContents).toBe(false);
+    expect(three.showTableOfContents).toBe(true);
   });
 
   it("preserves source order and nests headings according to their levels", () => {
@@ -68,5 +83,35 @@ describe("createPostBodyModel", () => {
       "repeat-3",
       "heading-4",
     ]);
+  });
+});
+
+describe("getPostReadTime", () => {
+  const stegaMarker = "\u200b\u200c\u200d\u2062";
+
+  it("counts cleaned Portable Text span words at 200 words per minute", () => {
+    const words = Array.from({ length: 300 }, (_, index) =>
+      index === 20 ? `word${stegaMarker}` : "word",
+    ).join(" ");
+
+    expect(getPostReadTime([heading("body", "normal", words)] as PortableTextProps["value"])).toBe(
+      "2 min read",
+    );
+  });
+
+  it("ignores embedded non-text blocks", () => {
+    const body = [
+      heading("body", "normal", "Count only these words"),
+      { _key: "image", _type: "image", children: [{ _type: "span", text: "ignore me" }] },
+    ] as PortableTextProps["value"];
+
+    expect(getPostReadTime(body)).toBe("1 min read");
+  });
+
+  it.each([
+    ["an empty body", []],
+    ["a short body", [heading("body", "normal", "One short sentence")]],
+  ])("keeps the one-minute floor for %s", (_label, body) => {
+    expect(getPostReadTime(body as PortableTextProps["value"])).toBe("1 min read");
   });
 });

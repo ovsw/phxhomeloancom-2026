@@ -28,6 +28,10 @@ import button from "./schemas/blocks/shared/button";
 import buttonLink from "./schemas/blocks/shared/button-link";
 import richTextContent from "./schemas/blocks/shared/rich-text-content";
 import simpleRichText from "./schemas/blocks/shared/simple-rich-text";
+import {
+  blogPostSidebar,
+  blogPostSidebarAction,
+} from "./schemas/blocks/shared/blog-post-sidebar";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import homeHero from "./schemas/blocks/home-hero";
@@ -86,6 +90,8 @@ export const schemaTypes = [
   buttonLink,
   richTextContent,
   simpleRichText,
+  blogPostSidebarAction,
+  blogPostSidebar,
   // blocks
   hero1,
   homeHero,

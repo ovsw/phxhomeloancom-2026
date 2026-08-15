@@ -1,4 +1,5 @@
 import { groq } from "next-sanity";
+import { urlInternalHref } from "./shared/internal-href";
 
 export const SETTINGS_QUERY = groq`*[_type == "settings" && _id == "settings"][0]{
   _type,
@@ -70,5 +71,25 @@ export const SETTINGS_QUERY = groq`*[_type == "settings" && _id == "settings"][0
     },
     width,
     height,
+  },
+  blogPostSidebar{
+    title,
+    description,
+    "actions": array::compact(actions[]{
+      _key,
+      title,
+      description,
+      actionType,
+      ...button{
+        "text": text,
+        "variant": variant,
+        "openInNewTab": url.openInNewTab,
+        "href": select(
+          url.type == "internal" => ${urlInternalHref},
+          url.type == "external" => url.external,
+          url.href
+        )
+      }
+    })
   }
 }`;

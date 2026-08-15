@@ -2,9 +2,11 @@ import { RootContentView } from "@/components/root-content";
 import {
   fetchSanityPageBySlug,
   fetchSanityPostBySlug,
+  fetchSanitySettings,
   PAGES_SLUGS_QUERY,
   POSTS_SLUGS_QUERY,
 } from "@/sanity/lib/fetch";
+import { getBlogPostSidebar } from "@/components/post-sidebar/model";
 import {
   getDynamicFetchOptions,
   sanityFetchMetadata,
@@ -125,12 +127,20 @@ async function CachedRootContent({
   perspective,
   stega,
 }: { slug: string } & DynamicFetchOptions) {
-  const [page, post] = await Promise.all([
+  const [page, post, settings] = await Promise.all([
     fetchSanityPageBySlug({ slug, perspective, stega }),
     fetchSanityPostBySlug({ slug, perspective, stega }),
+    fetchSanitySettings({ perspective, stega }),
   ]);
   const content = resolveRootContent(page, post, slug);
   if (!content) notFound();
 
-  return <RootContentView content={content} perspective={perspective} stega={stega} />;
+  return (
+    <RootContentView
+      blogPostSidebar={getBlogPostSidebar(settings)}
+      content={content}
+      perspective={perspective}
+      stega={stega}
+    />
+  );
 }

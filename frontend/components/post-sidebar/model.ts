@@ -1,5 +1,6 @@
 import type { PortableTextProps } from "@portabletext/react";
 import { stegaClean } from "next-sanity";
+import type { SETTINGS_QUERY_RESULT } from "@/sanity.types";
 
 export type PostHeading = {
   children: PostHeading[];
@@ -14,59 +15,15 @@ export type PostBodyModel = {
   showTableOfContents: boolean;
 };
 
-export type ContactAction = {
-  buttonLabel: string;
-  description: string;
-  href: string;
-  kind: "external" | "internal" | "phone";
-  title: string;
-  variant: "default" | "outline" | "secondary";
-};
+type Settings = NonNullable<SETTINGS_QUERY_RESULT>;
 
-export type PostContactSidebarModel = {
-  actions: readonly ContactAction[];
-  description: string;
-  title: string;
-};
+export type BlogPostSidebar = NonNullable<Settings["blogPostSidebar"]>;
 
-export const POST_CONTACT_SIDEBAR = {
-  title: "Contact Jimmy",
-  description: "Choose the next step that fits where you are in the mortgage process.",
-  actions: [
-    {
-      title: "Call Jimmy",
-      description: "Speak with Jimmy's team about your home loan options.",
-      buttonLabel: "Call 480-800-8387",
-      href: "tel:+14808008387",
-      kind: "phone",
-      variant: "outline",
-    },
-    {
-      title: "Apply online for a loan today!",
-      description: "Fast and easy online application.",
-      buttonLabel: "Apply Online",
-      href: "https://applynow.goluminate.com/homehub/signup/jimmy.vercellino@goluminate.com",
-      kind: "external",
-      variant: "default",
-    },
-    {
-      title: "Mortgage Calculator",
-      description: "Find out what you can expect to pay for your home loan.",
-      buttonLabel: "Calculate Now",
-      href: "/mortgage-calculator/",
-      kind: "internal",
-      variant: "secondary",
-    },
-    {
-      title: "What's My Home Worth?",
-      description: "Get a ballpark estimate for your home with our online calculator.",
-      buttonLabel: "Calculate Now",
-      href: "/home-value-estimator/",
-      kind: "internal",
-      variant: "secondary",
-    },
-  ],
-} as const satisfies PostContactSidebarModel;
+export function getBlogPostSidebar(
+  settings: SETTINGS_QUERY_RESULT,
+): BlogPostSidebar | null {
+  return settings?.blogPostSidebar ?? null;
+}
 
 const HEADING_STYLES = new Set(["h2", "h3", "h4", "h5", "h6"]);
 
@@ -153,6 +110,28 @@ export function createPostBodyModel(value: PortableTextProps["value"]): PostBody
     getHeadingId: (block) =>
       (block._key ? headingIdsByKey[block._key] : undefined) ?? headingIdsByBlock.get(block),
     headings: nestHeadings(flatHeadings),
-    showTableOfContents: flatHeadings.length >= 2,
+    showTableOfContents: flatHeadings.length >= 3,
   };
+}
+
+export function getPostReadTime(value: PortableTextProps["value"]) {
+  const blocks = Array.isArray(value) ? value : [];
+  let wordCount = 0;
+
+  for (const block of blocks) {
+    if (!isRecord(block) || block._type !== "block" || !Array.isArray(block.children)) {
+      continue;
+    }
+
+    for (const child of block.children) {
+      if (!isRecord(child) || child._type !== "span" || typeof child.text !== "string") {
+        continue;
+      }
+
+      const text = stegaClean(child.text)?.trim();
+      if (text) wordCount += text.split(/\s+/).length;
+    }
+  }
+
+  return `${Math.max(1, Math.round(wordCount / 200))} min read`;
 }

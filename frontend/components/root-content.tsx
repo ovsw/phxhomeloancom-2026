@@ -8,8 +8,17 @@ import { siteUrl } from "@/lib/site-url";
 import QuickNav from "@/components/quick-nav";
 import { createQuickNavModel } from "@/lib/quick-nav";
 import PostHero from "@/components/blocks/post-hero";
-import { createPostBodyModel } from "@/components/post-sidebar/model";
-import { PostSidebar } from "@/components/post-sidebar/post-sidebar";
+import {
+  createPostBodyModel,
+  getPostReadTime,
+  type BlogPostSidebar,
+} from "@/components/post-sidebar/model";
+import {
+  PostSidebar,
+  PostTableOfContentsRail,
+} from "@/components/post-sidebar/post-sidebar";
+import { cn } from "@/lib/utils";
+import { documentDataAttribute } from "@/components/blog-card";
 import RichTextContent from "@/components/rich-text-content";
 import { dataset, projectId } from "@/sanity/lib/env";
 import type { DynamicFetchOptions } from "@/sanity/lib/live";
@@ -96,14 +105,22 @@ function PageContent({
 }
 
 function PostContent({
+  blogPostSidebar,
   post,
   stega,
 }: {
+  blogPostSidebar: BlogPostSidebar | null;
   post: NonNullable<POST_QUERY_RESULT>;
   stega: boolean;
 }) {
   const body = post.body ?? [];
   const bodyModel = createPostBodyModel(body);
+  const readTime = getPostReadTime(body);
+  const settingsDataAttribute = documentDataAttribute({
+    id: "settings",
+    stega,
+    type: "settings",
+  });
   const bodyDataAttribute = stega
     ? createDataAttribute({
         baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
@@ -116,13 +133,24 @@ function PostContent({
     : undefined;
 
   return (
-    <section className="bg-background">
+    <section className="surface-cream">
       <BlogPostingJsonLd post={post} siteUrl={siteUrl} />
       <VideoJsonLd blocks={[]} postBody={body} siteUrl={siteUrl} />
-      <div className="mx-auto w-full max-w-7xl px-4 py-20 md:px-6 md:py-24 lg:px-0">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div className="container py-16 md:py-24">
+        <PostHero post={post} readTime={readTime} stega={stega} />
+        <div
+          className={cn(
+            "mt-12 grid grid-cols-1 gap-10 lg:mt-16 lg:gap-8",
+            bodyModel.showTableOfContents
+              ? "lg:grid-cols-[13rem_minmax(0,1fr)_18rem]"
+              : "lg:grid-cols-[minmax(0,48rem)_20rem] lg:justify-center",
+          )}
+          data-post-layout={bodyModel.showTableOfContents ? "three-column" : "two-column"}
+        >
+          {bodyModel.showTableOfContents ? (
+            <PostTableOfContentsRail headings={bodyModel.headings} />
+          ) : null}
           <article className="min-w-0">
-            <PostHero {...post} />
             {body.length ? (
               <RichTextContent
                 dataSanity={bodyDataAttribute}
@@ -131,7 +159,10 @@ function PostContent({
               />
             ) : null}
           </article>
-          <PostSidebar bodyModel={bodyModel} />
+          <PostSidebar
+            dataAttribute={settingsDataAttribute}
+            sidebar={blogPostSidebar}
+          />
         </div>
       </div>
     </section>
@@ -139,16 +170,18 @@ function PostContent({
 }
 
 export function RootContentView({
+  blogPostSidebar = null,
   content,
   perspective,
   stega,
 }: {
+  blogPostSidebar?: BlogPostSidebar | null;
   content: NonNullable<PAGE_QUERY_RESULT | POST_QUERY_RESULT>;
   perspective: DynamicFetchOptions["perspective"];
   stega: boolean;
 }) {
   return content._type === "post" ? (
-    <PostContent post={content} stega={stega} />
+    <PostContent blogPostSidebar={blogPostSidebar} post={content} stega={stega} />
   ) : (
     <PageContent page={content} perspective={perspective} stega={stega} />
   );
