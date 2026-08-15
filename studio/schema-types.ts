@@ -11,6 +11,7 @@ import navigation, {
 import settings from "./schemas/documents/settings";
 import teamMember from "./schemas/documents/team-member";
 import blogIndex from "./schemas/documents/blog-index";
+import blogPostSettings from "./schemas/documents/blog-post-settings";
 import homePage from "./schemas/documents/home-page";
 import footer, { footerSchemaTypes } from "./schemas/documents/footer";
 import redirect from "./schemas/documents/redirect";
@@ -28,6 +29,10 @@ import button from "./schemas/blocks/shared/button";
 import buttonLink from "./schemas/blocks/shared/button-link";
 import richTextContent from "./schemas/blocks/shared/rich-text-content";
 import simpleRichText from "./schemas/blocks/shared/simple-rich-text";
+import {
+  blogPostSidebar,
+  blogPostSidebarAction,
+} from "./schemas/blocks/shared/blog-post-sidebar";
 // Schema UI objects
 import hero1 from "./schemas/blocks/hero/hero-1";
 import homeHero from "./schemas/blocks/home-hero";
@@ -69,6 +74,7 @@ export const schemaTypes = [
   settings,
   teamMember,
   blogIndex,
+  blogPostSettings,
   homePage,
   footer,
   redirect,
@@ -86,6 +92,8 @@ export const schemaTypes = [
   buttonLink,
   richTextContent,
   simpleRichText,
+  blogPostSidebarAction,
+  blogPostSidebar,
   // blocks
   hero1,
   homeHero,

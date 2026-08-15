@@ -85,6 +85,16 @@ export default defineType({
       description: "The name of your site",
       validation: (Rule) => Rule.required().error("Site name is required"),
     }),
+    defineField({
+      name: "blogPostSidebar",
+      title: "Blog Post Sidebar",
+      type: "blogPostSidebar",
+      deprecated: {
+        reason: "Moved to Blog > Blog Post Settings.",
+      },
+      hidden: true,
+      readOnly: true,
+    }),
   ],
   preview: {
     select: {

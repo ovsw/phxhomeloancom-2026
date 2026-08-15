@@ -2,8 +2,11 @@ import type { PortableTextProps } from "@portabletext/react";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import RichTextContent from "@/components/rich-text-content";
-import { createPostBodyModel, POST_CONTACT_SIDEBAR } from "./model";
-import { PostSidebar } from "./post-sidebar";
+import {
+  createPostBodyModel,
+  type BlogPostSidebar,
+} from "./model";
+import { PostSidebar, PostTableOfContentsRail } from "./post-sidebar";
 
 function heading(key: string, style: string, text: string) {
   return {
@@ -15,22 +18,61 @@ function heading(key: string, style: string, text: string) {
   };
 }
 
-const twoHeadings = [
+const threeHeadings = [
   heading("first", "h2", "First section"),
   heading("child", "h3", "Child section"),
+  heading("second", "h2", "Second section"),
 ] as PortableTextProps["value"];
 
-describe("PostSidebar", () => {
-  it("renders the exact CTA order, destinations, and target behavior", () => {
-    render(<PostSidebar bodyModel={createPostBodyModel([])} />);
+const currentSidebar = {
+  _id: "blogPostSettings",
+  _type: "blogPostSettings",
+  title: "Contact Jimmy",
+  description: "Choose the next step that fits where you are in the mortgage process.",
+  actions: [
+    {
+      _key: "call",
+      title: "Call Jimmy",
+      description: "Speak with Jimmy's team about your home loan options.",
+      text: "Call 480-800-8387",
+      openInNewTab: false,
+      href: "tel:+14808008387",
+    },
+    {
+      _key: "apply",
+      title: "Apply online for a loan today!",
+      description: "Fast and easy online application.",
+      text: "Apply Online",
+      openInNewTab: true,
+      href: "https://applynow.example.com/",
+    },
+    {
+      _key: "mortgage-calculator",
+      title: "Mortgage Calculator",
+      description: "Find out what you can expect to pay for your home loan.",
+      text: "Calculate Now",
+      openInNewTab: false,
+      href: "/mortgage-calculator/",
+    },
+    {
+      _key: "home-value",
+      title: "What's My Home Worth?",
+      description: "Get a ballpark estimate for your home with our online calculator.",
+      text: "Calculate Now",
+      openInNewTab: false,
+      href: "/home-value-estimator/",
+    },
+  ],
+} satisfies BlogPostSidebar;
 
-    const sidebar = screen.getByRole("complementary", { name: "Post sidebar" });
+describe("PostSidebar", () => {
+  it("renders all four CMS actions in document order", () => {
+    render(<PostSidebar sidebar={currentSidebar} />);
+
+    const sidebar = screen.getByRole("complementary", {
+      name: "Post contact options",
+    });
     expect(within(sidebar).getByRole("heading", { name: "Contact Jimmy" })).toBeInTheDocument();
-    expect(
-      within(sidebar).getByText(
-        "Choose the next step that fits where you are in the mortgage process.",
-      ),
-    ).toBeInTheDocument();
     expect(
       within(sidebar).getAllByRole("heading", { level: 3 }).map((item) => item.textContent),
     ).toEqual([
@@ -39,71 +81,87 @@ describe("PostSidebar", () => {
       "Mortgage Calculator",
       "What's My Home Worth?",
     ]);
-    expect(
-      within(sidebar)
-        .getAllByRole("heading", { level: 3 })
-        .map((heading) => heading.nextElementSibling?.textContent),
-    ).toEqual([
-      "Speak with Jimmy's team about your home loan options.",
-      "Fast and easy online application.",
-      "Find out what you can expect to pay for your home loan.",
-      "Get a ballpark estimate for your home with our online calculator.",
-    ]);
-
-    const phone = within(sidebar).getByRole("link", { name: "Call 480-800-8387" });
-    expect(phone).toHaveAttribute("href", "tel:+14808008387");
-    expect(phone).not.toHaveAttribute("target");
-
-    const apply = within(sidebar).getByRole("link", { name: "Apply Online" });
-    expect(apply).toHaveAttribute(
-      "href",
-      "https://applynow.goluminate.com/homehub/signup/jimmy.vercellino@goluminate.com",
-    );
-    expect(apply).toHaveAttribute("target", "_blank");
-    expect(apply).toHaveAttribute("rel", "noopener noreferrer");
-
-    for (const [name, href] of [
-      ["Mortgage Calculator", "/mortgage-calculator/"],
-      ["What's My Home Worth?", "/home-value-estimator/"],
-    ] as const) {
-      const card = within(sidebar).getByRole("heading", { name }).closest("section");
-      const link = within(card as HTMLElement).getByRole("link", { name: "Calculate Now" });
-      expect(link).toHaveAttribute("href", href.slice(0, -1));
-      expect(link).not.toHaveAttribute("target");
-    }
-    expect(POST_CONTACT_SIDEBAR.actions.map((action) => action.href).slice(2)).toEqual([
-      "/mortgage-calculator/",
-      "/home-value-estimator/",
-    ]);
   });
 
-  it.each([
-    ["zero", []],
-    ["one", [heading("only", "h2", "Only heading")]],
-  ])("hides the table of contents for %s valid headings", (_label, body) => {
+  it("renders exactly two CMS actions in document order", () => {
     render(
       <PostSidebar
-        bodyModel={createPostBodyModel(body as PortableTextProps["value"])}
+        sidebar={{ ...currentSidebar, actions: currentSidebar.actions.slice(0, 2) }}
       />,
     );
 
-    expect(screen.queryByRole("navigation", { name: "Table of Contents" })).not.toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Contact Jimmy" })).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 3 }).map((item) => item.textContent)).toEqual([
+      "Call Jimmy",
+      "Apply online for a loan today!",
+    ]);
   });
 
-  it("shows a native open table of contents for two headings", () => {
-    render(<PostSidebar bodyModel={createPostBodyModel(twoHeadings)} />);
+  it("uses action order to choose the solid button", () => {
+    render(<PostSidebar sidebar={currentSidebar} />);
+
+    expect(screen.getByRole("link", { name: "Call 480-800-8387" })).toHaveClass(
+      "bg-primary",
+    );
+    expect(screen.getByRole("link", { name: "Apply Online" })).not.toHaveClass(
+      "bg-primary",
+    );
+  });
+
+  it("places secondary descriptions before their links", () => {
+    render(<PostSidebar sidebar={currentSidebar} />);
+
+    const description = screen.getByText("Fast and easy online application.");
+    const link = screen.getByRole("link", { name: "Apply Online" });
+    expect(description.nextElementSibling).toBe(link);
+  });
+
+  it.each([
+    ["missing", null],
+    ["empty", { ...currentSidebar, actions: [] }],
+  ])("renders nothing for a %s sidebar", (_label, sidebar) => {
+    const { container } = render(
+      <PostSidebar sidebar={sidebar as BlogPostSidebar | null} />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it("uses the correct link element and target behavior for internal, external, and tel destinations", () => {
+    render(<PostSidebar sidebar={currentSidebar} />);
+
+    const phone = screen.getByRole("link", { name: "Call 480-800-8387" });
+    expect(phone).toHaveAttribute("href", "tel:+14808008387");
+    expect(phone).not.toHaveAttribute("target");
+
+    const apply = screen.getByRole("link", { name: "Apply Online" });
+    expect(apply).toHaveAttribute("href", "https://applynow.example.com/");
+    expect(apply).toHaveAttribute("target", "_blank");
+    expect(apply).toHaveAttribute("rel", "noopener noreferrer");
+
+    const internalCard = screen
+      .getByRole("heading", { name: "Mortgage Calculator" })
+      .closest("section");
+    const internal = within(internalCard as HTMLElement).getByRole("link", {
+      name: "Calculate Now",
+    });
+    expect(internal).toHaveAttribute("href", "/mortgage-calculator");
+    expect(internal).not.toHaveAttribute("target");
+  });
+
+  it("shows a native open table of contents for three headings", () => {
+    const bodyModel = createPostBodyModel(threeHeadings);
+    render(<PostTableOfContentsRail headings={bodyModel.headings} />);
 
     expect(screen.getByText("Table of Contents").closest("details")).toHaveAttribute("open");
     expect(screen.getByRole("navigation", { name: "Table of Contents" })).toBeInTheDocument();
   });
 
   it("renders hierarchical anchors that match the scoped post heading IDs", () => {
-    const bodyModel = createPostBodyModel(twoHeadings);
+    const bodyModel = createPostBodyModel(threeHeadings);
     render(
       <>
-        <RichTextContent getHeadingId={bodyModel.getHeadingId} value={twoHeadings} />
-        <PostSidebar bodyModel={bodyModel} />
+        <RichTextContent getHeadingId={bodyModel.getHeadingId} value={threeHeadings} />
+        <PostTableOfContentsRail headings={bodyModel.headings} />
       </>,
     );
 
@@ -119,13 +177,17 @@ describe("PostSidebar", () => {
   it("matches an ID for a valid heading even when its Portable Text key is absent", () => {
     const unkeyedHeading = heading("temporary", "h2", "Unkeyed heading");
     delete (unkeyedHeading as { _key?: string })._key;
-    const body = [unkeyedHeading, heading("second", "h2", "Second heading")];
+    const body = [
+      unkeyedHeading,
+      heading("second", "h2", "Second heading"),
+      heading("third", "h2", "Third heading"),
+    ];
     const bodyModel = createPostBodyModel(body as PortableTextProps["value"]);
 
     render(
       <>
         <RichTextContent getHeadingId={bodyModel.getHeadingId} value={body} />
-        <PostSidebar bodyModel={bodyModel} />
+        <PostTableOfContentsRail headings={bodyModel.headings} />
       </>,
     );
 
@@ -135,5 +197,4 @@ describe("PostSidebar", () => {
     );
     expect(document.querySelector("h2#unkeyed-heading")).toBeInTheDocument();
   });
-
 });

@@ -12,6 +12,7 @@ import {
   Tag,
   House,
   TrendingUpDown,
+  PanelRight,
 } from "lucide-react";
 import type { StructureResolver } from "sanity/structure";
 
@@ -54,6 +55,16 @@ export const structure: StructureResolver = (S) =>
                     .schemaType("blogIndex")
                     .documentId("blogIndex")
                 ),
+              S.listItem()
+                .title("Blog Post Settings")
+                .icon(PanelRight)
+                .child(
+                  S.editor()
+                    .id("blogPostSettings")
+                    .schemaType("blogPostSettings")
+                    .documentId("blogPostSettings")
+                ),
+              S.divider(),
               S.listItem()
                 .title("Blog Posts")
                 .icon(FileText)

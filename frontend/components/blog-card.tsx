@@ -37,7 +37,7 @@ function BlogImage({
   );
 }
 
-function PublicationDate({
+export function PublicationDate({
   dataAttribute,
   value,
 }: {
@@ -71,7 +71,7 @@ export function documentDataAttribute({
 }: {
   id: string;
   stega: boolean;
-  type: "category" | "post";
+  type: "author" | "blogPostSettings" | "category" | "post" | "settings";
 }): DataAttribute | undefined {
   if (!stega) return undefined;
 

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { PAGE_QUERY_RESULT, POST_QUERY_RESULT } from "@/sanity.types";
+import type { BlogPostSidebar } from "@/components/post-sidebar/model";
 import { RootContentView } from "./root-content";
 
 vi.mock("@/components/video-json-ld", () => ({
@@ -50,6 +51,33 @@ const post = {
   title: "Post title",
 } as unknown as NonNullable<POST_QUERY_RESULT>;
 
+const blogPostSidebar = {
+  _id: "blogPostSettings",
+  _type: "blogPostSettings",
+  title: "Contact Jimmy",
+  description: null,
+  actions: [
+    {
+      _key: "apply",
+      title: "Apply Now",
+      description: null,
+      text: "Apply Now",
+      openInNewTab: true,
+      href: "https://applynow.example.com/",
+    },
+  ],
+} satisfies BlogPostSidebar;
+
+function heading(key: string, text: string) {
+  return {
+    _key: key,
+    _type: "block",
+    children: [{ _key: `${key}-span`, _type: "span", marks: [], text }],
+    markDefs: [],
+    style: "h2",
+  };
+}
+
 function isJsonLdType(value: unknown, type: string) {
   return (
     typeof value === "object" &&
@@ -79,9 +107,96 @@ describe("RootContentView", () => {
     );
     expect(screen.queryByRole("complementary", { name: "Post sidebar" })).not.toBeInTheDocument();
 
-    rerender(<RootContentView content={post} perspective="published" stega={false} />);
-    expect(screen.getByRole("complementary", { name: "Post sidebar" })).toBeInTheDocument();
+    rerender(
+      <RootContentView
+        blogPostSidebar={blogPostSidebar}
+        content={post}
+        perspective="published"
+        stega={false}
+      />,
+    );
+    expect(
+      screen.getByRole("complementary", { name: "Post contact options" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Post introduction")).toBeInTheDocument();
+  });
+
+  it("uses two columns for a thin post and keeps the CTA after the article", () => {
+    const thinPost = {
+      ...post,
+      body: [heading("first", "First"), heading("second", "Second")],
+    } as unknown as NonNullable<POST_QUERY_RESULT>;
+    const { container } = render(
+      <RootContentView
+        blogPostSidebar={blogPostSidebar}
+        content={thinPost}
+        perspective="published"
+        stega={false}
+      />,
+    );
+
+    const layout = container.querySelector('[data-post-layout="two-column"]');
+    expect(layout).toHaveClass("lg:grid-cols-[minmax(0,48rem)_20rem]");
+    expect(screen.queryByRole("navigation", { name: "Table of Contents" })).not.toBeInTheDocument();
+    expect(layout?.querySelector("article")?.nextElementSibling).toHaveAttribute(
+      "aria-label",
+      "Post contact options",
+    );
+  });
+
+  it("uses three columns for a heading-rich post", () => {
+    const headingRichPost = {
+      ...post,
+      body: [
+        heading("first", "First"),
+        heading("second", "Second"),
+        heading("third", "Third"),
+      ],
+    } as unknown as NonNullable<POST_QUERY_RESULT>;
+    const { container } = render(
+      <RootContentView
+        blogPostSidebar={blogPostSidebar}
+        content={headingRichPost}
+        perspective="published"
+        stega={false}
+      />,
+    );
+
+    const layout = container.querySelector('[data-post-layout="three-column"]');
+    expect(layout).toHaveClass("lg:grid-cols-[15rem_minmax(0,1fr)_17rem]");
+    expect(screen.getByRole("navigation", { name: "Table of Contents" })).toBeInTheDocument();
+  });
+
+  it("centers a thin post when the sidebar is unavailable", () => {
+    const thinPost = {
+      ...post,
+      body: [heading("first", "First"), heading("second", "Second")],
+    } as unknown as NonNullable<POST_QUERY_RESULT>;
+    const { container } = render(
+      <RootContentView content={thinPost} perspective="published" stega={false} />,
+    );
+
+    expect(container.querySelector('[data-post-layout="single-column"]')).toHaveClass(
+      "lg:grid-cols-[minmax(0,48rem)]",
+    );
+  });
+
+  it("keeps the table of contents without reserving sidebar space", () => {
+    const headingRichPost = {
+      ...post,
+      body: [
+        heading("first", "First"),
+        heading("second", "Second"),
+        heading("third", "Third"),
+      ],
+    } as unknown as NonNullable<POST_QUERY_RESULT>;
+    const { container } = render(
+      <RootContentView content={headingRichPost} perspective="published" stega={false} />,
+    );
+
+    expect(container.querySelector('[data-post-layout="toc-column"]')).toHaveClass(
+      "lg:grid-cols-[15rem_minmax(0,48rem)]",
+    );
   });
 
   it("emits exactly one BlogPosting script for posts and none for pages", () => {
