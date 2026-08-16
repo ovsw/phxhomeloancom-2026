@@ -21,6 +21,7 @@ import {
   HOME_PAGE_OG_IMAGE_QUERY,
   PAGE_OG_IMAGE_QUERY,
 } from "@/sanity/queries/og-image";
+import { resolveSeoTitle } from "../../../../../../shared/seo-title";
 
 function notFound() {
   return new Response("Not found", {
@@ -46,14 +47,27 @@ function hasExactQueryShape(searchParams: URLSearchParams) {
 async function fetchTitle(
   target: NonNullable<ReturnType<typeof parsePageOgImageTarget>>,
 ) {
+  if (target.kind === "home") {
+    const { data } = (await sanityFetchMetadata({
+      query: HOME_PAGE_OG_IMAGE_QUERY,
+      perspective: "published",
+    })) as { data: { overrideTitle?: string | null; title?: string | null } | null };
+    if (!data) return null;
+
+    // Mirror generatePageMetadata's fallback chain (down to the site name) so
+    // every signed homepage URL renders instead of 404ing on missing titles.
+    return resolveSeoTitle({
+      fallbackTitle: data.title,
+      overrideTitle: data.overrideTitle,
+    }).pageTitle;
+  }
+
   const query =
-    target.kind === "home"
-      ? HOME_PAGE_OG_IMAGE_QUERY
-      : target.kind === "blog"
-        ? BLOG_INDEX_OG_IMAGE_QUERY
-        : target.kind === "category"
-          ? CATEGORY_OG_IMAGE_QUERY
-          : PAGE_OG_IMAGE_QUERY;
+    target.kind === "blog"
+      ? BLOG_INDEX_OG_IMAGE_QUERY
+      : target.kind === "category"
+        ? CATEGORY_OG_IMAGE_QUERY
+        : PAGE_OG_IMAGE_QUERY;
   const params = "slug" in target ? { slug: target.slug } : undefined;
   const { data } = (await sanityFetchMetadata({
     query,

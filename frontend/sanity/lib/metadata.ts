@@ -12,7 +12,7 @@ import {
   isIndexableCategory,
 } from "@/lib/blog-index";
 import type { CategoryArchive } from "@/sanity/queries/category";
-import { buildPostOgImageUrl } from "@/lib/post-og-image";
+import { buildPostOgImageUrl, isValidOgSlug } from "@/lib/post-og-image";
 import {
   buildPageOgImageUrl,
   getPageOgImageTitle,
@@ -80,8 +80,10 @@ export function generatePageMetadata({
     overrideTitle: page?.meta?.title,
   });
   const postTitle = isPost ? page.title?.trim() : undefined;
+  // Slugs the signed OG routes cannot represent fall through to the generic
+  // sharing image instead of turning the page request into a server error.
   const postImage =
-    isPost && postTitle && page.publishedAt
+    isPost && postTitle && page.publishedAt && isValidOgSlug(page.slug?.current || "")
       ? buildPostOgImageUrl({
           origin: siteOrigin,
           publishedAt: page.publishedAt,
@@ -98,11 +100,12 @@ export function generatePageMetadata({
   const pageTitle = rawPageTitle
     ? getPageOgImageTitle(rawPageTitle)
     : undefined;
+  const pageSlug = path.replace(/^\/+|\/+$/g, "");
   const pageTarget: PageOgImageTarget | null =
     page?._type === "homePage"
       ? { kind: "home" }
-      : page?._type === "page" && path !== "/"
-        ? { kind: "page", slug: path.replace(/^\/+|\/+$/g, "") }
+      : page?._type === "page" && path !== "/" && isValidOgSlug(pageSlug)
+        ? { kind: "page", slug: pageSlug }
         : null;
   const pageImage =
     pageTitle && pageTarget
@@ -211,14 +214,17 @@ export function generateCategoryMetadata({
   });
   const description = category.meta?.description || category.description || undefined;
   const slug = category.slug?.current || "";
-  const image = sharingImage(
-    buildPageOgImageUrl({
-      origin: siteOrigin,
-      target: { kind: "category", page, slug },
-      title: cardTitle,
-    }),
-    cardTitle,
-  );
+  const image =
+    isValidOgSlug(slug) && !slug.includes("/")
+      ? sharingImage(
+          buildPageOgImageUrl({
+            origin: siteOrigin,
+            target: { kind: "category", page, slug },
+            title: cardTitle,
+          }),
+          cardTitle,
+        )
+      : fallbackSharingImage();
   const isIndexable = isIndexableCategory({
     description: category.description,
     metaNoindex: category.meta?.noindex,

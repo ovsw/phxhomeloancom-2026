@@ -2,7 +2,8 @@ import { defineQuery } from "next-sanity";
 
 export const HOME_PAGE_OG_IMAGE_QUERY = defineQuery(`
   *[_id == "homePage" && _type == "homePage"][0]{
-    "title": coalesce(meta.title, title)
+    "overrideTitle": meta.title,
+    title
   }
 `);
 

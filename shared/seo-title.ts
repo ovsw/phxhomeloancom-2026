@@ -61,7 +61,12 @@ export function resolveSeoTitle({
 
   return {
     finalTitle,
-    metadataTitle: isHomepage ? { absolute: finalTitle } : pageTitle,
+    // Absolute whenever the resolved title is already the site name, so the
+    // layout template never renders "PHX Home Loan | PHX Home Loan".
+    metadataTitle:
+      isHomepage || finalTitle === SITE_NAME
+        ? { absolute: finalTitle }
+        : pageTitle,
     openGraphTitle: finalTitle,
     pageTitle,
     twitterTitle: finalTitle,

@@ -38,6 +38,12 @@ describe("resolveSeoTitle", () => {
     });
   });
 
+  it("returns an absolute title when only the site name remains", () => {
+    expect(resolveSeoTitle({}).metadataTitle).toEqual({
+      absolute: "PHX Home Loan",
+    });
+  });
+
   it("removes repeated recognized legacy suffixes", () => {
     expect(
       stripLegacySeoTitleSuffix(
