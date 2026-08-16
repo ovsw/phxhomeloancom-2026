@@ -1,4 +1,3 @@
-import { urlFor } from "@/sanity/lib/image";
 import {
   BLOG_INDEX_QUERY_RESULT,
   HOME_PAGE_QUERY_RESULT,
@@ -14,7 +13,30 @@ import {
 } from "@/lib/blog-index";
 import type { CategoryArchive } from "@/sanity/queries/category";
 import { buildPostOgImageUrl } from "@/lib/post-og-image";
+import {
+  buildPageOgImageUrl,
+  getPageOgImageTitle,
+  type PageOgImageTarget,
+} from "@/lib/page-og-image";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
+
+const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+function sharingImage(url: string, title: string) {
+  return {
+    url,
+    width: 1200,
+    height: 630,
+    alt: `${title} | PHX Home Loan`,
+  };
+}
+
+function fallbackSharingImage() {
+  return sharingImage(
+    `${siteOrigin}/images/og-post-fallback.png`,
+    "Straightforward mortgage guidance",
+  );
+}
 
 export function generatePageMetadata({
   page,
@@ -28,26 +50,40 @@ export function generatePageMetadata({
   const postImage =
     isPost && postTitle && page.publishedAt
       ? buildPostOgImageUrl({
-          origin: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+          origin: siteOrigin,
           publishedAt: page.publishedAt,
           slug: page.slug?.current || "",
           title: postTitle,
         })
       : null;
-  const image = postImage
-    ? {
-        url: postImage,
-        width: 1200,
-        height: 630,
-        alt: `${postTitle} | PHX Home Loan`,
-      }
-    : {
-        url: page?.meta?.image
-          ? urlFor(page?.meta?.image).quality(100).url()
-          : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-        width: page?.meta?.image?.asset?.metadata?.dimensions?.width || 1200,
-        height: page?.meta?.image?.asset?.metadata?.dimensions?.height || 630,
-      };
+  const rawPageTitle =
+    page?._type === "homePage"
+      ? page.meta?.title || page.title
+      : page?._type === "page"
+        ? page.title || page.meta?.title
+        : undefined;
+  const pageTitle = rawPageTitle
+    ? getPageOgImageTitle(rawPageTitle)
+    : undefined;
+  const pageTarget: PageOgImageTarget | null =
+    page?._type === "homePage"
+      ? { kind: "home" }
+      : page?._type === "page" && path !== "/"
+        ? { kind: "page", slug: path.replace(/^\/+|\/+$/g, "") }
+        : null;
+  const pageImage =
+    pageTitle && pageTarget
+      ? buildPageOgImageUrl({
+          origin: siteOrigin,
+          target: pageTarget,
+          title: pageTitle,
+        })
+      : null;
+  const image = postImage && postTitle
+    ? sharingImage(postImage, postTitle)
+    : pageImage && pageTitle
+      ? sharingImage(pageImage, pageTitle)
+      : fallbackSharingImage();
 
   return {
     title: page?.meta?.title,
@@ -60,12 +96,10 @@ export function generatePageMetadata({
         ? { publishedTime: page.publishedAt }
         : {}),
     },
-    twitter: isPost
-      ? {
-          card: "summary_large_image",
-          images: [image],
-        }
-      : undefined,
+    twitter: {
+      card: "summary_large_image",
+      images: [image],
+    },
     robots: !isProduction
       ? "noindex, nofollow"
       : page?.meta?.noindex
@@ -84,28 +118,30 @@ export function generateBlogIndexMetadata({
   blogIndex: BLOG_INDEX_QUERY_RESULT;
   page: number;
 }) {
-  const title = blogIndex?.meta?.title || blogIndex?.title || "Blog";
+  const title = getPageOgImageTitle(
+    blogIndex?.title || blogIndex?.meta?.title || "Blog",
+  );
   const description =
     blogIndex?.meta?.description || blogIndex?.description || undefined;
+  const cardTitle = getBlogPageTitle(title, page);
+  const image = sharingImage(
+    buildPageOgImageUrl({
+      origin: siteOrigin,
+      target: { kind: "blog", page },
+      title: cardTitle,
+    }),
+    cardTitle,
+  );
 
   return {
-    title: getBlogPageTitle(title, page),
+    title: cardTitle,
     description: getBlogPageDescription(description, page),
     openGraph: {
-      images: [
-        {
-          url: blogIndex?.meta?.image
-            ? urlFor(blogIndex.meta.image).quality(100).url()
-            : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-          width:
-            blogIndex?.meta?.image?.asset?.metadata?.dimensions?.width || 1200,
-          height:
-            blogIndex?.meta?.image?.asset?.metadata?.dimensions?.height || 630,
-        },
-      ],
+      images: [image],
       locale: "en_US",
       type: "website",
     },
+    twitter: { card: "summary_large_image", images: [image] },
     robots: !isProduction
       ? "noindex, nofollow"
       : blogIndex?.meta?.noindex
@@ -125,9 +161,20 @@ export function generateCategoryMetadata({
   category: CategoryArchive;
   page: number;
 }) {
-  const title = category.meta?.title || category.title || "Blog category";
+  const title = getPageOgImageTitle(
+    category.title || category.meta?.title || "Blog category",
+  );
   const description = category.meta?.description || category.description || undefined;
   const slug = category.slug?.current || "";
+  const cardTitle = getBlogPageTitle(title, page);
+  const image = sharingImage(
+    buildPageOgImageUrl({
+      origin: siteOrigin,
+      target: { kind: "category", page, slug },
+      title: cardTitle,
+    }),
+    cardTitle,
+  );
   const isIndexable = isIndexableCategory({
     description: category.description,
     metaNoindex: category.meta?.noindex,
@@ -135,21 +182,14 @@ export function generateCategoryMetadata({
   });
 
   return {
-    title: getBlogPageTitle(title, page),
+    title: cardTitle,
     description: getBlogPageDescription(description, page),
     openGraph: {
-      images: [
-        {
-          url: category.meta?.image
-            ? urlFor(category.meta.image).quality(100).url()
-            : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-          width: category.meta?.image?.asset?.metadata?.dimensions?.width || 1200,
-          height: category.meta?.image?.asset?.metadata?.dimensions?.height || 630,
-        },
-      ],
+      images: [image],
       locale: "en_US",
       type: "website",
     },
+    twitter: { card: "summary_large_image", images: [image] },
     robots: !isProduction
       ? "noindex, nofollow"
       : isIndexable

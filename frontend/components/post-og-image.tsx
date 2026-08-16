@@ -1,11 +1,11 @@
 import { fitPostOgTitle } from "@/lib/post-og-image";
 
 export function PostOgImage({
-  date,
+  eyebrow,
   portrait,
   title,
 }: {
-  date: string;
+  eyebrow: string;
   portrait: ArrayBuffer;
   title: string;
 }) {
@@ -69,7 +69,7 @@ export function PostOgImage({
           textTransform: "uppercase",
         }}
       >
-        {date}
+        {eyebrow}
       </div>
 
       <div
