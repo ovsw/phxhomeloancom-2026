@@ -215,6 +215,7 @@ All environment variables and their descriptions:
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` - your Sanity project ID. For example, abc12345.
 - `NEXT_PUBLIC_SANITY_DATASET` - your Sanity dataset name. For example, production.
 - `SANITY_API_READ_TOKEN` - your Sanity read token for Next.js to fetch data.
+- `OG_IMAGE_SECRET` - a required, long random server-only value used to authorize generated post sharing images. Local development, previews, and production must each define it. Missing values fail explicitly; there is no development fallback.
 - `RESEND_API_KEY` - your RESEND api key for the newsletter form.
 - `RESEND_AUDIENCE_ID` - your RESEND audience id for the newsletter form to store contacts.
 - `YOUTUBE_API_KEY` - a YouTube Data API v3 key (restrict it to that API in the Google Cloud console). Used at build/revalidate time to fetch video metadata for automatic VideoObject JSON-LD. Optional: when absent, pages render normally without video schema. Remember to add it to the Vercel project settings too.

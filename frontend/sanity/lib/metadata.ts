@@ -13,6 +13,7 @@ import {
   isIndexableCategory,
 } from "@/lib/blog-index";
 import type { CategoryArchive } from "@/sanity/queries/category";
+import { buildPostOgImageUrl } from "@/lib/post-og-image";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export function generatePageMetadata({
@@ -22,22 +23,49 @@ export function generatePageMetadata({
   page: HOME_PAGE_QUERY_RESULT | PAGE_QUERY_RESULT | POST_QUERY_RESULT;
   path: string;
 }) {
+  const isPost = page?._type === "post";
+  const postTitle = isPost ? page.title?.trim() : undefined;
+  const postImage =
+    isPost && postTitle && page.publishedAt
+      ? buildPostOgImageUrl({
+          origin: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+          publishedAt: page.publishedAt,
+          slug: page.slug?.current || "",
+          title: postTitle,
+        })
+      : null;
+  const image = postImage
+    ? {
+        url: postImage,
+        width: 1200,
+        height: 630,
+        alt: `${postTitle} | PHX Home Loan`,
+      }
+    : {
+        url: page?.meta?.image
+          ? urlFor(page?.meta?.image).quality(100).url()
+          : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
+        width: page?.meta?.image?.asset?.metadata?.dimensions?.width || 1200,
+        height: page?.meta?.image?.asset?.metadata?.dimensions?.height || 630,
+      };
+
   return {
     title: page?.meta?.title,
     description: page?.meta?.description,
     openGraph: {
-      images: [
-        {
-          url: page?.meta?.image
-            ? urlFor(page?.meta?.image).quality(100).url()
-            : `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-          width: page?.meta?.image?.asset?.metadata?.dimensions?.width || 1200,
-          height: page?.meta?.image?.asset?.metadata?.dimensions?.height || 630,
-        },
-      ],
+      images: [image],
       locale: "en_US",
-      type: "website",
+      type: isPost ? "article" : "website",
+      ...(isPost && page.publishedAt
+        ? { publishedTime: page.publishedAt }
+        : {}),
     },
+    twitter: isPost
+      ? {
+          card: "summary_large_image",
+          images: [image],
+        }
+      : undefined,
     robots: !isProduction
       ? "noindex, nofollow"
       : page?.meta?.noindex
