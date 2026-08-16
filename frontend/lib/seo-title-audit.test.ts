@@ -54,6 +54,23 @@ describe("createSeoTitleAuditRows", () => {
     expect(csv).toContain("/blog/category/loan-types/");
   });
 
+  it("neutralizes formula-leading cells in the CSV export", () => {
+    const [row] = createSeoTitleAuditRows([
+      {
+        _id: "page-1",
+        _type: "page",
+        currentSeoTitle: "=HYPERLINK(\"https://evil.example\")",
+        slug: "injected",
+        title: "@SUM(A1)",
+      },
+    ]);
+    const csv = serializeSeoTitleAuditCsv([row]);
+
+    expect(csv).toContain("\"'=HYPERLINK(\"\"https://evil.example\"\")\"");
+    expect(csv).toContain("'@SUM(A1)");
+    expect(csv).not.toMatch(/(^|,)=HYPERLINK/m);
+  });
+
   it("removes Phoenix Mortgage before adding the shared brand suffix", () => {
     const [row] = createSeoTitleAuditRows([
       {

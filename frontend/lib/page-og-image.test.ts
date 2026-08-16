@@ -44,6 +44,10 @@ describe("page OG image URLs", () => {
     expect(parsePageOgImageTarget(["unknown", "thing"])).toBeNull();
     expect(parsePageOgImageTarget(["category", "nested", "slug"])).toBeNull();
     expect(parsePageOgImageTarget(["blog", "0"])).toBeNull();
+    expect(parsePageOgImageTarget(["blog", "01"])).toBeNull();
+    expect(parsePageOgImageTarget(["blog", "1.0"])).toBeNull();
+    expect(parsePageOgImageTarget(["blog", "1e0"])).toBeNull();
+    expect(parsePageOgImageTarget(["category", "rates", "02"])).toBeNull();
     expect(parsePageOgImageTarget(["page", "../private"])).toBeNull();
     expect(() =>
       buildPageOgImageUrl({
@@ -51,6 +55,14 @@ describe("page OG image URLs", () => {
         secret: "secret",
         target: { kind: "page", slug: "../private" },
         title: "Private",
+      }),
+    ).toThrow("invalid page target");
+    expect(() =>
+      buildPageOgImageUrl({
+        origin: "https://phxhomeloan.com",
+        secret: "secret",
+        target: { kind: "category", slug: "nested/slug" },
+        title: "Nested",
       }),
     ).toThrow("invalid page target");
   });

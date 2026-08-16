@@ -87,7 +87,11 @@ export function createSeoTitleAuditRows(
 
 function csvCell(value: string | number) {
   const text = String(value);
-  return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+  // Neutralize formula-leading cells so spreadsheets never execute CMS content.
+  const protectedText = /^[\t\r ]*[=+\-@]/.test(text) ? `'${text}` : text;
+  return /[",\n]/.test(protectedText)
+    ? `"${protectedText.replaceAll('"', '""')}"`
+    : protectedText;
 }
 
 export function serializeSeoTitleAuditCsv(rows: SeoTitleAuditRow[]) {

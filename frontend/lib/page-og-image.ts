@@ -34,28 +34,38 @@ export function getPageOgImagePath(target: PageOgImageTarget) {
   return parts.join("/");
 }
 
+// Only the canonical decimal form is accepted ("2", never "02" or "2.0"), so every
+// signed URL maps to exactly one path and cannot be rewritten into cache-key aliases.
+function parseCanonicalPageNumber(value: string | undefined) {
+  if (value === undefined) return 1;
+
+  const page = Number(value);
+  return Number.isSafeInteger(page) && page >= 1 && String(page) === value
+    ? page
+    : null;
+}
+
 export function parsePageOgImageTarget(segments: string[]): PageOgImageTarget | null {
   if (segments.length === 1 && segments[0] === "home") return { kind: "home" };
   if (segments[0] === "blog" && segments.length <= 2) {
-    const page = segments[1] ? Number(segments[1]) : 1;
-    return Number.isInteger(page) && page >= 1 ? { kind: "blog", page } : null;
+    const page = parseCanonicalPageNumber(segments[1]);
+    return page === null ? null : { kind: "blog", page };
   }
 
   const [kind, ...slugSegments] = segments;
   const page = kind === "category" && slugSegments.length === 2
-    ? Number(slugSegments.pop())
+    ? parseCanonicalPageNumber(slugSegments.pop())
     : 1;
   const slug = slugSegments.join("/");
   if (
     (kind !== "page" && kind !== "category") ||
     !isValidOgSlug(slug) ||
-    (kind === "category" &&
-      (slugSegments.length !== 1 || !Number.isInteger(page) || page < 1))
+    (kind === "category" && (slugSegments.length !== 1 || page === null))
   ) {
     return null;
   }
 
-  return kind === "category" ? { kind, page, slug } : { kind, slug };
+  return kind === "category" ? { kind, page: page ?? 1, slug } : { kind, slug };
 }
 
 export function createPageOgImageRevision(title: string) {
@@ -80,9 +90,11 @@ export function buildPageOgImageUrl({
   if (
     ((target.kind === "page" || target.kind === "category") &&
       !isValidOgSlug(target.slug)) ||
+    // Nested category slugs would produce URLs the route parser rejects as 404s.
+    (target.kind === "category" && target.slug.includes("/")) ||
     ((target.kind === "blog" || target.kind === "category") &&
       target.page !== undefined &&
-      (!Number.isInteger(target.page) || target.page < 1))
+      (!Number.isSafeInteger(target.page) || target.page < 1))
   ) {
     throw new Error("Cannot build an OG image URL for an invalid page target");
   }
