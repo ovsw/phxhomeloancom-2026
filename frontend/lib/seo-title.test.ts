@@ -46,6 +46,14 @@ describe("resolveSeoTitle", () => {
     ).toBe("FHA Loans");
   });
 
+  it("removes the legacy Phoenix Mortgage suffix", () => {
+    expect(
+      stripLegacySeoTitleSuffix(
+        "5 Reasons A Mortgage Is Denied After Pre-Approval | Phoenix Mortgage",
+      ),
+    ).toBe("5 Reasons A Mortgage Is Denied After Pre-Approval");
+  });
+
   it("does not remove ordinary page-specific wording", () => {
     expect(stripLegacySeoTitleSuffix("About PHX Home Loan")).toBe(
       "About PHX Home Loan",

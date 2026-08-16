@@ -53,4 +53,27 @@ describe("createSeoTitleAuditRows", () => {
     );
     expect(csv).toContain("/blog/category/loan-types/");
   });
+
+  it("removes Phoenix Mortgage before adding the shared brand suffix", () => {
+    const [row] = createSeoTitleAuditRows([
+      {
+        _id: "post-1",
+        _type: "post",
+        currentSeoTitle:
+          "5 Reasons A Mortgage Is Denied After Pre-Approval | Phoenix Mortgage",
+        slug: "reasons-mortgage-rejection-pre-approval",
+        title: "The 5 Reasons for Mortgage Rejection After Pre-Approval",
+      },
+    ]);
+
+    expect(row).toMatchObject({
+      finalRenderedTitle:
+        "5 Reasons A Mortgage Is Denied After Pre-Approval | PHX Home Loan",
+      length: 65,
+      proposedPageSpecificTitle:
+        "5 Reasons A Mortgage Is Denied After Pre-Approval",
+      reason:
+        "The final 65-character title may be shortened in search results.",
+    });
+  });
 });

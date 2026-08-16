@@ -5,6 +5,7 @@ const LEGACY_SITE_NAMES = [
   SITE_NAME,
   "Phoenix Mortgage Lenders",
   "Phoenix Mortgage Lender",
+  "Phoenix Mortgage",
   "Mortgage Lenders",
   "Mortgage Lender",
   "Phoenix Home Loan",
