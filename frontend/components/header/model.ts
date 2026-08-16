@@ -122,7 +122,10 @@ export function createHeaderBrandModel(
   );
 
   return {
-    label: settings?.siteName?.trim() || "PHX Home Loan",
+    label:
+      settings?.siteName?.trim() === SITE_NAME
+        ? settings.siteName.trim()
+        : SITE_NAME,
     light: main.light,
     dark: main.dark,
     secondary: {
@@ -242,3 +245,4 @@ export type HeaderBrandModel = {
     dark: HeaderLogoModel | null;
   };
 };
+import { SITE_NAME } from "../../../shared/seo-title";

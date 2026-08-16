@@ -5,6 +5,7 @@ import {
   isValidOgSlug,
   signOgImage,
 } from "./post-og-image";
+import { stripLegacySeoTitleSuffix } from "../../shared/seo-title";
 
 export type PageOgImageTarget =
   | { kind: "home" }
@@ -62,7 +63,7 @@ export function createPageOgImageRevision(title: string) {
 }
 
 export function getPageOgImageTitle(title: string) {
-  return title.trim().replace(/\s*\|\s*PHX Home Loan$/i, "").trim();
+  return stripLegacySeoTitleSuffix(title);
 }
 
 export function buildPageOgImageUrl({

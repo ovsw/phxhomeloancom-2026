@@ -1,6 +1,7 @@
 import Blocks from "@/components/blocks";
 import FaqPageJsonLd from "@/components/faq-json-ld";
 import VideoJsonLd from "@/components/video-json-ld";
+import WebsiteJsonLd from "@/components/website-json-ld";
 import { siteUrl } from "@/lib/site-url";
 import { fetchHomePage } from "@/sanity/lib/fetch";
 import { generatePageMetadata } from "@/sanity/lib/metadata";
@@ -49,6 +50,7 @@ async function CachedIndexPage({ perspective, stega }: DynamicFetchOptions) {
 
   return (
     <>
+      <WebsiteJsonLd siteUrl={siteUrl} />
       <FaqPageJsonLd blocks={page.blocks ?? []} />
       <VideoJsonLd blocks={page.blocks ?? []} siteUrl={siteUrl} />
       <Blocks

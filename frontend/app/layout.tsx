@@ -5,14 +5,15 @@ import { siteUrl } from "@/lib/site-url";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_NAME, TITLE_SUFFIX } from "../../shared/seo-title";
 
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    template: "%s | Schema UI",
-    default: "Sanity Next.js Website | Schema UI",
+    template: `%s${TITLE_SUFFIX}`,
+    default: SITE_NAME,
   },
   openGraph: {
     images: [

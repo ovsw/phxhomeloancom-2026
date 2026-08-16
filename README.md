@@ -204,6 +204,9 @@ pnpm up --latest --filter studio
 
 ## Environment variables
 
+SEO title ownership and the future content-cleanup process are documented in
+[`docs/seo-title-system.md`](docs/seo-title-system.md).
+
 All environment variables and their descriptions:
 
 **Next.js (`frontend/.env.local`):**
