@@ -8,6 +8,7 @@
     "dev:frontend": "pnpm run dev --workspace=frontend",
     "dev:prototype": "python3 -m http.server 8000 --bind 127.0.0.1 --directory frontend/PHXHomeLoan-web-prototype",
     "dev:studio": "pnpm run dev --workspace=studio",
+    "audit:seo-titles": "pnpm --dir studio audit:seo-titles",
     "typegen": "cd studio && pnpm typegen",
     "typecheck": "pnpm --dir frontend typecheck && pnpm --dir studio typecheck",
     "lint": "pnpm --dir frontend lint",

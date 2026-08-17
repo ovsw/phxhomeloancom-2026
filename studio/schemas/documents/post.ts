@@ -28,7 +28,7 @@ export default defineType({
       title: "Title",
       type: "string",
       group: "content",
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => Rule.required().max(96),
     }),
     defineField({
       name: "slug",

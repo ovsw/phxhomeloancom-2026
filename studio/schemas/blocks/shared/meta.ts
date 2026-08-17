@@ -1,4 +1,6 @@
 import { defineField } from "sanity";
+import { getSeoTitleWarnings } from "../../../../shared/seo-title";
+import { SeoTitleInput } from "../../inputs/seo-title-input";
 
 export default defineField({
   name: "meta",
@@ -9,7 +11,25 @@ export default defineField({
     defineField({
       name: "title",
       type: "string",
-      title: "Title",
+      title: "SEO title override",
+      description:
+        "Optional. Write only the page-specific title. “PHX Home Loan” is added automatically.",
+      components: { input: SeoTitleInput },
+      validation: (rule) =>
+        rule
+          .custom((value, context) => {
+            const fallbackTitle =
+              typeof context.document?.title === "string"
+                ? context.document.title
+                : undefined;
+            const warnings = getSeoTitleWarnings({
+              fallbackTitle,
+              overrideTitle: value,
+            });
+
+            return warnings.length ? warnings.join(" ") : true;
+          })
+          .warning(),
     }),
     defineField({
       name: "description",

@@ -5,6 +5,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { SETTINGS_QUERY_RESULT } from "@/sanity.types";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { SITE_NAME } from "../../shared/seo-title";
 
 export default function Logo({
   settings,
@@ -35,7 +36,7 @@ export default function Logo({
   return logoToUse ? (
     <Image
       src={urlFor(logoToUse).url()}
-      alt={settings.siteName || ""}
+      alt={SITE_NAME}
       width={
         (settings.logo?.width as number) ??
         logoToUse?.asset?.metadata?.dimensions?.width ??
@@ -46,7 +47,7 @@ export default function Logo({
         logoToUse?.asset?.metadata?.dimensions?.height ??
         40
       }
-      title={settings.siteName || ""}
+      title={SITE_NAME}
       placeholder={
         logoToUse?.asset?.metadata?.lqip &&
         logoToUse?.asset?.mimeType !== "image/svg+xml"
@@ -59,7 +60,7 @@ export default function Logo({
     />
   ) : (
     <span className="text-lg font-semibold tracking-tighter">
-      {settings?.siteName || "Logo"}
+      {SITE_NAME}
     </span>
   );
 }

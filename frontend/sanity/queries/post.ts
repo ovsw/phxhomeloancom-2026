@@ -49,6 +49,13 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
     ${metaQuery},
 }`;
 
+export const POST_OG_IMAGE_QUERY = groq`*[
+  _type == "post" && slug.current == $slug
+][0]{
+  title,
+  publishedAt
+}`;
+
 export const POSTS_QUERY = groq`*[_type == "post" && defined(slug)] | order(_createdAt desc){
     title,
     slug,

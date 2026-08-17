@@ -1,5 +1,6 @@
 import { defineField, defineType } from "sanity";
 import { Settings } from "lucide-react";
+import { SITE_NAME } from "../../../shared/seo-title";
 
 export default defineType({
   name: "settings",
@@ -82,8 +83,13 @@ export default defineType({
     defineField({
       name: "siteName",
       type: "string",
-      description: "The name of your site",
-      validation: (Rule) => Rule.required().error("Site name is required"),
+      description: `The public site name. Keep this set to “${SITE_NAME}” so metadata and visible branding agree.`,
+      validation: (Rule) =>
+        Rule.required()
+          .custom((value) =>
+            value === SITE_NAME ? true : `Site name must be “${SITE_NAME}”`,
+          )
+          .error(),
     }),
     defineField({
       name: "blogPostSidebar",
