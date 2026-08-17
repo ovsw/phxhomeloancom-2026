@@ -6,6 +6,7 @@ import {
   getPublishedId,
   useEditState,
 } from "sanity";
+import { usePresentationParams } from "sanity/presentation";
 import { useRouter } from "sanity/router";
 import { getDocumentSlug, getPresentationPath } from "./routes";
 
@@ -18,6 +19,7 @@ export const openInPresentationAction: DocumentFieldAction = {
   }: DocumentFieldActionProps) => {
     const document = useEditState(getPublishedId(documentId), documentType);
     const router = useRouter();
+    const isPresentation = usePresentationParams(false) !== null;
     const previewPath = getPresentationPath(
       documentType,
       getDocumentSlug(document?.draft, document?.published),
@@ -34,7 +36,7 @@ export const openInPresentationAction: DocumentFieldAction = {
     return {
       type: "action",
       icon: EarthGlobeIcon,
-      hidden: path.length > 0,
+      hidden: path.length > 0 || isPresentation,
       disabled: !previewPath,
       renderAsButton: true,
       onAction: handleOpen,
