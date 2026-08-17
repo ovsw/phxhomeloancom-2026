@@ -28,6 +28,8 @@ export default function AdvisorCta({
 }: AdvisorCtaProps) {
   const creamSurface = Boolean(stegaClean(useCreamBackground));
   const titleId = `advisor-cta-${stegaClean(_key)}-title`;
+  const sourceWidth = portraitImage?.asset?.metadata?.dimensions?.width ?? 960;
+  const sourceHeight = portraitImage?.asset?.metadata?.dimensions?.height ?? 806;
 
   return (
     <section
@@ -38,12 +40,12 @@ export default function AdvisorCta({
       )}
       data-sanity={dataAttribute?.("useCreamBackground")}
     >
-      <div className="mx-auto grid w-full max-w-[70rem] items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-[clamp(2.25rem,5vw,4.5rem)]">
-        <div className="relative mx-auto flex w-full max-w-[27.5rem] items-end justify-center overflow-hidden">
+      <div className="mx-auto grid w-full max-w-[70rem] items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-[clamp(2.25rem,5vw,4.5rem)]">
+        <div className="relative mx-auto flex w-full max-w-[35rem] items-end justify-center">
           <div
             aria-hidden="true"
             className={cn(
-              "absolute bottom-0 left-[8%] right-[8%] top-[16%] rounded-b-frame rounded-t-(--radius-arch)",
+              "absolute bottom-0 left-[9%] right-[9%] top-[14%] rounded-b-frame rounded-t-(--radius-arch)",
               "bg-card",
             )}
           />
@@ -51,14 +53,14 @@ export default function AdvisorCta({
             <Image
               alt={stegaClean(portraitImage.alt) || ""}
               blurDataURL={portraitImage.asset.metadata?.lqip || undefined}
-              className="relative z-10 h-auto w-[96%]"
+              className="relative z-10 h-auto w-full"
               data-sanity={dataAttribute?.("portraitImage")}
-              height={806}
+              height={sourceHeight}
               loading="lazy"
               placeholder={portraitImage.asset.metadata?.lqip ? "blur" : undefined}
-              sizes="(min-width: 1024px) 500px, (min-width: 768px) 380px, 88vw"
-              src={urlFor(portraitImage).width(680).height(806).url()}
-              width={680}
+              sizes="(min-width: 1024px) 560px, (min-width: 768px) 420px, 88vw"
+              src={urlFor(portraitImage).width(1120).fit("max").url()}
+              width={sourceWidth}
             />
           ) : null}
         </div>
