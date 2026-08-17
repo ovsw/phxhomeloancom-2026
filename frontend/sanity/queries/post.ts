@@ -1,9 +1,10 @@
 import { groq } from "next-sanity";
+import { ROOT_SLUG_FILTER } from "../../../shared/root-slug-filter";
 import { imageQuery } from "./shared/image";
 import { metaQuery } from "./shared/meta";
 import { richTextContentQuery } from "./shared/rich-text-content";
 
-export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
+export const POST_QUERY = groq`*[_type == "post" && ${ROOT_SLUG_FILTER}][0]{
     // richTextContent V2
     _id,
     _type,
@@ -50,7 +51,7 @@ export const POST_QUERY = groq`*[_type == "post" && slug.current == $slug][0]{
 }`;
 
 export const POST_OG_IMAGE_QUERY = groq`*[
-  _type == "post" && slug.current == $slug
+  _type == "post" && ${ROOT_SLUG_FILTER}
 ][0]{
   title,
   publishedAt

@@ -1,9 +1,10 @@
 import { groq } from "next-sanity";
+import { ROOT_SLUG_FILTER } from "../../../shared/root-slug-filter";
 import { metaQuery } from "./shared/meta";
 import { pageBuilderQuery } from "./page-builder";
 
 export const PAGE_QUERY = groq`
-  *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
+  *[_type == "page" && ${ROOT_SLUG_FILTER}][0]{
     _id,
     _type,
     title,

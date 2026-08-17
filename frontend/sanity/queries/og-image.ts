@@ -1,4 +1,5 @@
 import { defineQuery } from "next-sanity";
+import { ROOT_SLUG_FILTER } from "../../../shared/root-slug-filter";
 
 export const HOME_PAGE_OG_IMAGE_QUERY = defineQuery(`
   *[_id == "homePage" && _type == "homePage"][0]{
@@ -8,7 +9,7 @@ export const HOME_PAGE_OG_IMAGE_QUERY = defineQuery(`
 `);
 
 export const PAGE_OG_IMAGE_QUERY = defineQuery(`
-  *[_type == "page" && slug.current in [$slug, "/" + $slug]][0]{
+  *[_type == "page" && ${ROOT_SLUG_FILTER}][0]{
     "title": coalesce(title, meta.title)
   }
 `);

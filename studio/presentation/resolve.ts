@@ -3,6 +3,7 @@ import {
   defineDocuments,
   PresentationPluginOptions,
 } from "sanity/presentation";
+import { ROOT_SLUG_FILTER } from "../../shared/root-slug-filter";
 import { resolveCategoryPath, resolveContentPath } from "./routes";
 
 export { resolveContentPath } from "./routes";
@@ -80,7 +81,7 @@ export const resolve: PresentationPluginOptions["resolve"] = {
     },
     {
       route: "/:slug/",
-      filter: `_type in ['page', 'post'] && slug.current in [$slug, "/" + $slug]`,
+      filter: `_type in ['page', 'post'] && ${ROOT_SLUG_FILTER}`,
     },
   ]),
 };

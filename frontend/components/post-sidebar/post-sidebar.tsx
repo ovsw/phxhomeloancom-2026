@@ -159,16 +159,13 @@ export function PostSidebar({
   const actions = sidebar?.actions ?? [];
   if (!sidebar || actions.length === 0) return null;
 
-  const fieldPath = (path: string) =>
-    sidebar._type === "settings" ? `blogPostSidebar.${path}` : path;
-
   const [leadAction, ...restActions] = actions;
 
   return (
     <aside
       aria-label="Post contact options"
       className="min-w-0 self-stretch"
-      data-sanity={dataAttribute?.(fieldPath("actions"))}
+      data-sanity={dataAttribute?.("actions")}
     >
       {/* A hairline rule opens the rail instead of a box closing it in. */}
       <div className="border-t border-border pt-5 lg:sticky lg:top-24">
@@ -177,7 +174,7 @@ export function PostSidebar({
             {sidebar.title ? (
               <h2
                 className="typo-card-title text-foreground"
-                data-sanity={dataAttribute?.(fieldPath("title"))}
+                data-sanity={dataAttribute?.("title")}
               >
                 {sidebar.title}
               </h2>
@@ -185,7 +182,7 @@ export function PostSidebar({
             {sidebar.description ? (
               <p
                 className="typo-body-sm text-muted-foreground"
-                data-sanity={dataAttribute?.(fieldPath("description"))}
+                data-sanity={dataAttribute?.("description")}
               >
                 {sidebar.description}
               </p>
@@ -196,7 +193,7 @@ export function PostSidebar({
           {leadAction
             ? (() => {
                 const actionKey = stegaClean(leadAction._key);
-                const actionPath = fieldPath(`actions[_key=="${actionKey}"]`);
+                const actionPath = `actions[_key=="${actionKey}"]`;
                 return (
                   <section key={actionKey}>
                     {leadAction.title ? (
@@ -220,7 +217,7 @@ export function PostSidebar({
             <div className="space-y-4 border-t border-border pt-5">
               {restActions.map((action) => {
                 const actionKey = stegaClean(action._key);
-                const actionPath = fieldPath(`actions[_key=="${actionKey}"]`);
+                const actionPath = `actions[_key=="${actionKey}"]`;
 
                 return (
                   <section key={actionKey}>

@@ -1,6 +1,6 @@
 import type { PortableTextProps } from "@portabletext/react";
 import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import RichTextContent from "@/components/rich-text-content";
 import {
   createPostBodyModel,
@@ -81,6 +81,21 @@ describe("PostSidebar", () => {
       "Mortgage Calculator",
       "What's My Home Worth?",
     ]);
+  });
+
+  it("points click-to-edit at Blog Post Settings fields", () => {
+    const dataAttribute = vi.fn((path: string) => `source:${path}`);
+    render(<PostSidebar dataAttribute={dataAttribute} sidebar={currentSidebar} />);
+
+    expect(screen.getByRole("complementary", { name: "Post contact options" })).toHaveAttribute(
+      "data-sanity",
+      "source:actions",
+    );
+    expect(screen.getByRole("heading", { name: "Contact Jimmy" })).toHaveAttribute(
+      "data-sanity",
+      "source:title",
+    );
+    expect(dataAttribute).not.toHaveBeenCalledWith(expect.stringContaining("blogPostSidebar."));
   });
 
   it("renders exactly two CMS actions in document order", () => {

@@ -16,27 +16,14 @@ const actionProjection = `{
   }
 }`;
 
-export const BLOG_POST_SETTINGS_QUERY = groq`coalesce(
-  *[
-    _type == "blogPostSettings" &&
-    _id == "blogPostSettings" &&
-    defined(actions)
-  ][0]{
-    _id,
-    _type,
-    title,
-    description,
-    "actions": array::compact(actions[]${actionProjection})
-  },
-  *[
-    _type == "settings" &&
-    _id == "settings" &&
-    defined(blogPostSidebar.actions)
-  ][0]{
-    _id,
-    _type,
-    "title": blogPostSidebar.title,
-    "description": blogPostSidebar.description,
-    "actions": array::compact(blogPostSidebar.actions[]${actionProjection})
-  }
-)`;
+export const BLOG_POST_SETTINGS_QUERY = groq`*[
+  _type == "blogPostSettings" &&
+  _id == "blogPostSettings" &&
+  defined(actions)
+][0]{
+  _id,
+  _type,
+  title,
+  description,
+  "actions": array::compact(actions[]${actionProjection})
+}`;
