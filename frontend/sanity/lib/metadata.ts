@@ -18,7 +18,7 @@ import {
   getPageOgImageTitle,
   type PageOgImageTarget,
 } from "@/lib/page-og-image";
-import { resolveSeoTitle } from "../../../shared/seo-title";
+import { resolveSeoTitle, TITLE_SUFFIX } from "../../../shared/seo-title";
 const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -28,7 +28,7 @@ function sharingImage(url: string, title: string) {
     url,
     width: 1200,
     height: 630,
-    alt: `${title} | PHX Home Loan`,
+    alt: `${title}${TITLE_SUFFIX}`,
   };
 }
 
