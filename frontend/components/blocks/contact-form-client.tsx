@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  initialContactFormState,
   submitContactForm,
+  type ContactFormState,
 } from "@/app/actions/submit-contact-form";
 import type {
   ContactFormBlock,
@@ -20,6 +20,7 @@ type ContactFormClientProps = ContactFormBlock & {
 
 const inputClassName =
   "min-h-12 w-full rounded-control border border-input bg-background px-4 py-3.5 text-base text-foreground outline-none transition-[border-color,box-shadow] motion-fast placeholder:text-muted-foreground focus-visible:border-primary focus-ring";
+const initialContactFormState: ContactFormState = { error: null };
 
 function inputCopy(
   field: ContactFormInputCopy | null,

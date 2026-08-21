@@ -1,7 +1,4 @@
-import {
-  initialContactFormState,
-  submitContactForm,
-} from "@/app/actions/submit-contact-form";
+import { submitContactForm } from "@/app/actions/submit-contact-form";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { redirectMock } = vi.hoisted(() => ({
@@ -20,6 +17,8 @@ function validFormData() {
   formData.set("phone", "480-555-0100");
   return formData;
 }
+
+const initialContactFormState = { error: null };
 
 describe("submitContactForm", () => {
   beforeEach(() => {
@@ -74,6 +73,33 @@ describe("submitContactForm", () => {
       validFormData(),
     );
 
+    expect(result.error).toBe(
+      "Your message could not be sent. Please try again.",
+    );
+    expect(redirectMock).not.toHaveBeenCalled();
+  });
+
+  it("aborts a stalled Formspark request", async () => {
+    const timeoutError = new DOMException("Timed out", "TimeoutError");
+    const timeoutSignal = AbortSignal.abort(timeoutError);
+    const timeoutSpy = vi
+      .spyOn(AbortSignal, "timeout")
+      .mockReturnValue(timeoutSignal);
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValue(timeoutSignal.reason);
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await submitContactForm(
+      initialContactFormState,
+      validFormData(),
+    );
+
+    expect(timeoutSpy).toHaveBeenCalledWith(10_000);
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://submit-form.com/a0or7TBtU",
+      expect.objectContaining({ signal: timeoutSignal }),
+    );
     expect(result.error).toBe(
       "Your message could not be sent. Please try again.",
     );

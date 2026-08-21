@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const FORMSPARK_ACTION_URL = "https://submit-form.com/a0or7TBtU";
+const FORMSPARK_TIMEOUT_MS = 10_000;
 
 const contactSubmissionSchema = z.object({
   email: z.email().max(320),
@@ -14,10 +15,6 @@ const contactSubmissionSchema = z.object({
 
 export type ContactFormState = {
   error: string | null;
-};
-
-export const initialContactFormState: ContactFormState = {
-  error: null,
 };
 
 export async function submitContactForm(
@@ -43,6 +40,7 @@ export async function submitContactForm(
         "Content-Type": "application/json",
       },
       method: "POST",
+      signal: AbortSignal.timeout(FORMSPARK_TIMEOUT_MS),
     });
 
     if (!response.ok) {
