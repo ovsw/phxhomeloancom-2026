@@ -54,12 +54,12 @@ async function fetchTitle(
     })) as { data: { overrideTitle?: string | null; title?: string | null } | null };
     if (!data) return null;
 
-    // Mirror generatePageMetadata's fallback chain (down to the site name) so
-    // every signed homepage URL renders instead of 404ing on missing titles.
-    return resolveSeoTitle({
-      fallbackTitle: data.title,
-      overrideTitle: data.overrideTitle,
-    }).pageTitle;
+    // The card headline follows the visible content title. The SEO override
+    // stays in metadata and image alt text.
+    return getPageOgImageTitle(
+      data.title ||
+        resolveSeoTitle({ overrideTitle: data.overrideTitle }).pageTitle,
+    );
   }
 
   const query =

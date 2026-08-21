@@ -23,12 +23,12 @@ const isProduction = process.env.NEXT_PUBLIC_SITE_ENV === "production";
 
 const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-function sharingImage(url: string, title: string) {
+function sharingImage(url: string, title: string, alt = `${title}${TITLE_SUFFIX}`) {
   return {
     url,
     width: 1200,
     height: 630,
-    alt: `${title}${TITLE_SUFFIX}`,
+    alt,
   };
 }
 
@@ -56,6 +56,9 @@ function resolveArchiveTitles({
   });
   const pageTitleResolution = resolveSeoTitle({
     fallbackTitle: getBlogPageTitle(baseTitleResolution.pageTitle, page),
+    ...(overrideTitle?.includes("|")
+      ? { overrideTitle: getBlogPageTitle(baseTitleResolution.finalTitle, page) }
+      : {}),
   });
   const cardTitle = getBlogPageTitle(
     getPageOgImageTitle(contentTitle || overrideTitle || fallbackTitle),
@@ -93,7 +96,7 @@ export function generatePageMetadata({
       : null;
   const rawPageTitle =
     isHomepage
-      ? seoTitle.pageTitle
+      ? page.title || seoTitle.pageTitle
       : page?._type === "page"
         ? page.title || page.meta?.title
         : undefined;
@@ -115,10 +118,12 @@ export function generatePageMetadata({
           title: pageTitle,
         })
       : null;
+  // The generated card uses the visible content title. Its alt text uses the
+  // final social title, including any complete suffix supplied by the editor.
   const image = postImage && postTitle
     ? sharingImage(postImage, postTitle)
     : pageImage && pageTitle
-      ? sharingImage(pageImage, pageTitle)
+      ? sharingImage(pageImage, pageTitle, seoTitle.finalTitle)
       : fallbackSharingImage();
 
   return {

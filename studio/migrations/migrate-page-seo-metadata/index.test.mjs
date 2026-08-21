@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { planPageSeoMigration } from "./index.ts";
+import {
+  buildPageSeoOperations,
+  PAGE_SEO_MIGRATION_FILTER,
+  planPageSeoMigration,
+} from "./index.ts";
 
 test("preserves the legacy SEO values exactly", () => {
   const plan = planPageSeoMigration({
@@ -53,4 +57,31 @@ test("rejects malformed source or destination fields before writes", () => {
   assert.match(plan.issues[0], /meta must be an object/);
   assert.match(plan.issues[1], /seoTitle must be a string/);
   assert.match(plan.issues[2], /seoDescription must be a string/);
+});
+
+test("creates meta before setting nested fields", () => {
+  assert.deepEqual(
+    buildPageSeoOperations({
+      title: "Legacy title",
+      description: "Legacy description.",
+      issues: [],
+    }),
+    [
+      { op: { type: "setIfMissing", value: {} }, path: ["meta"] },
+      { op: { type: "set", value: "Legacy title" }, path: ["meta", "title"] },
+      {
+        op: { type: "set", value: "Legacy description." },
+        path: ["meta", "description"],
+      },
+      { op: { type: "unset" }, path: ["seoTitle"] },
+      { op: { type: "unset" }, path: ["seoDescription"] },
+    ],
+  );
+});
+
+test("includes release-version pages in the migration filter", () => {
+  assert.equal(
+    PAGE_SEO_MIGRATION_FILTER,
+    "defined(seoTitle) || defined(seoDescription)",
+  );
 });
