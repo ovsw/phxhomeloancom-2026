@@ -79,7 +79,9 @@ export async function generateMetadata(props: {
     }) as Promise<{ data: POST_QUERY_RESULT }>,
   ]);
   const content = resolveRootContent(page, post, slugPath);
-  if (!content) notFound();
+  // The page renderer owns 404s. Metadata only sees published content, so a
+  // 404 here would prevent draft-only routes from reaching Presentation.
+  if (!content) return {};
 
   return generatePageMetadata({ page: content, path: contentPath(slugPath) });
 }
