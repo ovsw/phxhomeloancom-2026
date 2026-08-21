@@ -62,5 +62,4 @@ jobs:
       - name: Run browser smoke tests
         env:
           PLAYWRIGHT_REUSE_BUILD: "1"
-          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
         run: pnpm test:smoke
