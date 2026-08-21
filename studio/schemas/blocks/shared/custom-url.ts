@@ -61,7 +61,7 @@ export default defineType({
     defineField({
       name: "type",
       type: "string",
-      initialValue: "external",
+      initialValue: "internal",
       options: {
         layout: "radio",
         list: [
