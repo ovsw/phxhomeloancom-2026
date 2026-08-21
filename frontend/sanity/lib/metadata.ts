@@ -176,6 +176,7 @@ export function generateBlogIndexMetadata({
       title: cardTitle,
     }),
     cardTitle,
+    pageTitleResolution.finalTitle,
   );
 
   return {
@@ -228,6 +229,7 @@ export function generateCategoryMetadata({
             title: cardTitle,
           }),
           cardTitle,
+          pageTitleResolution.finalTitle,
         )
       : fallbackSharingImage();
   const isIndexable = isIndexableCategory({

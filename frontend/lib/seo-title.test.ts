@@ -116,6 +116,17 @@ describe("resolveSeoTitle", () => {
 });
 
 describe("getSeoTitleWarnings", () => {
+  it("warns when a non-pipe override contains a legacy suffix", () => {
+    expect(
+      getSeoTitleWarnings({
+        fallbackTitle: "Fallback",
+        overrideTitle: "FHA Loans - PHX Home Loan",
+      }),
+    ).toContain(
+      "Remove the manual legacy suffix; the default suffix is automatic.",
+    );
+  });
+
   it("warns without rejecting manual suffixes, repetition, or length", () => {
     const warnings = getSeoTitleWarnings({
       fallbackTitle: "Fallback",
