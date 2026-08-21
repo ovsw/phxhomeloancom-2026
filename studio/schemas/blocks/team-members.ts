@@ -36,7 +36,17 @@ export default defineType({
       title: "Intro Text",
       description:
         "Optional introductory copy shown before the team member profiles.",
-      of: [defineArrayMember({ type: "block" })],
+      of: [
+        defineArrayMember({
+          type: "block",
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        }),
+      ],
     }),
     defineField({
       name: "members",

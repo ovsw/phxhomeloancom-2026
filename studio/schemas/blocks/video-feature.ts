@@ -33,7 +33,17 @@ export default defineType({
       title: "Supporting Message",
       type: "array",
       description: "The supporting message shown beside the featured video",
-      of: [defineArrayMember({ type: "block" })],
+      of: [
+        defineArrayMember({
+          type: "block",
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        }),
+      ],
     }),
     defineField({
       name: "buttons",
