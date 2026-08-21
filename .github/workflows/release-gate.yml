@@ -27,7 +27,6 @@ jobs:
       NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
       NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
       OG_IMAGE_SECRET: ci-only-og-image-secret
-      SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
 
     steps:
       - name: Check out repository
@@ -53,6 +52,8 @@ jobs:
         run: pnpm test
 
       - name: Build production frontend
+        env:
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
         run: pnpm --dir frontend build
 
       - name: Install smoke-test browser
@@ -61,4 +62,5 @@ jobs:
       - name: Run browser smoke tests
         env:
           PLAYWRIGHT_REUSE_BUILD: "1"
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
         run: pnpm test:smoke
