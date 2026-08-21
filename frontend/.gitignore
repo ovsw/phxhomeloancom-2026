@@ -67,3 +67,7 @@ app/plugins/impeccable-live.client.ts
 src/plugins/impeccable-live.client.ts
 # impeccable-live-ignore-end
 .env*
+!.env.example
+!.env*.example
+!.env.template
+!.env*.template
