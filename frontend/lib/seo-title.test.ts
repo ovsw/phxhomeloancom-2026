@@ -40,7 +40,7 @@ describe("resolveSeoTitle", () => {
     });
   });
 
-  it("uses any title containing a pipe as the complete title", () => {
+  it("uses any override containing a pipe as the complete title", () => {
     expect(
       resolveSeoTitle({
         fallbackTitle: "Fallback",
@@ -65,6 +65,25 @@ describe("resolveSeoTitle", () => {
         overrideTitle: "FHA Loans | Phoenix Mortgage Lenders",
       }).finalTitle,
     ).toBe("FHA Loans | Phoenix Mortgage Lenders");
+  });
+
+  it("does not treat a pipe in the content title as an override", () => {
+    expect(
+      resolveSeoTitle({
+        fallbackTitle: "Fixed vs. Adjustable | Which Is Right?",
+      }).finalTitle,
+    ).toBe(
+      "Fixed vs. Adjustable | Which Is Right? | The Vercellino Team",
+    );
+  });
+
+  it("falls back when cleaning an override leaves no page title", () => {
+    expect(
+      resolveSeoTitle({
+        fallbackTitle: "Mortgage Guidance",
+        overrideTitle: "- PHX Home Loan",
+      }).finalTitle,
+    ).toBe("Mortgage Guidance | The Vercellino Team");
   });
 
   it("returns an absolute title when only the site name remains", () => {
@@ -97,6 +116,17 @@ describe("resolveSeoTitle", () => {
 });
 
 describe("getSeoTitleWarnings", () => {
+  it("warns when a non-pipe override contains a legacy suffix", () => {
+    expect(
+      getSeoTitleWarnings({
+        fallbackTitle: "Fallback",
+        overrideTitle: "FHA Loans - PHX Home Loan",
+      }),
+    ).toContain(
+      "Remove the manual legacy suffix; the default suffix is automatic.",
+    );
+  });
+
   it("warns without rejecting manual suffixes, repetition, or length", () => {
     const warnings = getSeoTitleWarnings({
       fallbackTitle: "Fallback",

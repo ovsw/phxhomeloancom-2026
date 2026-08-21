@@ -72,6 +72,17 @@ describe("page OG image route", () => {
     );
   });
 
+  it("keeps the SEO override out of the visible card headline", async () => {
+    sanityFetchMetadata.mockResolvedValueOnce({
+      data: {
+        overrideTitle: "Home | The Highly Motivated Vercellino Team",
+        title,
+      },
+    });
+
+    expect((await get(signedUrl())).status).toBe(200);
+  });
+
   it("rejects stale, missing, or unpublished page content", async () => {
     sanityFetchMetadata.mockResolvedValueOnce({ data: { title: "Changed" } });
     expect((await get(signedUrl())).status).toBe(404);

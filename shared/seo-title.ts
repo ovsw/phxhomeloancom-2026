@@ -51,14 +51,13 @@ export function resolveSeoTitle({
   isHomepage?: boolean;
   overrideTitle?: string | null;
 }) {
-  const selectedTitle =
-    normalizeSeoTitle(overrideTitle) ||
-    normalizeSeoTitle(fallbackTitle) ||
-    SITE_NAME;
-  const hasManualSuffix = selectedTitle.includes("|");
+  const normalizedOverride = normalizeSeoTitle(overrideTitle);
+  const hasManualSuffix = normalizedOverride.includes("|");
   const pageTitle = hasManualSuffix
-    ? selectedTitle
-    : stripLegacySeoTitleSuffix(selectedTitle);
+    ? normalizedOverride
+    : stripLegacySeoTitleSuffix(normalizedOverride) ||
+      stripLegacySeoTitleSuffix(fallbackTitle) ||
+      SITE_NAME;
   const finalTitle = hasManualSuffix
     ? pageTitle
     : pageTitle.toLowerCase() === SITE_NAME.toLowerCase()

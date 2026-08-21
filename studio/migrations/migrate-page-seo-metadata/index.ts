@@ -1,4 +1,11 @@
-import { at, defineMigration, patch, set, unset } from "sanity/migrate";
+import {
+  at,
+  defineMigration,
+  patch,
+  set,
+  setIfMissing,
+  unset,
+} from "sanity/migrate";
 import type { SanityDocument } from "sanity";
 
 type LegacyPageSeoDocument = SanityDocument & {
@@ -12,6 +19,9 @@ export type PageSeoMigrationPlan = {
   issues: string[];
   title?: string;
 };
+
+export const PAGE_SEO_MIGRATION_FILTER =
+  "defined(seoTitle) || defined(seoDescription)";
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -49,11 +59,24 @@ export function planPageSeoMigration(
   };
 }
 
+export function buildPageSeoOperations(plan: PageSeoMigrationPlan) {
+  return [
+    at("meta", setIfMissing({})),
+    ...(plan.title !== undefined
+      ? [at("meta.title", set(plan.title))]
+      : []),
+    ...(plan.description !== undefined
+      ? [at("meta.description", set(plan.description))]
+      : []),
+    at("seoTitle", unset()),
+    at("seoDescription", unset()),
+  ];
+}
+
 export default defineMigration({
   title: "Move legacy page SEO fields into canonical metadata",
   documentTypes: ["page"],
-  filter:
-    '!(_id in path("versions.**")) && (defined(seoTitle) || defined(seoDescription))',
+  filter: PAGE_SEO_MIGRATION_FILTER,
   async *migrate(documents) {
     const plans: Array<{
       document: LegacyPageSeoDocument;
@@ -85,18 +108,9 @@ export default defineMigration({
     );
 
     for (const { document, plan } of plans) {
-      const operations = [
-        ...(plan.title !== undefined
-          ? [at("meta.title", set(plan.title))]
-          : []),
-        ...(plan.description !== undefined
-          ? [at("meta.description", set(plan.description))]
-          : []),
-        at("seoTitle", unset()),
-        at("seoDescription", unset()),
-      ];
-
-      yield patch(document._id, operations, { ifRevision: document._rev });
+      yield patch(document._id, buildPageSeoOperations(plan), {
+        ifRevision: document._rev,
+      });
     }
   },
 });

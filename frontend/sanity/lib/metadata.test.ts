@@ -129,7 +129,7 @@ describe("generatePageMetadata", () => {
       title: "About | Phoenix Mortgage Lenders",
       type: "website",
       images: [
-        { width: 1200, height: 630, alt: "About | The Vercellino Team" },
+        { width: 1200, height: 630, alt: "About | Phoenix Mortgage Lenders" },
       ],
     });
     expect(url.pathname).toBe("/api/og/page/page/about");
@@ -180,6 +180,9 @@ describe("generatePageMetadata", () => {
     expect(metadata.twitter.title).toBe(
       "Phoenix Mortgage Lender | PHX Home Loan",
     );
+    expect(metadata.openGraph.images[0].alt).toBe(
+      "Phoenix Mortgage Lender | PHX Home Loan",
+    );
   });
 });
 
@@ -190,6 +193,7 @@ describe("generateBlogIndexMetadata", () => {
 
     expect(metadata.title).toEqual({ absolute: title });
     expect(metadata.openGraph.title).toBe(title);
+    expect(metadata.openGraph.images[0].alt).toBe(title);
     expect(metadata.twitter.title).toBe(title);
   });
 });
@@ -203,6 +207,7 @@ describe("generateCategoryMetadata", () => {
 
     expect(metadata.title).toEqual({ absolute: pageTitle });
     expect(metadata.openGraph.title).toBe(pageTitle);
+    expect(metadata.openGraph.images[0].alt).toBe(pageTitle);
     expect(metadata.twitter.title).toBe(pageTitle);
   });
 });
