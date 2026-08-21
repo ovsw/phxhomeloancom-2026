@@ -12,7 +12,9 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "pnpm build && pnpm start",
+    command: process.env.PLAYWRIGHT_REUSE_BUILD
+      ? "pnpm start"
+      : "pnpm build && pnpm start",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

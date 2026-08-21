@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  submitContactForm,
+  type ContactFormState,
+} from "@/app/actions/submit-contact-form";
 import type {
   ContactFormBlock,
   ContactFormDataAttributes,
@@ -8,7 +12,7 @@ import type {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { stegaClean } from "next-sanity";
-import { useId, useRef, useState } from "react";
+import { useActionState, useId } from "react";
 
 type ContactFormClientProps = ContactFormBlock & {
   dataAttributes?: ContactFormDataAttributes;
@@ -16,6 +20,7 @@ type ContactFormClientProps = ContactFormBlock & {
 
 const inputClassName =
   "min-h-12 w-full rounded-control border border-input bg-background px-4 py-3.5 text-base text-foreground outline-none transition-[border-color,box-shadow] motion-fast placeholder:text-muted-foreground focus-visible:border-primary focus-ring";
+const initialContactFormState: ContactFormState = { error: null };
 
 function inputCopy(
   field: ContactFormInputCopy | null,
@@ -32,13 +37,6 @@ function inputCopy(
   };
 }
 
-export function updateUnavailableMessageVisibility(
-  form: Pick<HTMLFormElement, "reportValidity"> | null,
-  setVisible: (visible: boolean) => void,
-) {
-  setVisible(Boolean(form?.reportValidity()));
-}
-
 export default function ContactFormClient({
   dataAttributes,
   description,
@@ -53,33 +51,28 @@ export default function ContactFormClient({
   privacyNote,
   submitLabel,
   title,
-  unavailableMessage,
   useCreamBackground,
 }: ContactFormClientProps) {
+  const [formState, formAction, isSubmitting] = useActionState(
+    submitContactForm,
+    initialContactFormState,
+  );
   const generatedId = useId();
   const idPrefix = `contact-${generatedId}`;
   const titleId = `${idPrefix}-title`;
   const formTitleId = `${idPrefix}-form-title`;
-  const availabilityId = `${idPrefix}-availability`;
-  const statusId = `${idPrefix}-status`;
-  const formRef = useRef<HTMLFormElement>(null);
-  const [showUnavailableMessage, setShowUnavailableMessage] = useState(false);
   const displayTitle = stegaClean(title)?.trim();
   const displayEyebrow = stegaClean(eyebrow)?.trim();
   const displayDescription = stegaClean(description)?.trim();
   const displayOfficeHoursTitle = stegaClean(officeHoursTitle)?.trim();
   const cleanFormTitle = stegaClean(formTitle)?.trim();
   const cleanSubmitLabel = stegaClean(submitLabel)?.trim();
-  const cleanUnavailableMessage = stegaClean(unavailableMessage)?.trim();
   const displayFormTitle = cleanFormTitle
     ? (formTitle ?? cleanFormTitle)
     : "Send us a message";
   const displaySubmitLabel = cleanSubmitLabel
     ? (submitLabel ?? cleanSubmitLabel)
     : "Send message";
-  const displayUnavailableMessage = cleanUnavailableMessage
-    ? (unavailableMessage ?? cleanUnavailableMessage)
-    : "Online submission is not available yet. Please contact us directly.";
   const nameCopy = inputCopy(nameField, "Name");
   const emailCopy = inputCopy(emailField, "Email");
   const phoneCopy = inputCopy(phoneField, "Phone");
@@ -166,15 +159,10 @@ export default function ContactFormClient({
         </div>
 
         <div className="rounded-card border border-border bg-card p-(--space-inset) shadow-ambient-feature">
-          {/* Keep controls unnamed and non-submitting until server-side delivery exists. */}
           <form
-            aria-describedby={availabilityId}
+            action={formAction}
             aria-labelledby={formTitleId}
             className="grid gap-5"
-            ref={formRef}
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
           >
             <h2
               className="typo-subsection-heading text-card-foreground"
@@ -197,6 +185,7 @@ export default function ContactFormClient({
                   className={inputClassName}
                   data-sanity={dataAttributes?.nameField?.placeholder}
                   id={`${idPrefix}-name`}
+                  name="name"
                   placeholder={nameCopy.placeholder}
                   required
                   type="text"
@@ -214,6 +203,7 @@ export default function ContactFormClient({
                   className={inputClassName}
                   data-sanity={dataAttributes?.emailField?.placeholder}
                   id={`${idPrefix}-email`}
+                  name="email"
                   placeholder={emailCopy.placeholder}
                   required
                   type="email"
@@ -233,6 +223,7 @@ export default function ContactFormClient({
                 className={inputClassName}
                 data-sanity={dataAttributes?.phoneField?.placeholder}
                 id={`${idPrefix}-phone`}
+                name="phone"
                 placeholder={phoneCopy.placeholder}
                 type="tel"
               />
@@ -249,6 +240,7 @@ export default function ContactFormClient({
                 className={`${inputClassName} min-h-[120px] resize-y leading-relaxed`}
                 data-sanity={dataAttributes?.messageField?.placeholder}
                 id={`${idPrefix}-message`}
+                name="message"
                 placeholder={messageCopy.placeholder}
                 rows={5}
               />
@@ -257,17 +249,10 @@ export default function ContactFormClient({
             <div className="flex flex-wrap items-center gap-5">
               <Button
                 data-sanity={dataAttributes?.submitLabel}
-                aria-controls={statusId}
-                aria-describedby={availabilityId}
-                onClick={() => {
-                  updateUnavailableMessageVisibility(
-                    formRef.current,
-                    setShowUnavailableMessage,
-                  );
-                }}
-                type="button"
+                disabled={isSubmitting}
+                type="submit"
               >
-                {displaySubmitLabel}
+                {isSubmitting ? "Sending..." : displaySubmitLabel}
               </Button>
               {stegaClean(privacyNote)?.trim() ? (
                 <p
@@ -279,27 +264,11 @@ export default function ContactFormClient({
               ) : null}
             </div>
 
-            <p className="sr-only" id={availabilityId}>
-              {displayUnavailableMessage}
-            </p>
-            <noscript>
-              <p
-                className="typo-body-sm text-primary"
-                data-sanity={dataAttributes?.unavailableMessage}
-              >
-                {displayUnavailableMessage}
+            {formState.error ? (
+              <p aria-live="polite" className="text-sm text-primary" role="alert">
+                {formState.error}
               </p>
-            </noscript>
-            <p
-              aria-atomic="true"
-              aria-live="polite"
-              className={showUnavailableMessage ? "text-sm text-primary" : "sr-only"}
-              data-sanity={dataAttributes?.unavailableMessage}
-              id={statusId}
-              role="status"
-            >
-              {showUnavailableMessage ? displayUnavailableMessage : ""}
-            </p>
+            ) : null}
           </form>
         </div>
       </div>
