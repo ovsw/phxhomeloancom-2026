@@ -52,8 +52,6 @@ jobs:
         run: pnpm test
 
       - name: Build production frontend
-        env:
-          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
         run: pnpm --dir frontend build
 
       - name: Install smoke-test browser
