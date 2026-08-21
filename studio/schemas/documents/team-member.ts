@@ -75,7 +75,17 @@ export default defineType({
       title: "Bio",
       description:
         "A short biography describing this team member's responsibilities and expertise.",
-      of: [defineArrayMember({ type: "block" })],
+      of: [
+        defineArrayMember({
+          type: "block",
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        }),
+      ],
     }),
     defineField({
       name: "sortOrder",

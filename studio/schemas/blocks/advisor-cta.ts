@@ -30,7 +30,17 @@ export default defineType({
       name: "richText",
       title: "Description",
       type: "array",
-      of: [defineArrayMember({ type: "block" })],
+      of: [
+        defineArrayMember({
+          type: "block",
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        }),
+      ],
     }),
     defineField({
       name: "buttons",

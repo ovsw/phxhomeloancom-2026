@@ -34,7 +34,17 @@ export default defineType({
       title: "Description",
       type: "array",
       description: "The supporting message shown below the heading",
-      of: [defineArrayMember({ type: "block" })],
+      of: [
+        defineArrayMember({
+          type: "block",
+          marks: {
+            decorators: [
+              { title: "Strong", value: "strong" },
+              { title: "Emphasis", value: "em" },
+            ],
+          },
+        }),
+      ],
       validation: (rule) => rule.required(),
     }),
     defineField({
