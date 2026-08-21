@@ -49,6 +49,7 @@ export function createSeoTitleAuditRows(
       });
       const suffixWasRemoved =
         Boolean(currentSeoTitle) &&
+        !currentSeoTitle.includes("|") &&
         stripLegacySeoTitleSuffix(currentSeoTitle) !== currentSeoTitle;
       const warnings = getSeoTitleWarnings({
         fallbackTitle: document.title,
@@ -66,6 +67,8 @@ export function createSeoTitleAuditRows(
         ? reviewWarnings.join(" ")
         : suffixWasRemoved
           ? "Remove a recognized legacy brand suffix."
+          : currentSeoTitle.includes("|")
+            ? "Existing complete title is used as written."
           : currentSeoTitle
             ? "Existing page-specific override is already clean."
             : "Use the content title fallback.";

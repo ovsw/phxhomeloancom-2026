@@ -3,6 +3,7 @@ import { type StringInputProps, useFormValue } from "sanity";
 import {
   getSeoTitleWarnings,
   resolveSeoTitle,
+  TITLE_SUFFIX,
 } from "../../../shared/seo-title";
 
 export function SeoTitleInput(props: StringInputProps) {
@@ -34,9 +35,11 @@ export function SeoTitleInput(props: StringInputProps) {
           </Text>
           <Text size={1}>{finalTitle}</Text>
           <Text muted size={1}>
-            {overrideTitle?.trim()
-              ? "Using the override above. Branding is added automatically."
-              : "Using the content title. Add an override only when needed."}
+            {overrideTitle?.includes("|")
+              ? "Using the complete title exactly as written. The automatic suffix is disabled."
+              : overrideTitle?.trim()
+                ? `Using the override above. “${TITLE_SUFFIX.trim()}” is added automatically.`
+                : `Using the content title. “${TITLE_SUFFIX.trim()}” is added automatically.`}
           </Text>
           {warnings.map((warning) => (
             <Text key={warning} size={1}>

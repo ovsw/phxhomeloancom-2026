@@ -1,5 +1,6 @@
 export const SITE_NAME = "PHX Home Loan";
-export const TITLE_SUFFIX = ` | ${SITE_NAME}`;
+export const DEFAULT_TITLE_SUFFIX = "The Vercellino Team";
+export const TITLE_SUFFIX = ` | ${DEFAULT_TITLE_SUFFIX}`;
 
 const LEGACY_SITE_NAMES = [
   SITE_NAME,
@@ -50,21 +51,26 @@ export function resolveSeoTitle({
   isHomepage?: boolean;
   overrideTitle?: string | null;
 }) {
-  const pageTitle =
-    stripLegacySeoTitleSuffix(overrideTitle) ||
-    stripLegacySeoTitleSuffix(fallbackTitle) ||
+  const selectedTitle =
+    normalizeSeoTitle(overrideTitle) ||
+    normalizeSeoTitle(fallbackTitle) ||
     SITE_NAME;
-  const finalTitle =
-    pageTitle.toLowerCase() === SITE_NAME.toLowerCase()
+  const hasManualSuffix = selectedTitle.includes("|");
+  const pageTitle = hasManualSuffix
+    ? selectedTitle
+    : stripLegacySeoTitleSuffix(selectedTitle);
+  const finalTitle = hasManualSuffix
+    ? pageTitle
+    : pageTitle.toLowerCase() === SITE_NAME.toLowerCase()
       ? SITE_NAME
       : `${pageTitle}${TITLE_SUFFIX}`;
 
   return {
     finalTitle,
-    // Absolute whenever the resolved title is already the site name, so the
-    // layout template never renders "PHX Home Loan | PHX Home Loan".
+    // A pipe means the editor supplied the complete title. Absolute titles
+    // bypass the layout template so the default suffix is not added twice.
     metadataTitle:
-      isHomepage || finalTitle === SITE_NAME
+      isHomepage || hasManualSuffix || finalTitle === SITE_NAME
         ? { absolute: finalTitle }
         : pageTitle,
     openGraphTitle: finalTitle,
@@ -87,13 +93,12 @@ export function getSeoTitleWarnings({
   });
   const warnings: string[] = [];
 
-  if (normalizedOverride.includes("|")) {
-    warnings.push("Remove the pipe and brand suffix; branding is automatic.");
-  } else if (
+  if (
+    !normalizedOverride.includes("|") &&
     normalizedOverride &&
     stripLegacySeoTitleSuffix(normalizedOverride) !== normalizedOverride
   ) {
-    warnings.push("Remove the manual brand suffix; branding is automatic.");
+    warnings.push("Remove the manual legacy suffix; the default suffix is automatic.");
   }
 
   const lowerTitle = pageTitle.toLowerCase();

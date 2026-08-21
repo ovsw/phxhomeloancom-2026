@@ -5,6 +5,7 @@ export const HARD_CODED_GONE_ROUTE_PATHS = [
   "/phoenix-home-loan-payoff-vision-board",
   "/make-home-attractive-before-putting-on-market",
   "/virtual-showings-what-you-need-to-know",
+  "/spring-2021-buyers-guide",
 ] as const;
 
 const goneRoutes = new Set<string>(HARD_CODED_GONE_ROUTE_PATHS);

@@ -21,6 +21,7 @@ const EXPECTED_GONE_ROUTES = [
   "/phoenix-home-loan-payoff-vision-board",
   "/make-home-attractive-before-putting-on-market",
   "/virtual-showings-what-you-need-to-know",
+  "/spring-2021-buyers-guide",
 ];
 
 describe("legacy 410 Gone routes", () => {

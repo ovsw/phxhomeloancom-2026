@@ -91,7 +91,7 @@ describe("generatePageMetadata", () => {
     expect(metadata.openGraph.type).toBe("article");
     expect(metadata.title).toBe("Mortgage rates");
     expect(metadata.openGraph.title).toBe(
-      "Mortgage rates | PHX Home Loan",
+      "Mortgage rates | The Vercellino Team",
     );
     expect(metadata.openGraph).toHaveProperty(
       "publishedTime",
@@ -100,11 +100,11 @@ describe("generatePageMetadata", () => {
     expect(image).toMatchObject({
       width: 1200,
       height: 630,
-      alt: `${post.title} | PHX Home Loan`,
+      alt: `${post.title} | The Vercellino Team`,
     });
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
-      title: "Mortgage rates | PHX Home Loan",
+      title: "Mortgage rates | The Vercellino Team",
       images: [image],
     });
     expect(
@@ -126,14 +126,16 @@ describe("generatePageMetadata", () => {
     const url = new URL(image.url);
 
     expect(metadata.openGraph).toMatchObject({
-      title: "About | PHX Home Loan",
+      title: "About | Phoenix Mortgage Lenders",
       type: "website",
-      images: [{ width: 1200, height: 630, alt: "About | PHX Home Loan" }],
+      images: [
+        { width: 1200, height: 630, alt: "About | The Vercellino Team" },
+      ],
     });
     expect(url.pathname).toBe("/api/og/page/page/about");
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
-      title: "About | PHX Home Loan",
+      title: "About | Phoenix Mortgage Lenders",
       images: [image],
     });
     expect(
@@ -147,7 +149,9 @@ describe("generatePageMetadata", () => {
         signature: url.searchParams.get("sig") || "",
       }),
     ).toBe(true);
-    expect(metadata.title).toBe("About");
+    expect(metadata.title).toEqual({
+      absolute: "About | Phoenix Mortgage Lenders",
+    });
   });
 
   it("falls back to the content title when the override is missing", () => {
@@ -161,7 +165,7 @@ describe("generatePageMetadata", () => {
     });
 
     expect(metadata.title).toBe("About");
-    expect(metadata.openGraph.title).toBe("About | PHX Home Loan");
+    expect(metadata.openGraph.title).toBe("About | The Vercellino Team");
   });
 
   it("uses one absolute, branded homepage title", () => {
@@ -182,26 +186,23 @@ describe("generatePageMetadata", () => {
 describe("generateBlogIndexMetadata", () => {
   it("derives a unique branded title for pagination", () => {
     const metadata = generateBlogIndexMetadata({ blogIndex, page: 2 });
+    const title = "Mortgage Advice | PHX Home Loan - Page 2";
 
-    expect(metadata.title).toBe("Mortgage Advice - Page 2");
-    expect(metadata.openGraph.title).toBe(
-      "Mortgage Advice - Page 2 | PHX Home Loan",
-    );
-    expect(metadata.twitter.title).toBe(
-      "Mortgage Advice - Page 2 | PHX Home Loan",
-    );
+    expect(metadata.title).toEqual({ absolute: title });
+    expect(metadata.openGraph.title).toBe(title);
+    expect(metadata.twitter.title).toBe(title);
   });
 });
 
 describe("generateCategoryMetadata", () => {
   it.each([
-    [1, "Home Loan Guides"],
-    [2, "Home Loan Guides - Page 2"],
+    [1, "Home Loan Guides | Mortgage Lender"],
+    [2, "Home Loan Guides | Mortgage Lender - Page 2"],
   ])("derives the category title for page %i", (pageNumber, pageTitle) => {
     const metadata = generateCategoryMetadata({ category, page: pageNumber });
 
-    expect(metadata.title).toBe(pageTitle);
-    expect(metadata.openGraph.title).toBe(`${pageTitle} | PHX Home Loan`);
-    expect(metadata.twitter.title).toBe(`${pageTitle} | PHX Home Loan`);
+    expect(metadata.title).toEqual({ absolute: pageTitle });
+    expect(metadata.openGraph.title).toBe(pageTitle);
+    expect(metadata.twitter.title).toBe(pageTitle);
   });
 });

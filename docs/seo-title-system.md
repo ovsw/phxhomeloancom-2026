@@ -1,22 +1,22 @@
 # SEO title system
 
-Sanity stores page-specific titles. The frontend owns the public brand suffix.
+Sanity stores page-specific titles. The frontend adds a default title suffix.
 
 ## Editorial rule
 
 - Leave **SEO title override** empty when the content title is suitable.
-- When an override is needed, write only the page-specific title.
-- Never add `| PHX Home Loan` or another brand phrase manually.
-- Studio previews the final title and warns about manual suffixes, repeated key terms, and unusually long results. Warnings do not block publishing.
+- When an override needs the default suffix, write only the page-specific title.
+- Any override containing `|` is treated as the complete title and receives no automatic suffix.
+- Studio previews the final title and warns about repeated key terms and unusually long results. Warnings do not block publishing.
 
 ## Runtime rule
 
-- Interior pages render `<page title> | PHX Home Loan` through the root metadata template.
+- Titles without a pipe render `<page title> | The Vercellino Team` through the root metadata template.
+- Titles containing a pipe are rendered exactly as written.
 - `/` uses an absolute title so the suffix cannot be applied twice.
-- Blog and category pagination is derived automatically, for example `Mortgage Rates - Page 2 | PHX Home Loan`.
+- Blog and category pagination is derived automatically, for example `Mortgage Rates - Page 2 | The Vercellino Team`.
 - Open Graph and Twitter titles use the same final title.
 - Missing overrides fall back to the document title.
-- `shared/seo-title.ts` temporarily removes recognized legacy suffixes at runtime.
 
 ## Content cleanup
 

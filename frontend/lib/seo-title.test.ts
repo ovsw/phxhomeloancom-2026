@@ -6,18 +6,20 @@ import {
 } from "../../shared/seo-title";
 
 describe("resolveSeoTitle", () => {
-  it("uses a page-specific override and appends the brand once", () => {
+  it("uses a page-specific override and appends the default suffix", () => {
     expect(
       resolveSeoTitle({
         fallbackTitle: "Conventional Loans",
         overrideTitle: "Phoenix Conventional Mortgage Loan",
       }),
     ).toEqual({
-      finalTitle: "Phoenix Conventional Mortgage Loan | PHX Home Loan",
+      finalTitle: "Phoenix Conventional Mortgage Loan | The Vercellino Team",
       metadataTitle: "Phoenix Conventional Mortgage Loan",
-      openGraphTitle: "Phoenix Conventional Mortgage Loan | PHX Home Loan",
+      openGraphTitle:
+        "Phoenix Conventional Mortgage Loan | The Vercellino Team",
       pageTitle: "Phoenix Conventional Mortgage Loan",
-      twitterTitle: "Phoenix Conventional Mortgage Loan | PHX Home Loan",
+      twitterTitle:
+        "Phoenix Conventional Mortgage Loan | The Vercellino Team",
     });
   });
 
@@ -34,8 +36,35 @@ describe("resolveSeoTitle", () => {
         isHomepage: true,
       }).metadataTitle,
     ).toEqual({
-      absolute: "Phoenix Mortgage Lender | PHX Home Loan",
+      absolute: "Phoenix Mortgage Lender | The Vercellino Team",
     });
+  });
+
+  it("uses any title containing a pipe as the complete title", () => {
+    expect(
+      resolveSeoTitle({
+        fallbackTitle: "Fallback",
+        overrideTitle:
+          "My Page Title | The Highly Motivated Vercellino Team",
+      }),
+    ).toMatchObject({
+      finalTitle: "My Page Title | The Highly Motivated Vercellino Team",
+      metadataTitle: {
+        absolute: "My Page Title | The Highly Motivated Vercellino Team",
+      },
+      openGraphTitle:
+        "My Page Title | The Highly Motivated Vercellino Team",
+      twitterTitle:
+        "My Page Title | The Highly Motivated Vercellino Team",
+    });
+  });
+
+  it("does not replace a legacy suffix when the title contains a pipe", () => {
+    expect(
+      resolveSeoTitle({
+        overrideTitle: "FHA Loans | Phoenix Mortgage Lenders",
+      }).finalTitle,
+    ).toBe("FHA Loans | Phoenix Mortgage Lenders");
   });
 
   it("returns an absolute title when only the site name remains", () => {
@@ -76,7 +105,6 @@ describe("getSeoTitleWarnings", () => {
     });
 
     expect(warnings).toEqual([
-      "Remove the pipe and brand suffix; branding is automatic.",
       "Review the repeated term “mortgage” for readability.",
       "The final 62-character title may be shortened in search results.",
     ]);

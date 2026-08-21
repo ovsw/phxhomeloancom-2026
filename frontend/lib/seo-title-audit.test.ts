@@ -10,7 +10,7 @@ describe("createSeoTitleAuditRows", () => {
       {
         _id: "homePage",
         _type: "homePage",
-        currentSeoTitle: "Phoenix Mortgage Lender | PHX Home Loan",
+        currentSeoTitle: "Phoenix Mortgage Lender - PHX Home Loan",
         title: "Home",
       },
       {
@@ -71,7 +71,7 @@ describe("createSeoTitleAuditRows", () => {
     expect(csv).not.toMatch(/(^|,)=HYPERLINK/m);
   });
 
-  it("removes Phoenix Mortgage before adding the shared brand suffix", () => {
+  it("preserves a pipe-bearing legacy title for manual review", () => {
     const [row] = createSeoTitleAuditRows([
       {
         _id: "post-1",
@@ -85,12 +85,13 @@ describe("createSeoTitleAuditRows", () => {
 
     expect(row).toMatchObject({
       finalRenderedTitle:
-        "5 Reasons A Mortgage Is Denied After Pre-Approval | PHX Home Loan",
-      length: 65,
+        "5 Reasons A Mortgage Is Denied After Pre-Approval | Phoenix Mortgage",
+      group: "human rewrite required",
+      length: 68,
       proposedPageSpecificTitle:
-        "5 Reasons A Mortgage Is Denied After Pre-Approval",
+        "5 Reasons A Mortgage Is Denied After Pre-Approval | Phoenix Mortgage",
       reason:
-        "The final 65-character title may be shortened in search results.",
+        "Review the repeated term “mortgage” for readability. The final 68-character title may be shortened in search results.",
     });
   });
 });

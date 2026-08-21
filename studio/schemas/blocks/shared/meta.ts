@@ -13,7 +13,7 @@ export default defineField({
       type: "string",
       title: "SEO title override",
       description:
-        "Optional. Write only the page-specific title. “PHX Home Loan” is added automatically.",
+        "Optional. Titles without a pipe get “| The Vercellino Team” automatically. Titles containing a pipe are used as written.",
       components: { input: SeoTitleInput },
       validation: (rule) =>
         rule
