@@ -31,6 +31,7 @@ export const CODE_OWNED_GONE_ROUTE_PATHS = [
   "/phoenix-home-loan-payoff-vision-board",
   "/make-home-attractive-before-putting-on-market",
   "/virtual-showings-what-you-need-to-know",
+  "/spring-2021-buyers-guide",
 ] as const;
 const CODE_OWNED_SOURCE_PATHS = new Set<string>(CODE_OWNED_GONE_ROUTE_PATHS);
 const MISSING_DESTINATION_ERROR =
