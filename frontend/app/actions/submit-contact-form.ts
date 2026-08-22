@@ -1,10 +1,13 @@
 "use server";
 
+import { randomInt } from "node:crypto";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const FORMSPARK_ACTION_URL = "https://submit-form.com/a0or7TBtU";
 const FORMSPARK_TIMEOUT_MS = 10_000;
+const CONTACT_REFERENCE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const CONTACT_REFERENCE_LENGTH = 6;
 
 const contactSubmissionSchema = z.object({
   email: z.email().max(320),
@@ -16,6 +19,14 @@ const contactSubmissionSchema = z.object({
 export type ContactFormState = {
   error: string | null;
 };
+
+function createContactReference() {
+  return Array.from({ length: CONTACT_REFERENCE_LENGTH }, () =>
+    CONTACT_REFERENCE_ALPHABET.charAt(
+      randomInt(CONTACT_REFERENCE_ALPHABET.length),
+    ),
+  ).join("");
+}
 
 export async function submitContactForm(
   _previousState: ContactFormState,
@@ -32,9 +43,17 @@ export async function submitContactForm(
     return { error: "Please check the form and try again." };
   }
 
+  const reference = createContactReference();
+
   try {
     const response = await fetch(FORMSPARK_ACTION_URL, {
-      body: JSON.stringify(submission.data),
+      body: JSON.stringify({
+        ...submission.data,
+        reference,
+        _email: {
+          subject: `Contact Form Submission [${reference}]`,
+        },
+      }),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",

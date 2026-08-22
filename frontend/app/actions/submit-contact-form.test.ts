@@ -34,17 +34,33 @@ describe("submitContactForm", () => {
       submitContactForm(initialContactFormState, validFormData()),
     ).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      "https://submit-form.com/a0or7TBtU",
+    expect(fetchMock).toHaveBeenCalledOnce();
+
+    const [url, request] = fetchMock.mock.calls[0];
+    const payload = JSON.parse(String(request.body)) as {
+      _email: { subject: string };
+      email: string;
+      message: string;
+      name: string;
+      phone: string;
+      reference: string;
+    };
+
+    expect(url).toBe("https://submit-form.com/a0or7TBtU");
+    expect(request).toEqual(
       expect.objectContaining({
-        body: JSON.stringify({
-          email: "ovi@example.com",
-          message: "I would like to talk about a home loan.",
-          name: "Ovi",
-          phone: "480-555-0100",
-        }),
         method: "POST",
       }),
+    );
+    expect(payload).toMatchObject({
+      email: "ovi@example.com",
+      message: "I would like to talk about a home loan.",
+      name: "Ovi",
+      phone: "480-555-0100",
+    });
+    expect(payload.reference).toMatch(/^[A-HJ-NP-Z2-9]{6}$/);
+    expect(payload._email.subject).toBe(
+      `Contact Form Submission [${payload.reference}]`,
     );
     expect(redirectMock).toHaveBeenCalledWith("/contact/thanks/");
   });
