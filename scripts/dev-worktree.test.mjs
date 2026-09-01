@@ -1,10 +1,163 @@
 import assert from "node:assert/strict";
+import { EventEmitter } from "node:events";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 import test from "node:test";
 
-import { derivePortPair, selectPortPair } from "./dev-worktree.mjs";
+import {
+  devServerCommands,
+  derivePortPair,
+  findLanIpv4,
+  mergeAllowedDevOrigins,
+  registerShutdownSignals,
+  selectPortPair,
+  startTailscalePreview,
+  stopTailscalePreviewOnExit,
+  tailscaleServePlan,
+  worktreeAllowedDevOrigins,
+} from "./dev-worktree.mjs";
+
+test("registerShutdownSignals treats terminal closure as a server shutdown", () => {
+  const target = new EventEmitter();
+  const calls = [];
+  const removeListeners = registerShutdownSignals(target, (signal, exitCode) => {
+    calls.push({ signal, exitCode });
+  });
+
+  target.emit("SIGHUP");
+  removeListeners();
+  target.emit("SIGTERM");
+
+  assert.deepEqual(calls, [{ signal: "SIGHUP", exitCode: 129 }]);
+  assert.equal(target.listenerCount("SIGINT"), 0);
+  assert.equal(target.listenerCount("SIGTERM"), 0);
+  assert.equal(target.listenerCount("SIGHUP"), 0);
+});
+
+test("devServerCommands binds both services to all network interfaces", () => {
+  const [frontend, studio] = devServerCommands({ frontend: 3103, studio: 4103 });
+
+  assert.deepEqual(frontend.slice(-4), ["--hostname", "0.0.0.0", "--port", "3103"]);
+  assert.deepEqual(studio.slice(-4), ["--host", "0.0.0.0", "--port", "4103"]);
+});
+
+test("tailscaleServePlan maps one frontend port to a foreground HTTPS proxy", () => {
+  assert.deepEqual(
+    tailscaleServePlan(3103, {
+      Self: { DNSName: "forge.example-tailnet.ts.net." },
+    }),
+    {
+      url: "https://forge.example-tailnet.ts.net:5103",
+      startArguments: [
+        "serve",
+        "--yes",
+        "--https=5103",
+        "http://127.0.0.1:3103",
+      ],
+    },
+  );
+});
+
+test("startTailscalePreview keeps Serve in the terminal group and stops it once", async () => {
+  const calls = [];
+  const stopSignals = [];
+  const child = new EventEmitter();
+  child.pid = process.pid;
+  child.kill = (signal) => stopSignals.push(signal);
+  const runCommand = async (command, arguments_) => {
+    calls.push([command, arguments_]);
+    return { stdout: '{"Self":{"DNSName":"forge.example-tailnet.ts.net."}}' };
+  };
+  const spawnCommand = (command, arguments_, options) => {
+    calls.push([command, arguments_, options]);
+    queueMicrotask(() => child.emit("spawn"));
+    return child;
+  };
+
+  const preview = await startTailscalePreview(3103, {
+    runCommand,
+    spawnCommand,
+  });
+
+  preview.stop("SIGINT");
+  preview.stop("SIGINT");
+
+  assert.equal(preview.url, "https://forge.example-tailnet.ts.net:5103");
+  assert.deepEqual(calls, [
+    ["tailscale", ["status", "--json"]],
+    [
+      "tailscale",
+      [
+        "serve",
+        "--yes",
+        "--https=5103",
+        "http://127.0.0.1:3103",
+      ],
+      {
+        detached: false,
+        stdio: "inherit",
+      },
+    ],
+  ]);
+  assert.deepEqual(stopSignals, ["SIGINT"]);
+});
+
+test("process exit uses synchronous Tailscale cleanup", async () => {
+  const stopSignals = [];
+  const child = new EventEmitter();
+  child.pid = process.pid;
+  const runCommand = async (command, arguments_) => {
+    return { stdout: '{"Self":{"DNSName":"forge.example-tailnet.ts.net."}}' };
+  };
+  const spawnCommand = () => {
+    queueMicrotask(() => child.emit("spawn"));
+    return child;
+  };
+
+  const preview = await startTailscalePreview(3103, {
+    runCommand,
+    spawnCommand,
+  });
+  preview.stop = (signal) => stopSignals.push(signal);
+  stopTailscalePreviewOnExit(preview);
+
+  assert.deepEqual(stopSignals, ["SIGTERM"]);
+});
+
+test("findLanIpv4 selects a private LAN address instead of loopback or Tailscale", () => {
+  assert.equal(
+    findLanIpv4({
+      lo: [{ address: "127.0.0.1", family: "IPv4", internal: true }],
+      tailscale0: [{ address: "100.118.199.2", family: "IPv4", internal: false }],
+      public: [{ address: "203.0.113.10", family: "IPv4", internal: false }],
+      wifi: [{ address: "192.168.100.233", family: "IPv4", internal: false }],
+    }),
+    "192.168.100.233",
+  );
+});
+
+test("mergeAllowedDevOrigins adds LAN and Tailscale hosts without losing configured hosts", () => {
+  assert.equal(
+    mergeAllowedDevOrigins(
+      "custom.test, 192.168.100.233",
+      "192.168.100.233",
+      "forge.example-tailnet.ts.net",
+    ),
+    "custom.test,192.168.100.233,forge.example-tailnet.ts.net",
+  );
+});
+
+test("worktreeAllowedDevOrigins includes the numeric loopback used by T3 previews", () => {
+  assert.equal(
+    worktreeAllowedDevOrigins(
+      "custom.test",
+      "192.168.100.233",
+      "forge.example-tailnet.ts.net",
+    ),
+    "custom.test,127.0.0.1,192.168.100.233,forge.example-tailnet.ts.net",
+  );
+});
 
 test("derivePortPair returns a stable pair in separate ranges", () => {
   const first = derivePortPair("/work/dev/.t3/worktrees/example/feature-a");

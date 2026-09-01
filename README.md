@@ -71,7 +71,19 @@ pnpm dev:worktree
 This assigns and remembers a separate frontend and Studio port pair for that worktree in
 `.worktree-ports.json`. The ten available pairs use frontend ports `3100`–`3109` and Studio
 ports `4100`–`4109`. Set both `FRONTEND_PORT` and `STUDIO_PORT` before the command to
-override the assigned pair.
+override the assigned pair. Both servers listen on all local network interfaces, and the
+command prints the frontend's current LAN URL.
+
+When Tailscale is connected, the same command also publishes only the frontend through a
+private HTTPS Tailscale Serve URL. Its HTTPS ports are `5100`–`5109`—for example, frontend
+port `3103` is published on Tailscale port `5103`. Use the exact `Phone HTTPS` URL printed by
+the command. The Serve rule is removed when the development servers stop. Tailscale failure
+does not prevent local or LAN development. The launcher also allows the discovered LAN and
+Tailscale hostnames through Next.js's development-origin protection so hot reload works.
+Remote preview does not add Sanity CORS origins automatically. Server-rendered content still
+works, but using Draft Mode or Sanity Live directly from a phone requires adding that exact LAN
+or `Phone HTTPS` origin with credentials in Sanity Manage; `pnpm setup:sanity-cors` registers
+only the bounded localhost origins below.
 
 Register all twenty exact localhost origins with Sanity once:
 
