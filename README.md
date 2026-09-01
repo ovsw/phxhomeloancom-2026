@@ -62,6 +62,27 @@ pnpm dev:frontend    # frontend only
 pnpm dev:studio  # studio only
 ```
 
+From a Git worktree, use:
+
+```bash
+pnpm dev:worktree
+```
+
+This assigns and remembers a separate frontend and Studio port pair for that worktree in
+`.worktree-ports.json`. The ten available pairs use frontend ports `3100`–`3109` and Studio
+ports `4100`–`4109`. Set both `FRONTEND_PORT` and `STUDIO_PORT` before the command to
+override the assigned pair.
+
+Register all twenty exact localhost origins with Sanity once:
+
+```bash
+pnpm setup:sanity-cors
+```
+
+All twenty origins allow credentials. The Next.js app needs them because Draft Mode sends a
+Viewer token from `SanityLive` in the browser; Studio needs them for authentication. The token
+in `studio/.env` must be able to read, create, and delete the project's CORS origins.
+
 #### 3. Open the app and sign in to the Studio
 
 - Open the Next.js app at [http://localhost:3000](http://localhost:3000)
