@@ -243,4 +243,12 @@ describe("Site Header", () => {
       vi.useRealTimers();
     }
   });
+
+  it("uses a solid background for browser toolbar color extension", () => {
+    render(<Header model={model} />);
+
+    const banner = screen.getByRole("banner");
+    expect(banner).toHaveClass("bg-background");
+    expect(banner).not.toHaveClass("bg-background/95", "backdrop-blur-md");
+  });
 });
