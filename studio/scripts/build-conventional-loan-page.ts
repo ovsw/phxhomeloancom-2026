@@ -338,10 +338,6 @@ export const CONVENTIONAL_LOAN_CONTENT = {
     {
       _key: "award-cta-trust",
       _type: "awardCta",
-      highlight: "TOP 1%",
-      title: "Mortgage Loan Originators",
-      description: "in the U.S., 2019 — according to Mortgage Executive Magazine",
-      buttons: [internalButton("btn-award-consult", "secondary", "Schedule Consult", "contactMe")],
     },
   ],
 };
