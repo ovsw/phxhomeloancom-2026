@@ -168,11 +168,22 @@ async function main() {
     throw new Error(`Refusing to run outside the ${dataset} dataset`);
   }
 
-  const [settings, homePage, contactPage, awardPages, pageDocuments, redirects] =
-    await Promise.all([
+  const [
+    settings,
+    settingsDraft,
+    homePage,
+    contactPage,
+    awardPages,
+    pageDocuments,
+    redirects,
+  ] = await Promise.all([
       client.fetch<SettingsDocument | null>(
         `*[_id == $id && _type == "settings"][0]`,
         { id: SETTINGS_ID },
+      ),
+      client.fetch<SettingsDocument | null>(
+        `*[_id == $id && _type == "settings"][0]`,
+        { id: `drafts.${SETTINGS_ID}` },
       ),
       client.fetch<SanityDocument | null>(
         `*[_id == $id && _type == "homePage"][0]`,
@@ -232,6 +243,7 @@ async function main() {
         settings: {
           id: SETTINGS_ID,
           willSetAward: true,
+          willPatchDraft: Boolean(settingsDraft),
           needsSealUpload,
         },
         pagesWithAwardCta: pageDocuments.map(summarizePage),
@@ -262,6 +274,15 @@ async function main() {
       award: createAwardSettings(sealAssetRef),
     }),
   );
+
+  // A stale Settings draft would hide the award in Studio and erase it on publish.
+  if (settingsDraft) {
+    transaction.patch(settingsDraft._id, (patch: Patch) =>
+      patch.ifRevisionId(settingsDraft._rev).set({
+        award: createAwardSettings(sealAssetRef),
+      }),
+    );
+  }
 
   const unsetPaths = buildAwardBlockUnsetPaths(pageDocuments);
   for (const document of pageDocuments) {
