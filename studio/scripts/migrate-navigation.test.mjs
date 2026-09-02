@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 import { transformLegacyNavbar } from "./migrate-navigation.mjs";
 
 test("transforms the legacy navbar into the canonical navigation model", () => {

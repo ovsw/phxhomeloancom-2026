@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import { getYouTubeVideoId as getFrontendVideoId } from "../frontend/lib/youtube-video-id.ts";
 import { getYouTubeVideoId as getStudioVideoId } from "./schemas/blocks/big-video-feature.ts";

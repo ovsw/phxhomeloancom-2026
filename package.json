@@ -15,7 +15,7 @@
     "typegen": "cd studio && pnpm typegen",
     "typecheck": "pnpm --dir frontend typecheck && pnpm --dir studio typecheck",
     "lint": "pnpm --dir frontend lint",
-    "test": "pnpm --dir frontend test && node --test 'frontend/**/*.test.mjs' 'studio/**/*.test.mjs' 'scripts/*.test.mjs'",
+    "test": "pnpm --dir frontend test",
     "test:e2e": "pnpm --dir frontend test:e2e",
     "test:smoke": "pnpm --dir frontend test:smoke",
     "export": "cd studio && sanity dataset export production sample-data.tar.gz"

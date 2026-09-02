@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import test from "node:test";
+import { test } from "vitest";
 import { ROOT_SLUG_FILTER } from "../../../shared/root-slug-filter.ts";
 
 test("root content queries accept every surrounding-slash variant", () => {

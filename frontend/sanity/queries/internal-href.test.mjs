@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import test from "node:test";
+import { test } from "vitest";
 
 const source = readFileSync(new URL("./shared/internal-href.ts", import.meta.url), "utf8");
 const footerSource = readFileSync(new URL("./footer.ts", import.meta.url), "utf8");

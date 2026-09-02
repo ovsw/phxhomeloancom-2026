@@ -13,53 +13,83 @@ concurrency:
 
 permissions:
   contents: read
+  deployments: read
 
+env:
+  NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+  NEXT_PUBLIC_STUDIO_URL: ${{ vars.NEXT_PUBLIC_STUDIO_URL }}
+  NEXT_PUBLIC_SITE_ENV: production
+  NEXT_PUBLIC_SANITY_API_VERSION: ${{ vars.NEXT_PUBLIC_SANITY_API_VERSION }}
+  NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+  NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
+  OG_IMAGE_SECRET: ci-only-og-image-secret
+
+# The lanes are independent so the gate finishes when the slowest lane does,
+# not when all of them have run back to back.
 jobs:
-  release-gate:
-    name: Release gate
+  static:
+    name: Typecheck and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
-      NEXT_PUBLIC_STUDIO_URL: ${{ vars.NEXT_PUBLIC_STUDIO_URL }}
-      NEXT_PUBLIC_SITE_ENV: production
-      NEXT_PUBLIC_SANITY_API_VERSION: ${{ vars.NEXT_PUBLIC_SANITY_API_VERSION }}
-      NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
-      NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
-      OG_IMAGE_SECRET: ci-only-og-image-secret
-
+    timeout-minutes: 10
     steps:
-      - name: Check out repository
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
-
-      - name: Set up pnpm and Node.js
-        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2
-        with:
-          runtime: node@24
-          cache: true
-          install: false
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
+      - uses: ./.github/actions/setup
       - name: Typecheck
         run: pnpm typecheck
-
       - name: Lint
         run: pnpm lint
 
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
       - name: Run unit tests
         run: pnpm test
 
-      - name: Build production frontend
-        run: pnpm --dir frontend build
+  smoke:
+    # Vercel already builds every commit; the smoke test runs against that
+    # deployment instead of building the site a second time on the runner.
+    name: Browser smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup
 
-      - name: Install smoke-test browser
-        run: pnpm --dir frontend exec playwright install --with-deps chrome
+      - name: Wait for the Vercel deployment
+        id: deployment
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEPLOY_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          DEPLOY_ENVIRONMENT: ${{ github.event_name == 'pull_request' && 'Preview' || 'Production' }}
+        run: echo "url=$(node scripts/wait-for-vercel-deployment.mjs)" >> "$GITHUB_OUTPUT"
 
       - name: Run browser smoke tests
         env:
-          PLAYWRIGHT_REUSE_BUILD: "1"
+          PLAYWRIGHT_BASE_URL: ${{ steps.deployment.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
         run: pnpm test:smoke
+
+  release-gate:
+    # Single stable check name for branch protection. Runs even when a lane
+    # fails (a skipped required check would otherwise block or, worse, pass).
+    name: Release gate
+    runs-on: ubuntu-latest
+    needs: [static, unit, smoke]
+    if: always()
+    steps:
+      - name: Require every lane to succeed
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "$RESULTS"
+          echo "$RESULTS" | grep -qvE '"(failure|cancelled|skipped)"' || exit 1

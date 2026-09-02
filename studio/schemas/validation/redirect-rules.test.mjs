@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import { HARD_CODED_GONE_ROUTE_PATHS } from "../../../frontend/lib/gone-routes.ts";
 import {
