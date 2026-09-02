@@ -38,7 +38,14 @@ export function planCorsChanges(
 }
 
 async function readSanityEnvironment(projectRoot) {
-  const envFile = parseEnv(await readFile(resolve(projectRoot, "studio/.env"), "utf8"));
+  let envFile = {};
+  try {
+    envFile = parseEnv(await readFile(resolve(projectRoot, "studio/.env"), "utf8"));
+  } catch (error) {
+    if (error?.code !== "ENOENT") {
+      throw error;
+    }
+  }
   const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? envFile.SANITY_STUDIO_PROJECT_ID;
   const token = process.env.SANITY_AUTH_TOKEN ?? envFile.SANITY_AUTH_TOKEN;
 

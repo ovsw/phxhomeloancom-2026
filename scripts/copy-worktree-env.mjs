@@ -19,7 +19,13 @@ if (!sourceArgument) {
 }
 
 const destinationRoot = realpathSync(process.cwd());
-const sourceRoot = realpathSync(sourceArgument);
+let sourceRoot;
+try {
+  sourceRoot = realpathSync(sourceArgument);
+} catch (error) {
+  console.error(`Could not resolve the source checkout ${sourceArgument}: ${error.message}`);
+  process.exit(1);
+}
 
 if (sourceRoot === destinationRoot) {
   console.error("The source checkout and destination worktree must be different directories.");

@@ -137,6 +137,17 @@ test("findLanIpv4 selects a private LAN address instead of loopback or Tailscale
   );
 });
 
+test("findLanIpv4 skips virtual bridge interfaces listed before the physical one", () => {
+  assert.equal(
+    findLanIpv4({
+      docker0: [{ address: "172.17.0.1", family: "IPv4", internal: false }],
+      virbr0: [{ address: "192.168.122.1", family: "IPv4", internal: false }],
+      wifi: [{ address: "192.168.100.233", family: "IPv4", internal: false }],
+    }),
+    "192.168.100.233",
+  );
+});
+
 test("mergeAllowedDevOrigins adds LAN and Tailscale hosts without losing configured hosts", () => {
   assert.equal(
     mergeAllowedDevOrigins(

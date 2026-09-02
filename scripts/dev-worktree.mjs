@@ -140,8 +140,14 @@ function isPrivateIpv4(address) {
   );
 }
 
+const VIRTUAL_INTERFACE_PATTERN = /^(docker|br-|veth|virbr|vmnet|vboxnet|tailscale|utun|zt)/i;
+
 export function findLanIpv4(interfaces = networkInterfaces()) {
-  for (const addresses of Object.values(interfaces)) {
+  for (const [name, addresses] of Object.entries(interfaces)) {
+    if (VIRTUAL_INTERFACE_PATTERN.test(name)) {
+      continue;
+    }
+
     for (const address of addresses ?? []) {
       if (
         address.family === "IPv4" &&
@@ -420,7 +426,7 @@ export async function runDevServers(projectRoot, pair) {
     stdio: "inherit",
   };
   const children = devServerCommands(pair).map((arguments_) =>
-    spawn("pnpm", arguments_, spawnOptions),
+    spawn("pnpm", arguments_, { ...spawnOptions, shell: process.platform === "win32" }),
   );
 
   if (tailscalePreview) {
