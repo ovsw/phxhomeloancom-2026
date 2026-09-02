@@ -15,9 +15,9 @@ type AwardCtaProps = Extract<
 
 const TROPHY_SRC = "/images/phx-award-trophy.png";
 const sealSizeClassNames = {
-  small: "h-24 w-24 md:h-32 md:w-32 lg:h-36 lg:w-36",
-  medium: "h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48",
-  large: "h-40 w-40 md:h-52 md:w-52 lg:h-60 lg:w-60",
+  small: "h-32 w-32 md:h-40 md:w-40 lg:h-48 lg:w-48",
+  medium: "h-40 w-40 md:h-52 md:w-52 lg:h-64 lg:w-64",
+  large: "h-48 w-48 md:h-60 md:w-60 lg:h-72 lg:w-72",
 } as const;
 
 export default function AwardCta({
@@ -47,31 +47,43 @@ export default function AwardCta({
 
       <div className="container-narrow relative z-10 flex flex-col items-center justify-center gap-split text-center lg:flex-row lg:text-left">
         <div className="flex shrink-0 justify-center">
-          <div className="relative aspect-[900/1256] h-[17rem] md:h-[22rem] lg:h-[28.75rem]">
-            <Image
-              alt=""
-              className="rounded-none object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.5)]"
-              fill
-              sizes="(min-width: 1024px) 420px, 70vw"
-              src={TROPHY_SRC}
+          {/* Stage: trophy recedes as a backdrop, the seal leads. */}
+          <div className="relative h-[19rem] w-[18rem] md:h-[24rem] md:w-[23rem] lg:h-[30rem] lg:w-[29rem]">
+            <div
+              aria-hidden="true"
+              className="absolute left-[-4%] top-[2%] aspect-[900/1256] h-[104%] lg:left-[-14%] opacity-[0.36] [mask-image:linear-gradient(to_bottom,black_60%,transparent_98%)] [-webkit-mask-image:linear-gradient(to_bottom,black_60%,transparent_98%)]"
+            >
+              <Image
+                alt=""
+                className="rounded-none object-contain"
+                fill
+                sizes="(min-width: 1024px) 480px, 70vw"
+                src={TROPHY_SRC}
+              />
+            </div>
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-[42%] -translate-y-[41%] rounded-full bg-[radial-gradient(closest-side,rgba(31,110,140,0.42),rgba(31,110,140,0.12)_55%,transparent_75%)]"
             />
             {sealImage ? (
               <div
                 className={cn(
-                  "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[44%]",
+                  "absolute left-1/2 top-1/2 -translate-x-[42%] -translate-y-[41%] rounded-full shadow-[0_28px_48px_-12px_rgba(0,0,0,0.6)]",
                   sealSizeClassNames[sealSize ?? "medium"],
                 )}
                 data-sanity={dataAttribute?.("award.sealImage")}
               >
-                <Image
-                  alt={stegaClean(sealImage.alt) || ""}
-                  blurDataURL={sealImage.asset?.metadata?.lqip || undefined}
-                  className="rounded-none object-contain drop-shadow-[0_18px_30px_rgba(0,0,0,0.35)]"
-                  fill
-                  placeholder={sealImage.asset?.metadata?.lqip ? "blur" : undefined}
-                  sizes="(min-width: 1024px) 240px, 40vw"
-                  src={urlFor(sealImage).url()}
-                />
+                <div className="relative h-full w-full">
+                  <Image
+                    alt={stegaClean(sealImage.alt) || ""}
+                    blurDataURL={sealImage.asset?.metadata?.lqip || undefined}
+                    className="rounded-full object-contain"
+                    fill
+                    placeholder={sealImage.asset?.metadata?.lqip ? "blur" : undefined}
+                    sizes="(min-width: 1024px) 280px, 45vw"
+                    src={urlFor(sealImage).url()}
+                  />
+                </div>
               </div>
             ) : null}
           </div>
@@ -90,7 +102,7 @@ export default function AwardCta({
             className="text-balance text-[clamp(3rem,5.2vw,4.125rem)] font-semibold leading-[1.05] tracking-normal text-white"
             data-sanity={dataAttribute?.("award.title")}
           >
-            &ldquo;{award.title}&rdquo;
+            {award.title}
           </h2>
           {award.description ? (
             <p
