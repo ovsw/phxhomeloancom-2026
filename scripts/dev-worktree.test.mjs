@@ -3,7 +3,7 @@ import { EventEmitter } from "node:events";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
-import test from "node:test";
+import { onTestFinished, test } from "vitest";
 
 import {
   devServerCommands,
@@ -180,11 +180,11 @@ test("derivePortPair returns a stable pair in separate ranges", () => {
   assert.equal(first.studio - first.frontend, 1000);
 });
 
-test("selectPortPair replaces a saved pair from the old wide range", async (context) => {
+test("selectPortPair replaces a saved pair from the old wide range", async () => {
   const worktreePath = await mkdtemp(resolve(tmpdir(), "dev-worktree-test-"));
   const portFile = resolve(worktreePath, ".worktree-ports.json");
 
-  context.after(() => rm(worktreePath, { force: true, recursive: true }));
+  onTestFinished(() => rm(worktreePath, { force: true, recursive: true }));
   await writeFile(portFile, '{"frontend":3923,"studio":4923}\n');
 
   const selected = await selectPortPair({
@@ -197,13 +197,13 @@ test("selectPortPair replaces a saved pair from the old wide range", async (cont
   assert.deepEqual(saved, selected.pair);
 });
 
-test("selectPortPair skips occupied pairs and remembers its choice", async (context) => {
+test("selectPortPair skips occupied pairs and remembers its choice", async () => {
   const worktreePath = await mkdtemp(resolve(tmpdir(), "dev-worktree-test-"));
   const firstPair = derivePortPair(worktreePath);
   const occupiedPorts = new Set([firstPair.frontend, firstPair.studio]);
   const checkPort = async (port) => !occupiedPorts.has(port);
 
-  context.after(() => rm(worktreePath, { force: true, recursive: true }));
+  onTestFinished(() => rm(worktreePath, { force: true, recursive: true }));
 
   const selected = await selectPortPair({ worktreePath, checkPort });
   const saved = JSON.parse(await readFile(resolve(worktreePath, ".worktree-ports.json")));

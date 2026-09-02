@@ -1,6 +1,10 @@
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 
+const repoRoot = path.resolve(__dirname, "..");
+
+// Only component tests (.tsx) pay for a jsdom environment; it dominated CI
+// time (33s of environment setup for 5s of tests). Logic tests run in node.
 export default defineConfig({
   resolve: {
     alias: {
@@ -16,8 +20,33 @@ export default defineConfig({
       NEXT_PUBLIC_SANITY_PROJECT_ID: "test-project",
       OG_IMAGE_SECRET: "test-only-og-image-secret",
     },
-    environment: "jsdom",
-    include: ["**/*.test.{ts,tsx}"],
-    setupFiles: ["./vitest.setup.ts"],
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "dom",
+          include: ["**/*.test.tsx"],
+          environment: "jsdom",
+          setupFiles: ["./vitest.setup.ts"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "node",
+          include: ["**/*.test.ts"],
+          environment: "node",
+        },
+      },
+      {
+        // Repo-wide script/schema tests, formerly run by `node --test`.
+        test: {
+          name: "scripts",
+          root: repoRoot,
+          include: ["frontend/**/*.test.mjs", "studio/**/*.test.mjs", "scripts/*.test.mjs"],
+          environment: "node",
+        },
+      },
+    ],
   },
 });

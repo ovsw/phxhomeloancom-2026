@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import test from "node:test";
+import { test } from "vitest";
 
 import { compileNextRedirects } from "./redirects.mjs";
 import { HARD_CODED_GONE_ROUTE_PATHS } from "./gone-routes.ts";

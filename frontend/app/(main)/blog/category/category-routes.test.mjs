@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import test from "node:test";
+import { test } from "vitest";
 
 const routeSource = readFileSync(new URL("./[slug]/page.tsx", import.meta.url), "utf8");
 const paginatedRouteSource = readFileSync(new URL("./[slug]/[page]/page.tsx", import.meta.url), "utf8");

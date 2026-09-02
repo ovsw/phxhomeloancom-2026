@@ -1,0 +1,15 @@
+name: Set up workspace
+description: Check out, install pnpm + Node.js, and install dependencies with a warm store cache.
+runs:
+  using: composite
+  steps:
+    - name: Set up pnpm and Node.js
+      uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2
+      with:
+        runtime: node@24
+        cache: true
+        install: false
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
