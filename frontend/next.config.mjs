@@ -11,8 +11,18 @@ function requiredEnvironmentValue(name) {
   return value;
 }
 
+function commaSeparatedEnvironmentValues(name) {
+  const values = (process.env[name] ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  return [...new Set(values)];
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: commaSeparatedEnvironmentValues("NEXT_ALLOWED_DEV_ORIGINS"),
   cacheComponents: true,
   cacheLife: { default: sanity },
   trailingSlash: true,
