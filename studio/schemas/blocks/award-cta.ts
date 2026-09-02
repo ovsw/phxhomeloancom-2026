@@ -1,5 +1,5 @@
 import { Award } from "lucide-react";
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineType } from "sanity";
 import { sectionNavField } from "./shared/section-nav.ts";
 
 export default defineType({
@@ -8,40 +8,14 @@ export default defineType({
   type: "object",
   icon: Award,
   description:
-    "Homepage award call-to-action that preserves the Mortgage Executive Magazine trust signal",
+    "Places the shared award call-to-action from Settings on this page.",
   fields: [
-    defineField({
-      name: "highlight",
-      type: "string",
-      description: "The emphasized award phrase, such as TOP 1%",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "title",
-      type: "string",
-      description: "The main award statement shown next to the highlight",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "description",
-      type: "string",
-      description:
-        "Supporting award attribution, including the publication and year",
-    }),
-    defineField({
-      name: "buttons",
-      type: "array",
-      description:
-        "Add one or more clickable buttons that visitors can use to learn about the award",
-      of: [defineArrayMember({ type: "button" })],
-    }),
     sectionNavField(),
   ],
   preview: {
-    select: { highlight: "highlight", title: "title" },
-    prepare: ({ highlight, title }) => ({
-      title: [highlight, title].filter(Boolean).join(" ") || "Award CTA",
-      subtitle: "Award CTA",
+    prepare: () => ({
+      title: "Shared Award CTA",
+      subtitle: "Content managed in Settings",
     }),
   },
 });

@@ -43,7 +43,27 @@ type BlockEditingProps = {
   ) => string | undefined;
 };
 
+function createFieldDataAttribute({
+  documentId,
+  documentType,
+  path,
+}: {
+  documentId: string;
+  documentType: "blogIndex" | "homePage" | "page" | "settings";
+  path: string;
+}) {
+  return createDataAttribute({
+    baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
+    dataset,
+    id: documentId,
+    path,
+    projectId,
+    type: documentType,
+  }).toString();
+}
+
 const serverFieldEditingBlockTypes = new Set<Block["_type"]>([
+  "awardCta",
   "faqAccordion",
   "pageHeader",
   "storyFeature",
@@ -120,25 +140,31 @@ export default function Blocks({
 
         const blockPath = `blocks[_key=="${block._key}"]`;
         const dataSanity = stega
-          ? createDataAttribute({
-              baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
-              dataset,
-              id: documentId,
-              path: blockPath,
-              projectId,
-              type: documentType,
-            }).toString()
+          ? block._type === "awardCta"
+            ? createFieldDataAttribute({
+                documentId: "settings",
+                documentType: "settings",
+                path: "award",
+              })
+            : createFieldDataAttribute({
+                documentId,
+                documentType,
+                path: blockPath,
+              })
           : undefined;
         const dataAttribute = stega
           ? (path: string) =>
-              createDataAttribute({
-                baseUrl: process.env.NEXT_PUBLIC_STUDIO_URL || "http://localhost:3333",
-                dataset,
-                id: documentId,
-                path: `${blockPath}.${path}`,
-                projectId,
-                type: documentType,
-              }).toString()
+              block._type === "awardCta"
+                ? createFieldDataAttribute({
+                    documentId: "settings",
+                    documentType: "settings",
+                    path,
+                  })
+                : createFieldDataAttribute({
+                    documentId,
+                    documentType,
+                    path: `${blockPath}.${path}`,
+                  })
           : undefined;
         const editingProps: BlockEditingProps =
           block._type === "bigVideoFeature"

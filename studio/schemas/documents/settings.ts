@@ -92,6 +92,88 @@ export default defineType({
           .error(),
     }),
     defineField({
+      name: "award",
+      title: "Award CTA",
+      type: "object",
+      description:
+        "Shared award section content. Every Award CTA block on the site uses these fields.",
+      fields: [
+        defineField({
+          name: "eyebrow",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "title",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "description",
+          type: "text",
+          rows: 3,
+        }),
+        defineField({
+          name: "sealImage",
+          title: "Seal image",
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+        }),
+        defineField({
+          name: "sealSize",
+          title: "Seal size",
+          type: "string",
+          initialValue: "medium",
+          options: {
+            layout: "radio",
+            list: [
+              { title: "Small", value: "small" },
+              { title: "Medium", value: "medium" },
+              { title: "Large", value: "large" },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "proofLink",
+          title: "Proof link",
+          type: "object",
+          fields: [
+            defineField({
+              name: "label",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "accessibleLabel",
+              title: "Accessible label",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "url",
+              title: "URL",
+              type: "customUrl",
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+        }),
+        defineField({
+          name: "ctaButton",
+          title: "CTA button",
+          type: "button",
+        }),
+      ],
+    }),
+    defineField({
       name: "blogPostSidebar",
       title: "Blog Post Sidebar",
       type: "blogPostSidebar",
