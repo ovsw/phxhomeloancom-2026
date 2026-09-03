@@ -154,6 +154,8 @@ Because the official materials conflict on the general income number and availab
 
 **Decision: verified and already corrected on the current target pages.** FHFA set the 2026 one-unit baseline conforming limit at **$832,750** and the high-cost ceiling at **$1,249,125**. The current Jumbo page uses the baseline figure and labels it 2026. Any page that cites a limit must include year, unit count, and geography; refresh it after FHFA's annual announcement. Do not restore the stale $548,250 or $765,600 figures from legacy content.
 
+Blog posts carry year-labeled limits too, not only the loan pages: `first-time-home-buyer-learn-how-jumbo-loans-work`, `home-loans-becoming-harder-to-get`, `how-much-mortgage-can-i-afford`, and `what-is-a-reverse-mortgage` (HECM). To find every hit for the annual pass, search the dataset for the current figures ($832,750, $1,249,125) and the phrase "for 2026" across pages and posts.
+
 ### VA entitlement and simultaneous loans
 
 **Decision: expand.** VA states that borrowers with full entitlement do not have a VA loan limit, subject to lender approval and appraisal. A borrower with entitlement already tied to another VA-backed loan may still have remaining entitlement. VA calculates the maximum guaranty using 25% of the county one-unit conforming limit minus entitlement already used; a down payment may be required if the guaranty is insufficient for the new loan.
