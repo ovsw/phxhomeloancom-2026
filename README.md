@@ -76,7 +76,7 @@ command prints the frontend's current LAN URL.
 
 To get a clickable Studio Presentation URL for a document (for example after a content edit), run
 `pnpm presentation:url <documentType> [slug]`. It uses the Studio port assigned to the current
-checkout or worktree.
+checkout or worktree, so in a worktree run `pnpm dev:worktree` first.
 
 When Tailscale is connected, the same command also publishes only the frontend through a
 private HTTPS Tailscale Serve URL. Its HTTPS ports are `5100`–`5109`—for example, frontend

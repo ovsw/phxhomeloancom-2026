@@ -9,8 +9,11 @@
 // action uses (studio/presentation/routes.ts), so the two never disagree.
 // The Studio port is resolved the same way `pnpm dev:worktree` assigns it:
 // STUDIO_PORT, then .worktree-ports.json, then the plain `pnpm dev` port.
+// A worktree never falls back to the plain port: Studio and frontend ports
+// are a pair, and 3333 previews the main checkout's frontend on 3000, so the
+// link would show the wrong code.
 
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { createConnection } from "node:net";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,6 +32,17 @@ function parsePort(value, name) {
   return port;
 }
 
+// A linked worktree has a `.git` file pointing at the main repo; the main
+// checkout has a `.git` directory. Same rule as .claude/hooks/copy-local-env.sh.
+async function isLinkedWorktree(projectRoot) {
+  try {
+    return (await stat(resolve(projectRoot, ".git"))).isFile();
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+}
+
 export async function resolveStudioPort({
   projectRoot = REPO_ROOT,
   studioOverride = process.env.STUDIO_PORT,
@@ -44,6 +58,13 @@ export async function resolveStudioPort({
   } catch (error) {
     if (error?.code !== "ENOENT") {
       throw new Error(`Could not read ${portFile}: ${error.message}`, { cause: error });
+    }
+    if (await isLinkedWorktree(projectRoot)) {
+      throw new Error(
+        `This is a worktree with no ${PORT_FILE_NAME}. Run \`pnpm dev:worktree\` here first, ` +
+          "so the preview shows this worktree's frontend. " +
+          "Set STUDIO_PORT to point at another Studio on purpose.",
+      );
     }
     return { port: DEFAULT_STUDIO_PORT, source: "default" };
   }

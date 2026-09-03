@@ -71,7 +71,7 @@ After editing dataset content, give the user a clickable Studio Presentation URL
 pnpm presentation:url <documentType> [slug]   # e.g. pnpm presentation:url page about
 ```
 
-It resolves the Studio port for this checkout or worktree and warns if the Studio is not running.
+It resolves the Studio port for this checkout or worktree and warns if the Studio is not running. In a worktree it requires `pnpm dev:worktree` to have been run there: Studio and frontend ports are a pair, so a Studio started elsewhere previews the wrong frontend.
 
 ### Development workflow
 
