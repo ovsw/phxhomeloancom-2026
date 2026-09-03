@@ -63,6 +63,16 @@ This repository uses a single-context domain-doc layout. See `docs/agents/domain
 
 Before adding or changing a Page Builder section, read `docs/agents/page-builder.md`.
 
+### Reviewing Sanity content edits
+
+After editing dataset content, give the user a clickable Studio Presentation URL for the exact page. Get it with:
+
+```bash
+pnpm presentation:url <documentType> [slug]   # e.g. pnpm presentation:url page about
+```
+
+It resolves the Studio port for this checkout or worktree and warns if the Studio is not running.
+
 ### Development workflow
 
 Before changing workspace dependencies, Sanity schemas, GROQ queries, or development scripts, consult the relevant section of `README.md`.
