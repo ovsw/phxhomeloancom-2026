@@ -3,12 +3,16 @@
   "version": "2.0.0",
   "description": "phxhomeloan.com website and CMS",
   "private": true,
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
     "dev": "pnpm --parallel -r run dev",
     "dev:frontend": "pnpm run dev --workspace=frontend",
     "dev:prototype": "python3 -m http.server 8000 --bind 127.0.0.1 --directory frontend/PHXHomeLoan-web-prototype",
     "dev:studio": "pnpm run dev --workspace=studio",
     "dev:worktree": "node scripts/dev-worktree.mjs",
+    "presentation:url": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/presentation-url.mjs",
     "setup:sanity-cors": "node scripts/setup-sanity-cors.mjs",
     "setup:worktree": "node scripts/copy-worktree-env.mjs",
     "audit:seo-titles": "pnpm --dir studio audit:seo-titles",

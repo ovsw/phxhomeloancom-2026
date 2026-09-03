@@ -74,6 +74,10 @@ ports `4100`–`4109`. Set both `FRONTEND_PORT` and `STUDIO_PORT` before the com
 override the assigned pair. Both servers listen on all local network interfaces, and the
 command prints the frontend's current LAN URL.
 
+To get a clickable Studio Presentation URL for a document (for example after a content edit), run
+`pnpm presentation:url <documentType> [slug]`. It uses the Studio port assigned to the current
+checkout or worktree.
+
 When Tailscale is connected, the same command also publishes only the frontend through a
 private HTTPS Tailscale Serve URL. Its HTTPS ports are `5100`–`5109`—for example, frontend
 port `3103` is published on Tailscale port `5103`. Use the exact `Phone HTTPS` URL printed by
