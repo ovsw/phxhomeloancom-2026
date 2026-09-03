@@ -154,7 +154,7 @@ Because the official materials conflict on the general income number and availab
 
 **Decision: verified and already corrected on the current target pages.** FHFA set the 2026 one-unit baseline conforming limit at **$832,750** and the high-cost ceiling at **$1,249,125**. The current Jumbo page uses the baseline figure and labels it 2026. Any page that cites a limit must include year, unit count, and geography; refresh it after FHFA's annual announcement. Do not restore the stale $548,250 or $765,600 figures from legacy content.
 
-Blog posts carry year-labeled limits too, not only the loan pages: `first-time-home-buyer-learn-how-jumbo-loans-work`, `home-loans-becoming-harder-to-get`, `how-much-mortgage-can-i-afford`, and `what-is-a-reverse-mortgage` (HECM). To find every hit for the annual pass, search the dataset for the current figures ($832,750, $1,249,125) and the phrase "for 2026" across pages and posts.
+Blog posts carry year-labeled limits too, not only the loan pages: `first-time-home-buyer-learn-how-jumbo-loans-work`, `home-loans-becoming-harder-to-get`, `how-much-mortgage-can-i-afford`, and `what-is-a-reverse-mortgage` (HECM). For the annual pass, do not search by the current figures alone; stale or reworded limits would slip past. Search page and post bodies for the terms "conforming", "loan limit", "HECM", and "jumbo", open the four posts above directly, and check each hit for year, unit count, and geography.
 
 ### VA entitlement and simultaneous loans
 
