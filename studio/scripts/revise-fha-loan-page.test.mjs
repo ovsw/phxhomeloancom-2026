@@ -26,6 +26,7 @@ const source = {
   blocks: [
     {
       _key: "page-header-fha",
+      _type: "pageHeader",
       statistics: [
         { _key: "stat-down" },
         { _key: "stat-score" },
@@ -34,11 +35,19 @@ const source = {
     },
     {
       _key: "chapter-what-it-is",
+      _type: "editorialChapter",
       richText: [paragraph("what-p1", "old"), paragraph("what-p2", "old")],
-      supportingContent: [{ _key: "impact-down-payment", statement: "$14,000" }],
+      supportingContent: [
+        {
+          _key: "impact-down-payment",
+          _type: "impactStatement",
+          statement: "$14,000",
+        },
+      ],
     },
     {
       _key: "table-fha-vs-conventional",
+      _type: "comparisonTable",
       table: {
         rows: ["row-down", "row-credit", "row-mi", "row-seller", "row-best"].map(
           (_key) => ({ _key, cells: ["old", "old", "old"] }),
@@ -47,12 +56,14 @@ const source = {
     },
     {
       _key: "benefit-cards-advantages",
+      _type: "benefitCards",
       cards: ["adv-down", "adv-gift", "adv-credit", "adv-seller", "adv-prepay"].map(
         (_key) => ({ _key, title: "old", body: [paragraph(`${_key}-p`, "old")] }),
       ),
     },
     {
       _key: "loan-requirements",
+      _type: "loanRequirements",
       chapters: [
         {
           _key: "credit",
@@ -64,6 +75,7 @@ const source = {
           evidence: [
             {
               _key: "money-stats",
+              _type: "requirementStatRow",
               stats: [{ _key: "stat-gift" }],
             },
           ],
@@ -74,6 +86,7 @@ const source = {
           evidence: [
             {
               _key: "mip-tiers",
+              _type: "requirementTierList",
               tiers: [{ _key: "tier-duration" }],
             },
           ],
@@ -82,15 +95,18 @@ const source = {
     },
     {
       _key: "chapter-home-in-five",
+      _type: "editorialChapter",
       richText: [paragraph("hi5-p1", "old"), paragraph("hi5-p2", "old")],
-      supportingContent: [{ _key: "impact-hi5" }],
+      supportingContent: [{ _key: "impact-hi5", _type: "impactStatement" }],
     },
     {
       _key: "fha-faq",
+      _type: "faqAccordion",
       faqs: FAQ_IDS.map((_ref) => ({ _key: `ref-${_ref}`, _ref, _type: "reference" })),
     },
     {
       _key: "advisor-cta-why-fha",
+      _type: "advisorCta",
       richText: [paragraph("why-p1", "old"), paragraph("why-p2", "old")],
       buttons: [
         { _key: "apply", url: { internal: { _ref: "apply" } } },

@@ -2,39 +2,15 @@ import { pathToFileURL } from "node:url";
 import { isDeepStrictEqual } from "node:util";
 import type { Patch } from "@sanity/client";
 import { getCliClient } from "sanity/cli";
+import type { Faq, Page, SimpleRichText } from "../../frontend/sanity.types";
 
 const API_VERSION = "2026-09-03";
 const DATASET = "development";
 const PAGE_ID = "fhaLoan";
 const EXPECTED_SLUG = "/phoenix-fha-loan";
 
-type RichTextBlock = {
-  _key: string;
-  _type: "block";
-  children: Array<{
-    _key: string;
-    _type: "span";
-    marks: string[];
-    text: string;
-  }>;
-  markDefs: unknown[];
-  style: string;
-};
-
-type SanityDocument = {
-  _id: string;
-  _rev: string;
-  _type: string;
-  body?: unknown;
-  [key: string]: unknown;
-};
-
-type PageDocument = SanityDocument & {
-  blocks?: Array<Record<string, any>>;
-  description?: string;
-  meta?: Record<string, unknown>;
-  slug?: { current?: string };
-};
+type PageBlock = NonNullable<Page["blocks"]>[number];
+type RichTextBlock = SimpleRichText[number];
 
 const FAQ_COPY: Record<string, string[]> = {
   "faq-fha-what-is-it": [
@@ -82,24 +58,53 @@ function paragraph(key: string, text: string): RichTextBlock {
   };
 }
 
-function requiredByKey(
-  items: Array<Record<string, any>>,
+function requiredByKey<Item extends { _key: string }>(
+  items: Item[] | undefined,
   key: string,
-): Record<string, any> {
+): Item {
+  if (!Array.isArray(items)) throw new Error(`Missing array for ${key}`);
   const item = items.find((candidate) => candidate._key === key);
   if (!item) throw new Error(`Missing array item ${key}`);
   return item;
 }
 
-function replaceParagraph(container: Record<string, any>, key: string, text: string) {
+function requiredPageBlock<Type extends PageBlock["_type"]>(
+  items: Page["blocks"],
+  key: string,
+  type: Type,
+): Extract<PageBlock, { _type: Type }> {
+  const item = requiredByKey(items, key) as PageBlock;
+  if (item._type !== type) {
+    throw new Error(`Expected ${key} to have type ${type}`);
+  }
+  return item as Extract<PageBlock, { _type: Type }>;
+}
+
+function requiredTypedItem<
+  Item extends { _key: string; _type: string },
+  Type extends Item["_type"],
+>(items: Item[] | undefined, key: string, type: Type): Extract<Item, { _type: Type }> {
+  const item = requiredByKey(items, key) as Item;
+  if (item._type !== type) {
+    throw new Error(`Expected ${key} to have type ${type}`);
+  }
+  return item as Extract<Item, { _type: Type }>;
+}
+
+type RichTextContainer = {
+  richText?: Array<{ _key: string }>;
+  body?: Array<{ _key: string }>;
+};
+
+function replaceParagraph(container: RichTextContainer, key: string, text: string) {
   const richText = container.richText ?? container.body;
   if (!Array.isArray(richText)) throw new Error(`Missing rich text for ${key}`);
-  const index = richText.findIndex((item: RichTextBlock) => item._key === key);
+  const index = richText.findIndex((item) => item._key === key);
   if (index === -1) throw new Error(`Missing paragraph ${key}`);
   richText[index] = paragraph(key, text);
 }
 
-export function validatePage(document: PageDocument | undefined) {
+export function validatePage(document: Page | Faq | undefined) {
   if (!document) return `Document ${PAGE_ID} does not exist`;
   if (document._id !== PAGE_ID || document._type !== "page") {
     return `Expected the published page document with ID ${PAGE_ID}`;
@@ -112,12 +117,12 @@ export function validatePage(document: PageDocument | undefined) {
   return undefined;
 }
 
-export function buildPageMutation(document: PageDocument) {
+export function buildPageMutation(document: Page) {
   const validationError = validatePage(document);
   if (validationError) throw new Error(validationError);
 
   const blocks = structuredClone(document.blocks!);
-  const header = requiredByKey(blocks, "page-header-fha");
+  const header = requiredPageBlock(blocks, "page-header-fha", "pageHeader");
   header.description =
     "FHA loans can offer a smaller down payment and more flexible credit guidelines than some conventional loans. We can help you compare the full cost, including mortgage insurance, for a Phoenix-area home.";
   const downStat = requiredByKey(header.statistics, "stat-down");
@@ -132,7 +137,7 @@ export function buildPageMutation(document: PageDocument) {
   sellerStat.description =
     "Seller contributions depend on the costs and current FHA rules.";
 
-  const basics = requiredByKey(blocks, "chapter-what-it-is");
+  const basics = requiredPageBlock(blocks, "chapter-what-it-is", "editorialChapter");
   replaceParagraph(
     basics,
     "what-p1",
@@ -143,13 +148,21 @@ export function buildPageMutation(document: PageDocument) {
     "what-p2",
     "FHA guidelines can allow a smaller down payment and more flexible credit review than some conventional loans. FHA mortgage insurance adds an upfront cost and an annual premium, so we compare the full payment and long-term cost before you choose.",
   );
-  requiredByKey(basics.supportingContent, "impact-down-payment").description =
+  requiredTypedItem(
+    basics.supportingContent,
+    "impact-down-payment",
+    "impactStatement",
+  ).description =
     "This example uses the 3.5% FHA minimum for a borrower who meets the credit and underwriting requirements. The final amount depends on your price, loan, and approval.";
 
-  const comparison = requiredByKey(blocks, "table-fha-vs-conventional");
+  const comparison = requiredPageBlock(
+    blocks,
+    "table-fha-vs-conventional",
+    "comparisonTable",
+  );
   comparison.intro =
     "FHA and conventional loans fit different borrower profiles. Compare the down payment, credit rules, mortgage insurance, seller contributions, rate, and total cost for the options you qualify for.";
-  const rows = comparison.table.rows;
+  const rows = comparison.table?.rows;
   requiredByKey(rows, "row-down").cells = [
     "Minimum down payment",
     "3.5% at 580 or higher; 10% at 500 to 579 under FHA guidelines. Lender rules apply.",
@@ -176,7 +189,11 @@ export function buildPageMutation(document: PageDocument) {
     "Buyers who qualify for its pricing and mortgage-insurance terms.",
   ];
 
-  const advantages = requiredByKey(blocks, "benefit-cards-advantages");
+  const advantages = requiredPageBlock(
+    blocks,
+    "benefit-cards-advantages",
+    "benefitCards",
+  );
   advantages.intro =
     "FHA guidelines can reduce the cash and credit barriers to buying a home. Your lender still reviews the full application and property.";
   const advantageCards = advantages.cards;
@@ -212,7 +229,7 @@ export function buildPageMutation(document: PageDocument) {
     "Extra principal payments can build equity faster. A later refinance depends on your finances, home value, rates, costs, and approval.",
   );
 
-  const requirements = requiredByKey(blocks, "loan-requirements");
+  const requirements = requiredPageBlock(blocks, "loan-requirements", "loanRequirements");
   requirements.intro =
     "FHA guidelines can allow a lower down payment and lower credit scores than some conventional loans. Approval still depends on your income, debts, funds, credit history, the property, and lender requirements.";
   const creditChapter = requiredByKey(requirements.chapters, "credit");
@@ -232,7 +249,11 @@ export function buildPageMutation(document: PageDocument) {
     "FHA guidelines allow 3.5% down with a score of 580 or higher. Eligible gift funds may cover the required down payment when they meet FHA source and documentation rules. Seller contributions may help with eligible closing costs.",
   );
   const giftStat = requiredByKey(
-    requiredByKey(moneyChapter.evidence, "money-stats").stats,
+    requiredTypedItem(
+      moneyChapter.evidence,
+      "money-stats",
+      "requirementStatRow",
+    ).stats,
     "stat-gift",
   );
   giftStat.label = "Eligible gift funds allowed";
@@ -247,7 +268,11 @@ export function buildPageMutation(document: PageDocument) {
     "FHA loans have an upfront mortgage insurance premium and an annual premium that is usually divided across monthly payments. Annual MIP generally lasts 11 years when the original loan-to-value ratio is 90% or less, and for the loan term when it is above 90%. A refinance creates a new loan and depends on approval, rates, costs, and terms.",
   );
   requiredByKey(
-    requiredByKey(insuranceChapter.evidence, "mip-tiers").tiers,
+    requiredTypedItem(
+      insuranceChapter.evidence,
+      "mip-tiers",
+      "requirementTierList",
+    ).tiers,
     "tier-duration",
   ).value = "11 years or loan term";
   insuranceChapter.note =
@@ -255,7 +280,11 @@ export function buildPageMutation(document: PageDocument) {
   requirements.closingNote =
     "Some Phoenix-area buyers may qualify for down-payment assistance. Funding and terms change, so ask us to confirm what is open.";
 
-  const assistance = requiredByKey(blocks, "chapter-home-in-five");
+  const assistance = requiredPageBlock(
+    blocks,
+    "chapter-home-in-five",
+    "editorialChapter",
+  );
   assistance.title = "Could Home in Five help with upfront costs?";
   replaceParagraph(
     assistance,
@@ -267,16 +296,17 @@ export function buildPageMutation(document: PageDocument) {
     "hi5-p2",
     "The assistance amount, income limit, credit and debt-to-income rules, education requirement, interest rate, second-lien payment and forgiveness terms, and funding availability depend on the product and date. Ask our team to confirm which options are open and whether you qualify.",
   );
-  const assistanceImpact = requiredByKey(
+  const assistanceImpact = requiredTypedItem(
     assistance.supportingContent,
     "impact-hi5",
+    "impactStatement",
   );
   assistanceImpact.statement = "Program-specific";
   assistanceImpact.label = "assistance and second-lien terms";
   assistanceImpact.description =
     "There is no single Home in Five percentage, income cap, rate, payment, or forgiveness schedule. We will check current funding and explain the selected option before you decide.";
 
-  const advisor = requiredByKey(blocks, "advisor-cta-why-fha");
+  const advisor = requiredPageBlock(blocks, "advisor-cta-why-fha", "advisorCta");
   advisor.title = "Your Phoenix FHA loan team";
   replaceParagraph(
     advisor,
@@ -303,7 +333,7 @@ export function buildPageMutation(document: PageDocument) {
   };
 }
 
-export function buildFaqMutation(document: SanityDocument) {
+export function buildFaqMutation(document: Page | Faq) {
   const copy = FAQ_COPY[document._id];
   if (!copy) throw new Error(`Unexpected FAQ document ${document._id}`);
   if (document._type !== "faq") throw new Error(`${document._id} is not an FAQ`);
@@ -317,10 +347,22 @@ export function buildFaqMutation(document: SanityDocument) {
   };
 }
 
-function isPageApplied(document: PageDocument, mutation: ReturnType<typeof buildPageMutation>) {
-  return Object.entries(mutation.set).every(([field, value]) =>
-    isDeepStrictEqual(document[field], value),
+function isPageApplied(document: Page, mutation: ReturnType<typeof buildPageMutation>) {
+  return (
+    isDeepStrictEqual(document.blocks, mutation.set.blocks) &&
+    isDeepStrictEqual(document.description, mutation.set.description) &&
+    isDeepStrictEqual(document.meta, mutation.set.meta)
   );
+}
+
+function requirePage(document: Page | Faq | undefined): Page {
+  const validationError = validatePage(document);
+  if (validationError) throw new Error(validationError);
+  return document as Page;
+}
+
+function faqBody(document: Page | Faq | undefined): Faq["body"] | undefined {
+  return document?._type === "faq" ? document.body : undefined;
 }
 
 async function main() {
@@ -342,32 +384,32 @@ async function main() {
   }
 
   const ids = [PAGE_ID, ...FAQ_IDS];
-  const documents = await client.fetch<SanityDocument[]>(
+  const documents = await client.fetch<Array<Page | Faq>>(
     `*[_id in $ids || _id in $draftIds]`,
     { ids, draftIds: ids.map((id) => `drafts.${id}`) },
   );
-  const drafts = documents.filter((document: SanityDocument) =>
+  const drafts = documents.filter((document: Page | Faq) =>
     document._id.startsWith("drafts."),
   );
   if (drafts.length) {
     throw new Error(
-      `Refusing to overwrite existing drafts: ${drafts.map((draft: SanityDocument) => draft._id).join(", ")}`,
+      `Refusing to overwrite existing drafts: ${drafts.map((draft: Page | Faq) => draft._id).join(", ")}`,
     );
   }
-  const byId = new Map<string, SanityDocument>(
-    documents.map((document: SanityDocument) => [document._id, document]),
+  const byId = new Map<string, Page | Faq>(
+    documents.map((document: Page | Faq) => [document._id, document]),
   );
-  const page = byId.get(PAGE_ID) as PageDocument | undefined;
-  const pageMutation = buildPageMutation(page as PageDocument);
+  const page = requirePage(byId.get(PAGE_ID));
+  const pageMutation = buildPageMutation(page);
   const faqMutations = FAQ_IDS.map((id) => {
     const document = byId.get(id);
     if (!document) throw new Error(`Missing FAQ document ${id}`);
     return buildFaqMutation(document);
   });
   const alreadyApplied =
-    isPageApplied(page as PageDocument, pageMutation) &&
+    isPageApplied(page, pageMutation) &&
     faqMutations.every((mutation) =>
-      isDeepStrictEqual(byId.get(mutation.id)?.body, mutation.set.body),
+      isDeepStrictEqual(faqBody(byId.get(mutation.id)), mutation.set.body),
     );
 
   console.log(
@@ -399,22 +441,22 @@ async function main() {
   }
 
   const [rawAfter, publishedAfter] = await Promise.all([
-    client.fetch<SanityDocument[]>(`*[_id in $ids]`, { ids }),
-    publishedClient.fetch<SanityDocument[]>(`*[_id in $ids]`, { ids }),
+    client.fetch<Array<Page | Faq>>(`*[_id in $ids]`, { ids }),
+    publishedClient.fetch<Array<Page | Faq>>(`*[_id in $ids]`, { ids }),
   ]);
   for (const [perspective, after] of [
     ["raw", rawAfter],
     ["published", publishedAfter],
   ] as const) {
-    const afterById = new Map<string, SanityDocument>(
-      after.map((document: SanityDocument) => [document._id, document]),
+    const afterById = new Map<string, Page | Faq>(
+      after.map((document: Page | Faq) => [document._id, document]),
     );
-    const pageAfter = afterById.get(PAGE_ID) as PageDocument | undefined;
-    if (!pageAfter || !isPageApplied(pageAfter, pageMutation)) {
+    const pageAfter = requirePage(afterById.get(PAGE_ID));
+    if (!isPageApplied(pageAfter, pageMutation)) {
       throw new Error(`Verification failed for the FHA page in ${perspective}`);
     }
     for (const mutation of faqMutations) {
-      if (!isDeepStrictEqual(afterById.get(mutation.id)?.body, mutation.set.body)) {
+      if (!isDeepStrictEqual(faqBody(afterById.get(mutation.id)), mutation.set.body)) {
         throw new Error(`Verification failed for ${mutation.id} in ${perspective}`);
       }
     }
