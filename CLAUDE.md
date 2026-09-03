@@ -77,6 +77,14 @@ It resolves the Studio port for this checkout or worktree and warns if the Studi
 
 Before changing workspace dependencies, Sanity schemas, GROQ queries, or development scripts, consult the relevant section of `README.md`.
 
+## Copywriting
+
+Before writing or editing any site copy for this project, read
+`docs/copywriting-styleguide.md` and follow it. This covers all copy, in the
+Sanity dataset or in-repo: page sections, blog posts, button labels, meta
+descriptions, and microcopy. Match its voice, sentence style, and trust-first
+framing every time.
+
 ## Brand names (do not flag as errors)
 
 - **Luminate Bank** is the current lender brand.
