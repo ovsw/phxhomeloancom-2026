@@ -226,9 +226,14 @@ test("selectPortPair requires both explicit port overrides", async () => {
   );
 });
 
-test("selectPortPair uses a complete explicit override without saving it", async () => {
+test("selectPortPair uses a complete explicit override and records it", async () => {
+  const worktreePath = await mkdtemp(resolve(tmpdir(), "dev-worktree-test-"));
+  const portFile = resolve(worktreePath, ".worktree-ports.json");
+  onTestFinished(() => rm(worktreePath, { recursive: true, force: true }));
+  await writeFile(portFile, '{"frontend":3105,"studio":4105}\n');
+
   const selected = await selectPortPair({
-    worktreePath: "/worktree",
+    worktreePath,
     frontendOverride: "3200",
     studioOverride: "4200",
     checkPort: async () => true,
@@ -237,5 +242,9 @@ test("selectPortPair uses a complete explicit override without saving it", async
   assert.deepEqual(selected, {
     pair: { frontend: 3200, studio: 4200 },
     source: "environment",
+  });
+  assert.deepEqual(JSON.parse(await readFile(portFile, "utf8")), {
+    frontend: 3200,
+    studio: 4200,
   });
 });

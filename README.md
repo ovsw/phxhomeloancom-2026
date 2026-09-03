@@ -71,7 +71,7 @@ pnpm dev:worktree
 This assigns and remembers a separate frontend and Studio port pair for that worktree in
 `.worktree-ports.json`. The ten available pairs use frontend ports `3100`–`3109` and Studio
 ports `4100`–`4109`. Set both `FRONTEND_PORT` and `STUDIO_PORT` before the command to
-override the assigned pair. Both servers listen on all local network interfaces, and the
+override the assigned pair; the override is saved to the same file. Both servers listen on all local network interfaces, and the
 command prints the frontend's current LAN URL.
 
 To get a clickable Studio Presentation URL for a document (for example after a content edit), run

@@ -334,6 +334,9 @@ export async function selectPortPair({
       studio: studioOverride,
     });
     await assertPairAvailable(pair, checkPort);
+    // Record the override too: the port file means "the pair this worktree's
+    // servers run on", and tools like presentation:url read it to find Studio.
+    await writeFile(portFile, `${JSON.stringify(pair, null, 2)}\n`);
     return { pair, source: "environment" };
   }
 
