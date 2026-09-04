@@ -1379,31 +1379,16 @@
                     "of": {
                       "type": "object",
                       "attributes": {
-                        "href": {
+                        "_key": {
                           "type": "objectAttribute",
                           "value": {
                             "type": "string"
-                          },
-                          "optional": true
-                        },
-                        "_type": {
-                          "type": "objectAttribute",
-                          "value": {
-                            "type": "string",
-                            "value": "link"
                           }
                         }
                       },
                       "rest": {
-                        "type": "object",
-                        "attributes": {
-                          "_key": {
-                            "type": "objectAttribute",
-                            "value": {
-                              "type": "string"
-                            }
-                          }
-                        }
+                        "type": "inline",
+                        "name": "customLink"
                       }
                     }
                   },
