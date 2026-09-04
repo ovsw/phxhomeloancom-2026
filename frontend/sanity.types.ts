@@ -239,11 +239,11 @@ export type AdvisorCta = {
     }>;
     style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
     listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      href?: string;
-      _type: "link";
-      _key: string;
-    }>;
+    markDefs?: Array<
+      {
+        _key: string;
+      } & CustomLink
+    >;
     level?: number;
     _type: "block";
     _key: string;
@@ -1944,9 +1944,11 @@ export type BLOG_INDEX_QUERY_RESULT =
                 | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                href?: string;
-                _type: "link";
                 _key: string;
+                _type: "customLink";
+                customLink?: CustomUrl;
+                href: string | null | "/";
+                openInNewTab: boolean | null;
               }> | null;
               level?: number;
               _type: "block";
@@ -3231,9 +3233,11 @@ export type BLOG_INDEX_QUERY_RESULT =
                 | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                href?: string;
-                _type: "link";
                 _key: string;
+                _type: "customLink";
+                customLink?: CustomUrl;
+                href: string | null | "/";
+                openInNewTab: boolean | null;
               }> | null;
               level?: number;
               _type: "block";
@@ -4578,9 +4582,11 @@ export type BLOG_INDEX_QUERY_RESULT =
                 | "normal";
               listItem?: "bullet" | "number";
               markDefs: Array<{
-                href?: string;
-                _type: "link";
                 _key: string;
+                _type: "customLink";
+                customLink?: CustomUrl;
+                href: string | null | "/";
+                openInNewTab: boolean | null;
               }> | null;
               level?: number;
               _type: "block";
@@ -6178,9 +6184,11 @@ export type HOME_PAGE_QUERY_RESULT = {
             "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
           listItem?: "bullet" | "number";
           markDefs: Array<{
-            href?: string;
-            _type: "link";
             _key: string;
+            _type: "customLink";
+            customLink?: CustomUrl;
+            href: string | null | "/";
+            openInNewTab: boolean | null;
           }> | null;
           level?: number;
           _type: "block";
@@ -7568,9 +7576,11 @@ export type PAGE_QUERY_RESULT = {
             "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
           listItem?: "bullet" | "number";
           markDefs: Array<{
-            href?: string;
-            _type: "link";
             _key: string;
+            _type: "customLink";
+            customLink?: CustomUrl;
+            href: string | null | "/";
+            openInNewTab: boolean | null;
           }> | null;
           level?: number;
           _type: "block";
